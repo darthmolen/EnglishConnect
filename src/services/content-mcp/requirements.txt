@@ -1,0 +1,10 @@
+# MCP server
+mcp>=0.9.0
+
+# Database (async only - no sync driver needed)
+sqlalchemy>=2.0.25
+asyncpg>=0.29.0
+
+# Utilities
+pydantic>=2.5.0
+python-dotenv>=1.0.0

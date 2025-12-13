@@ -1,0 +1,1 @@
+"""EnglishConnect backend application."""

@@ -1,0 +1,133 @@
+version: "3.8"
+
+# Full deployment simulation
+# Usage: docker compose -f docker-compose.prod.yml up
+
+services:
+  # Infrastructure (from base docker-compose.yml)
+  postgres:
+    image: postgres:16-alpine
+    container_name: ec-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-englishconnect}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-englishconnect}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-englishconnect}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ec-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ec-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://englishconnect:devpassword@postgres:5432/englishconnect
+      - REDIS_URL=redis://redis:6379/0
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - STT_SERVICE_URL=http://stt:8001
+      - TTS_MCP_URL=http://tts-mcp:8002
+      - CONTENT_MCP_URL=http://content-mcp:8003
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - APP_ENV=production
+      - DEBUG=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Content MCP Server
+  content-mcp:
+    build:
+      context: ./services/content-mcp
+      dockerfile: Dockerfile
+    container_name: ec-content-mcp
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://englishconnect:devpassword@postgres:5432/englishconnect
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # STT Service (requires GPU)
+  stt:
+    build:
+      context: ./services/stt
+      dockerfile: Dockerfile
+    container_name: ec-stt
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - WHISPER_MODEL_SIZE=large-v3
+      - WHISPER_DEVICE=cuda
+      - WHISPER_COMPUTE_TYPE=float16
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # TTS MCP Server (requires GPU)
+  tts-mcp:
+    build:
+      context: ./services/tts-mcp
+      dockerfile: Dockerfile
+    container_name: ec-tts-mcp
+    restart: unless-stopped
+    environment:
+      - TTS_DEVICE=cuda
+      - TTS_OUTPUT_DIR=/tmp/tts_output
+      - VIBEVOICE_MODEL_PATH=microsoft/VibeVoice-Realtime-0.5B
+    volumes:
+      - tts_output:/tmp/tts_output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  redis_data:
+  tts_output:

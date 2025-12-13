@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude --version)",
+      "WebFetch",
+      "Bash(marker_single:*)",
+      "Bash(git clone:*)",
+      "Bash(pip install:*)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(source .venv/bin/activate)",
+      "Bash(python src/tools/content_ingestion.py:*)",
+      "Bash(source src/backend/.venv/bin/activate)",
+      "Bash(python -m pytest:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(cat:*)",
+      "Read(.claude/skills/**)",
+      "Bash(.claude/skills/** && *)",
+      "Read(.claude/agents/**)",
+      "Read(.claude/plugins/**)",
+      "Bash(.claude/plugins/** && *)",
+      "Bash(npm test)",
+      "Bash(pytest:*)",
+      "Bash(.venv-test/bin/pytest:*)",
+      "Bash(src/services/tts-mcp/.venv/bin/python:*)",
+      "Bash(.venv-test/bin/pip install:*)",
+      "Skill(executing-plans)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ]
+}

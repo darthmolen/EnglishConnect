@@ -1,0 +1,21 @@
+# MCP server
+mcp>=0.9.0
+
+# VibeVoice dependencies (will need to install from source)
+# See: https://github.com/microsoft/VibeVoice
+torch>=2.0.0
+torchaudio>=2.0.0
+transformers>=4.36.0
+
+# Audio processing
+numpy>=1.26.0
+soundfile>=0.12.1
+scipy>=1.11.0
+
+# Web server (for audio file serving)
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Utilities
+pydantic>=2.5.0
+python-dotenv>=1.0.0

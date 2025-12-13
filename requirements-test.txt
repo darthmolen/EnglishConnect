@@ -1,0 +1,14 @@
+# Testing dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# HTTP client for API testing
+httpx>=0.26.0
+
+# Include base dependencies from backend
+-r src/backend/requirements.txt
+
+# Include content-mcp dependencies
+-r src/services/content-mcp/requirements.txt
