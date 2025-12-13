@@ -63,9 +63,10 @@ async def health():
 
 
 # Import and include routers
-from app.routers import lessons
+from app.routers import lessons, conversation
 
 app.include_router(lessons.router)
+app.include_router(conversation.router)
 
 # Future routers (commented out until implemented):
 # from app.routers import auth, progress, sessions
