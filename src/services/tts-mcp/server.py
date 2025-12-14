@@ -2,13 +2,19 @@
 """Text-to-Speech MCP Server using VibeVoice-Realtime.
 
 Provides MCP tools for agents to generate speech from text.
+Also provides HTTP API for direct backend access.
 
 Usage:
+    # MCP mode (default)
     python server.py
+
+    # HTTP mode (for backend access)
+    python server.py --http
 
 Note: Requires VibeVoice to be installed. See https://github.com/microsoft/VibeVoice
 """
 
+import argparse
 import asyncio
 import base64
 import copy
@@ -20,7 +26,10 @@ from pathlib import Path
 
 import torch
 from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from mcp.server.fastmcp import FastMCP
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -392,7 +401,134 @@ async def speak_base64(text: str, voice: str = "speaker_a") -> str:
         })
 
 
-if __name__ == "__main__":
-    # Initialize model on startup
+# ============================================================================
+# HTTP API (FastAPI) - for direct backend access
+# ============================================================================
+
+http_app = FastAPI(
+    title="EnglishConnect TTS Service",
+    description="Text-to-Speech using VibeVoice-Realtime",
+    version="0.1.0",
+)
+
+http_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+class SynthesizeRequest(BaseModel):
+    """Request body for /synthesize endpoint."""
+    text: str
+    voice: str = "speaker_a"
+
+
+class SynthesizeResponse(BaseModel):
+    """Response body for /synthesize endpoint."""
+    audio_base64: str
+    voice: str
+    speaker_name: str
+    text: str
+    sample_rate: int
+    format: str
+
+
+@http_app.on_event("startup")
+async def startup_event():
+    """Load model on HTTP server startup."""
     get_model()
-    mcp.run()
+
+
+@http_app.get("/")
+async def root():
+    """Health check."""
+    return {"status": "ok", "service": "tts", "voices": list(VOICES.keys())}
+
+
+@http_app.get("/health")
+async def health():
+    """Detailed health check."""
+    model, _ = get_model()
+    return {
+        "status": "healthy",
+        "model": MODEL_PATH,
+        "device": DEVICE,
+        "model_loaded": model is not None,
+    }
+
+
+@http_app.get("/voices")
+async def list_voices_http():
+    """List available TTS voices."""
+    return [
+        {"id": k, "name": v["name"], "description": v["description"]}
+        for k, v in VOICES.items()
+    ]
+
+
+@http_app.post("/synthesize", response_model=SynthesizeResponse)
+async def synthesize_http(request: SynthesizeRequest):
+    """Synthesize speech from text.
+
+    Args:
+        request: SynthesizeRequest with text and optional voice
+
+    Returns:
+        SynthesizeResponse with base64-encoded WAV audio
+    """
+    if request.voice not in VOICES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown voice: {request.voice}. Available: {list(VOICES.keys())}"
+        )
+
+    voice_config = VOICES[request.voice]
+
+    try:
+        audio_bytes = await synthesize_with_vibevoice(request.text, request.voice)
+        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+
+        return SynthesizeResponse(
+            audio_base64=audio_b64,
+            voice=request.voice,
+            speaker_name=voice_config["name"],
+            text=request.text,
+            sample_rate=_sample_rate,
+            format="wav",
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Main entry point
+# ============================================================================
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="TTS Server")
+    parser.add_argument(
+        "--http",
+        action="store_true",
+        help="Run HTTP server instead of MCP server"
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8002,
+        help="HTTP server port (default: 8002)"
+    )
+    args = parser.parse_args()
+
+    if args.http:
+        # Run HTTP server
+        import uvicorn
+        print(f"Starting TTS HTTP server on port {args.port}...")
+        uvicorn.run(http_app, host="0.0.0.0", port=args.port)
+    else:
+        # Run MCP server (default)
+        get_model()
+        mcp.run()

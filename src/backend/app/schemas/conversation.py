@@ -25,3 +25,6 @@ class ConversationResponse(BaseModel):
 
     text: str
     lesson_number: int
+    audio_base64: str | None = None
+    audio_format: str = "wav"
+    language: str = "en"  # Language the agent chose to respond in

@@ -46,6 +46,9 @@ export interface ConversationRequest {
 export interface ConversationResponse {
   text: string
   lesson_number: number
+  audio_base64: string | null
+  audio_format: string
+  language: string
 }
 
 export interface TTSRequest {

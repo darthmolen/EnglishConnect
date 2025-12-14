@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAudioRecorder } from './useAudioRecorder'
 import { useAudioPlayer } from './useAudioPlayer'
-import { sendMessage, synthesizeSpeech } from '@/services/api'
+import { sendMessage } from '@/services/api'
 
 export function useConversation() {
   const {
@@ -11,29 +11,39 @@ export function useConversation() {
     isLoading,
     addMessage,
     setIsLoading,
-    setIsRecording,
-    setIsPlaying,
+    setIsRecording: setStoreIsRecording,
+    setIsPlaying: setStoreIsPlaying,
   } = useConversationStore()
 
-  const { isRecording, audioBlob, startRecording, stopRecording } =
-    useAudioRecorder()
-  const { isPlaying, playAudio, stopAudio } = useAudioPlayer()
+  const {
+    isRecording,
+    audioBlob,
+    startRecording,
+    stopRecording,
+  } = useAudioRecorder()
+  const { isPlaying, playAudio } = useAudioPlayer()
 
-  // Sync recording state to store
-  const handleStartRecording = useCallback(async () => {
-    setIsRecording(true)
-    await startRecording()
-  }, [startRecording, setIsRecording])
+  // Toggle recording with error handling
+  const toggleRecording = useCallback(async () => {
+    if (isRecording) {
+      stopRecording()
+      setStoreIsRecording(false)
+      console.log('Recording stopped')
+    } else {
+      try {
+        console.log('Starting recording...')
+        await startRecording()
+        setStoreIsRecording(true)
+        console.log('Recording started')
+      } catch (error) {
+        console.error('Failed to start recording:', error)
+        setStoreIsRecording(false)
+        // Could show a toast/alert here
+      }
+    }
+  }, [isRecording, startRecording, stopRecording, setStoreIsRecording])
 
-  const handleStopRecording = useCallback(async () => {
-    stopRecording()
-    setIsRecording(false)
-
-    // For now, use a text input approach until STT is integrated
-    // The audioBlob can be sent to STT service later
-  }, [stopRecording, setIsRecording])
-
-  // Send text message and get AI response with TTS
+  // Send text message and get AI response (agent provides audio via speak tool)
   const sendTextMessage = useCallback(
     async (text: string) => {
       if (!selectedLessonNumber || !text.trim()) return
@@ -43,21 +53,21 @@ export function useConversation() {
       setIsLoading(true)
 
       try {
-        // Get AI response
+        // Get AI response (agent may include audio from speak() tool)
         const response = await sendMessage(text, selectedLessonNumber, messages)
         addMessage({ role: 'assistant', content: response.text })
 
-        // Synthesize and play TTS
-        setIsPlaying(true)
-        try {
-          const ttsResponse = await synthesizeSpeech(response.text)
-          if (ttsResponse.audio_base64) {
-            await playAudio(ttsResponse.audio_base64, ttsResponse.format)
+        // Play agent-generated audio if available
+        if (response.audio_base64) {
+          setStoreIsPlaying(true)
+          try {
+            await playAudio(response.audio_base64, response.audio_format || 'wav')
+            console.log(`Agent spoke in ${response.language}`)
+          } catch (err) {
+            console.error('Audio playback failed:', err)
+          } finally {
+            setStoreIsPlaying(false)
           }
-        } catch {
-          console.error('TTS failed, continuing without audio')
-        } finally {
-          setIsPlaying(false)
         }
       } catch (error) {
         console.error('Conversation error:', error)
@@ -74,19 +84,10 @@ export function useConversation() {
       messages,
       addMessage,
       setIsLoading,
-      setIsPlaying,
+      setStoreIsPlaying,
       playAudio,
     ]
   )
-
-  // Toggle recording
-  const toggleRecording = useCallback(async () => {
-    if (isRecording) {
-      await handleStopRecording()
-    } else {
-      await handleStartRecording()
-    }
-  }, [isRecording, handleStartRecording, handleStopRecording])
 
   return {
     messages,
@@ -96,6 +97,5 @@ export function useConversation() {
     audioBlob,
     toggleRecording,
     sendTextMessage,
-    stopAudio,
   }
 }
