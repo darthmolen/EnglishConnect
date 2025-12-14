@@ -24,7 +24,8 @@
       "Bash(.venv-test/bin/pytest:*)",
       "Bash(src/services/tts-mcp/.venv/bin/python:*)",
       "Bash(.venv-test/bin/pip install:*)",
-      "Skill(executing-plans)"
+      "Skill(executing-plans)",
+      "Bash(/home/smolen/dev/EnglishConnect/.venv-test/bin/python -m pytest:*)"
     ],
     "deny": [],
     "ask": []

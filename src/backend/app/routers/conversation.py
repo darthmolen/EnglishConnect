@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.conversation import ConversationRequest, ConversationResponse
 from app.services.lesson_service import LessonService
+from app.services.azure_openai import get_chat_completion
 from app.agents.conversation_agent import ConversationAgentFactory
+from app.config import get_settings
 
 router = APIRouter(prefix="/api/conversation", tags=["conversation"])
 
@@ -41,9 +43,19 @@ async def conversation(
     # Build system prompt from lesson context
     system_prompt = ConversationAgentFactory.build_system_prompt(lesson)
 
-    # TODO: Integrate Azure OpenAI for actual AI response
-    # For now, return a placeholder response
-    response_text = f"[AI Response for lesson {request.lesson_number}]"
+    # Check if Azure OpenAI is configured
+    settings = get_settings()
+    if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        # Call Azure OpenAI
+        history = [{"role": m.role, "content": m.content} for m in request.history]
+        response_text = await get_chat_completion(
+            system_prompt=system_prompt,
+            user_message=request.message,
+            history=history,
+        )
+    else:
+        # Fallback for development without Azure credentials
+        response_text = f"[Azure OpenAI not configured - Lesson {request.lesson_number}]"
 
     return ConversationResponse(
         text=response_text,
