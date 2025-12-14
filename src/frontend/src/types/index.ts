@@ -61,3 +61,9 @@ export interface TTSResponse {
   format: string
   sample_rate: number
 }
+
+export interface STTResponse {
+  text: string
+  language: string
+  confidence: number
+}

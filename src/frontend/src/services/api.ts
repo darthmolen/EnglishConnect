@@ -9,10 +9,12 @@ import type {
   ConversationResponse,
   TTSRequest,
   TTSResponse,
+  STTResponse,
   ChatMessage,
 } from '@/types'
 
 const API_BASE = '/api'
+const STT_BASE = 'http://localhost:8001'
 
 /**
  * Fetch all lessons for a course.
@@ -88,6 +90,33 @@ export async function synthesizeSpeech(
 
   if (!response.ok) {
     throw new Error('Failed to synthesize speech')
+  }
+  return response.json()
+}
+
+/**
+ * Transcribe audio using STT service.
+ * Calls STT service directly (CORS enabled).
+ */
+export async function transcribeAudio(
+  audioBlob: Blob,
+  language?: string
+): Promise<STTResponse> {
+  const formData = new FormData()
+  formData.append('file', audioBlob, 'audio.webm')
+
+  const url = new URL('/transcribe', STT_BASE)
+  if (language) {
+    url.searchParams.set('language', language)
+  }
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to transcribe audio')
   }
   return response.json()
 }
