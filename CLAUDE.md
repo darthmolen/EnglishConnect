@@ -2,6 +2,22 @@
 
 Open source, non-profit agentic system to help Spanish-speaking learners practice English through voice interaction.
 
+## Guiding Principle
+
+**Never implement anything that doesn't get us nearer to solving our problem.**
+
+## Vision: Intelligent Conversation Partner
+
+We are building an intelligent conversation partner agent that can:
+
+- Help students practice conversation in their target language (English)
+- Flip between native language (Spanish) and target language (English) to aid understanding
+- Practice curriculum patterns with natural ad-lib
+- Stay within the student's vocabulary level
+- Feel like a helpful conversation partner, not a robotic response system
+
+The agent controls TTS/STT as tools - it decides when to speak, what language to use, and how to pace responses. This is NOT a pipeline where text automatically flows through TTS. The agent makes intelligent decisions about voice interaction.
+
 ## REQUIRED READING
 
 Review available skills in `.claude/skills/` and apply relevant methodologies based on the task at hand. When uncertain which approach to take, start with `using-superpowers/SKILL.md`.

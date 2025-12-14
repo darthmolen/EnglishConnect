@@ -1,11 +1,13 @@
 # Phase 3: React SPA Conversation Partner
 
-**Status**: 🔜 Ready to Start
-**Goal**: Web-based voice conversation with lesson selection
+**Status**: 🔄 In Progress
+**Goal**: Web-based voice conversation with intelligent agent
 
 ## Overview
 
-Build a React SPA that enables voice-based English practice conversations. Users select a lesson, then engage in spoken dialogue with the AI tutor. The AI uses lesson content (vocabulary, patterns) to guide contextual practice.
+Build a React SPA with an **intelligent conversation partner agent** that enables voice-based English practice. The agent is NOT a pipeline - it controls TTS/STT as tools and makes intelligent decisions about when to speak, what language to use, and how to pace responses.
+
+See [ADR-002: Conversation Partner Agent vs Pipeline](../../documentation/ADR/ADR-002-CONVERSATION-PARTNER-AGENT.md) for architectural decision.
 
 ## MVP Scope (Option B: Voice + Lesson Selector)
 
@@ -41,34 +43,44 @@ Build a React SPA that enables voice-based English practice conversations. Users
 │                                  │                                       │
 │                          ┌───────▼───────┐                              │
 │                          │  Zustand Store │                              │
-│                          │  - currentLesson                              │
-│                          │  - conversation                               │
-│                          │  - isRecording                                │
-│                          └───────┬───────┘                              │
 └──────────────────────────────────┼──────────────────────────────────────┘
                                    │
-                    ┌──────────────┼──────────────┐
-                    │              │              │
-                    ▼              ▼              ▼
-           ┌───────────┐   ┌───────────┐   ┌───────────┐
-           │  Backend  │   │    STT    │   │    TTS    │
-           │   :8000   │   │   :8001   │   │   (MCP)   │
-           │           │   │           │   │           │
-           │ Azure AI  │   │  Whisper  │   │ VibeVoice │
-           │ Content   │   │    VAD    │   │           │
-           └───────────┘   └───────────┘   └───────────┘
+              ┌────────────────────┼────────────────────┐
+              │                    │                    │
+              ▼                    ▼                    ▼
+     ┌─────────────┐    ┌──────────────────────┐    ┌─────────────┐
+     │    STT      │    │  Conversation Agent  │    │    TTS      │
+     │   :8001     │    │      (Backend)       │    │   (MCP)     │
+     │             │    │                      │    │             │
+     │  Whisper    │───▶│  - GPT-4o-mini       │───▶│  VibeVoice  │
+     │  (transcribe│    │  - Lesson context    │    │  (speak)    │
+     │   audio)    │    │  - MCP tool: speak() │    │             │
+     └─────────────┘    │  - MCP tool: lesson()│    └─────────────┘
+                        └──────────────────────┘
+                                   │
+                    Agent decides: language, pacing, response
 ```
+
+**Key Insight**: The agent controls TTS via MCP tools. It decides WHEN and HOW to speak.
 
 ## User Flow
 
 1. **Landing** → User sees lesson list (EC1 lessons 1-25)
 2. **Select Lesson** → Lesson details shown (title, objective, vocabulary preview)
 3. **Start Conversation** → Click mic button to begin
-4. **Voice Loop**:
-   - User speaks → VAD detects end → STT transcribes
-   - Transcript appears in UI
-   - AI responds (streaming text + TTS audio)
+4. **Voice Loop** (Agent-Controlled):
+   - User speaks → STT transcribes → text sent to agent
+   - Agent receives text + lesson context
+   - Agent decides: response content, language (EN/ES), pacing
+   - Agent calls `speak()` tool → TTS generates audio → plays
+   - Transcript appears in UI (both user and agent text)
    - Loop continues until user stops
+
+**Agent Capabilities**:
+- Flip to Spanish when student needs clarification
+- Slow down and spell words when needed
+- Stay within lesson vocabulary
+- Ask clarifying questions instead of assuming
 
 ## Tasks
 
@@ -102,20 +114,22 @@ Build a React SPA that enables voice-based English practice conversations. Users
 - [ ] Implement auto-scroll to latest message
 - [ ] Show typing/thinking indicator during AI response
 
-### 3.5 AI Integration
+### 3.5 Conversation Partner Agent
 
-- [ ] Create backend endpoint for conversation (`POST /api/conversation`)
-- [ ] Integrate Azure AI Foundry (GPT-4o-mini)
-- [ ] Include lesson context in prompts (vocabulary, patterns)
-- [ ] Stream AI responses to frontend
-- [ ] Trigger TTS playback for AI responses
+- [x] Create backend endpoint for conversation (`POST /api/conversation`)
+- [x] Integrate Azure AI Foundry (GPT-4o-mini)
+- [ ] Design agent system prompt for conversation partner
+- [ ] Give agent access to TTS via MCP `speak()` tool
+- [ ] Give agent access to lesson context via `get_lesson()` tool
+- [ ] Agent decides language (EN/ES) based on student needs
+- [ ] Agent controls pacing and emphasis
 
-### 3.6 TTS Playback
+### 3.6 TTS Integration (Agent-Controlled)
 
-- [ ] Create audio playback service
-- [ ] Handle TTS via backend (calls TTS MCP)
-- [ ] Stream audio chunks to browser
-- [ ] Implement playback queue for long responses
+- [ ] Add HTTP endpoint to TTS MCP server for backend access
+- [ ] Create backend service to call TTS when agent invokes `speak()`
+- [ ] Return audio to frontend for playback
+- [ ] Handle agent's voice/language choices
 
 ### 3.7 Testing
 
@@ -234,13 +248,14 @@ src/frontend/
 
 ## Success Criteria
 
-- [ ] User can browse and select EC1 lessons
-- [ ] Voice recording works via browser mic
-- [ ] Transcription appears in real-time
-- [ ] AI responds with lesson-appropriate content
-- [ ] TTS plays AI responses audibly
+- [x] User can browse and select EC1 lessons
+- [x] Voice recording works via browser mic
+- [ ] Transcription appears in real-time (STT integration)
+- [ ] Agent responds with lesson-appropriate content
+- [ ] Agent can flip to Spanish for clarification
+- [ ] Agent calls TTS tool to speak responses
 - [ ] Conversation flows naturally (< 2s latency target)
-- [ ] UI is clean and responsive
+- [x] UI is clean and responsive
 - [ ] E2E tests pass in CI
 
 ## Non-Goals (Phase 3)

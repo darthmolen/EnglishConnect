@@ -4,14 +4,54 @@
 
 Open source, non-profit agentic system to help Spanish-speaking learners practice English through voice interaction.
 
+## Problem Statement
+
+1. **Most curriculums are written, but students are learning a spoken language.** Reading and writing skills don't transfer directly to conversational fluency.
+
+2. **Traditional audio production is prohibitive and can't adapt as fast as curriculum needs.** Professional voice recording is expensive and slow to update when lessons change.
+
+3. **Even with embedded audio, flipping between languages disrupts learning flow.** Students who need clarification in their native language must break concentration to switch contexts.
+
+4. **Immigrant families share the same challenge but prioritize differently, making practice partners hard to find.** Family members want to learn but at different paces and times, leaving everyone without a consistent conversation partner.
+
+## Vision: Intelligent Conversation Partner
+
+We are building an intelligent conversation partner agent that can:
+
+- Help students practice conversation in their target language (English)
+- Flip seamlessly between native language (Spanish) and target language to aid understanding
+- Practice curriculum patterns with natural ad-lib that feels like real conversation
+- Stay within the student's vocabulary level from their current lesson
+- Feel like a helpful conversation partner, not a robotic response system
+
 ## Architecture
 
 ```
-┌──────────┐     ┌───────────────┐     ┌─────────────┐     ┌──────────────────┐
-│  User    │────▶│ faster-whisper│────▶│   Claude    │────▶│ VibeVoice-       │
-│  (Mic)   │     │ (local GPU)   │     │   API       │     │ Realtime (GPU)   │
-│          │◀────│  STT ~300ms   │◀────│             │◀────│ TTS ~300ms       │
-└──────────┘     └───────────────┘     └─────────────┘     └──────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        Conversation Partner Agent                             │
+│                         (Azure GPT-4o-mini)                                   │
+│                                                                               │
+│   Capabilities:                    MCP Tools:                                 │
+│   - Lesson context awareness       - speak(text, voice) → TTS                │
+│   - Language flipping (EN/ES)      - get_lesson() → Content                  │
+│   - Vocabulary-appropriate         - (future: show_image, highlight)         │
+│     responses                                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+                    ▲                                    │
+                    │ transcribed text                   │ speak() tool call
+                    │                                    ▼
+┌──────────────────────────────────┐     ┌──────────────────────────────────┐
+│        STT Service               │     │        TTS MCP Server            │
+│        faster-whisper            │     │        VibeVoice-Realtime        │
+│        (local GPU, ~300ms)       │     │        (local GPU, ~300ms)       │
+└──────────────────────────────────┘     └──────────────────────────────────┘
+                    ▲                                    │
+                    │ audio                              │ audio
+                    │                                    ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              User (Browser)                                   │
+│                     Mic input ────────────── Speaker output                  │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Tech Stack
