@@ -1,5 +1,6 @@
 """EnglishConnect FastAPI application entry point."""
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
+
+# Configure logging to show our app logs
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+# Set our app loggers to INFO
+logging.getLogger("app").setLevel(logging.INFO)
 
 settings = get_settings()
 
@@ -63,14 +73,13 @@ async def health():
 
 
 # Import and include routers
-from app.routers import lessons, conversation, tts
+from app.routers import lessons, conversation, tts, progress
 
 app.include_router(lessons.router)
 app.include_router(conversation.router)
 app.include_router(tts.router)
+app.include_router(progress.router)
 
-# Future routers (commented out until implemented):
-# from app.routers import auth, progress, sessions
+# Future routers (Phase 4B):
+# from app.routers import auth
 # app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-# app.include_router(progress.router, prefix="/api/progress", tags=["progress"])
-# app.include_router(sessions.router, prefix="/api/sessions", tags=["sessions"])

@@ -1,11 +1,52 @@
 """Azure OpenAI service for AI-powered conversation with tool support."""
 
 import json
-from typing import Callable
+import logging
+from typing import Callable, Optional
 
 from openai import AsyncAzureOpenAI
 
 from app.config import get_settings
+
+logger = logging.getLogger(__name__)
+
+# Memori integration (optional - depends on OPENAI_API_KEY being set)
+_memori_enabled = False
+_memori = None
+
+def _init_memori():
+    """Initialize Memori if available."""
+    global _memori_enabled, _memori
+    if _memori is not None:
+        return _memori_enabled
+
+    try:
+        from app.services.memory_service import get_memori
+        _memori = get_memori()
+        _memori.enable()  # Enable global interception
+        _memori_enabled = True
+        logger.info("Memori memory layer enabled")
+    except Exception as e:
+        logger.warning(f"Memori not available: {e}")
+        _memori_enabled = False
+
+    return _memori_enabled
+
+
+def set_memory_context(user_id: Optional[str] = None, process_id: str = "conversation-agent"):
+    """Set Memori context for the current user.
+
+    Args:
+        user_id: User identifier for memory attribution
+        process_id: Process/agent identifier
+    """
+    global _memori
+    if not _init_memori():
+        return
+
+    if user_id:
+        _memori.attribution(entity_id=user_id, process_id=process_id)
+        logger.debug(f"Memory context set: user={user_id}, process={process_id}")
 
 
 def get_azure_client() -> AsyncAzureOpenAI:
@@ -94,6 +135,7 @@ async def get_agent_response(
     user_message: str,
     history: list[dict],
     tool_handlers: dict[str, Callable],
+    user_id: Optional[str] = None,
 ) -> dict:
     """Get response from conversation agent with tool calling support.
 
@@ -105,6 +147,7 @@ async def get_agent_response(
         user_message: Current user message
         history: Previous conversation messages
         tool_handlers: Dict mapping tool names to async handler functions
+        user_id: Optional user ID for memory attribution (Memori)
 
     Returns:
         Dict with:
@@ -114,6 +157,10 @@ async def get_agent_response(
     """
     settings = get_settings()
     client = get_azure_client()
+
+    # Set memory context for this user (if Memori is enabled)
+    if user_id:
+        set_memory_context(user_id=user_id, process_id="conversation-agent")
 
     # Build messages list
     messages = [{"role": "system", "content": system_prompt}]
@@ -128,19 +175,37 @@ async def get_agent_response(
     tool_calls_made = []
     tool_results = []
 
+    # === LOGGING: Request details ===
+    logger.info("=" * 60)
+    logger.info("CONVERSATION REQUEST")
+    logger.info(f"  User message: {user_message}")
+    logger.info(f"  History: {len(history)} messages")
+    for i, h in enumerate(history):
+        logger.info(f"    [{i}] {h['role']}: {h['content'][:80]}{'...' if len(h['content']) > 80 else ''}")
+    logger.info(f"  System prompt: {len(system_prompt)} chars")
+    logger.info("-" * 60)
+
     # Tool calling loop
     max_iterations = 5  # Prevent infinite loops
-    for _ in range(max_iterations):
+    for iteration in range(max_iterations):
+        logger.info(f"LLM call iteration {iteration + 1}")
+
+        # Force tool call on first iteration, then let model decide
+        # This ensures speak() is called at least once
+        current_tool_choice = "required" if iteration == 0 else "auto"
+
         response = await client.chat.completions.create(
             model=settings.azure_openai_deployment,
             messages=messages,
             tools=AGENT_TOOLS,
-            tool_choice="auto",
+            tool_choice=current_tool_choice,
             max_tokens=300,
             temperature=0.7,
         )
 
         message = response.choices[0].message
+        logger.info(f"  LLM response: content={message.content[:100] if message.content else 'None'}{'...' if message.content and len(message.content) > 100 else ''}")
+        logger.info(f"  LLM tool_calls: {len(message.tool_calls) if message.tool_calls else 0}")
 
         # Check if the model wants to call tools
         if message.tool_calls:
@@ -152,6 +217,9 @@ async def get_agent_response(
                 tool_name = tool_call.function.name
                 tool_args = json.loads(tool_call.function.arguments)
 
+                logger.info(f"  TOOL CALL: {tool_name}")
+                logger.info(f"    args: {json.dumps(tool_args)[:200]}{'...' if len(json.dumps(tool_args)) > 200 else ''}")
+
                 tool_calls_made.append({
                     "name": tool_name,
                     "arguments": tool_args
@@ -161,13 +229,21 @@ async def get_agent_response(
                 if tool_name in tool_handlers:
                     try:
                         result = await tool_handlers[tool_name](**tool_args)
+
+                        # Log result (with audio size, not content)
+                        audio_size = len(result.get("audio_base64", "")) if result.get("audio_base64") else 0
+                        logger.info(f"    result: success={result.get('spoken')}, audio_size={audio_size} chars")
+
                         tool_results.append({
                             "tool": tool_name,
                             "success": True,
                             "result": result
                         })
-                        tool_response = json.dumps({"status": "success", "result": result})
+                        # Return minimal confirmation to LLM (don't include audio_base64)
+                        llm_result = {k: v for k, v in result.items() if k != "audio_base64"}
+                        tool_response = json.dumps({"status": "success", "result": llm_result})
                     except Exception as e:
+                        logger.error(f"    result: FAILED - {e}")
                         tool_results.append({
                             "tool": tool_name,
                             "success": False,
@@ -175,6 +251,7 @@ async def get_agent_response(
                         })
                         tool_response = json.dumps({"status": "error", "error": str(e)})
                 else:
+                    logger.error(f"    result: UNKNOWN TOOL")
                     tool_results.append({
                         "tool": tool_name,
                         "success": False,
@@ -190,6 +267,13 @@ async def get_agent_response(
                 })
         else:
             # No tool calls - we have the final response
+            logger.info("=" * 60)
+            logger.info("CONVERSATION COMPLETE")
+            logger.info(f"  Final text: {message.content[:150] if message.content else 'None'}{'...' if message.content and len(message.content) > 150 else ''}")
+            logger.info(f"  Tool calls made: {len(tool_calls_made)}")
+            logger.info(f"  Tool results: {len(tool_results)}")
+            logger.info("=" * 60)
+
             return {
                 "text": message.content or "",
                 "tool_calls": tool_calls_made,

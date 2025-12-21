@@ -1,11 +1,23 @@
 # Phases 4-10: Future Work
 
-## Phase 4: Auth + Progress Tracking
+## Phase 4: Auth + Memory + Progress Tracking
 
-- Implement OAuth (Google) with authlib
-- Build progress tracking API endpoints
-- Store conversation history per user
-- Track lesson completion status
+**Authentication:**
+- Microsoft Identity Platform (Microsoft Entra ID) with MSAL
+- OAuth 2.0 with authorization code flow + PKCE
+- Support both Microsoft AND Google identity providers
+- FastAPI integration with python-jose for JWT validation
+
+**Conversation Memory (Memori):**
+- Open-source Memori library (uses existing PostgreSQL)
+- Store user-specific conversation histories
+- Enable context recall across sessions
+- Fact/preference extraction from conversations
+
+**Progress Tracking:**
+- Lesson completion status per user
+- Track conversation quality metrics
+- Store pronunciation/grammar feedback history
 
 ## Phase 5: Teacher Agent + Polish
 
@@ -120,3 +132,21 @@ For a non-profit learner app, budget ~$100-200/month at moderate usage.
 - Tiered LLM strategy (local → GPT-4o-mini → GPT-4o)
 - Conversation summarization for long sessions
 - Caching frequent responses
+
+## Phase 11: Prompt Engineering & Agent Testing
+
+**Goal**: Systematic testing and refinement of agent behavior through prompt engineering.
+
+**Test Cases:**
+
+1. **TTS Consistency** - Agent calls speak() tool every time in a 3-turn conversation
+2. **Spanish Explanation** - Agent explains in Spanish when student asks for clarification
+3. **Grammar Quality** - Agent responses are grammatically correct
+4. **Vocabulary Adherence** - Agent stays within lesson vocabulary and patterns
+
+**Implementation:**
+
+- Create test harness for automated agent behavior testing
+- Define evaluation criteria for each test case
+- Build prompt iteration workflow
+- Track prompt versions and their test results

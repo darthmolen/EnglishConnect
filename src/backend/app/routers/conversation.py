@@ -1,6 +1,7 @@
 """Conversation API router for AI-powered English practice."""
 
 import logging
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +11,7 @@ from app.schemas.conversation import ConversationRequest, ConversationResponse
 from app.services.lesson_service import LessonService
 from app.services.azure_openai import get_agent_response
 from app.services.tts_service import synthesize_speech
+from app.services.session_service import SessionService
 from app.agents.conversation_agent import ConversationAgentFactory
 from app.config import get_settings
 
@@ -105,17 +107,22 @@ async def conversation(
     # Call the agent with tool support
     history = [{"role": m.role, "content": m.content} for m in request.history]
 
+    # Use provided user_id or default for anonymous users
+    user_id = request.user_id or "anonymous"
+
     agent_result = await get_agent_response(
         system_prompt=system_prompt,
         user_message=request.message,
         history=history,
         tool_handlers=tool_handlers,
+        user_id=user_id,
     )
 
-    # Extract audio from tool results (use last successful speak call)
+    # Extract audio and spoken text from tool results (use last successful speak call)
     audio_base64 = None
     audio_format = "wav"
     language = "en"
+    spoken_text = None  # What was actually spoken
 
     for tool_result in agent_result.get("tool_results", []):
         if tool_result.get("tool") == "speak" and tool_result.get("success"):
@@ -124,13 +131,55 @@ async def conversation(
                 audio_base64 = result_data.get("audio_base64")
                 audio_format = result_data.get("format", "wav")
                 language = result_data.get("language", "en")
+                spoken_text = result_data.get("text")  # The actual spoken text
 
-    # Log agent activity for debugging
-    if agent_result.get("tool_calls"):
-        logger.info(f"Agent made {len(agent_result['tool_calls'])} tool calls")
+    # Use spoken text if available, otherwise fall back to agent's text response
+    response_text = spoken_text if spoken_text else agent_result["text"]
+
+    # If agent didn't call speak(), auto-synthesize the response
+    if not spoken_text and response_text:
+        logger.warning("Agent did NOT call speak() - auto-synthesizing response")
+        try:
+            tts_result = await synthesize_speech(text=response_text, voice="speaker_b")
+            audio_base64 = tts_result["audio_base64"]
+            audio_format = tts_result.get("format", "wav")
+            language = "en"  # Default to English for auto-synthesis
+        except Exception as e:
+            logger.error(f"Auto-synthesis failed: {e}")
+            # Continue without audio if synthesis fails
+
+    # === LOGGING: Final response to frontend ===
+    audio_size = len(audio_base64) if audio_base64 else 0
+    logger.info("=" * 60)
+    logger.info("RESPONSE TO FRONTEND")
+    logger.info(f"  text: {response_text[:100]}{'...' if len(response_text) > 100 else ''}")
+    logger.info(f"  audio: {'yes' if audio_base64 else 'NO'} ({audio_size} chars)")
+    logger.info(f"  language: {language}")
+    logger.info(f"  source: {'speak() tool' if spoken_text else 'auto-synthesis fallback'}")
+    logger.info("=" * 60)
+
+    # Record exchange for evaluation (async, non-blocking)
+    try:
+        session_service = SessionService(db)
+        # Get or create session for this conversation
+        # For now, create a new session per request (TODO: session continuity via session_id)
+        practice_session = await session_service.get_or_create_session(
+            user_id=None,  # TODO: Get from auth in Phase 4B
+            lesson_id=lesson.id,
+            session_type="conversation_practice",
+        )
+        await session_service.record_exchange(
+            session_id=practice_session.id,
+            agent_utterance=response_text,
+            user_utterance=request.message,
+        )
+        await db.commit()
+    except Exception as e:
+        logger.warning(f"Failed to record exchange (non-critical): {e}")
+        # Don't fail the request if recording fails
 
     return ConversationResponse(
-        text=agent_result["text"],
+        text=response_text,
         lesson_number=request.lesson_number,
         audio_base64=audio_base64,
         audio_format=audio_format,

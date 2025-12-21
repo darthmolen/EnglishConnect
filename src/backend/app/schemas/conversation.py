@@ -18,6 +18,7 @@ class ConversationRequest(BaseModel):
     message: str
     lesson_number: int
     history: list[ChatMessage] = []
+    user_id: str | None = None  # Optional user ID for memory tracking (Phase 4B: from auth)
 
 
 class ConversationResponse(BaseModel):

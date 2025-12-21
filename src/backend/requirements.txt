@@ -6,6 +6,7 @@ python-multipart>=0.0.6
 # Database
 sqlalchemy>=2.0.25
 asyncpg>=0.29.0
+psycopg2-binary>=2.9.9
 alembic>=1.13.1
 
 # Authentication
@@ -13,6 +14,10 @@ authlib>=1.3.0
 httpx>=0.26.0
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+msal>=1.28.0
+
+# Conversation Memory
+memorisdk>=3.1.0
 
 # Azure AI / Microsoft Agent Framework
 agent-framework>=1.0.0b251211

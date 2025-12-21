@@ -33,9 +33,14 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     google_client_secret: str = ""
 
-    # OAuth - Microsoft (optional)
-    microsoft_client_id: str = ""
-    microsoft_client_secret: str = ""
+    # OAuth - Microsoft Entra ID (Phase 4B)
+    azure_ad_client_id: str = ""
+    azure_ad_client_secret: str = ""
+    azure_ad_tenant_id: str = ""
+    azure_ad_redirect_uri: str = "http://localhost:8000/api/auth/callback"
+
+    # OpenAI API (for Memori memory extraction)
+    openai_api_key: str = ""
 
     # Voice Services (local endpoints for POC)
     stt_service_url: str = "http://localhost:8001"
