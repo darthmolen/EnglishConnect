@@ -27,7 +27,12 @@ def get_azure_jwks():
 
 
 def decode_token(token: str) -> dict:
-    """Decode and validate Azure AD JWT token."""
+    """Decode and validate Azure AD JWT token.
+
+    Note: For SPA apps using openid/profile/email scopes, MSAL returns access tokens
+    with audience='https://graph.microsoft.com'. We accept both the Graph audience
+    and our client ID to support both access tokens and ID tokens.
+    """
     settings = get_settings()
     jwks = get_azure_jwks()
 
@@ -45,12 +50,19 @@ def decode_token(token: str) -> dict:
     if not rsa_key:
         raise JWTError("Unable to find matching key")
 
+    # Accept multiple audiences: our app's client ID or Microsoft Graph
+    # This allows both ID tokens and access tokens from SPA auth flow
+    valid_audiences = [
+        settings.azure_ad_client_id,
+        "https://graph.microsoft.com",
+    ]
+
     # Decode and validate
     payload = jwt.decode(
         token,
         rsa_key,
         algorithms=["RS256"],
-        audience=settings.azure_ad_client_id,
+        audience=valid_audiences,
         issuer=f"https://login.microsoftonline.com/{settings.azure_ad_tenant_id}/v2.0",
     )
     return payload
