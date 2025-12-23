@@ -67,3 +67,40 @@ export interface STTResponse {
   language: string
   confidence: number
 }
+
+// Lesson phase types for structured lessons
+export interface LessonPhase {
+  id: number
+  phase_type: 'intro' | 'vocabulary' | 'patterns' | 'practice' | 'wrapup'
+  phase_name: string
+  sort_order: number
+}
+
+export interface PhaseState {
+  vocab_index: number
+  pattern_index: number
+  items_completed: string[]
+  can_skip_ahead: boolean
+}
+
+export interface PhaseProgress {
+  current: number
+  total: number
+}
+
+export interface LessonConversationRequest {
+  message: string
+  lesson_number: number
+  history: ChatMessage[]
+}
+
+export interface LessonConversationResponse {
+  text: string
+  lesson_number: number
+  phase: LessonPhase
+  phase_state: PhaseState
+  phase_progress: PhaseProgress | null
+  audio_base64: string | null
+  audio_format: string
+  language: string
+}

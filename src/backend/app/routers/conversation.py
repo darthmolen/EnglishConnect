@@ -1,4 +1,9 @@
-"""Conversation API router for AI-powered English practice."""
+"""Practice conversation API router for free-form AI-powered English practice.
+
+This router handles unstructured conversation practice where students
+can chat freely with the AI tutor. For structured lesson-based learning,
+see the lesson router (/api/lesson).
+"""
 
 import logging
 from uuid import UUID
@@ -18,7 +23,7 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/conversation", tags=["conversation"])
+router = APIRouter(prefix="/api/practice/conversation", tags=["practice"])
 
 
 async def speak_tool_handler(
