@@ -58,7 +58,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         ...loginRequest,
         account,
       });
-      return response.accessToken;
+      // Use ID token instead of access token - ID tokens are designed for app validation
+      // Access tokens for Microsoft Graph are opaque and cannot be validated by third parties
+      return response.idToken;
     } catch (error) {
       // Token expired, need to re-authenticate
       await get().login();

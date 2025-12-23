@@ -1,4 +1,5 @@
 """Authentication middleware for Azure AD token validation."""
+import logging
 import httpx
 from functools import lru_cache
 from typing import Annotated
@@ -13,14 +14,18 @@ from app.database import get_db
 from app.models.user import User
 from app.services.user_service import UserService
 
+logger = logging.getLogger(__name__)
 security = HTTPBearer()
 
 
 @lru_cache(maxsize=1)
 def get_azure_jwks():
-    """Fetch Azure AD public keys for token validation."""
-    settings = get_settings()
-    jwks_url = f"https://login.microsoftonline.com/{settings.azure_ad_tenant_id}/discovery/v2.0/keys"
+    """Fetch Azure AD public keys for token validation.
+
+    We use the 'common' endpoint which includes keys for both v1 and v2 tokens.
+    """
+    # Use common keys endpoint - works for both v1 and v2 tokens
+    jwks_url = "https://login.microsoftonline.com/common/discovery/keys"
     response = httpx.get(jwks_url)
     response.raise_for_status()
     return response.json()
@@ -50,19 +55,13 @@ def decode_token(token: str) -> dict:
     if not rsa_key:
         raise JWTError("Unable to find matching key")
 
-    # Accept multiple audiences: our app's client ID or Microsoft Graph
-    # This allows both ID tokens and access tokens from SPA auth flow
-    valid_audiences = [
-        settings.azure_ad_client_id,
-        "https://graph.microsoft.com",
-    ]
-
+    # ID tokens always have our app's client ID as audience
     # Decode and validate
     payload = jwt.decode(
         token,
         rsa_key,
         algorithms=["RS256"],
-        audience=valid_audiences,
+        audience=settings.azure_ad_client_id,
         issuer=f"https://login.microsoftonline.com/{settings.azure_ad_tenant_id}/v2.0",
     )
     return payload
@@ -73,9 +72,10 @@ async def verify_token(token: str) -> dict:
     try:
         return decode_token(token)
     except Exception as e:
+        logger.warning(f"Token validation failed: {type(e).__name__}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid token: {str(e)}",
+            detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
