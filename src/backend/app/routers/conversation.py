@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.middleware.auth import CurrentUser
 from app.schemas.conversation import ConversationRequest, ConversationResponse
 from app.services.lesson_service import LessonService
 from app.services.azure_openai import get_agent_response
@@ -61,6 +62,7 @@ async def speak_tool_handler(
 @router.post("", response_model=ConversationResponse)
 async def conversation(
     request: ConversationRequest,
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
     """Process a conversation message and get AI tutor response.
@@ -107,8 +109,8 @@ async def conversation(
     # Call the agent with tool support
     history = [{"role": m.role, "content": m.content} for m in request.history]
 
-    # Use provided user_id or default for anonymous users
-    user_id = request.user_id or "anonymous"
+    # Use authenticated user's ID
+    user_id = str(current_user.id)
 
     agent_result = await get_agent_response(
         system_prompt=system_prompt,
@@ -164,7 +166,7 @@ async def conversation(
         # Get or create session for this conversation
         # For now, create a new session per request (TODO: session continuity via session_id)
         practice_session = await session_service.get_or_create_session(
-            user_id=None,  # TODO: Get from auth in Phase 4B
+            user_id=current_user.id,
             lesson_id=lesson.id,
             session_type="conversation_practice",
         )

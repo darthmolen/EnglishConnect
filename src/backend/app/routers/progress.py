@@ -11,6 +11,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.middleware.auth import CurrentUser
 from app.models.progress import UserProgress, PracticeSession, ConversationExchange
 from app.models.content import Lesson
 
@@ -64,13 +65,10 @@ class MarkCompleteResponse(BaseModel):
 
 @router.get("", response_model=OverallProgress)
 async def get_overall_progress(
-    user_id: Optional[str] = Query(None, description="User ID (optional, for Phase 4B)"),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """Get overall learning progress summary.
-
-    Without auth (Phase 4B), returns aggregate stats for all users.
-    """
+    """Get overall learning progress summary for authenticated user."""
     # Count total lessons
     total_lessons_result = await db.execute(select(func.count(Lesson.id)))
     total_lessons = total_lessons_result.scalar() or 0
@@ -117,11 +115,11 @@ async def get_overall_progress(
 
 @router.get("/lessons", response_model=list[LessonProgress])
 async def get_lesson_progress(
+    current_user: CurrentUser,
     course_id: str = Query("ec1", description="Course ID"),
-    user_id: Optional[str] = Query(None, description="User ID (optional, for Phase 4B)"),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get progress for all lessons in a course.
+    """Get progress for all lessons in a course for authenticated user.
 
     Returns lesson list with completion status.
     """
@@ -155,10 +153,10 @@ async def get_lesson_progress(
 @router.post("/lessons/{lesson_id}/complete", response_model=MarkCompleteResponse)
 async def mark_lesson_complete(
     lesson_id: int,
-    user_id: Optional[str] = Query(None, description="User ID (optional, for Phase 4B)"),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """Mark a lesson as completed.
+    """Mark a lesson as completed for authenticated user.
 
     Creates or updates the progress record for this lesson.
     """
@@ -169,14 +167,10 @@ async def mark_lesson_complete(
         raise HTTPException(status_code=404, detail="Lesson not found")
 
     # Get or create progress record
-    # For now without auth, we use a dummy user_id
-    # In Phase 4B, this will be from the authenticated user
-    dummy_user_id = None  # Will be UUID from auth
-
     progress_result = await db.execute(
         select(UserProgress).where(
             UserProgress.lesson_id == lesson_id,
-            # UserProgress.user_id == dummy_user_id,  # Enable in Phase 4B
+            UserProgress.user_id == current_user.id,
         )
     )
     progress = progress_result.scalar_one_or_none()
@@ -188,7 +182,7 @@ async def mark_lesson_complete(
         progress.completed_at = now
     else:
         progress = UserProgress(
-            user_id=dummy_user_id,
+            user_id=current_user.id,
             lesson_id=lesson_id,
             status="completed",
             started_at=now,
@@ -208,10 +202,10 @@ async def mark_lesson_complete(
 @router.post("/lessons/{lesson_id}/start", response_model=LessonProgress)
 async def start_lesson(
     lesson_id: int,
-    user_id: Optional[str] = Query(None, description="User ID (optional, for Phase 4B)"),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """Mark a lesson as in progress.
+    """Mark a lesson as in progress for authenticated user.
 
     Called when user starts practicing a lesson.
     """
@@ -223,7 +217,10 @@ async def start_lesson(
 
     # Get or create progress record
     progress_result = await db.execute(
-        select(UserProgress).where(UserProgress.lesson_id == lesson_id)
+        select(UserProgress).where(
+            UserProgress.lesson_id == lesson_id,
+            UserProgress.user_id == current_user.id,
+        )
     )
     progress = progress_result.scalar_one_or_none()
 
@@ -235,7 +232,7 @@ async def start_lesson(
             progress.started_at = now
     else:
         progress = UserProgress(
-            user_id=None,  # From auth in Phase 4B
+            user_id=current_user.id,
             lesson_id=lesson_id,
             status="in_progress",
             started_at=now,
@@ -256,10 +253,10 @@ async def start_lesson(
 
 @router.get("/stats", response_model=ConversationStats)
 async def get_conversation_stats(
-    user_id: Optional[str] = Query(None, description="User ID (optional, for Phase 4B)"),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """Get conversation practice statistics.
+    """Get conversation practice statistics for authenticated user.
 
     Returns aggregated stats about practice sessions.
     """
