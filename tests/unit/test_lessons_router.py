@@ -16,7 +16,7 @@ class TestLessonsRouter:
     """Test lessons API endpoints."""
 
     @pytest.mark.asyncio
-    async def test_list_lessons_returns_200(self, mock_lesson_service):
+    async def test_list_lessons_returns_200(self, mock_lesson_service, mock_auth):
         """GET /api/lessons should return 200 with list of lessons."""
         from app.main import app
         from app.schemas.lesson import LessonSummary
@@ -40,7 +40,7 @@ class TestLessonsRouter:
         assert data[0]["lesson_number"] == 1
 
     @pytest.mark.asyncio
-    async def test_list_lessons_accepts_course_id(self, mock_lesson_service):
+    async def test_list_lessons_accepts_course_id(self, mock_lesson_service, mock_auth):
         """GET /api/lessons should accept course_id query parameter."""
         from app.main import app
         from app.schemas.lesson import LessonSummary
@@ -58,7 +58,7 @@ class TestLessonsRouter:
         mock_instance.list_lessons.assert_called_once_with("ec2")
 
     @pytest.mark.asyncio
-    async def test_get_lesson_returns_200_for_existing(self, mock_lesson_service):
+    async def test_get_lesson_returns_200_for_existing(self, mock_lesson_service, mock_auth):
         """GET /api/lessons/{lesson_number} should return 200 for existing lesson."""
         from app.main import app
         from app.schemas.lesson import LessonDetail
@@ -85,7 +85,7 @@ class TestLessonsRouter:
         assert data["title"] == "Hobbies"
 
     @pytest.mark.asyncio
-    async def test_get_lesson_returns_404_for_missing(self, mock_lesson_service):
+    async def test_get_lesson_returns_404_for_missing(self, mock_lesson_service, mock_auth):
         """GET /api/lessons/{lesson_number} should return 404 if not found."""
         from app.main import app
 

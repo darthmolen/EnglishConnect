@@ -19,12 +19,49 @@
 - Track conversation quality metrics
 - Store pronunciation/grammar feedback history
 
-## Phase 5: Teacher Agent + Polish
+## Phase 5: Teacher Agent (Multi-Part)
 
-- Implement Teacher Agent with Azure AI Foundry (GPT-4o-mini)
-- Build chat-based lesson guidance
-- Add pronunciation/grammar feedback storage
-- Conversation quality scoring
+### Phase 5A: LessonBasedTeacherAgent (In Progress)
+
+Structured lesson flow with linear phases:
+
+| Phase | Agent Behavior |
+|-------|---------------|
+| **1. Intro** | Greet, state lesson topic and objective |
+| **2. Vocabulary** | Present each word, have student repeat, confirm |
+| **3. Patterns** | Explain each Q&A pattern with examples |
+| **4. Practice** | Ask pattern questions, student answers using vocabulary |
+| **5. Wrap-up** | Summary, encouragement, offer to continue or end |
+
+**Implementation:**
+- New `LessonBasedTeacherAgent` class with phase tracking
+- Session state stores current phase and progress
+- Phase-specific system prompts guide behavior
+- Frontend displays phase progress
+
+### Phase 5B: Agentic Tutor (Future)
+
+Monitoring agent that interjects with help when student struggles:
+- Detects confusion, hesitation, errors
+- Offers hints, Spanish explanations, encouragement
+- Can pause lesson flow to provide support
+- Evaluates when to move forward vs. review
+
+### Phase 5C: Conversational Weaving (Future)
+
+More organic introduction of vocabulary during practice:
+- Vocabulary woven into natural conversation
+- Less rigid phase separation
+- Context-appropriate word introduction
+- Student-led topic exploration within lesson bounds
+
+### Phase 5D: Student-Driven with Checkpoints (Future)
+
+Free practice with prompts for uncovered content:
+- Student leads the conversation
+- Agent tracks which vocabulary/patterns practiced
+- Gentle prompts for uncovered material
+- End-of-session coverage report
 
 ## Phase 6: Demo Agent (Optional)
 

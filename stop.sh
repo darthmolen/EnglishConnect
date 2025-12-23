@@ -42,9 +42,8 @@ stop_services() {
     fi
 
     # Also kill any remaining processes for this project
-    pkill -f "uvicorn app.main:app" 2>/dev/null || true
     pkill -f "src/services/content-mcp/server.py" 2>/dev/null || true
-    pkill -f "src/services/tts-mcp/server.py" 2>/dev/null || true
+    pkill -f "src/services/stt/server" 2>/dev/null || true
 
     log_info "Local services stopped."
 }

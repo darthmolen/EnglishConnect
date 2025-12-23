@@ -167,7 +167,7 @@ async def conversation(
         # For now, create a new session per request (TODO: session continuity via session_id)
         practice_session = await session_service.get_or_create_session(
             user_id=current_user.id,
-            lesson_id=lesson.id,
+            lesson_id=lesson.lesson_number,
             session_type="conversation_practice",
         )
         await session_service.record_exchange(

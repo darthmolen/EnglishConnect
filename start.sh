@@ -127,31 +127,6 @@ start_services() {
     echo $! > ../../../.pids/content-mcp.pid
     cd ../../..
 
-    # Start TTS MCP Server (uses local GPU for VibeVoice)
-    log_info "Starting TTS MCP Server..."
-    cd src/services/tts-mcp
-    .venv/bin/python server.py &
-    echo $! > ../../../.pids/tts-mcp.pid
-    cd ../../..
-
-    # Start Backend API (port 8000)
-    log_info "Starting Backend API on port 8000..."
-    cd src/backend
-    .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload &
-    echo $! > ../../.pids/backend.pid
-    cd ../..
-
-    log_info ""
-    log_info "Services started!"
-    log_info ""
-    log_info "Running services:"
-    log_info "  - PostgreSQL:      localhost:5432"
-    log_info "  - Redis:           localhost:6379"
-    log_info "  - Backend API:     http://localhost:8000"
-    log_info "  - Content MCP:     (MCP server, no HTTP port)"
-    log_info "  - TTS MCP:         (MCP server, no HTTP port, uses local GPU)"
-    log_info ""
-
     # Start STT Service (uses local GPU for faster-whisper)
     log_info "Starting STT Service on port 8001..."
     cd src/services/stt
@@ -164,8 +139,17 @@ start_services() {
     cd ../../..
 
     log_info ""
-    log_info "GPU services:"
-    log_info "  - STT:  http://localhost:8001 (medium model, float16)"
+    log_info "Services started!"
+    log_info ""
+    log_info "Running services:"
+    log_info "  - PostgreSQL:      localhost:5432"
+    log_info "  - Redis:           localhost:6379"
+    log_info "  - Content MCP:     (MCP server, no HTTP port)"
+    log_info "  - STT:             http://localhost:8001 (medium model, float16)"
+    log_info ""
+    log_info "Start manually in VSCode debugger:"
+    log_info "  - Backend API:     port 8000"
+    log_info "  - TTS MCP:         port 8002"
     log_info ""
     log_info "To stop: ./stop.sh"
 }
