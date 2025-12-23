@@ -93,32 +93,77 @@ def get_azure_client() -> AsyncAzureOpenAI:
     return client
 
 
-# Tool definitions for the conversation agent
-AGENT_TOOLS = [
+# Speak tool definition (shared between practice and lesson agents)
+SPEAK_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "speak",
+        "description": "Speak text aloud to the student using text-to-speech. Use this to make your responses audible. You can choose to speak in English or Spanish.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "The text to speak aloud"
+                },
+                "language": {
+                    "type": "string",
+                    "enum": ["en", "es"],
+                    "description": "Language of the text (en=English, es=Spanish)"
+                },
+                "voice": {
+                    "type": "string",
+                    "enum": ["speaker_a", "speaker_b", "speaker_c", "speaker_d", "speaker_e", "speaker_f"],
+                    "description": "Voice to use (speaker_b is recommended for warm, friendly tone)"
+                }
+            },
+            "required": ["text", "language"]
+        }
+    }
+}
+
+# Tool definitions for the free-form practice conversation agent
+AGENT_TOOLS = [SPEAK_TOOL]
+
+# Tool definitions for the structured lesson teacher agent
+LESSON_AGENT_TOOLS = [
+    SPEAK_TOOL,
     {
         "type": "function",
         "function": {
-            "name": "speak",
-            "description": "Speak text aloud to the student using text-to-speech. Use this to make your responses audible. You can choose to speak in English or Spanish.",
+            "name": "advance_phase",
+            "description": "Move to the next phase of the lesson or the next item within the current phase. Call this when the student has completed the current phase objective (e.g., repeated a vocabulary word correctly, answered a pattern question).",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "text": {
+                    "reason": {
                         "type": "string",
-                        "description": "The text to speak aloud"
-                    },
-                    "language": {
-                        "type": "string",
-                        "enum": ["en", "es"],
-                        "description": "Language of the text (en=English, es=Spanish)"
-                    },
-                    "voice": {
-                        "type": "string",
-                        "enum": ["speaker_a", "speaker_b", "speaker_c", "speaker_d", "speaker_e", "speaker_f"],
-                        "description": "Voice to use (speaker_b is recommended for warm, friendly tone)"
+                        "description": "Brief reason for advancing (e.g., 'student repeated word correctly', 'pattern practice complete')"
                     }
                 },
-                "required": ["text", "language"]
+                "required": ["reason"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_attempt",
+            "description": "Record the student's attempt at a vocabulary word or pattern. Call this after evaluating their response.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "item_type": {
+                        "type": "string",
+                        "enum": ["vocab", "pattern"],
+                        "description": "Type of item being practiced"
+                    },
+                    "correct": {
+                        "type": "boolean",
+                        "description": "Whether the student's attempt was correct"
+                    }
+                },
+                "required": ["item_type", "correct"]
             }
         }
     }
@@ -170,6 +215,7 @@ async def get_agent_response(
     history: list[dict],
     tool_handlers: dict[str, Callable],
     user_id: Optional[str] = None,
+    tools: Optional[list[dict]] = None,
 ) -> dict:
     """Get response from conversation agent with tool calling support.
 
@@ -182,6 +228,7 @@ async def get_agent_response(
         history: Previous conversation messages
         tool_handlers: Dict mapping tool names to async handler functions
         user_id: Optional user ID for memory attribution (Memori)
+        tools: Optional custom tool definitions (defaults to AGENT_TOOLS)
 
     Returns:
         Dict with:
@@ -189,6 +236,8 @@ async def get_agent_response(
             - tool_calls: List of tool calls made (for logging/debugging)
             - tool_results: Results from tool executions
     """
+    # Use provided tools or default to AGENT_TOOLS
+    active_tools = tools if tools is not None else AGENT_TOOLS
     settings = get_settings()
     client = get_azure_client()
 
@@ -231,7 +280,7 @@ async def get_agent_response(
         response = await client.chat.completions.create(
             model=settings.azure_openai_deployment,
             messages=messages,
-            tools=AGENT_TOOLS,
+            tools=active_tools,
             tool_choice=current_tool_choice,
             max_tokens=300,
             temperature=0.7,
