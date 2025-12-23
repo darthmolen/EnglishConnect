@@ -10,7 +10,7 @@ if [ -f .env ]; then
 fi
 
 # Ensure CUDA libraries are available
-export LD_LIBRARY_PATH=/usr/local/cuda-12.6/lib64:/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
 
 echo "Starting STT service..."
 echo "  Model: ${WHISPER_MODEL_SIZE:-medium}"

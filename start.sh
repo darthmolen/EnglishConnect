@@ -158,7 +158,7 @@ start_services() {
     export WHISPER_MODEL_SIZE=medium
     export WHISPER_DEVICE=cuda
     export WHISPER_COMPUTE_TYPE=float16
-    export LD_LIBRARY_PATH=/usr/local/cuda-12.6/lib64:/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
     .venv/bin/uvicorn server:app --host 0.0.0.0 --port 8001 &
     echo $! > ../../../.pids/stt.pid
     cd ../../..

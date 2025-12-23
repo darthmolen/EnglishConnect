@@ -17,6 +17,9 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
   const startRecording = useCallback(async () => {
     try {
+      // Clear previous recording to prevent race conditions
+      setAudioBlob(null)
+
       // Request microphone permission
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream

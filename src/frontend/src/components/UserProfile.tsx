@@ -1,6 +1,5 @@
 // src/frontend/src/components/UserProfile.tsx
 import { useAuthStore } from "../stores/authStore";
-import { Button } from "./ui/button";
 
 export function UserProfile() {
   const { account, logout, isLoading } = useAuthStore();
@@ -10,9 +9,13 @@ export function UserProfile() {
   return (
     <div className="flex items-center gap-4">
       <span className="text-sm">{account.name || account.username}</span>
-      <Button variant="outline" size="sm" onClick={logout} disabled={isLoading}>
+      <button
+        onClick={logout}
+        disabled={isLoading}
+        className="rounded-lg border border-input bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+      >
         Sign out
-      </Button>
+      </button>
     </div>
   );
 }

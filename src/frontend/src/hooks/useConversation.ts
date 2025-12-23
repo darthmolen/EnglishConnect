@@ -10,6 +10,7 @@ export function useConversation() {
     selectedLessonNumber,
     isLoading,
     addMessage,
+    clearMessages,
     setIsLoading,
     setIsRecording: setStoreIsRecording,
     setIsPlaying: setStoreIsPlaying,
@@ -170,5 +171,6 @@ export function useConversation() {
     toggleRecording,
     sendTextMessage,
     sendVoiceMessage,
+    clearMessages,
   }
 }

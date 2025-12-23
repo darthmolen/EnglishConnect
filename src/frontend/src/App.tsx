@@ -1,13 +1,18 @@
-import { useState, type KeyboardEvent } from 'react'
-import { Send } from 'lucide-react'
+import { useState, useEffect, type KeyboardEvent } from 'react'
+import { Send, Trash2 } from 'lucide-react'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
 import { LessonList } from '@/components/LessonList'
 import { ConversationView } from '@/components/ConversationView'
 import { VoiceButton } from '@/components/VoiceButton'
+import { LoginButton } from '@/components/LoginButton'
+import { UserProfile } from '@/components/UserProfile'
+import { AuthProvider } from '@/auth/AuthProvider'
+import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 
-function App() {
+function AppContent() {
+  const { isAuthenticated, isLoading: authLoading, checkAuth } = useAuthStore()
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
   const {
@@ -17,9 +22,14 @@ function App() {
     isLoading,
     toggleRecording,
     sendTextMessage,
+    clearMessages,
   } = useConversation()
 
   const [inputText, setInputText] = useState('')
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const handleSend = () => {
     if (inputText.trim() && selectedLessonNumber) {
@@ -33,6 +43,24 @@ function App() {
       e.preventDefault()
       handleSend()
     }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex h-screen items-center justify-center flex-col gap-4">
+        <h1 className="text-2xl font-bold">EnglishConnect</h1>
+        <p className="text-muted-foreground">Sign in to start practicing English</p>
+        <LoginButton />
+      </div>
+    )
   }
 
   return (
@@ -55,26 +83,46 @@ function App() {
       {/* Main content */}
       <main className="flex flex-1 flex-col">
         {/* Header */}
-        <header className="border-b p-4">
-          {currentLesson ? (
-            <div>
-              <h2 className="text-lg font-semibold">
-                Lesson {currentLesson.lesson_number}: {currentLesson.title}
-              </h2>
-              {currentLesson.objective && (
+        <header className="flex items-start justify-between border-b p-4">
+          <div className="flex-1">
+            {currentLesson ? (
+              <div>
+                <h2 className="text-lg font-semibold">
+                  Lesson {currentLesson.lesson_number}: {currentLesson.title}
+                </h2>
+                {currentLesson.objective && (
+                  <p className="text-sm text-muted-foreground">
+                    {currentLesson.objective}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-lg font-semibold">Welcome</h2>
                 <p className="text-sm text-muted-foreground">
-                  {currentLesson.objective}
+                  Select a lesson to start practicing
                 </p>
-              )}
-            </div>
-          ) : (
-            <div>
-              <h2 className="text-lg font-semibold">Welcome</h2>
-              <p className="text-sm text-muted-foreground">
-                Select a lesson to start practicing
-              </p>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Clear chat button */}
+            {messages.length > 0 && (
+              <button
+                type="button"
+                onClick={clearMessages}
+                className={cn(
+                  'rounded-lg p-2 text-muted-foreground transition-colors',
+                  'hover:bg-destructive/10 hover:text-destructive',
+                  'focus:outline-none focus:ring-2 focus:ring-ring'
+                )}
+                title="Clear conversation"
+              >
+                <Trash2 className="h-5 w-5" />
+              </button>
+            )}
+            <UserProfile />
+          </div>
         </header>
 
         {/* Conversation area */}
@@ -134,4 +182,10 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}

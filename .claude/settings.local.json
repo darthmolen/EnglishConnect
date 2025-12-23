@@ -25,7 +25,22 @@
       "Bash(src/services/tts-mcp/.venv/bin/python:*)",
       "Bash(.venv-test/bin/pip install:*)",
       "Skill(executing-plans)",
-      "Bash(/home/smolen/dev/EnglishConnect/.venv-test/bin/python -m pytest:*)"
+      "Bash(/home/smolen/dev/EnglishConnect/.venv-test/bin/python -m pytest:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: clarify vision and agent architecture\n\n- Add problem statement to README.md (4 key challenges)\n- Add vision for intelligent conversation partner\n- Update architecture diagram showing agent-controlled flow\n- Add guiding principle to CLAUDE.md\n- Create ADR-002: Conversation Partner Agent vs Pipeline\n- Update phase-03 plan for agent approach\n\nThe conversation partner is an intelligent agent that controls\nTTS/STT as tools, not a pipeline. This enables language flipping,\npacing control, and vocabulary-aware responses.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(src/backend/app/services/memory_service.py )",
+      "Bash(src/backend/app/services/session_service.py )",
+      "Bash(src/backend/app/routers/progress.py )",
+      "Bash(src/backend/app/services/azure_openai.py )",
+      "Bash(src/backend/app/routers/conversation.py )",
+      "Bash(src/backend/app/schemas/conversation.py )",
+      "Bash(src/backend/app/config.py )",
+      "Bash(src/backend/app/main.py )",
+      "Bash(src/backend/requirements.txt )",
+      "Bash(planning/in_progress/phase-04-auth-memory-progress.md )",
+      "Bash(planning/completed/phase-03-conversation-partner.md )",
+      "Bash(planning/in_progress/phase-03-conversation-partner.md )",
+      "Bash(planning/backlog/phases-04-10-future.md)"
     ],
     "deny": [],
     "ask": []
