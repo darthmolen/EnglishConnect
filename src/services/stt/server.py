@@ -9,6 +9,7 @@ Usage:
 
 import asyncio
 import io
+import logging
 import os
 import tempfile
 from contextlib import asynccontextmanager
@@ -22,6 +23,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Configuration
 MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "large-v3")
@@ -98,6 +103,36 @@ async def health():
     }
 
 
+def get_file_extension(content_type: str, filename: str) -> str:
+    """Determine the correct file extension based on content type or filename."""
+    # Map content types to extensions
+    content_type_map = {
+        "audio/webm": ".webm",
+        "audio/ogg": ".ogg",
+        "audio/mp3": ".mp3",
+        "audio/mpeg": ".mp3",
+        "audio/wav": ".wav",
+        "audio/wave": ".wav",
+        "audio/x-wav": ".wav",
+        "audio/flac": ".flac",
+        "audio/m4a": ".m4a",
+        "audio/mp4": ".m4a",
+    }
+
+    # Try content type first
+    if content_type and content_type.lower() in content_type_map:
+        return content_type_map[content_type.lower()]
+
+    # Fall back to filename extension
+    if filename and "." in filename:
+        ext = "." + filename.rsplit(".", 1)[-1].lower()
+        if ext in [".webm", ".ogg", ".mp3", ".wav", ".flac", ".m4a", ".mp4"]:
+            return ext
+
+    # Default to webm (common for browser MediaRecorder)
+    return ".webm"
+
+
 @app.post("/transcribe", response_model=TranscriptionResult)
 async def transcribe_audio(
     file: UploadFile = File(...),
@@ -106,7 +141,7 @@ async def transcribe_audio(
     """Transcribe an audio file.
 
     Args:
-        file: Audio file (WAV, MP3, etc.)
+        file: Audio file (WAV, MP3, webm, etc.)
         language: Optional language code (e.g., 'en', 'es'). Auto-detects if not specified.
 
     Returns:
@@ -118,8 +153,27 @@ async def transcribe_audio(
     # Read audio file
     audio_bytes = await file.read()
 
+    # Log incoming request details
+    logger.info(
+        f"Transcribe request: filename={file.filename}, "
+        f"content_type={file.content_type}, size={len(audio_bytes)} bytes"
+    )
+
+    if len(audio_bytes) == 0:
+        logger.warning("Received empty audio file")
+        return TranscriptionResult(
+            text="",
+            language="unknown",
+            confidence=0.0,
+            segments=[],
+        )
+
+    # Determine correct file extension (important for faster-whisper/ffmpeg)
+    ext = get_file_extension(file.content_type, file.filename)
+    logger.info(f"Using file extension: {ext}")
+
     # Save to temp file (faster-whisper requires file path or numpy array)
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
         tmp.write(audio_bytes)
         tmp_path = tmp.name
 
@@ -127,6 +181,7 @@ async def transcribe_audio(
         model = get_model()
 
         # Transcribe
+        logger.info(f"Transcribing {tmp_path}...")
         segments, info = model.transcribe(
             tmp_path,
             language=language,
@@ -146,12 +201,25 @@ async def transcribe_audio(
             })
             full_text.append(segment.text)
 
+        result_text = " ".join(full_text).strip()
+        logger.info(
+            f"Transcription complete: language={info.language}, "
+            f"confidence={info.language_probability:.2f}, text_length={len(result_text)}"
+        )
+
+        if not result_text:
+            logger.info("No speech detected in audio")
+
         return TranscriptionResult(
-            text=" ".join(full_text).strip(),
+            text=result_text,
             language=info.language,
             confidence=info.language_probability,
             segments=segment_list,
         )
+
+    except Exception as e:
+        logger.error(f"Transcription failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
 
     finally:
         # Clean up temp file

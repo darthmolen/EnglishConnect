@@ -117,6 +117,8 @@ export async function transcribeAudio(
   audioBlob: Blob,
   language?: string
 ): Promise<STTResponse> {
+  console.log(`Sending audio to STT: ${audioBlob.size} bytes, type=${audioBlob.type}`)
+
   const formData = new FormData()
   formData.append('file', audioBlob, 'audio.webm')
 

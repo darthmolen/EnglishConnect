@@ -1,12 +1,27 @@
 # Phase 4: Auth + Memory + Progress Tracking
 
 **Status**: ✅ Complete
+**Completed**: 2024-12-23
 **Goal**: User authentication, conversation memory, and progress tracking
 
 ## Phase Split
 
 - **Phase 4A** ✅ Memori integration + Progress tracking API
 - **Phase 4B** ✅ Azure Entra ID authentication (Microsoft only)
+
+## Completion Notes
+
+### Memori v3 Migration (2024-12-23)
+
+Fixed critical bug in Memori integration. The original code used non-existent v2 API parameters (`conscious_ingest=True`, `auto_ingest=True`, `memori.enable()`) that would cause `TypeError` at runtime.
+
+Updated to Memori v3 API:
+
+- `Memori(conn=...)` - no extra params, background augmentation starts automatically
+- `memori.llm.register(client)` - register LLM client for interception
+- Switched package from `memorisdk` to `memori>=3.1.0`
+
+The "subconscious" background service is now called "Advanced Augmentation" and runs in background threads automatically - no separate service needed.
 
 ## Overview
 
