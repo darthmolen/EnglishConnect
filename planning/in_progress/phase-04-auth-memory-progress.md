@@ -1,12 +1,12 @@
 # Phase 4: Auth + Memory + Progress Tracking
 
-**Status**: 🔄 In Progress (Phase 4A Complete)
+**Status**: ✅ Complete
 **Goal**: User authentication, conversation memory, and progress tracking
 
 ## Phase Split
 
 - **Phase 4A** ✅ Memori integration + Progress tracking API
-- **Phase 4B** 🔜 Azure Entra ID authentication (Microsoft + Google)
+- **Phase 4B** ✅ Azure Entra ID authentication (Microsoft only)
 
 ## Overview
 
@@ -60,34 +60,32 @@ Add user authentication via Microsoft Identity Platform (supporting both Microso
 
 ## Tasks
 
-### 4.1 Microsoft Identity Platform Setup
+### 4.1 Microsoft Identity Platform Setup ✅
 
-- [ ] Register app in Azure Entra ID (App Registration)
-- [ ] Configure redirect URIs for local dev and production
-- [ ] Add Google as external identity provider
-- [ ] Set up API permissions (User.Read)
-- [ ] Generate client credentials
+- [x] Register app in Azure Entra ID (App Registration) - via Bicep
+- [x] Configure redirect URIs for local dev and production
+- [ ] Add Google as external identity provider (deferred)
+- [x] Set up API permissions (openid, profile, email)
+- [x] Infrastructure as Code (azure/infrastructure/conversation-identity/)
 
-### 4.2 Backend Auth Integration
+### 4.2 Backend Auth Integration ✅
 
-- [ ] Install dependencies: `msal`, `python-jose`, `httpx`
-- [ ] Create auth middleware for JWT validation
-- [ ] Create `/api/auth/login` endpoint (redirect to Entra)
-- [ ] Create `/api/auth/callback` endpoint (handle OAuth callback)
-- [ ] Create `/api/auth/me` endpoint (get current user)
-- [ ] Create `/api/auth/logout` endpoint
-- [ ] Add user model to database (id, email, name, avatar_url, provider)
-- [ ] Create or update user on first login
+- [x] Install dependencies: `python-jose`, `httpx` (already in requirements)
+- [x] Create auth middleware for JWT validation (middleware/auth.py)
+- [x] Create `/api/auth/me` endpoint (get current user)
+- [x] User model with oauth fields (models/user.py)
+- [x] UserService for get_or_create_user (services/user_service.py)
+- [x] All routes protected with CurrentUser dependency
 
-### 4.3 Frontend Auth Integration
+### 4.3 Frontend Auth Integration ✅
 
-- [ ] Install MSAL React: `@azure/msal-react`, `@azure/msal-browser`
-- [ ] Create MSAL configuration
-- [ ] Add MsalProvider to App
-- [ ] Create LoginButton component (Microsoft + Google options)
-- [ ] Create UserProfile component (avatar, name, logout)
-- [ ] Add auth state to Zustand store
-- [ ] Protect conversation routes (require auth)
+- [x] Install MSAL React: `@azure/msal-react`, `@azure/msal-browser`
+- [x] Create MSAL configuration (auth/msalConfig.ts)
+- [x] Create AuthProvider (auth/AuthProvider.tsx)
+- [x] Create LoginButton component (Microsoft only)
+- [x] Create UserProfile component (name, logout)
+- [x] Add auth state to Zustand store (stores/authStore.ts)
+- [x] All routes require authentication (App.tsx guards)
 
 ### 4.4 Memori Integration (Conversation Memory) ✅
 
