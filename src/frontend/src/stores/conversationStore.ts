@@ -1,5 +1,12 @@
 import { create } from 'zustand'
-import type { LessonSummary, LessonDetail, ChatMessage } from '@/types'
+import type {
+  LessonSummary,
+  LessonDetail,
+  ChatMessage,
+  LessonPhase,
+  PhaseState,
+  PhaseProgress,
+} from '@/types'
 
 interface ConversationState {
   // Lesson state
@@ -10,6 +17,11 @@ interface ConversationState {
   // Conversation state
   messages: ChatMessage[]
   isLoading: boolean
+
+  // Phase tracking state (for structured lessons)
+  currentPhase: LessonPhase | null
+  phaseState: PhaseState | null
+  phaseProgress: PhaseProgress | null
 
   // Voice state
   isRecording: boolean
@@ -24,6 +36,12 @@ interface ConversationState {
   setIsLoading: (isLoading: boolean) => void
   setIsRecording: (isRecording: boolean) => void
   setIsPlaying: (isPlaying: boolean) => void
+  updatePhaseInfo: (
+    phase: LessonPhase | null,
+    state: PhaseState | null,
+    progress: PhaseProgress | null
+  ) => void
+  clearPhaseInfo: () => void
 }
 
 export const useConversationStore = create<ConversationState>((set) => ({
@@ -36,6 +54,11 @@ export const useConversationStore = create<ConversationState>((set) => ({
   isRecording: false,
   isPlaying: false,
 
+  // Phase tracking initial state
+  currentPhase: null,
+  phaseState: null,
+  phaseProgress: null,
+
   // Actions
   setLessons: (lessons) => set({ lessons }),
 
@@ -45,6 +68,10 @@ export const useConversationStore = create<ConversationState>((set) => ({
     set({
       selectedLessonNumber: lessonNumber,
       messages: [], // Clear conversation when switching lessons
+      // Reset phase info when switching lessons
+      currentPhase: null,
+      phaseState: null,
+      phaseProgress: null,
     }),
 
   addMessage: (message) =>
@@ -52,11 +79,32 @@ export const useConversationStore = create<ConversationState>((set) => ({
       messages: [...state.messages, message],
     })),
 
-  clearMessages: () => set({ messages: [] }),
+  clearMessages: () =>
+    set({
+      messages: [],
+      // Also reset phase info when clearing messages
+      currentPhase: null,
+      phaseState: null,
+      phaseProgress: null,
+    }),
 
   setIsLoading: (isLoading) => set({ isLoading }),
 
   setIsRecording: (isRecording) => set({ isRecording }),
 
   setIsPlaying: (isPlaying) => set({ isPlaying }),
+
+  updatePhaseInfo: (phase, state, progress) =>
+    set({
+      currentPhase: phase,
+      phaseState: state,
+      phaseProgress: progress,
+    }),
+
+  clearPhaseInfo: () =>
+    set({
+      currentPhase: null,
+      phaseState: null,
+      phaseProgress: null,
+    }),
 }))
