@@ -1,4 +1,4 @@
-"""Unit tests for azure_openai.py - Memori integration functions."""
+"""Unit tests for azure_openai.py - Memori v3 integration functions."""
 
 import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
@@ -11,11 +11,12 @@ class TestInitMemori:
         """Reset global state before each test."""
         import app.services.azure_openai as ao
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
     @patch("app.services.memory_service.get_memori")
-    def test_init_memori_enables_global_interception(self, mock_get_memori):
-        """_init_memori() calls enable() on the Memori instance."""
+    def test_init_memori_gets_memori_instance(self, mock_get_memori):
+        """_init_memori() gets the Memori instance (v3 API - no enable())."""
         from app.services.azure_openai import _init_memori
 
         mock_memori = MagicMock()
@@ -24,7 +25,7 @@ class TestInitMemori:
         result = _init_memori()
 
         mock_get_memori.assert_called_once()
-        mock_memori.enable.assert_called_once()
+        # v3 API: no enable() call - Memori starts automatically
         assert result is True
 
     @patch("app.services.memory_service.get_memori")
@@ -70,6 +71,65 @@ class TestInitMemori:
         mock_get_memori.assert_called_once()
 
 
+class TestRegisterClientWithMemori:
+    """Tests for _register_client_with_memori()."""
+
+    def setup_method(self):
+        """Reset global state before each test."""
+        import app.services.azure_openai as ao
+        ao._memori = None
+        ao._memori_initialized = False
+        ao._client_registered = False
+
+    @patch("app.services.azure_openai._init_memori")
+    def test_registers_client_with_memori(self, mock_init):
+        """_register_client_with_memori() calls memori.llm.register()."""
+        import app.services.azure_openai as ao
+        from app.services.azure_openai import _register_client_with_memori
+
+        mock_memori = MagicMock()
+        ao._memori = mock_memori
+        mock_init.return_value = True
+
+        mock_client = MagicMock()
+        _register_client_with_memori(mock_client)
+
+        mock_memori.llm.register.assert_called_once_with(mock_client)
+        assert ao._client_registered is True
+
+    @patch("app.services.azure_openai._init_memori")
+    def test_registers_client_only_once(self, mock_init):
+        """_register_client_with_memori() only registers once."""
+        import app.services.azure_openai as ao
+        from app.services.azure_openai import _register_client_with_memori
+
+        mock_memori = MagicMock()
+        ao._memori = mock_memori
+        mock_init.return_value = True
+
+        mock_client = MagicMock()
+        _register_client_with_memori(mock_client)
+        _register_client_with_memori(mock_client)
+
+        # Should only register once
+        mock_memori.llm.register.assert_called_once()
+
+    @patch("app.services.azure_openai._init_memori")
+    def test_skips_when_memori_unavailable(self, mock_init):
+        """_register_client_with_memori() skips when Memori unavailable."""
+        import app.services.azure_openai as ao
+        from app.services.azure_openai import _register_client_with_memori
+
+        mock_init.return_value = False
+        ao._memori = None
+
+        mock_client = MagicMock()
+        _register_client_with_memori(mock_client)
+
+        # Should not crash, just skip
+        assert ao._client_registered is False
+
+
 class TestSetMemoryContext:
     """Tests for set_memory_context()."""
 
@@ -77,7 +137,8 @@ class TestSetMemoryContext:
         """Reset global state before each test."""
         import app.services.azure_openai as ao
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
     @patch("app.services.azure_openai._init_memori")
     def test_set_memory_context_sets_attribution(self, mock_init):
@@ -151,7 +212,8 @@ class TestGetAgentResponseMemoryIntegration:
         """Reset global state before each test."""
         import app.services.azure_openai as ao
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
     @pytest.mark.asyncio
     @patch("app.services.azure_openai.set_memory_context")

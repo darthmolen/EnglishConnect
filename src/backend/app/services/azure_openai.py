@@ -10,53 +10,87 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-# Memori integration (optional - depends on OPENAI_API_KEY being set)
-_memori_enabled = False
+# Memori integration state (lazy initialization)
 _memori = None
+_memori_initialized = False
+_client_registered = False
+
 
 def _init_memori():
-    """Initialize Memori if available."""
-    global _memori_enabled, _memori
-    if _memori is not None:
-        return _memori_enabled
+    """Initialize Memori if available (lazy, idempotent).
+
+    Returns True if Memori is available, False otherwise.
+    """
+    global _memori, _memori_initialized
+
+    if _memori_initialized:
+        return _memori is not None
+
+    _memori_initialized = True
 
     try:
         from app.services.memory_service import get_memori
         _memori = get_memori()
-        _memori.enable()  # Enable global interception
-        _memori_enabled = True
-        logger.info("Memori memory layer enabled")
+        logger.info("Memori v3 memory layer available")
+        return True
     except Exception as e:
         logger.warning(f"Memori not available: {e}")
-        _memori_enabled = False
+        _memori = None
+        return False
 
-    return _memori_enabled
+
+def _register_client_with_memori(client):
+    """Register LLM client with Memori for memory extraction.
+
+    In Memori v3, clients must be registered to enable interception.
+    Only registers once per client type.
+    """
+    global _client_registered
+
+    if not _init_memori() or _client_registered:
+        return
+
+    try:
+        _memori.llm.register(client)
+        _client_registered = True
+        logger.info("Azure OpenAI client registered with Memori")
+    except Exception as e:
+        logger.warning(f"Failed to register client with Memori: {e}")
 
 
 def set_memory_context(user_id: Optional[str] = None, process_id: str = "conversation-agent"):
     """Set Memori context for the current user.
 
+    Must be called before LLM requests to attribute memories to the user.
+
     Args:
         user_id: User identifier for memory attribution
         process_id: Process/agent identifier
     """
-    global _memori
     if not _init_memori():
         return
 
-    if user_id:
+    if user_id and _memori:
         _memori.attribution(entity_id=user_id, process_id=process_id)
         logger.debug(f"Memory context set: user={user_id}, process={process_id}")
 
 
 def get_azure_client() -> AsyncAzureOpenAI:
-    """Get configured Azure OpenAI client."""
+    """Get configured Azure OpenAI client.
+
+    Registers the client with Memori on first call for memory extraction.
+    """
     settings = get_settings()
-    return AsyncAzureOpenAI(
+    client = AsyncAzureOpenAI(
         azure_endpoint=settings.azure_openai_endpoint,
         api_key=settings.azure_openai_api_key,
         api_version=settings.azure_openai_api_version,
     )
+
+    # Register with Memori for memory extraction (once per client type)
+    _register_client_with_memori(client)
+
+    return client
 
 
 # Tool definitions for the conversation agent

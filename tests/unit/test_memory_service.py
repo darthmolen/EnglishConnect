@@ -92,6 +92,42 @@ class TestGetMemori:
             assert result1 is result2
 
 
+class TestRegisterClient:
+    """Tests for register_client() function."""
+
+    def setup_method(self):
+        """Reset global state before each test."""
+        import app.services.memory_service as ms
+        ms._memori = None
+
+    @patch("app.services.memory_service.get_memori")
+    def test_register_client_calls_llm_register(self, mock_get_memori):
+        """register_client() calls memori.llm.register() with the client."""
+        from app.services.memory_service import register_client
+
+        mock_memori = MagicMock()
+        mock_get_memori.return_value = mock_memori
+
+        mock_client = MagicMock()
+        result = register_client(mock_client)
+
+        mock_memori.llm.register.assert_called_once_with(mock_client)
+        assert result is mock_client
+
+    @patch("app.services.memory_service.get_memori")
+    def test_register_client_returns_same_client(self, mock_get_memori):
+        """register_client() returns the same client passed in."""
+        from app.services.memory_service import register_client
+
+        mock_memori = MagicMock()
+        mock_get_memori.return_value = mock_memori
+
+        mock_client = MagicMock()
+        result = register_client(mock_client)
+
+        assert result is mock_client
+
+
 class TestGetSyncDbConnection:
     """Tests for get_sync_db_connection()."""
 

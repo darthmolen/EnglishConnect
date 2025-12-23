@@ -16,8 +16,8 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 msal>=1.28.0
 
-# Conversation Memory
-memorisdk>=3.1.0
+# Conversation Memory (Memori v3)
+memori>=3.1.0
 
 # Azure AI / Microsoft Agent Framework
 agent-framework>=1.0.0b251211

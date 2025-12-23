@@ -1,7 +1,13 @@
 """Memori integration for conversation memory.
 
-Uses Memori SDK to provide cross-session memory for the conversation agent.
+Uses Memori SDK v3 to provide cross-session memory for the conversation agent.
 Each user has their own memory context via attribution.
+
+Memori v3 API:
+- Memori(conn=...) - creates instance, starts background augmentation threads
+- .llm.register(client) - hooks LLM client for automatic memory extraction
+- .attribution(entity_id, process_id) - sets user context for memory isolation
+- .augmentation.wait() - waits for background processing to complete
 """
 
 import logging
@@ -33,13 +39,17 @@ def get_sync_db_connection():
 
 
 def get_memori() -> Memori:
-    """Get or create the global Memori instance."""
+    """Get or create the global Memori instance.
+
+    Memori v3 automatically starts background augmentation threads
+    when initialized. No separate service or enable() call needed.
+    """
     global _memori
 
     if _memori is None:
         settings = get_settings()
 
-        # Configure OpenAI credentials for Memori
+        # Configure OpenAI credentials for Memori's Advanced Augmentation
         # Priority: 1) Azure OpenAI (via compatibility endpoint), 2) Standard OpenAI
         if settings.azure_openai_endpoint and settings.azure_openai_api_key:
             # Use Azure OpenAI's compatibility endpoint
@@ -59,21 +69,37 @@ def get_memori() -> Memori:
             )
 
         try:
-            _memori = Memori(
-                conn=get_sync_db_connection,
-                conscious_ingest=True,
-                auto_ingest=True,
-            )
+            # Memori v3: Just pass connection factory
+            # Background augmentation starts automatically
+            _memori = Memori(conn=get_sync_db_connection)
 
             # Build storage tables if they don't exist
             _memori.config.storage.build()
 
-            logger.info("Memori initialized successfully")
+            logger.info("Memori v3 initialized with background augmentation")
         except Exception as e:
             logger.error(f"Failed to initialize Memori: {e}")
             raise
 
     return _memori
+
+
+def register_client(client):
+    """Register an LLM client with Memori for automatic memory extraction.
+
+    In Memori v3, you must register your LLM client to enable interception.
+    This hooks the client so all completions are tracked and memories extracted.
+
+    Args:
+        client: OpenAI-compatible client (sync or async)
+
+    Returns:
+        The same client, now hooked for memory tracking
+    """
+    memori = get_memori()
+    memori.llm.register(client)
+    logger.debug("LLM client registered with Memori")
+    return client
 
 
 @contextmanager

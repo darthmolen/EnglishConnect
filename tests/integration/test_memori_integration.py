@@ -102,7 +102,8 @@ class TestMemoriConversationIntegration:
 
         # Reset global state
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
         mock_memori = MagicMock()
 
@@ -129,7 +130,8 @@ class TestMemoriConversationIntegration:
 
         # Reset global state
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
         mock_memori = MagicMock()
 
@@ -159,7 +161,8 @@ class TestMemoriGracefulDegradation:
         """Reset global state before each test."""
         import app.services.azure_openai as ao
         ao._memori = None
-        ao._memori_enabled = False
+        ao._memori_initialized = False
+        ao._client_registered = False
 
     @pytest.mark.asyncio
     @patch("app.services.azure_openai.get_azure_client")
