@@ -1,6 +1,6 @@
 // src/frontend/src/stores/authStore.ts
 import { create } from "zustand";
-import { AccountInfo } from "@azure/msal-browser";
+import type { AccountInfo } from "@azure/msal-browser";
 import { msalInstance } from "../auth/AuthProvider";
 import { loginRequest } from "../auth/msalConfig";
 
