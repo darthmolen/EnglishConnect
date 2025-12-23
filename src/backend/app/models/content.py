@@ -44,6 +44,33 @@ class Lesson(Base):
     evaluation_criteria: Mapped[list["EvaluationCriterion"]] = relationship(
         back_populates="lesson"
     )
+    phases: Mapped[list["LessonPhase"]] = relationship(
+        back_populates="lesson", order_by="LessonPhase.sort_order"
+    )
+
+    __table_args__ = ({"sqlite_autoincrement": True},)
+
+
+class LessonPhase(Base):
+    """Phase definition for a lesson (e.g., intro, vocabulary, patterns).
+
+    Each lesson can define its own phases with custom configurations.
+    Standard phases: intro, vocabulary, patterns, practice, wrapup
+    """
+
+    __tablename__ = "lesson_phases"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    lesson_id: Mapped[int] = mapped_column(Integer, ForeignKey("lessons.id"))
+    phase_type: Mapped[str] = mapped_column(
+        String(50), nullable=False
+    )  # 'intro', 'vocabulary', 'patterns', 'practice', 'wrapup'
+    phase_name: Mapped[str] = mapped_column(String(100), nullable=False)  # Display name
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    config: Mapped[dict | None] = mapped_column(JSONB)  # Phase-specific configuration
+
+    # Relationships
+    lesson: Mapped["Lesson"] = relationship(back_populates="phases")
 
     __table_args__ = ({"sqlite_autoincrement": True},)
 

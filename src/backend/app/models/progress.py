@@ -11,7 +11,11 @@ from app.database import Base
 
 
 class UserProgress(Base):
-    """Track user progress through lessons."""
+    """Track user progress through lessons.
+
+    Tracks both lesson-level status and current phase within the lesson.
+    phase_state stores flexible state data like vocab_index, pattern_index.
+    """
 
     __tablename__ = "user_progress"
 
@@ -24,9 +28,18 @@ class UserProgress(Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime)
 
+    # Phase tracking
+    phase_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("lesson_phases.id"), nullable=True
+    )
+    phase_state: Mapped[dict | None] = mapped_column(
+        JSONB
+    )  # {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": false}
+
     # Relationships
     user: Mapped["User"] = relationship(back_populates="progress")
     lesson: Mapped["Lesson"] = relationship()
+    current_phase: Mapped["LessonPhase"] = relationship()
 
     __table_args__ = ({"sqlite_autoincrement": True},)
 
@@ -102,4 +115,4 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.user import User
-    from app.models.content import Lesson
+    from app.models.content import Lesson, LessonPhase
