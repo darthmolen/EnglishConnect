@@ -35,12 +35,14 @@ Cuando tratamos de aprender por medio del Espíritu, Dios puede ayudarnos a ente
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta utilizar palabras de la sección "Memorize Vocabulary" en tu práctica diaria.
 
+### **Phrases**
+
 | Will it … ?    | ¿Va a…?        |
 |----------------|----------------|
 | Will it be … ? | ¿Hará/Estará…? |
 | in Mexico      | en México      |
 
-#### **Days**
+### **Days**
 
 | today      | hoy       |
 |------------|-----------|
@@ -49,14 +51,14 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 <sup>\*</sup> En el apéndice puedes ver más *days*.
 
-## **Verbs/Verbs + ing**
+### **Verbs**
 
 | hail/hailing | granizar/granizando |
 |--------------|---------------------|
 | rain/raining | llover/lloviendo    |
 | snow/snowing | nevar/nevando       |
 
-## **Adjectives**
+### **Adjectives**
 
 | nice   | buen tiempo        |
 |--------|--------------------|

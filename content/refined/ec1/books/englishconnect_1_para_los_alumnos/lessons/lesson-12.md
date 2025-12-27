@@ -35,14 +35,20 @@ alumnos. Si no entiendes algo, puedes pedir ayuda. Si necesitas ideas para estud
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta aprender más palabras que puedas utilizar en los patrones. Podrías utilizar un diccionario o un traductor o preguntar a un amigo.
 
+### **Nouns**
+
 | date | fecha   |
 |------|---------|
 | day  | día     |
 | time | hora    |
+
+### **Prepositions**
+
 | at   | a/a las |
+|------|---------|
 | on   | el      |
 
-## **Time**
+### **Time**
 
 | noon                   | mediodía            |
 |------------------------|---------------------|
@@ -50,7 +56,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | five o'clock/5:00 a.m. | cinco en punto/5:00 |
 | five thirty/5:30 p.m.  | cinco y media/17:30 |
 
-#### **Days**
+### **Days**
 
 | Sunday                | domingo           |
 |-----------------------|-------------------|
@@ -62,7 +68,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | Saturday              | sábado            |
 | Saturday, January 1st | sábado 1 de enero |
 
-#### **Verbs**
+### **Verbs**
 
 | clean the house | limpiar la casa   |
 |-----------------|-------------------|

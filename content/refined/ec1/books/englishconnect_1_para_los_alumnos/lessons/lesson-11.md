@@ -35,11 +35,12 @@ Nefi nos enseña que intentar las cosas y fracasar a veces forman parte de hacer
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta usar las nuevas palabras en una conversación o en un mensaje para alguien que sepa inglés.
 
+### **Adverbs**
+
 | now | ahora |
 |-----|-------|
-|-----|-------|
 
-## **Verbs/Verbs + ing**
+### **Verbs**
 
 | come home/coming home                      | venir a casa/viniendo a<br>casa                          |
 |--------------------------------------------|----------------------------------------------------------|
@@ -58,7 +59,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | work/working                               | trabajar/trabajando                                      |
 |                                            |                                                          |
 
-## **Time**
+### **Time**
 
 | morning   | mañana                            |
 |-----------|-----------------------------------|
@@ -122,15 +123,7 @@ Q: When does she do homework? A: She does homework in the afternoon.
 
 ## **Use the Patterns**
 
-| Escribe cuatro preguntas que puedas hacerle a         |
-|-------------------------------------------------------|
-| alguien. Escribe la respuesta a cada pregunta. Léelas |
-| en voz alta.                                          |
-
-| Ī |  |  |  |
-|---|--|--|--|
-|   |  |  |  |
-|   |  |  |  |
+Escribe cuatro preguntas que puedas hacerle a alguien. Escribe la respuesta a cada pregunta. Léelas en voz alta.
 
 ## **Additional Activities**
 

@@ -35,12 +35,18 @@ Tienes mucha luz que compartir y puedes ser un ejemplo de cómo Dios puede ayuda
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta usar las nuevas palabras en una conversación o en un mensaje para alguien que sepa inglés.
 
+### **Verbs**
+
 | go                  | ir                     |
 |---------------------|------------------------|
 | turn                | girar                  |
-| How do I get to … ? | ¿Cómo puedo llegar a…? |
 
-## **Nouns**
+### **Phrases**
+
+| How do I get to … ? | ¿Cómo puedo llegar a…? |
+|---------------------|------------------------|
+
+### **Nouns**
 
 | bank                    | banco                   |
 |-------------------------|-------------------------|
@@ -53,7 +59,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 En la lección 20 puedes ver más *nouns*.
 
-#### **Adverbs**
+### **Adverbs**
 
 | north    | norte          |
 |----------|----------------|
@@ -64,7 +70,7 @@ En la lección 20 puedes ver más *nouns*.
 | right    | derecha        |
 | straight | derecho, recto |
 
-#### **Prepositions**
+### **Prepositions**
 
 | across from | enfrente de |
 |-------------|-------------|

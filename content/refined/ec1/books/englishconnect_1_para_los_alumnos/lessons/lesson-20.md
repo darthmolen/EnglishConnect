@@ -39,17 +39,19 @@ manera en la que Dios aumenta nuestra capacidad de aprender. A veces, tenemos mi
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a etiquetar los objetos de tu casa para recordar las palabras en inglés.
 
+### **Phrases**
+
 | Where do you live? | ¿Dónde vives? |
 |--------------------|---------------|
 | I live in …        | Vivo en…      |
 
-#### **Nouns 1**
+### **Nouns 1**
 
 | apartment | apartamento |
 |-----------|-------------|
 | house     | casa        |
 
-## **Nouns 2**
+### **Nouns 2**
 
 | bathroom/bathrooms | baño/baños              |
 |--------------------|-------------------------|
@@ -62,7 +64,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | room/rooms         | habitación/habitaciones |
 | stairs             | escaleras               |
 
-#### **Prepositions**
+### **Prepositions**
 
 | above                    | sobre, encima     |
 |--------------------------|-------------------|

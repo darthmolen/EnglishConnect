@@ -33,7 +33,7 @@ Las personas llegaron hasta el árbol porque se mantuvieron asidas a la barra y 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta crear tarjetas de memorización como ayuda para memorizar nuevas palabras. Puedes usar papel o una aplicación.
 
-## **Nouns**
+### **Nouns**
 
 | backache    | dolor de espalda  |
 |-------------|-------------------|
@@ -45,7 +45,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | stomachache | dolor de estómago |
 | toothache   | dolor de muelas   |
 
-## **Adjectives**
+### **Adjectives**
 
 | congested | congestionado |
 |-----------|---------------|
@@ -55,7 +55,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | tired     | cansado       |
 | weak      | débil         |
 
-## **Verbs**
+### **Verbs**
 
 | breathe  | respirar           |
 |----------|--------------------|

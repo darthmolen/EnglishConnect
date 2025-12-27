@@ -35,7 +35,7 @@ unos a los otros. Felicitamos a los demás cuando tienen éxito y los alentamos 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Piensa en situaciones en las que podrías usar la palabra en tu práctica diaria.
 
-#### **Verbs**
+### **Verbs**
 
 | bike            | andar en bicicleta |
 |-----------------|--------------------|

@@ -14,6 +14,7 @@ from app.database import get_db
 from app.middleware.auth import CurrentUser
 from app.models.progress import UserProgress, PracticeSession, ConversationExchange
 from app.models.content import Lesson
+from app.services.lesson_progress_service import LessonProgressService
 
 logger = logging.getLogger(__name__)
 
@@ -69,47 +70,21 @@ async def get_overall_progress(
     db: AsyncSession = Depends(get_db),
 ):
     """Get overall learning progress summary for authenticated user."""
-    # Count total lessons
-    total_lessons_result = await db.execute(select(func.count(Lesson.id)))
-    total_lessons = total_lessons_result.scalar() or 0
+    service = LessonProgressService(db)
+    stats = await service.get_overall_stats(user_id=current_user.id, course_id="ec1")
 
-    # Count completed lessons
-    completed_result = await db.execute(
-        select(func.count(UserProgress.id)).where(UserProgress.status == "completed")
-    )
-    completed_lessons = completed_result.scalar() or 0
-
-    # Count in-progress lessons
-    in_progress_result = await db.execute(
-        select(func.count(UserProgress.id)).where(UserProgress.status == "in_progress")
-    )
-    in_progress_lessons = in_progress_result.scalar() or 0
-
-    # Count practice sessions
-    sessions_result = await db.execute(select(func.count(PracticeSession.id)))
-    total_sessions = sessions_result.scalar() or 0
-
-    # Count total exchanges
-    exchanges_result = await db.execute(select(func.count(ConversationExchange.id)))
-    total_exchanges = exchanges_result.scalar() or 0
-
-    # Sum practice minutes
-    minutes_result = await db.execute(
-        select(func.coalesce(func.sum(PracticeSession.duration_seconds), 0))
-    )
-    total_seconds = minutes_result.scalar() or 0
-    total_minutes = total_seconds // 60
-
+    total_lessons = stats["total_lessons"]
+    completed_lessons = stats["completed"]
     completion_pct = (completed_lessons / total_lessons * 100) if total_lessons > 0 else 0
 
     return OverallProgress(
         total_lessons=total_lessons,
         completed_lessons=completed_lessons,
-        in_progress_lessons=in_progress_lessons,
+        in_progress_lessons=stats["in_progress"],
         completion_percentage=round(completion_pct, 1),
-        total_practice_sessions=total_sessions,
-        total_exchanges=total_exchanges,
-        total_practice_minutes=total_minutes,
+        total_practice_sessions=stats["total_practice_sessions"],
+        total_exchanges=stats["total_exchanges"],
+        total_practice_minutes=stats["total_practice_minutes"],
     )
 
 
@@ -123,31 +98,22 @@ async def get_lesson_progress(
 
     Returns lesson list with completion status.
     """
-    # Get all lessons for the course
-    lessons_result = await db.execute(
-        select(Lesson)
-        .where(Lesson.course_id == course_id)
-        .order_by(Lesson.lesson_number)
+    service = LessonProgressService(db)
+    lessons = await service.get_lesson_progress_list(
+        user_id=current_user.id, course_id=course_id
     )
-    lessons = list(lessons_result.scalars().all())
 
-    # Get progress for each lesson (aggregate for now, per-user in Phase 4B)
-    progress_result = await db.execute(select(UserProgress))
-    progress_map = {p.lesson_id: p for p in progress_result.scalars().all()}
-
-    result = []
-    for lesson in lessons:
-        progress = progress_map.get(lesson.id)
-        result.append(LessonProgress(
-            lesson_id=lesson.id,
-            lesson_number=lesson.lesson_number,
-            title=lesson.title,
-            status=progress.status if progress else "not_started",
-            started_at=progress.started_at if progress else None,
-            completed_at=progress.completed_at if progress else None,
-        ))
-
-    return result
+    return [
+        LessonProgress(
+            lesson_id=lesson["lesson_id"],
+            lesson_number=lesson["lesson_number"],
+            title=lesson["title"],
+            status=lesson["status"],
+            started_at=lesson["started_at"],
+            completed_at=lesson["completed_at"],
+        )
+        for lesson in lessons
+    ]
 
 
 @router.post("/lessons/{lesson_id}/complete", response_model=MarkCompleteResponse)

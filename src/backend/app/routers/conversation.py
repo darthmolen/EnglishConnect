@@ -17,6 +17,7 @@ from app.schemas.conversation import ConversationRequest, ConversationResponse
 from app.services.lesson_service import LessonService
 from app.services.azure_openai import get_agent_response
 from app.services.tts_service import synthesize_speech
+from app.services.tool_handlers import speak_tool_handler
 from app.services.session_service import SessionService
 from app.agents.conversation_agent import ConversationAgentFactory
 from app.config import get_settings
@@ -24,44 +25,6 @@ from app.config import get_settings
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/practice/conversation", tags=["practice"])
-
-
-async def speak_tool_handler(
-    text: str,
-    language: str,
-    voice: str = "speaker_b"
-) -> dict:
-    """Handle speak tool calls from the agent.
-
-    This calls the TTS service to synthesize speech and returns
-    the audio data.
-
-    Args:
-        text: Text to speak
-        language: Language code (en or es)
-        voice: Voice ID
-
-    Returns:
-        Dict with audio_base64 and metadata
-    """
-    try:
-        result = await synthesize_speech(text=text, voice=voice)
-        return {
-            "spoken": True,
-            "text": text,
-            "language": language,
-            "audio_base64": result["audio_base64"],
-            "format": result["format"],
-            "sample_rate": result["sample_rate"],
-        }
-    except Exception as e:
-        logger.error(f"TTS synthesis failed: {e}")
-        return {
-            "spoken": False,
-            "text": text,
-            "language": language,
-            "error": str(e),
-        }
 
 
 @router.post("", response_model=ConversationResponse)
@@ -168,8 +131,7 @@ async def conversation(
     # Record exchange for evaluation (async, non-blocking)
     try:
         session_service = SessionService(db)
-        # Get or create session for this conversation
-        # For now, create a new session per request (TODO: session continuity via session_id)
+        # Get or create session - reuses existing session within 30-minute window
         practice_session = await session_service.get_or_create_session(
             user_id=current_user.id,
             lesson_id=lesson.lesson_number,

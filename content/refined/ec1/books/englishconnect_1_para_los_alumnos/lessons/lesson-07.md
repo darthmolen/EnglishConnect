@@ -33,11 +33,17 @@ Al igual que este hombre, puedes comenzar con la esperanza y la fe que ya tienes
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación.
 
+### **Phrases**
+
 | Tell me about … | Háblame de… |
 |-----------------|-------------|
-| yourself        | ti          |
 
-## **Nouns**
+### **Pronouns**
+
+| yourself        | ti          |
+|-----------------|-------------|
+
+### **Nouns**
 
 | cousin/cousins* | primo/primos   |
 |-----------------|----------------|
@@ -46,7 +52,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | hair            | cabello        |
 | mustache        | bigote         |
 
-## **Adjectives**
+### **Adjectives**
 
 | blue    | azul                |
 |---------|---------------------|
@@ -129,10 +135,6 @@ Q: Are your <u>sisters tall?</u> A: No, they are <u>short</u>.
 ## Use the Patterns
 
 Escribe cuatro preguntas que puedas hacerle a alguien. Escribe la respuesta a cada pregunta. Léelas en voz alta.
-
-| Δ             | h | Ы | iti | _ | na | ΙΔ | ctiv | viti | عما |
-|---------------|---|---|-----|---|----|----|------|------|-----|
-| $\overline{}$ | ш | u | ıLI | u | Ha | _  | LLI  | VIL  |     |
 
 Completa las actividades de la lección y las evaluaciones en línea en englishconnect.org/ learner/resources o en el *Cuaderno de ejercicios de EnglishConnect 1*.
 

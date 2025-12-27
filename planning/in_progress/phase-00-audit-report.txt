@@ -1,0 +1,94 @@
+======================================================================
+LESSON CONTENT AUDIT REPORT
+======================================================================
+
+Total lessons: 25
+OK: 14
+With issues: 11
+
+----------------------------------------------------------------------
+DETAILED RESULTS
+----------------------------------------------------------------------
+
+Lesson 01: MISSING: Practice Pattern 1, Practice Pattern 2, Pattern Q&A Template, Use the Patterns
+    - Missing: Practice Pattern 1
+    - Missing: Practice Pattern 2
+    - Missing: Pattern Q&A Template
+    - Missing: Use the Patterns
+
+Lesson 02: OK
+Lesson 03: OK
+Lesson 04: OK
+Lesson 05: MISSING: Practice Pattern 2, Use the Patterns
+    - Missing: Practice Pattern 2
+    - Missing: Use the Patterns
+
+Lesson 06: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 07: CORRUPTED: Cyrillic/Greek in tables (lines 133), LaTeX remnants (lines 135)
+    - Corrupted: Cyrillic/Greek in tables (lines 133)
+    - Corrupted: LaTeX remnants (lines 135)
+
+Lesson 08: OK
+Lesson 09: OK
+Lesson 10: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 11: CORRUPTED: Garbled table row (lines 130, 131, 132)
+    - Corrupted: Garbled table row (lines 130, 131, 132)
+
+Lesson 12: OK
+Lesson 13: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 14: OK
+Lesson 15: OK
+Lesson 16: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 17: OK
+Lesson 18: OK
+Lesson 19: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 20: OK
+Lesson 21: OK
+Lesson 22: OK
+Lesson 23: OK
+Lesson 24: MISSING: Use the Patterns
+    - Missing: Use the Patterns
+
+Lesson 25: MISSING: Memorize Vocabulary, Practice Pattern 1, Practice Pattern 2, Pattern Q&A Template, Pattern Examples, Use the Patterns, Evaluate Your Progress, I can statements; CORRUPTED: Garbled table row (lines 69, 70, 71)
+    - Missing: Memorize Vocabulary
+    - Missing: Practice Pattern 1
+    - Missing: Practice Pattern 2
+    - Missing: Pattern Q&A Template
+    - Missing: Pattern Examples
+    - Missing: Use the Patterns
+    - Missing: Evaluate Your Progress
+    - Missing: I can statements
+    - Corrupted: Garbled table row (lines 69, 70, 71)
+
+
+----------------------------------------------------------------------
+SECTION COVERAGE SUMMARY
+----------------------------------------------------------------------
+
+Memorize Vocabulary: 24/25 lessons
+Vocabulary Table: 25/25 lessons
+Practice Pattern 1: 23/25 lessons
+Practice Pattern 2: 22/25 lessons
+Pattern Q&A Template: 23/25 lessons
+Pattern Examples: 24/25 lessons
+Use the Patterns: 16/25 lessons
+Evaluate Your Progress: 24/25 lessons
+I can statements: 24/25 lessons
+
+----------------------------------------------------------------------
+LESSONS NEEDING MANUAL REVIEW (corrupted content)
+----------------------------------------------------------------------
+
+  - lesson-07.md: Cyrillic/Greek in tables (lines 133), LaTeX remnants (lines 135)
+  - lesson-11.md: Garbled table row (lines 130, 131, 132)
+  - lesson-25.md: Garbled table row (lines 69, 70, 71)

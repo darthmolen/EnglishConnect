@@ -86,33 +86,85 @@ export function LessonMaterialPanel({
 
         {/* Vocabulary */}
         <CollapsibleSection title="Vocabulary" defaultOpen={true}>
-          <div className="space-y-1">
-            {lesson.vocabulary.map((item, index) => {
-              const isCurrent = isVocabPhase && index === vocabIndex
-              const isCompleted =
-                phaseState?.items_completed?.includes(`vocab_${index}`) ?? false
-
-              return (
-                <div
-                  key={index}
-                  className={cn(
-                    'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                    isCurrent && 'bg-primary/20 border-l-4 border-primary',
-                    isCompleted && !isCurrent && 'text-muted-foreground'
-                  )}
-                >
-                  {isCompleted && (
-                    <Check className="h-3 w-3 text-green-600 shrink-0" />
-                  )}
-                  <span className="font-medium">{item.english}</span>
-                  <span className="text-muted-foreground">-</span>
-                  <span className="text-muted-foreground">{item.spanish}</span>
-                  {isCurrent && (
-                    <Volume2 className="h-3 w-3 ml-auto text-primary shrink-0" />
-                  )}
-                </div>
+          <div className="space-y-3">
+            {/* Group vocabulary by category */}
+            {(() => {
+              // Group items by category, maintaining original order for indexing
+              const grouped = lesson.vocabulary.reduce(
+                (acc, item, index) => {
+                  const category = item.category || 'Other'
+                  if (!acc[category]) {
+                    acc[category] = []
+                  }
+                  acc[category].push({ item, index })
+                  return acc
+                },
+                {} as Record<string, { item: typeof lesson.vocabulary[0]; index: number }[]>
               )
-            })}
+
+              // Define category display order
+              const categoryOrder = [
+                'pronoun', 'verb', 'noun', 'adjective', 'adverb',
+                'preposition', 'phrase', 'question_word', 'time', 'day',
+                'number', 'price', 'symbol', 'Other'
+              ]
+
+              // Sort categories
+              const sortedCategories = Object.keys(grouped).sort((a, b) => {
+                const aIndex = categoryOrder.indexOf(a)
+                const bIndex = categoryOrder.indexOf(b)
+                if (aIndex === -1 && bIndex === -1) return a.localeCompare(b)
+                if (aIndex === -1) return 1
+                if (bIndex === -1) return -1
+                return aIndex - bIndex
+              })
+
+              // Format category name for display
+              const formatCategory = (cat: string) => {
+                if (cat === 'Other') return 'Other'
+                // Capitalize and pluralize
+                const formatted = cat.charAt(0).toUpperCase() + cat.slice(1)
+                // Add 's' for plural unless already ends in 's'
+                return formatted.endsWith('s') ? formatted : formatted + 's'
+              }
+
+              return sortedCategories.map((category) => (
+                <div key={category}>
+                  <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1 pb-0.5 border-b border-muted-foreground/30">
+                    {formatCategory(category)}
+                  </h4>
+                  <ul className="space-y-0.5 pl-1">
+                    {grouped[category].map(({ item, index }) => {
+                      const isCurrent = isVocabPhase && index === vocabIndex
+                      const isCompleted =
+                        phaseState?.items_completed?.includes(`vocab_${index}`) ?? false
+
+                      return (
+                        <li
+                          key={index}
+                          className={cn(
+                            'flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors',
+                            isCurrent && 'bg-primary/20 border-l-4 border-primary',
+                            isCompleted && !isCurrent && 'text-muted-foreground'
+                          )}
+                        >
+                          <span className="text-primary shrink-0">•</span>
+                          {isCompleted && (
+                            <Check className="h-3 w-3 text-green-600 shrink-0" />
+                          )}
+                          <span className="font-medium">{item.english}</span>
+                          <span className="text-muted-foreground">—</span>
+                          <span className="text-muted-foreground">{item.spanish}</span>
+                          {isCurrent && (
+                            <Volume2 className="h-3 w-3 ml-auto text-primary shrink-0" />
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              ))
+            })()}
           </div>
         </CollapsibleSection>
 

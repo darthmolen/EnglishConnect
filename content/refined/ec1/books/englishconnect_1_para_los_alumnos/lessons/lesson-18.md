@@ -36,16 +36,26 @@ Jesucristo dio a los niños la capacidad de hablar, Dios también puede soltarte
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación.
 
+### **Adverbs**
+
 | first               | primero            |
 |---------------------|--------------------|
 | next                | luego              |
 | then                | a continuación     |
 | last                | por último         |
+
+### **Nouns**
+
 | ingredients         | ingredientes       |
+|---------------------|--------------------|
+
+### **Phrases**
+
 | How do you make … ? | ¿Cómo se prepara…? |
+|---------------------|--------------------|
 | You need …          | Necesitas…         |
 
-## **Nouns**
+### **Nouns**
 
 | bread           | pan               |
 |-----------------|-------------------|
@@ -61,7 +71,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 En el apéndice puedes ver más food nouns.
 
-#### **Verbs**
+### **Verbs**
 
 | add  | añadir   |
 |------|----------|
@@ -72,7 +82,7 @@ En el apéndice puedes ver más food nouns.
 | mix  | mezclar  |
 | put  | poner    |
 
-## **Prepositions**
+### **Prepositions**
 
 | in   | en    |
 |------|-------|

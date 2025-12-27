@@ -44,25 +44,46 @@ Puedes orar a Dios; Él te escuchará. Puedes pedirle que te ayude a aprender in
 
 ![](../_page_19_Figure_1.jpeg)
 
-## **Part 1: Repasa la lista de vocabulario con un compañero.**
+## **Memorize Vocabulary**
 
 *Cuando aprendas vocabulario, enfócate en el significado y la pronunciación de cada palabra.*
+
+### **Pronouns**
 
 | I/my              | yo/mi                   |
 |-------------------|-------------------------|
 | you/your          | tú/tus                  |
 | he/his            | él/su (de él)           |
 | she/her           | ella/su (de ella)       |
-|                   |                         |
+
+### **Adverbs**
+
 | no                | no                      |
+|-------------------|-------------------------|
 | yes               | sí                      |
-|                   |                         |
+
+### **Nouns**
+
 | name              | nombre                  |
+|-------------------|-------------------------|
+
+### **Phrases**
+
 | please            | por favor               |
+|-------------------|-------------------------|
 | thank you/thanks  | gracias a ti/gracias    |
-|                   |                         |
 | What is … ?       | ¿Qué es…?/¿Cómo…?       |
 | Nice to meet you. | Es un placer conocerte. |
+
+## **Practice Pattern 1**
+
+Q: What is your (*noun*)? A: My (*noun*) is [answer].
+
+### **Examples**
+
+Q: What is your name? A: My name is Rosa.
+
+Q: What's his name? A: His name is Niko.
 
 ## **Part 2: Practica el patrón 1 con un compañero.**
 

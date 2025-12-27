@@ -15,6 +15,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src" / "backend"))
 sys.path.insert(0, str(PROJECT_ROOT / "src" / "services" / "content-mcp"))
 sys.path.insert(0, str(PROJECT_ROOT / "src" / "tools"))
+sys.path.insert(0, str(PROJECT_ROOT / "tests"))  # For harness imports
 
 
 # Test database URL (use test database to avoid polluting dev data)

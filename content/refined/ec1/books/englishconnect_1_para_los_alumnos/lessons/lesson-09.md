@@ -36,23 +36,33 @@ minutos al día a practicar inglés con un amigo. ¿Tienes dificultades para rec
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a usar las palabras en tu vida. Piensa en cuándo y dónde podrías usar estas palabras.
 
+### **Pronouns**
+
 | I'm          | Soy/estoy             |
 |--------------|-----------------------|
 | he's         | él es/está            |
 | she's        | ella es/está          |
 | they're      | ellos/ellas son/están |
-|              |                       |
-| wearing      | vestir/llevar         |
-| looking for  | buscar                |
-|              |                       |
-| this/these   | este/estos            |
-| that/those   | ese/esos              |
-|              |                       |
-| clothing     | ropa                  |
-| color/colors | color/colores         |
-|              |                       |
 
-#### **Nouns**
+### **Verbs**
+
+| wearing      | vestir/llevar         |
+|--------------|-----------------------|
+| looking for  | buscar                |
+
+### **Pronouns**
+
+| this/these   | este/estos            |
+|--------------|-----------------------|
+| that/those   | ese/esos              |
+
+### **Nouns**
+
+| clothing     | ropa                  |
+|--------------|-----------------------|
+| color/colors | color/colores         |
+
+### **Nouns**
 
 | coat/coats       | abrigo/abrigos   |
 |------------------|------------------|
@@ -63,7 +73,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | skirt/skirts     | falda/faldas     |
 | sweater/sweaters | suéter/suéteres  |
 
-#### **Adjectives**
+### **Adjectives**
 
 | orange | naranja  |
 |--------|----------|

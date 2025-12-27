@@ -39,7 +39,7 @@ de mirar a Jesús y comenzó a fijarse en la tormenta, empezó a hundirse. Al ig
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta aprender más palabras que puedas utilizar en los patrones. Podrías utilizar un diccionario o un traductor o preguntar a un amigo.
 
-## **Verbs**
+### **Verbs**
 
 | build   | construir       |
 |---------|-----------------|
@@ -52,7 +52,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | sell    | vender          |
 | serve   | servir          |
 
-## **Nouns**
+### **Nouns**
 
 | business/businesses  | negocio/negocios             |
 |----------------------|------------------------------|
@@ -63,7 +63,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | product/products     | producto/productos           |
 | warehouse/warehouses | almacén/almacenes            |
 
-#### **Adjectives**
+### **Adjectives**
 
 | challenging | complicado    |
 |-------------|---------------|

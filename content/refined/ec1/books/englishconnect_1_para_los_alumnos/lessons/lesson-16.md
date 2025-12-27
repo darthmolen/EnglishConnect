@@ -36,18 +36,24 @@ a otros. Además, puedes elegir desarrollar nuevos dones. Puedes buscar dones es
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta crear tarjetas de memorización como ayuda para memorizar nuevas palabras. Puedes usar papel o una aplicación.
 
+### **Nouns**
+
 | food/foods | alimento/alimentos |
 |------------|--------------------|
-| eat/eats   | comer              |
 
-## **Nouns 1**
+### **Verbs**
+
+| eat/eats   | comer              |
+|------------|--------------------|
+
+### **Nouns 1**
 
 | breakfast | desayuno |
 |-----------|----------|
 | lunch     | almuerzo |
 | dinner    | cena     |
 
-## **Nouns 2**
+### **Nouns 2**
 
 | fruit          | fruta                                    |
 |----------------|------------------------------------------|
@@ -64,7 +70,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | bread          | pan                                      |
 | rice           | arroz                                    |
 
-#### **Adjectives**
+### **Adjectives**
 
 | bland     | insípido  |
 |-----------|-----------|

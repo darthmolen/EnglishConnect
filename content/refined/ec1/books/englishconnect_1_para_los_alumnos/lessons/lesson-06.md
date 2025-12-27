@@ -36,13 +36,23 @@ ayudarte a crecer y progresar. A medida que ores y pidas Su ayuda, Él te ayudar
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Piensa en situaciones en las que podrías usar la palabra en tu práctica diaria.
 
+### **Nouns**
+
 | family                 | familia            |
 |------------------------|--------------------|
+
+### **Verbs**
+
 | have/has               | tienes/tiene       |
+|------------------------|--------------------|
+
+### **Phrases**
+
 | How many … ?           | ¿Cuántos/cuántas…? |
+|------------------------|--------------------|
 | There are …/There is … | Hay…               |
 
-## **Numbers**
+### **Numbers**
 
 | 1 – one   | 1: uno  |
 |-----------|---------|
@@ -51,7 +61,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 En el apéndice puedes ver más *numbers*.
 
-## **Nouns**
+### **Nouns**
 
 | husband            | esposo                |
 |--------------------|-----------------------|

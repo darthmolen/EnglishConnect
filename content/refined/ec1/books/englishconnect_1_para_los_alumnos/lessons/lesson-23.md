@@ -33,12 +33,13 @@ Aquella mujer creyó y actuó con fe. Extender la mano hacia Jesús fue un peque
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Piensa en situaciones en las que podrías usar la palabra en tu práctica diaria.
 
+### **Phrases**
+
 | What happened to … ?  | ¿Qué le sucedió a…? |
 |-----------------------|---------------------|
-| What is wrong?/What's | ¿Qué pasa?/¿Qué     |
-| wrong?                | problema hay?       |
+| What is wrong?/What's wrong? | ¿Qué pasa?/¿Qué problema hay? |
 
-#### **Nouns**
+### **Nouns**
 
 | arm/arms       | brazo/brazos                 |
 |----------------|------------------------------|
@@ -56,7 +57,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | stomach        | estómago                     |
 | tooth/teeth    | diente/dientes               |
 
-#### **Verbs Present /Verbs Past**
+### **Verbs** Present /Verbs Past**
 
 | break/broke | romper/roto      |
 |-------------|------------------|

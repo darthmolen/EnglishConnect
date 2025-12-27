@@ -36,17 +36,22 @@ sus esfuerzos. Después de un tiempo, Rut se casó de nuevo, tuvo hijos y tuvo s
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a usar las palabras en tu vida. Piensa en cuándo y dónde podrías usar estas palabras.
 
+### **Phrases**
+
 | Can I take your order?           | ¿Puedo tomar su pedido? |
 |----------------------------------|-------------------------|
-| What would you like to<br>order? | ¿Qué quiere pedir?      |
+| What would you like to order?    | ¿Qué quiere pedir?      |
 | I'd like …                       | Quiero…                 |
 | I'd like to order …              | Quiero pedir…           |
-|                                  |                         |
+
+### **Prepositions**
+
 | in                               | en                      |
+|----------------------------------|-------------------------|
 | on                               | en                      |
 | with                             | con                     |
 
-## **Nouns**
+### **Nouns**
 
 | beans              | frijoles (alubias, caraotas,<br>porotos) |
 |--------------------|------------------------------------------|

@@ -21,7 +21,7 @@
 
 ## Phase 5: Teacher Agent (Multi-Part)
 
-### Phase 5A: LessonBasedTeacherAgent (In Progress)
+### Phase 5A: LessonBasedTeacherAgent ✅ Complete
 
 Structured lesson flow with linear phases:
 
@@ -39,8 +39,23 @@ Structured lesson flow with linear phases:
 - Phase-specific system prompts guide behavior
 - Frontend displays phase progress
 
-### Phase 5B: Agentic Tutor (Future)
+### Phase 5B: Agent Test Harness ✅ Complete
 
+Built comprehensive test infrastructure for agents without voice layer:
+
+**Test Harness Features:**
+- `AgentTestHarness` class in `tests/integration/agents/teacher/harness.py`
+- Mock TTS service for testing without voice layer
+- Tool call tracking and verification
+- External prompt file loading with placeholder substitution
+
+**Test Coverage (20 integration tests):**
+- Green path scenarios (intro, vocabulary, patterns, practice, wrap-up)
+- Skip-ahead detection when student demonstrates mastery
+- Bilingual support (Spanish explanations when requested)
+- Semantic behavior validation
+
+**Deferred (original 5B concept):**
 Monitoring agent that interjects with help when student struggles:
 - Detects confusion, hesitation, errors
 - Offers hints, Spanish explanations, encouragement

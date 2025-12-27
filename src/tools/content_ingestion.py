@@ -81,9 +81,9 @@ class LessonParser:
         # Find vocabulary tables (| english | spanish | format)
         table_pattern = r"\|([^|]+)\|([^|]+)\|"
 
-        # Find the Memorize Vocabulary section
+        # Find the Memorize Vocabulary section - capture until Practice Pattern 1
         vocab_section = re.search(
-            r"## \*\*Memorize Vocabulary\*\*(.+?)(?=## |\Z)",
+            r"## \*\*Memorize Vocabulary\*\*(.+?)(?=## \*\*Practice Pattern|\Z)",
             self.content,
             re.DOTALL,
         )
@@ -95,6 +95,7 @@ class LessonParser:
             for match in re.finditer(table_pattern, section_text):
                 english = match.group(1).strip()
                 spanish = match.group(2).strip()
+                word_pos = match.start()
 
                 # Skip header rows and empty rows
                 if english and spanish and english != "---" and not english.startswith("-"):
@@ -103,23 +104,69 @@ class LessonParser:
                         vocabulary.append({
                             "english_word": english,
                             "spanish_translation": spanish,
-                            "category": self._guess_category(english, section_text),
+                            "category": self._guess_category_at_pos(word_pos, section_text),
                         })
 
         return vocabulary
 
+    # Category patterns to look for (ordered by specificity)
+    CATEGORY_PATTERNS = [
+        ("Verbs", "verb"),
+        ("Nouns 1", "noun"),
+        ("Nouns 2", "noun"),
+        ("Nouns", "noun"),
+        ("Adjectives", "adjective"),
+        ("Adverbs", "adverb"),
+        ("Prepositions", "preposition"),
+        ("Pronouns", "pronoun"),
+        ("Phrases", "phrase"),
+        ("Question Words", "question_word"),
+        ("Time", "time"),
+        ("Days", "day"),
+        ("Numbers", "number"),
+        ("Price", "price"),
+        ("Symbols", "symbol"),
+        ("Colors", "color"),
+        ("Places", "place"),
+        ("Food", "food"),
+        ("Clothing", "clothing"),
+        ("Body Parts", "body_part"),
+        ("Family", "family"),
+        ("Occupations", "occupation"),
+    ]
+
+    def _guess_category_at_pos(self, word_pos: int, context: str) -> str | None:
+        """Guess the category based on the word's position in context.
+
+        Looks for ### **Category** headers that appear before the word position.
+        """
+        # Find the closest category header that appears BEFORE this word
+        best_match = None
+        best_pos = -1
+
+        for cat_name, cat_value in self.CATEGORY_PATTERNS:
+            # Look for ### **Category** pattern
+            pattern = rf"###\s*\*\*{cat_name}"
+            for match in re.finditer(pattern, context, re.IGNORECASE):
+                cat_pos = match.start()
+                # Category must appear before word and be closer than any previous match
+                if cat_pos < word_pos and cat_pos > best_pos:
+                    best_pos = cat_pos
+                    best_match = cat_value
+
+        return best_match
+
     def _guess_category(self, word: str, context: str) -> str | None:
-        """Guess the category of a vocabulary word based on context."""
-        # Look for category headers before this word
-        categories = ["Verbs", "Nouns", "Adjectives", "Pronouns"]
-        for cat in categories:
-            if cat in context:
-                # Check if this category header appears before our word
-                cat_pos = context.find(cat)
-                word_pos = context.find(word)
-                if cat_pos < word_pos:
-                    return cat.lower().rstrip("s")  # 'verb', 'noun', etc.
-        return None
+        """Guess the category of a vocabulary word based on context.
+
+        Looks for ### **Category** headers that appear before the word.
+        Deprecated: use _guess_category_at_pos when position is known.
+        """
+        word_pos = context.find(word)
+        if word_pos == -1:
+            return None
+
+        return self._guess_category_at_pos(word_pos, context)
 
     def _extract_patterns(self) -> list[dict]:
         """Extract Q&A patterns from markdown."""

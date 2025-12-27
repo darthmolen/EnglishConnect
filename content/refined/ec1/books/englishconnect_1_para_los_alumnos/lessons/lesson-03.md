@@ -36,27 +36,37 @@ Cuando surjan problemas, busca soluciones. Se te ha dado el albedrío, el poder 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta usar las nuevas palabras en una conversación o en un mensaje para alguien que sepa inglés.
 
+### **Pronouns**
+
 | their          | su (de ellos/ellas)              |
 |----------------|----------------------------------|
-| name@email.com | nombre@<br>correoelectrónico.com |
+
+### **Symbols**
+
+| name@email.com | nombre@correoelectrónico.com     |
+|----------------|----------------------------------|
 | @ (at)         | @ (arroba)                       |
 | . (dot)        | . (punto)                        |
-| When is … ?    | ¿Cuándo es…?                     |
 
-## **Nouns 1**
+### **Phrases**
+
+| When is … ?    | ¿Cuándo es…?                     |
+|----------------|----------------------------------|
+
+### **Nouns 1**
 
 | anniversary | aniversario |
 |-------------|-------------|
 | birthday    | cumpleaños  |
 
-## **Nouns 2**
+### **Nouns 2**
 
 | address      | dirección          |
 |--------------|--------------------|
 | email        | correo electrónico |
 | phone number | número de teléfono |
 
-#### **Days**
+### **Days**
 
 | January 1st  | 1 de enero   |
 |--------------|--------------|

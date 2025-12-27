@@ -103,18 +103,33 @@ class TestLessonProgressService:
         self, mock_db, mock_lesson_phases
     ):
         """Should create new progress if none exists."""
-        # First call returns None (no existing progress)
+        # Create a mock progress that will be "created"
+        created_progress = MagicMock()
+        created_progress.id = 1
+        created_progress.user_id = uuid4()
+        created_progress.lesson_id = 1
+        created_progress.status = "in_progress"
+        created_progress.phase_id = 1
+
+        # First call: get_user_progress returns None (no existing)
         mock_result_none = MagicMock()
         mock_result_none.scalar_one_or_none.return_value = None
 
-        # Second call returns phases
+        # Second call: get_lesson_phases returns phases
         mock_result_phases = MagicMock()
         mock_result_phases.scalars.return_value.all.return_value = mock_lesson_phases
 
-        mock_db.execute = AsyncMock(side_effect=[mock_result_none, mock_result_phases])
+        # Third call: get_user_progress returns the created progress (after flush)
+        mock_result_created = MagicMock()
+        mock_result_created.scalar_one_or_none.return_value = created_progress
+
+        mock_db.execute = AsyncMock(side_effect=[
+            mock_result_none,      # get_user_progress (initial check)
+            mock_result_phases,    # get_lesson_phases
+            mock_result_created,   # get_user_progress (after flush)
+        ])
         mock_db.add = MagicMock()
         mock_db.flush = AsyncMock()
-        mock_db.refresh = AsyncMock()
 
         service = LessonProgressService(mock_db)
         progress, is_new = await service.get_or_create_progress(
@@ -161,38 +176,76 @@ class TestLessonProgressService:
         """Should advance to next phase."""
         # Setup - progress is at intro (phase_id=1)
         mock_progress.phase_id = 1
+        mock_progress.lesson_id = 1
+        mock_progress.phase_state = {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
 
-        mock_result = MagicMock()
-        mock_result.scalars.return_value.all.return_value = mock_lesson_phases
-        mock_db.execute = AsyncMock(return_value=mock_result)
+        # Create a mock for the updated progress that will be returned
+        updated_progress = MagicMock()
+        updated_progress.phase_id = 2
+        updated_progress.phase_state = {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
+
+        # First call: get_lesson_phases
+        mock_result_phases = MagicMock()
+        mock_result_phases.scalars.return_value.all.return_value = mock_lesson_phases
+
+        # Second call: get_user_progress (after flush)
+        mock_result_progress = MagicMock()
+        mock_result_progress.scalar_one_or_none.return_value = updated_progress
+
+        mock_db.execute = AsyncMock(side_effect=[mock_result_phases, mock_result_progress])
         mock_db.flush = AsyncMock()
 
         service = LessonProgressService(mock_db)
-        new_progress = await service.advance_phase(mock_progress)
+        # New signature returns tuple (progress, result_dict)
+        new_progress, result = await service.advance_phase(
+            mock_progress, total_vocab=5, total_patterns=3
+        )
 
         # Should move to vocabulary (phase_id=2)
         assert new_progress.phase_id == 2
-        # Phase state should be reset
-        assert new_progress.phase_state == {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
+        # Result should indicate phase advancement
+        assert result["success"] is True
+        assert result["action"] == "next_phase"
+        assert result["new_phase"] == "vocabulary"
 
     @pytest.mark.asyncio
     async def test_advance_phase_at_last_completes(
         self, mock_db, mock_progress, mock_lesson_phases
     ):
         """Should mark complete when advancing from last phase."""
+        from datetime import datetime
+
         # Setup - progress is at wrapup (last phase, id=5)
         mock_progress.phase_id = 5
+        mock_progress.lesson_id = 1
+        mock_progress.phase_state = {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
 
-        mock_result = MagicMock()
-        mock_result.scalars.return_value.all.return_value = mock_lesson_phases
-        mock_db.execute = AsyncMock(return_value=mock_result)
+        # Create a mock for the completed progress
+        completed_progress = MagicMock()
+        completed_progress.status = "completed"
+        completed_progress.completed_at = datetime.utcnow()
+
+        # First call: get_lesson_phases
+        mock_result_phases = MagicMock()
+        mock_result_phases.scalars.return_value.all.return_value = mock_lesson_phases
+
+        # Second call: get_user_progress (after flush)
+        mock_result_progress = MagicMock()
+        mock_result_progress.scalar_one_or_none.return_value = completed_progress
+
+        mock_db.execute = AsyncMock(side_effect=[mock_result_phases, mock_result_progress])
         mock_db.flush = AsyncMock()
 
         service = LessonProgressService(mock_db)
-        new_progress = await service.advance_phase(mock_progress)
+        # New signature returns tuple (progress, result_dict)
+        new_progress, result = await service.advance_phase(
+            mock_progress, total_vocab=5, total_patterns=3
+        )
 
         assert new_progress.status == "completed"
         assert new_progress.completed_at is not None
+        assert result["success"] is True
+        assert result["action"] == "lesson_complete"
 
     @pytest.mark.asyncio
     async def test_advance_item_index_vocabulary(self, mock_db, mock_progress):
@@ -201,30 +254,32 @@ class TestLessonProgressService:
         mock_db.flush = AsyncMock()
 
         service = LessonProgressService(mock_db)
-        new_index = await service.advance_item_index(
-            mock_progress, item_type="vocab", max_items=3
+        updated_progress, should_advance = await service.advance_item_index(
+            mock_progress, item_type="vocab", total_items=3
         )
 
-        assert new_index == 1
         assert mock_progress.phase_state["vocab_index"] == 1
+        assert should_advance is False  # Not at last item yet
 
     @pytest.mark.asyncio
-    async def test_advance_item_index_at_last_returns_none(
+    async def test_advance_item_index_at_last_returns_should_advance(
         self, mock_db, mock_progress
     ):
-        """Should return None when at last item."""
+        """Should return should_advance=True when reaching last item."""
         mock_progress.phase_state = {"vocab_index": 2, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
+        mock_db.flush = AsyncMock()
 
         service = LessonProgressService(mock_db)
-        new_index = await service.advance_item_index(
-            mock_progress, item_type="vocab", max_items=3
+        updated_progress, should_advance = await service.advance_item_index(
+            mock_progress, item_type="vocab", total_items=3
         )
 
-        assert new_index is None  # At last item, can't advance
+        assert should_advance is True  # At last item, should advance to next phase
 
     @pytest.mark.asyncio
     async def test_record_attempt(self, mock_db, mock_progress):
-        """Should record student attempt."""
+        """Should record correct attempt in items_completed."""
+        mock_progress.phase_state = {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
         mock_db.flush = AsyncMock()
 
         service = LessonProgressService(mock_db)
@@ -235,7 +290,22 @@ class TestLessonProgressService:
             correct=True,
         )
 
-        # Check that attempt was recorded
-        assert len(mock_progress.attempts) == 1
-        assert mock_progress.attempts[0]["item_type"] == "vocab"
-        assert mock_progress.attempts[0]["correct"] is True
+        # Check that item was added to items_completed
+        assert "vocab_0" in mock_progress.phase_state["items_completed"]
+
+    @pytest.mark.asyncio
+    async def test_record_attempt_incorrect_not_added(self, mock_db, mock_progress):
+        """Should not add incorrect attempt to items_completed."""
+        mock_progress.phase_state = {"vocab_index": 0, "pattern_index": 0, "items_completed": [], "can_skip_ahead": False}
+        mock_db.flush = AsyncMock()
+
+        service = LessonProgressService(mock_db)
+        await service.record_attempt(
+            progress=mock_progress,
+            item_type="vocab",
+            item_id="vocab_0",
+            correct=False,
+        )
+
+        # Check that item was NOT added (since it was incorrect)
+        assert "vocab_0" not in mock_progress.phase_state["items_completed"]

@@ -35,11 +35,12 @@ ti. Puedes orar para pedir ayuda; puedes orar para comprender y recordar lo que 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a usar las palabras en tu vida. Piensa en cuándo y dónde podrías usar estas palabras.
 
+### **Nouns**
+
 | job | trabajo |
 |-----|---------|
-|     |         |
 
-## **Nouns 1**
+### **Nouns 1**
 
 | factory    | fábrica     |
 |------------|-------------|
@@ -49,7 +50,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | school     | escuela     |
 | store      | tienda      |
 
-## **Nouns 2**
+### **Nouns 2**
 
 | accountant          | contador                |
 |---------------------|-------------------------|

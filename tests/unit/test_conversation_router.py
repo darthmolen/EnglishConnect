@@ -10,7 +10,7 @@ class TestConversationRouter:
 
     @pytest.mark.asyncio
     async def test_conversation_returns_200(self, mock_auth):
-        """POST /api/conversation should return 200 with AI response."""
+        """POST /api/practice/conversation should return 200 with AI response."""
         from app.main import app
         from app.schemas.lesson import LessonDetail
 
@@ -38,7 +38,7 @@ class TestConversationRouter:
                     transport=ASGITransport(app=app), base_url="http://test"
                 ) as client:
                     response = await client.post(
-                        "/api/conversation",
+                        "/api/practice/conversation",
                         json={"message": "Hello", "lesson_number": 5},
                     )
 
@@ -49,7 +49,7 @@ class TestConversationRouter:
 
     @pytest.mark.asyncio
     async def test_conversation_returns_404_for_missing_lesson(self, mock_auth):
-        """POST /api/conversation should return 404 if lesson not found."""
+        """POST /api/practice/conversation should return 404 if lesson not found."""
         from app.main import app
 
         with patch("app.routers.conversation.LessonService") as mock_service:
@@ -61,7 +61,7 @@ class TestConversationRouter:
                 transport=ASGITransport(app=app), base_url="http://test"
             ) as client:
                 response = await client.post(
-                    "/api/conversation",
+                    "/api/practice/conversation",
                     json={"message": "Hello", "lesson_number": 999},
                 )
 
@@ -69,7 +69,7 @@ class TestConversationRouter:
 
     @pytest.mark.asyncio
     async def test_conversation_accepts_history(self, mock_auth):
-        """POST /api/conversation should accept conversation history."""
+        """POST /api/practice/conversation should accept conversation history."""
         from app.main import app
         from app.schemas.lesson import LessonDetail
 
@@ -96,7 +96,7 @@ class TestConversationRouter:
                     transport=ASGITransport(app=app), base_url="http://test"
                 ) as client:
                     response = await client.post(
-                        "/api/conversation",
+                        "/api/practice/conversation",
                         json={
                             "message": "I like soccer",
                             "lesson_number": 5,
@@ -111,7 +111,7 @@ class TestConversationRouter:
 
     @pytest.mark.asyncio
     async def test_conversation_validates_request(self, mock_auth):
-        """POST /api/conversation should validate request body."""
+        """POST /api/practice/conversation should validate request body."""
         from app.main import app
 
         async with AsyncClient(
@@ -119,7 +119,7 @@ class TestConversationRouter:
         ) as client:
             # Missing required fields
             response = await client.post(
-                "/api/conversation",
+                "/api/practice/conversation",
                 json={"message": "Hello"},  # Missing lesson_number
             )
 

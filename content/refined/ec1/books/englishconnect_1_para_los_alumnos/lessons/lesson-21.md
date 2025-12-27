@@ -33,11 +33,13 @@ Tú puedes hacer esta misma pregunta mediante la oración. Oramos a Dios en el n
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a etiquetar los objetos de tu casa para recordar las palabras en inglés.
 
+### **Phrases**
+
 | There is …  | Hay (singular)… |
 |-------------|-----------------|
 | There are … | Hay (plural)…   |
 
-#### **Nouns**
+### **Nouns**
 
 | bathroom/bathrooms | baño/baños                        |
 |--------------------|-----------------------------------|
@@ -59,7 +61,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 En la lección 20 puedes ver más *nouns*.
 
-## **Prepositions**
+### **Prepositions**
 
 | above   | sobre, encima |
 |---------|---------------|

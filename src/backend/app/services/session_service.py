@@ -4,7 +4,7 @@ Stores conversation data for evaluation and analysis purposes.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from uuid import UUID
 
@@ -27,22 +27,48 @@ class SessionService:
         user_id: Optional[UUID],
         lesson_id: int,
         session_type: str = "conversation_practice",
+        window_minutes: int = 30,
     ) -> PracticeSession:
-        """Get active session or create a new one.
+        """Get active session within time window or create a new one.
 
-        An active session is one that started within the last 30 minutes
-        and hasn't ended.
+        An active session is one that started within the time window
+        and hasn't ended. This enables session continuity when users
+        return within the window.
 
         Args:
             user_id: User UUID (None for anonymous)
             lesson_id: Current lesson ID
             session_type: Type of practice session
+            window_minutes: Time window for session reuse (default 30)
 
         Returns:
             PracticeSession instance
         """
-        # For now, always create a new session
-        # TODO: Implement session continuity logic
+        # Look for existing session within time window
+        if user_id:
+            cutoff = datetime.utcnow() - timedelta(minutes=window_minutes)
+            result = await self.db.execute(
+                select(PracticeSession)
+                .where(
+                    PracticeSession.user_id == user_id,
+                    PracticeSession.lesson_id == lesson_id,
+                    PracticeSession.session_type == session_type,
+                    PracticeSession.started_at >= cutoff,
+                    PracticeSession.ended_at.is_(None),  # Not ended
+                )
+                .order_by(PracticeSession.started_at.desc())
+                .limit(1)
+            )
+            existing = result.scalar_one_or_none()
+
+            if existing:
+                logger.info(
+                    f"Reusing session {existing.id} for lesson {lesson_id} "
+                    f"(started {existing.started_at})"
+                )
+                return existing
+
+        # Create new session
         session = PracticeSession(
             user_id=user_id,
             lesson_id=lesson_id,

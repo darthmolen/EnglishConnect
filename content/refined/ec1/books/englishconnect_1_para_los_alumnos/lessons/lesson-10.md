@@ -33,18 +33,19 @@ Con Dios, lo imposible se vuelve posible. María se convirtió en madre del Hijo
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta utilizar palabras de la sección "Memorize Vocabulary" en tu práctica diaria.
 
+### **Phrases**
+
 | daily routine | rutina diaria |
 |---------------|---------------|
-|               |               |
 
-## **Nouns**
+### **Nouns**
 
 | morning   | mañana                            |
 |-----------|-----------------------------------|
 | afternoon | tarde                             |
 | evening   | última hora de la tarde/<br>noche |
 
-## **Verbs**
+### **Verbs**
 
 | brush my teeth/brushes<br>his teeth  | me cepillo los dientes/se<br>cepilla los dientes |
 |--------------------------------------|--------------------------------------------------|

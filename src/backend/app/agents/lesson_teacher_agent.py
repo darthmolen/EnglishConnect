@@ -1,6 +1,7 @@
 """Lesson-based teacher agent with structured phase progression."""
 
 from app.models.content import LessonPhase
+from app.prompts import load_prompt, render_prompt
 from app.schemas.lesson import LessonDetail
 from app.schemas.lesson_session import PhaseStateSchema, PhaseProgressSchema
 
@@ -70,15 +71,14 @@ class LessonBasedTeacherAgent:
 
     def _get_base_prompt(self) -> str:
         """Get the base personality and context prompt."""
-        return f"""You are a friendly, patient English teacher helping Spanish-speaking learners through a structured lesson.
-
-## Current Lesson: {self.lesson.lesson_number} - {self.lesson.title}
-
-**Objective**: {self.lesson.objective or 'Practice English conversation'}
-
-## Current Phase: {self.phase.phase_name.upper()}
-
-You are guiding the student through a structured lesson. Stay focused on the current phase objectives."""
+        template = load_prompt("teacher/base.md")
+        return render_prompt(
+            template,
+            lesson_number=self.lesson.lesson_number,
+            lesson_title=self.lesson.title,
+            lesson_objective=self.lesson.objective or "Practice English conversation",
+            phase_name=self.phase.phase_name.upper(),
+        )
 
     def _get_phase_prompt(self) -> str:
         """Get phase-specific behavioral instructions."""
@@ -93,29 +93,7 @@ You are guiding the student through a structured lesson. Stay focused on the cur
 
     def _get_tools_prompt(self) -> str:
         """Get the tools usage instructions."""
-        return """## Your Tools:
-
-### speak(text, language, voice)
-Speaks text aloud to the student. You MUST call this tool for EVERY response.
-- text: The text to speak (required)
-- language: "en" for English, "es" for Spanish (required)
-- voice: Use "speaker_b" (optional)
-
-### advance_phase(reason)
-Call this when the current phase objective is complete and you're ready to move on.
-- reason: Brief explanation of why advancing (required)
-
-### record_attempt(item_type, correct)
-Call this after the student attempts a vocabulary word or pattern.
-- item_type: "vocab" or "pattern" (required)
-- correct: true if their attempt was correct (required)
-
-## Important Rules:
-1. ALWAYS use the speak tool - every response must include a speak() call
-2. You are the TUTOR - respond to what the student says
-3. Use simple, clear English appropriate for beginners
-4. If student is confused, use speak() with language "es" for Spanish explanation
-5. Be encouraging and celebrate progress"""
+        return load_prompt("teacher/tools.md")
 
     def _get_current_focus_prompt(self) -> str:
         """Get context about the current item being practiced."""
@@ -123,36 +101,32 @@ Call this after the student attempts a vocabulary word or pattern.
             idx = min(self.phase_state.vocab_index, len(self.lesson.vocabulary) - 1)
             vocab = self.lesson.vocabulary[idx]
             progress = f"Word {idx + 1} of {len(self.lesson.vocabulary)}"
-            return f"""## Current Focus: Vocabulary ({progress})
-**Word**: {vocab.english}
-**Translation**: {vocab.spanish}
-**Category**: {vocab.category or 'general'}"""
+            template = load_prompt("teacher/focus_vocabulary.md")
+            return render_prompt(
+                template,
+                progress=progress,
+                word_english=vocab.english,
+                word_spanish=vocab.spanish,
+                word_category=vocab.category or "general",
+            )
 
         elif self.phase.phase_type == "patterns" and self.lesson.patterns:
             idx = min(self.phase_state.pattern_index, len(self.lesson.patterns) - 1)
             pattern = self.lesson.patterns[idx]
             progress = f"Pattern {idx + 1} of {len(self.lesson.patterns)}"
-            return f"""## Current Focus: Q&A Pattern ({progress})
-**Question**: {pattern.question_template}
-**Answer**: {pattern.answer_template}"""
+            template = load_prompt("teacher/focus_patterns.md")
+            return render_prompt(
+                template,
+                progress=progress,
+                question_template=pattern.question_template,
+                answer_template=pattern.answer_template,
+            )
 
         return ""
 
     def _intro_prompt(self) -> str:
         """Prompt for the introduction phase."""
-        return """## Introduction Phase Instructions:
-
-Your goals in this phase:
-1. Welcome the student warmly
-2. Introduce today's lesson topic and objective
-3. Briefly mention what you'll be learning (vocabulary and patterns)
-4. Ask if they're ready to begin
-
-When the student confirms they're ready, call advance_phase() to move to vocabulary.
-
-Example:
-"Hello! Welcome to today's lesson. We're going to learn about [topic]. First, we'll practice some new words, then learn some conversation patterns. Are you ready to start?"
-"""
+        return load_prompt("teacher/phase_intro.md")
 
     def _vocabulary_prompt(self) -> str:
         """Prompt for the vocabulary phase."""
@@ -161,25 +135,12 @@ Example:
             vocab_lines = [
                 f"- {v.english} = {v.spanish}" for v in self.lesson.vocabulary
             ]
-            vocab_section = "\n".join(vocab_lines)
+            vocab_list = "\n".join(vocab_lines)
         else:
-            vocab_section = "No vocabulary for this lesson."
+            vocab_list = "No vocabulary for this lesson."
 
-        return f"""## Vocabulary Phase Instructions:
-
-You are teaching vocabulary words one at a time. Your process for EACH word:
-1. Say the word clearly in English
-2. Provide the Spanish translation
-3. Use it in a simple example sentence
-4. Ask the student to repeat the word
-5. Listen and confirm/correct their pronunciation
-6. Call record_attempt(item_type="vocab", correct=true/false) based on their response
-7. Call advance_phase() to move to the next word (or to patterns if this is the last word)
-
-## All Vocabulary for This Lesson:
-{vocab_section}
-
-Be patient and encouraging. If they struggle, repeat the word more slowly."""
+        template = load_prompt("teacher/phase_vocabulary.md")
+        return render_prompt(template, vocab_list=vocab_list)
 
     def _patterns_prompt(self) -> str:
         """Prompt for the patterns phase."""
@@ -192,63 +153,38 @@ Be patient and encouraging. If they struggle, repeat the word more slowly."""
                     f"  Q: {p.question_template}\n"
                     f"  A: {p.answer_template}"
                 )
-            patterns_section = "\n".join(pattern_lines)
+            patterns_list = "\n".join(pattern_lines)
         else:
-            patterns_section = "No patterns for this lesson."
+            patterns_list = "No patterns for this lesson."
 
-        return f"""## Patterns Phase Instructions:
-
-You are teaching Q&A patterns. Your process for EACH pattern:
-1. Explain the pattern structure
-2. Give an example question and answer
-3. Ask the student a question using the pattern
-4. Listen to their answer
-5. Confirm if correct or gently guide to the right answer
-6. Call record_attempt(item_type="pattern", correct=true/false)
-7. Call advance_phase() to move to the next pattern (or to practice if this is the last pattern)
-
-## All Patterns for This Lesson:
-{patterns_section}
-
-Help them understand the structure, not just memorize."""
+        template = load_prompt("teacher/phase_patterns.md")
+        return render_prompt(template, patterns_list=patterns_list)
 
     def _practice_prompt(self) -> str:
         """Prompt for the practice phase."""
-        # Build vocab and patterns for reference
-        vocab_list = ", ".join([v.english for v in self.lesson.vocabulary]) if self.lesson.vocabulary else "None"
+        # Build vocab list for reference
+        vocab_words = (
+            ", ".join([v.english for v in self.lesson.vocabulary])
+            if self.lesson.vocabulary
+            else "None"
+        )
 
-        return f"""## Practice Phase Instructions:
+        # Build patterns list for reference
+        if self.lesson.patterns:
+            pattern_lines = []
+            for p in self.lesson.patterns:
+                pattern_lines.append(
+                    f"Pattern {p.pattern_number}:\n"
+                    f"  Q: {p.question_template}\n"
+                    f"  A: {p.answer_template}"
+                )
+            patterns_list = "\n".join(pattern_lines)
+        else:
+            patterns_list = "No patterns for this lesson."
 
-Now the student practices using vocabulary and patterns in natural conversation.
-
-Your approach:
-1. Ask questions that use the learned patterns
-2. Encourage them to use the vocabulary words in answers
-3. Keep the conversation flowing naturally
-4. Gently correct errors - say the correct form and ask them to try again
-5. If they struggle, switch to Spanish briefly to explain, then back to English
-6. After sufficient practice (3-5 good exchanges), call advance_phase() to wrap up
-
-## Available Vocabulary to Practice:
-{vocab_list}
-
-Keep it natural and conversational. Celebrate their successes!"""
+        template = load_prompt("teacher/phase_practice.md")
+        return render_prompt(template, vocab_words=vocab_words, patterns_list=patterns_list)
 
     def _wrapup_prompt(self) -> str:
         """Prompt for the wrap-up phase."""
-        return """## Wrap-up Phase Instructions:
-
-The lesson is almost complete. Your goals:
-1. Summarize what they learned today (vocabulary and patterns)
-2. Celebrate their progress and effort
-3. Mention one thing they did well
-4. Offer a brief tip for continued practice
-5. Ask if they have any questions
-6. Wish them well and encourage them to practice
-
-This is the final phase - be warm and encouraging.
-After wrapping up, call advance_phase() to mark the lesson complete.
-
-Example closing:
-"Great job today! You learned [X] new words and practiced [pattern]. You did especially well with [specific example]. Keep practicing these phrases with friends or family. See you next time!"
-"""
+        return load_prompt("teacher/phase_wrapup.md")

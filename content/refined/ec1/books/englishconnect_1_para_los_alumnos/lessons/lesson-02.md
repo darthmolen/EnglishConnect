@@ -33,6 +33,8 @@ Es posible que creas que aprender inglés es una enorme montaña, una tarea impo
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Dios te ayudará a recordar lo que estás aprendiendo si haces todo lo posible por estudiar.
 
+### **Pronouns**
+
 | I                 | yo                      |
 |-------------------|-------------------------|
 | you               | tú                      |
@@ -40,26 +42,41 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | they              | ellos/ellas             |
 | he                | él                      |
 | she               | ella                    |
+
+### **Verbs**
+
 | I am/I'm          | yo soy/estoy            |
+|-------------------|-------------------------|
 | you are           | tú eres/estás           |
 | we are            | nosotros somos/estamos  |
 | they are          | ellos/ellas son/están   |
 | he is             | él es/está              |
 | she is            | ella es/está            |
+
+### **Phrases**
+
 | How are you?      | ¿Cómo estás?            |
+|-------------------|-------------------------|
 | Nice to meet you. | Es un placer conocerte. |
-|                   |                         |
-| country           | país                    |
+
+### **Question Words**
+
 | what              | qué                     |
+|-------------------|-------------------------|
 | where             | dónde                   |
 
-## **Adjectives**
+### **Nouns**
+
+| country           | país                    |
+|-------------------|-------------------------|
+
+### **Adjectives**
 
 | fine | bien |
 |------|------|
 | OK   | bien |
 
-## **Nouns**
+### **Nouns**
 
 | Japan  | Japón  |
 |--------|--------|

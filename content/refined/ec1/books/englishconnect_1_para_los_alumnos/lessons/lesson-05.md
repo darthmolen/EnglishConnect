@@ -35,17 +35,21 @@ la mente y el corazón para aprender. El Espíritu nos brinda más comprensión 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta usar las nuevas palabras en una conversación o en un mensaje para alguien que sepa inglés.
 
+### **Adverbs**
+
 | because       | porque          |
 |---------------|-----------------|
-| Verbs         |                 |
+
+### **Verbs**
+
 | exercise      | hacer ejercicio |
+|---------------|-----------------|
 | learn English | aprender inglés |
+| play sports   | hacer deporte   |
 
 En la lección 4 puedes ver más verbs.
 
-play sports hacer deporte
-
-## **Adjectives**
+### **Adjectives**
 
 | boring      | aburrido    |
 |-------------|-------------|

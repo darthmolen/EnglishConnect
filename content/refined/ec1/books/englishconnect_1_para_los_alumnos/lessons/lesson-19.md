@@ -33,13 +33,19 @@ Todos comieron y hubo comida de sobra. Fue un milagro. Del mismo modo, es posibl
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Prueba a usar las palabras en tu vida. Piensa en cuándo y dónde podrías usar estas palabras.
 
+### **Verbs**
+
 | buy                      | comprar              |
 |--------------------------|----------------------|
 | cost/costs               | costar               |
 | want                     | querer               |
-| How much does this cost? | ¿Cuánto cuesta esto? |
 
-## **Nouns**
+### **Phrases**
+
+| How much does this cost? | ¿Cuánto cuesta esto? |
+|--------------------------|----------------------|
+
+### **Nouns**
 
 | coat/coats    | abrigo/abrigos        |
 |---------------|-----------------------|
@@ -52,7 +58,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 | car/cars      | automóvil/automóviles |
 | phone/phones  | teléfono/teléfonos    |
 
-## **Price**
+### **Price**
 
 | \$50/fifty dollars | \$50/cincuenta dólares |
 |--------------------|------------------------|
@@ -62,7 +68,7 @@ En el apéndice puedes ver más *numbers*.
 
 En el apéndice puedes ver más *currency*.
 
-## **Adjectives**
+### **Adjectives**
 
 | cheap     | barato |
 |-----------|--------|

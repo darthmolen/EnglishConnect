@@ -35,12 +35,18 @@ notes que cometes errores cuando intentas hablar en inglés o quizás te cueste 
 
 Aprende el significado y la pronunciación de cada palabra antes de ir a tu grupo de conversación. Intenta crear tarjetas de memorización como ayuda para memorizar nuevas palabras. Puedes usar papel o una aplicación.
 
+### **Adverbs**
+
 | not        | no         |
 |------------|------------|
+
+### **Pronouns**
+
 | this/these | este/estos |
+|------------|------------|
 | that/those | ese/esos   |
 
-## **Nouns**
+### **Nouns**
 
 | book/books         | libro/libros                               |
 |--------------------|--------------------------------------------|

@@ -3,12 +3,12 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.content import Lesson, LessonPhase
-from app.models.progress import UserProgress
+from app.models.progress import UserProgress, PracticeSession, ConversationExchange
 from app.schemas.lesson_session import PhaseStateSchema, LessonPhaseSchema
 
 
@@ -97,7 +97,12 @@ class LessonProgressService:
         progress = await self.get_user_progress(user_id, lesson_id)
         return progress, True
 
-    async def advance_phase(self, progress: UserProgress) -> UserProgress:
+    async def advance_phase(
+        self,
+        progress: UserProgress,
+        total_vocab: int = 0,
+        total_patterns: int = 0,
+    ) -> tuple[UserProgress, dict]:
         """Move to the next phase in the lesson.
 
         Handles both advancing within a phase (vocab/pattern index) and
@@ -105,12 +110,14 @@ class LessonProgressService:
 
         Args:
             progress: Current UserProgress record
+            total_vocab: Total vocabulary items in the lesson
+            total_patterns: Total patterns in the lesson
 
         Returns:
-            Updated UserProgress
+            Tuple of (updated UserProgress, result dict with action info)
 
         Raises:
-            ValueError: If already at the last phase
+            ValueError: If current phase not found
         """
         phases = await self.get_lesson_phases(progress.lesson_id)
         current_idx = next(
@@ -123,32 +130,53 @@ class LessonProgressService:
         phase_state = PhaseStateSchema.model_validate(progress.phase_state or {})
         current_phase = phases[current_idx]
 
-        # For vocabulary phase, check if we need to advance vocab_index
-        if current_phase.phase_type == "vocabulary":
-            # Get vocab count from lesson (would need lesson detail)
-            # For now, advance to next phase
-            pass
+        # For vocabulary phase, advance vocab_index if not at last item
+        if current_phase.phase_type == "vocabulary" and phase_state.vocab_index < total_vocab - 1:
+            phase_state.vocab_index += 1
+            progress.phase_state = phase_state.model_dump()
+            await self.session.flush()
+            updated = await self.get_user_progress(progress.user_id, progress.lesson_id)
+            return updated, {
+                "success": True,
+                "action": "next_vocab",
+                "vocab_index": phase_state.vocab_index,
+            }
 
-        # For patterns phase, check if we need to advance pattern_index
-        if current_phase.phase_type == "patterns":
-            # Similar logic
-            pass
+        # For patterns phase, advance pattern_index if not at last item
+        if current_phase.phase_type == "patterns" and phase_state.pattern_index < total_patterns - 1:
+            phase_state.pattern_index += 1
+            progress.phase_state = phase_state.model_dump()
+            await self.session.flush()
+            updated = await self.get_user_progress(progress.user_id, progress.lesson_id)
+            return updated, {
+                "success": True,
+                "action": "next_pattern",
+                "pattern_index": phase_state.pattern_index,
+            }
 
-        # Move to next phase
+        # Move to next phase or complete lesson
         if current_idx >= len(phases) - 1:
-            # Already at last phase (wrapup), mark lesson complete
+            # At last phase (wrapup), mark lesson complete
             progress.status = "completed"
             progress.completed_at = datetime.utcnow()
+            await self.session.flush()
+            updated = await self.get_user_progress(progress.user_id, progress.lesson_id)
+            return updated, {
+                "success": True,
+                "action": "lesson_complete",
+            }
         else:
             next_phase = phases[current_idx + 1]
             progress.phase_id = next_phase.id
             # Reset phase state for new phase
             progress.phase_state = PhaseStateSchema().model_dump()
-
-        await self.session.flush()
-
-        # Reload with updated relationship
-        return await self.get_user_progress(progress.user_id, progress.lesson_id)
+            await self.session.flush()
+            updated = await self.get_user_progress(progress.user_id, progress.lesson_id)
+            return updated, {
+                "success": True,
+                "action": "next_phase",
+                "new_phase": next_phase.phase_type,
+            }
 
     async def advance_item_index(
         self,
@@ -237,3 +265,122 @@ class LessonProgressService:
             LessonPhaseSchema
         """
         return LessonPhaseSchema.model_validate(phase)
+
+    async def get_overall_stats(
+        self, user_id: uuid.UUID, course_id: str = "ec1"
+    ) -> dict:
+        """Get overall progress stats for a user.
+
+        Args:
+            user_id: User UUID
+            course_id: Course identifier (default: ec1)
+
+        Returns:
+            Dict with keys: total_lessons, completed, in_progress, not_started,
+            total_practice_sessions, total_exchanges, total_practice_minutes
+        """
+        # Count total lessons in course
+        total_result = await self.session.execute(
+            select(func.count(Lesson.id)).where(Lesson.course_id == course_id)
+        )
+        total_lessons = total_result.scalar() or 0
+
+        # Count completed lessons for user
+        completed_result = await self.session.execute(
+            select(func.count(UserProgress.id)).where(
+                UserProgress.user_id == user_id,
+                UserProgress.status == "completed",
+            )
+        )
+        completed = completed_result.scalar() or 0
+
+        # Count in-progress lessons for user
+        in_progress_result = await self.session.execute(
+            select(func.count(UserProgress.id)).where(
+                UserProgress.user_id == user_id,
+                UserProgress.status == "in_progress",
+            )
+        )
+        in_progress = in_progress_result.scalar() or 0
+
+        # Count practice sessions for user
+        sessions_result = await self.session.execute(
+            select(func.count(PracticeSession.id)).where(
+                PracticeSession.user_id == user_id
+            )
+        )
+        total_sessions = sessions_result.scalar() or 0
+
+        # Count exchanges in user's sessions
+        exchanges_result = await self.session.execute(
+            select(func.count(ConversationExchange.id))
+            .join(PracticeSession, ConversationExchange.session_id == PracticeSession.id)
+            .where(PracticeSession.user_id == user_id)
+        )
+        total_exchanges = exchanges_result.scalar() or 0
+
+        # Sum practice minutes for user
+        minutes_result = await self.session.execute(
+            select(func.coalesce(func.sum(PracticeSession.duration_seconds), 0)).where(
+                PracticeSession.user_id == user_id
+            )
+        )
+        total_seconds = minutes_result.scalar() or 0
+
+        return {
+            "total_lessons": total_lessons,
+            "completed": completed,
+            "in_progress": in_progress,
+            "not_started": total_lessons - completed - in_progress,
+            "total_practice_sessions": total_sessions,
+            "total_exchanges": total_exchanges,
+            "total_practice_minutes": total_seconds // 60,
+        }
+
+    async def get_lesson_progress_list(
+        self, user_id: uuid.UUID, course_id: str = "ec1"
+    ) -> list[dict]:
+        """Get per-lesson progress for a user.
+
+        Args:
+            user_id: User UUID
+            course_id: Course identifier (default: ec1)
+
+        Returns:
+            List of dicts with keys: lesson_id, lesson_number, title, status,
+            phase_name, started_at, completed_at
+        """
+        # Get all lessons for course
+        lessons_result = await self.session.execute(
+            select(Lesson)
+            .where(Lesson.course_id == course_id)
+            .order_by(Lesson.lesson_number)
+        )
+        lessons = list(lessons_result.scalars().all())
+
+        # Get user's progress with current phase loaded
+        progress_result = await self.session.execute(
+            select(UserProgress)
+            .options(selectinload(UserProgress.current_phase))
+            .where(UserProgress.user_id == user_id)
+        )
+        progress_map = {p.lesson_id: p for p in progress_result.scalars().all()}
+
+        result = []
+        for lesson in lessons:
+            progress = progress_map.get(lesson.id)
+            phase_name = None
+            if progress and progress.current_phase:
+                phase_name = progress.current_phase.phase_name
+
+            result.append({
+                "lesson_id": lesson.id,
+                "lesson_number": lesson.lesson_number,
+                "title": lesson.title,
+                "status": progress.status if progress else "not_started",
+                "phase_name": phase_name,
+                "started_at": progress.started_at if progress else None,
+                "completed_at": progress.completed_at if progress else None,
+            })
+
+        return result

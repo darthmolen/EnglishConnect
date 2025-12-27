@@ -19,47 +19,13 @@ from app.services.lesson_service import LessonService
 from app.services.lesson_progress_service import LessonProgressService
 from app.services.azure_openai import get_agent_response, LESSON_AGENT_TOOLS
 from app.services.tts_service import synthesize_speech
+from app.services.tool_handlers import speak_tool_handler
 from app.agents.lesson_teacher_agent import LessonBasedTeacherAgent
 from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/lesson", tags=["lesson"])
-
-
-async def speak_tool_handler(
-    text: str,
-    language: str,
-    voice: str = "speaker_b"
-) -> dict:
-    """Handle speak tool calls from the agent.
-
-    Args:
-        text: Text to speak
-        language: Language code (en or es)
-        voice: Voice ID
-
-    Returns:
-        Dict with audio_base64 and metadata
-    """
-    try:
-        result = await synthesize_speech(text=text, voice=voice)
-        return {
-            "spoken": True,
-            "text": text,
-            "language": language,
-            "audio_base64": result["audio_base64"],
-            "format": result["format"],
-            "sample_rate": result["sample_rate"],
-        }
-    except Exception as e:
-        logger.error(f"TTS synthesis failed: {e}")
-        return {
-            "spoken": False,
-            "text": text,
-            "language": language,
-            "error": str(e),
-        }
 
 
 @router.post("/conversation", response_model=LessonConversationResponse)
@@ -155,65 +121,28 @@ async def lesson_conversation(
 
         logger.info(f"advance_phase called: {reason}")
 
-        # Get lesson phases to determine current position
-        phases = await progress_service.get_lesson_phases(lesson_model.id)
-        current_idx = next(
-            (i for i, p in enumerate(phases) if p.id == progress.phase_id), None
-        )
+        try:
+            updated_progress, result = await progress_service.advance_phase(
+                progress=progress,
+                total_vocab=len(lesson.vocabulary),
+                total_patterns=len(lesson.patterns),
+            )
 
-        if current_idx is None:
-            return {"success": False, "error": "Current phase not found"}
-
-        current_phase_type = phases[current_idx].phase_type
-
-        # For vocabulary/patterns, check if we're advancing within the phase
-        if current_phase_type == "vocabulary" and new_phase_state.vocab_index < len(lesson.vocabulary) - 1:
-            # Advance to next vocabulary word
-            new_phase_state.vocab_index += 1
-            progress.phase_state = new_phase_state.model_dump()
-            await db.flush()
-            return {
-                "success": True,
-                "action": "next_vocab",
-                "vocab_index": new_phase_state.vocab_index,
-            }
-
-        elif current_phase_type == "patterns" and new_phase_state.pattern_index < len(lesson.patterns) - 1:
-            # Advance to next pattern
-            new_phase_state.pattern_index += 1
-            progress.phase_state = new_phase_state.model_dump()
-            await db.flush()
-            return {
-                "success": True,
-                "action": "next_pattern",
-                "pattern_index": new_phase_state.pattern_index,
-            }
-
-        else:
-            # Advance to next phase
-            if current_idx >= len(phases) - 1:
-                # At last phase (wrapup), mark complete
-                progress.status = "completed"
-                from datetime import datetime
-                progress.completed_at = datetime.utcnow()
-                await db.flush()
-                return {
-                    "success": True,
-                    "action": "lesson_complete",
-                }
-            else:
-                next_phase = phases[current_idx + 1]
-                progress.phase_id = next_phase.id
-                new_phase_state = PhaseStateSchema()  # Reset state for new phase
-                progress.phase_state = new_phase_state.model_dump()
-                new_phase = next_phase
+            # Update local state from service result
+            if result.get("action") == "next_phase":
+                new_phase = updated_progress.current_phase
+                new_phase_state = PhaseStateSchema.model_validate(
+                    updated_progress.phase_state or {}
+                )
                 phase_advanced = True
-                await db.flush()
-                return {
-                    "success": True,
-                    "action": "next_phase",
-                    "new_phase": next_phase.phase_type,
-                }
+            elif result.get("action") in ("next_vocab", "next_pattern"):
+                new_phase_state = PhaseStateSchema.model_validate(
+                    updated_progress.phase_state or {}
+                )
+
+            return result
+        except ValueError as e:
+            return {"success": False, "error": str(e)}
 
     async def record_attempt_handler(item_type: str, correct: bool) -> dict:
         """Handle record_attempt tool calls."""
