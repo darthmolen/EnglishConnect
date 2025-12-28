@@ -35,6 +35,9 @@ class Lesson(Base):
     objective: Mapped[str | None] = mapped_column(Text)
     learning_principle: Mapped[str | None] = mapped_column(Text)
     learning_principle_title: Mapped[str | None] = mapped_column(String(200))
+    learning_principle_full: Mapped[str | None] = mapped_column(Text)  # Full principle text
+    ponder_questions: Mapped[list | None] = mapped_column(JSONB)  # Reflection questions
+    pattern_images: Mapped[list | None] = mapped_column(JSONB)  # Figure image paths
     content_path: Mapped[str | None] = mapped_column(String(500))  # Path to markdown file
 
     # Relationships

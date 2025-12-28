@@ -36,6 +36,9 @@ class LessonParser:
             "objective": self._extract_objective(),
             "learning_principle_title": self._extract_principle_title(),
             "learning_principle": self._extract_principle_content(),
+            "learning_principle_full": self._extract_principle_full(),
+            "ponder_questions": self._extract_ponder_questions(),
+            "pattern_images": self._extract_pattern_images(),
             "vocabulary": self._extract_vocabulary(),
             "qa_patterns": self._extract_patterns(),
             "evaluation_criteria": self._extract_criteria(),
@@ -73,6 +76,73 @@ class LessonParser:
         if match:
             return match.group(1).strip()
         return None
+
+    def _extract_principle_full(self) -> str | None:
+        """Extract full learning principle text including all paragraphs.
+
+        Captures text from principle section headers (like "## **Eres un hijo de Dios**")
+        until the next major section (## **Ponder** or ## **Memorize**).
+
+        Lesson 1 has a separate section header for the principle.
+        Lessons 2+ have content directly after the italic summary.
+        """
+        # First try: Lesson 1 style - separate section header like "## **Eres un hijo de Dios**"
+        match = re.search(
+            r"## \*\*(?:Eres|You Are|El|La|Los|Las|Ser|Tener|Hacer|Escuchar|Hablar|Actuar|Orar|Confiar).+?\*\*\n\n(.+?)(?=## \*\*Ponder|## \*\*Memorize)",
+            self.content,
+            re.DOTALL,
+        )
+
+        # Fallback: Lessons 2+ style - content after italic summary, before ## **Ponder**
+        if not match:
+            match = re.search(
+                r"Study the Principle of Learning:.+?\n\n\*.+?\*\n\n(.+?)(?=## \*\*Ponder)",
+                self.content,
+                re.DOTALL,
+            )
+
+        if match:
+            # Clean up the text - remove image references and extra whitespace
+            text = match.group(1)
+            text = re.sub(r"!\[.*?\]\(.*?\)", "", text)  # Remove image refs
+            text = re.sub(r"\n{3,}", "\n\n", text)  # Normalize whitespace
+            return text.strip()
+        return None
+
+    def _extract_ponder_questions(self) -> list[str]:
+        """Extract ponder/reflection questions from ## **Ponder** section."""
+        questions = []
+
+        # Find the Ponder section
+        ponder_section = re.search(
+            r"## \*\*Ponder\*\*(.+?)(?=## |\Z)",
+            self.content,
+            re.DOTALL,
+        )
+
+        if ponder_section:
+            section_text = ponder_section.group(1)
+            # Find bullet points (- or •)
+            for match in re.finditer(r"[-•]\s*(.+?)(?:\n|$)", section_text):
+                question = match.group(1).strip()
+                if question and not question.startswith("!"):  # Skip image refs
+                    questions.append(question)
+
+        return questions
+
+    def _extract_pattern_images(self) -> list[str]:
+        """Extract Figure image paths from markdown (not Picture images).
+
+        Figures are typically pattern diagrams, while Pictures are generic photos.
+        """
+        images = []
+
+        # Find all image references with Figure in the filename
+        for match in re.finditer(r"!\[.*?\]\(\.\./(_page_\d+_Figure_\d+\.jpeg)\)", self.content):
+            image_path = match.group(1)
+            images.append(image_path)
+
+        return images
 
     def _extract_vocabulary(self) -> list[dict]:
         """Extract vocabulary tables from markdown."""
@@ -233,7 +303,8 @@ class LessonParser:
             # Find bullet points starting with "Say", "Ask", etc.
             for match in re.finditer(r"[•\*]\s*(.+?)(?:\n|$)", section_text):
                 criterion = match.group(1).strip()
-                if criterion and not criterion.startswith("!"):  # Skip image refs
+                # Skip image refs, short entries, and asterisk-only entries from headers
+                if criterion and not criterion.startswith("!") and len(criterion) > 2:
                     criteria.append(criterion)
 
         return criteria
@@ -289,6 +360,9 @@ async def ingest_course(
             lesson.objective = lesson_data["objective"]
             lesson.learning_principle = lesson_data["learning_principle"]
             lesson.learning_principle_title = lesson_data["learning_principle_title"]
+            lesson.learning_principle_full = lesson_data["learning_principle_full"]
+            lesson.ponder_questions = lesson_data["ponder_questions"]
+            lesson.pattern_images = lesson_data["pattern_images"]
             lesson.content_path = str(lesson_file.relative_to(lessons_dir.parent.parent.parent.parent))
         else:
             # Create new lesson
@@ -299,6 +373,9 @@ async def ingest_course(
                 objective=lesson_data["objective"],
                 learning_principle=lesson_data["learning_principle"],
                 learning_principle_title=lesson_data["learning_principle_title"],
+                learning_principle_full=lesson_data["learning_principle_full"],
+                ponder_questions=lesson_data["ponder_questions"],
+                pattern_images=lesson_data["pattern_images"],
                 content_path=str(lesson_file.relative_to(lessons_dir.parent.parent.parent.parent)),
             )
             session.add(lesson)

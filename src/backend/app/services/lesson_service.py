@@ -87,6 +87,9 @@ class LessonService:
             objective=lesson.objective,
             learning_principle_title=lesson.learning_principle_title,
             learning_principle_content=lesson.learning_principle,
+            learning_principle_full=lesson.learning_principle_full,
+            ponder_questions=lesson.ponder_questions or [],
+            pattern_images=lesson.pattern_images or [],
             vocabulary=[
                 VocabularyItemSchema(
                     english=v.english_word,

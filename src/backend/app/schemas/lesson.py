@@ -36,6 +36,9 @@ class LessonDetail(BaseModel):
     objective: str | None = None
     learning_principle_title: str | None = None
     learning_principle_content: str | None = None
+    learning_principle_full: str | None = None
+    ponder_questions: list[str] = []
+    pattern_images: list[str] = []
     vocabulary: list[VocabularyItemSchema] = []
     patterns: list[QAPatternSchema] = []
     evaluation_criteria: list[str] = []

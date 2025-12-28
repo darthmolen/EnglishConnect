@@ -1,4 +1,4 @@
-# Phases 4-10: Future Work
+# Phases 4-13: Future Work
 
 ## Phase 4: Auth + Memory + Progress Tracking
 
@@ -78,7 +78,11 @@ Free practice with prompts for uncovered content:
 - Gentle prompts for uncovered material
 - End-of-session coverage report
 
-## Phase 6: Demo Agent (Optional)
+## Phase 6: UI Content Reorganization ✅ Complete
+
+See `planning/completed/phase-06*.md` for details.
+
+## Phase 7: Demo Agent (Optional)
 
 *Can be done with static files, not as impressive as live conversation.*
 
@@ -86,13 +90,50 @@ Free practice with prompts for uncovered content:
 - Use TTS MCP to generate 2-voice audio files
 - Pre-rendered examples for marketing/docs
 
-## Phase 7: Notifications (Stretch)
+## Phase 8: Evaluations
 
-- Celery + Redis for task scheduling
-- Reminder scheduling with timezone support
-- Practice streak tracking
+**Goal**: Systematic approach to measuring and improving agent quality over time.
 
-## Phase 8: Azure Cloud Deployment
+- Define evaluation criteria and metrics
+- Build evaluation harness for automated testing
+- Track agent performance across versions
+- A/B testing framework for prompt variations
+- Quality regression detection
+
+## Phase 9: Full Agentic with A2A Support
+
+- Agent-to-Agent protocol evaluation
+- STT as MCP tool (if not using Realtime API)
+- Multi-agent orchestration
+- Teacher + Evaluator + Conversation agents
+
+## Phase 10: Token/Compute Optimization
+
+- Vector embeddings for patterns (pgvector)
+- RAG pipeline for lesson context
+- Tiered LLM strategy (local → GPT-4o-mini → GPT-4o)
+- Conversation summarization for long sessions
+- Caching frequent responses
+
+## Phase 11: Prompt Engineering & Agent Testing
+
+**Goal**: Systematic testing and refinement of agent behavior through prompt engineering.
+
+**Test Cases:**
+
+1. **TTS Consistency** - Agent calls speak() tool every time in a 3-turn conversation
+2. **Spanish Explanation** - Agent explains in Spanish when student asks for clarification
+3. **Grammar Quality** - Agent responses are grammatically correct
+4. **Vocabulary Adherence** - Agent stays within lesson vocabulary and patterns
+
+**Implementation:**
+
+- Create test harness for automated agent behavior testing
+- Define evaluation criteria for each test case
+- Build prompt iteration workflow
+- Track prompt versions and their test results
+
+## Phase 12: Azure Cloud Deployment
 
 **Goal**: Move from local GPU to cloud-hosted voice pipeline.
 
@@ -170,35 +211,8 @@ Cloud:  Mic → Realtime API → Speaker (1 service)
 
 For a non-profit learner app, budget ~$100-200/month at moderate usage.
 
-## Phase 9: Full Agentic with A2A Support
+## Phase 13: Notifications (Stretch)
 
-- Agent-to-Agent protocol evaluation
-- STT as MCP tool (if not using Realtime API)
-- Multi-agent orchestration
-- Teacher + Evaluator + Conversation agents
-
-## Phase 10: Token/Compute Optimization
-
-- Vector embeddings for patterns (pgvector)
-- RAG pipeline for lesson context
-- Tiered LLM strategy (local → GPT-4o-mini → GPT-4o)
-- Conversation summarization for long sessions
-- Caching frequent responses
-
-## Phase 11: Prompt Engineering & Agent Testing
-
-**Goal**: Systematic testing and refinement of agent behavior through prompt engineering.
-
-**Test Cases:**
-
-1. **TTS Consistency** - Agent calls speak() tool every time in a 3-turn conversation
-2. **Spanish Explanation** - Agent explains in Spanish when student asks for clarification
-3. **Grammar Quality** - Agent responses are grammatically correct
-4. **Vocabulary Adherence** - Agent stays within lesson vocabulary and patterns
-
-**Implementation:**
-
-- Create test harness for automated agent behavior testing
-- Define evaluation criteria for each test case
-- Build prompt iteration workflow
-- Track prompt versions and their test results
+- Celery + Redis for task scheduling
+- Reminder scheduling with timezone support
+- Practice streak tracking

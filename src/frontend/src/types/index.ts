@@ -27,10 +27,15 @@ export interface LessonDetail {
   objective: string | null
   learning_principle_title: string | null
   learning_principle_content: string | null
+  learning_principle_full: string | null
+  ponder_questions: string[]
+  pattern_images: string[]
   vocabulary: VocabularyItem[]
   patterns: QAPattern[]
   evaluation_criteria: string[]
 }
+
+export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary' | 'patterns'
 
 export interface ChatMessage {
   role: "user" | "assistant"

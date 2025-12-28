@@ -72,6 +72,9 @@ class TestLessonService:
         mock_lesson.objective = "Learn hobbies"
         mock_lesson.learning_principle_title = "Faith"
         mock_lesson.learning_principle = "Learn by faith"
+        mock_lesson.learning_principle_full = "Full text about faith and learning"
+        mock_lesson.ponder_questions = ["What is faith?"]
+        mock_lesson.pattern_images = ["_page_19_Figure_1.jpeg"]
 
         # Mock vocabulary
         mock_vocab = MagicMock()
