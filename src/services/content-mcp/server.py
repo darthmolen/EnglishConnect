@@ -459,5 +459,101 @@ async def get_example_sentences(course_id: str, lesson_number: int) -> str:
         })
 
 
+# Audio content directory (relative to project root)
+AUDIO_BASE = Path(__file__).parent.parent.parent.parent / "content" / "audio"
+
+
+@mcp.tool()
+async def list_demo_audio(course_id: str, lesson_number: int = None) -> str:
+    """List available demo audio files for a course.
+
+    Searches the content/audio directory for generated demo dialogues.
+
+    Args:
+        course_id: Course identifier (e.g., 'ec1')
+        lesson_number: Optional lesson number to filter by
+
+    Returns:
+        JSON array of demo audio metadata
+    """
+    import glob
+    import base64
+
+    demos_dir = AUDIO_BASE / course_id / "demos"
+    if not demos_dir.exists():
+        return json.dumps([])
+
+    if lesson_number:
+        pattern = str(demos_dir / f"lesson-{lesson_number:02d}" / "*.json")
+    else:
+        pattern = str(demos_dir / "lesson-*" / "*.json")
+
+    demos = []
+    for meta_path in glob.glob(pattern):
+        try:
+            with open(meta_path) as f:
+                meta = json.load(f)
+            # Add audio path and stream URL
+            audio_path = Path(meta_path).with_suffix(".wav")
+            meta["audio_path"] = str(audio_path)
+            meta["has_audio"] = audio_path.exists()
+            demos.append(meta)
+        except Exception:
+            continue
+
+    # Sort by lesson_number, pattern_number, example_index
+    demos.sort(key=lambda d: (
+        d.get("lesson_number", 0),
+        d.get("pattern_number", 0),
+        d.get("example_index", 0),
+    ))
+
+    return json.dumps(demos)
+
+
+@mcp.tool()
+async def get_demo_audio(audio_path: str) -> str:
+    """Get a specific demo audio file as base64.
+
+    Args:
+        audio_path: Full path to the audio file (from list_demo_audio)
+
+    Returns:
+        JSON with base64-encoded audio and metadata
+    """
+    import base64
+
+    audio_path = Path(audio_path)
+    if not audio_path.exists():
+        return json.dumps({"error": f"Audio file not found: {audio_path}"})
+
+    # Security: Validate path is within expected directory
+    try:
+        audio_path.resolve().relative_to(AUDIO_BASE.resolve())
+    except ValueError:
+        return json.dumps({"error": "Invalid audio path"})
+
+    # Read audio file
+    with open(audio_path, "rb") as f:
+        audio_b64 = base64.b64encode(f.read()).decode("utf-8")
+
+    # Load metadata if available
+    meta_path = audio_path.with_suffix(".json")
+    meta = {}
+    if meta_path.exists():
+        try:
+            with open(meta_path) as f:
+                meta = json.load(f)
+        except Exception:
+            pass
+
+    return json.dumps({
+        "audio_base64": audio_b64,
+        "format": "wav",
+        "sample_rate": meta.get("sample_rate", 24000),
+        **meta,
+    })
+
+
 if __name__ == "__main__":
     mcp.run()

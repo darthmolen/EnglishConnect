@@ -9,11 +9,13 @@ export function useConversation() {
     messages,
     selectedLessonNumber,
     isLoading,
+    agentMode,
     addMessage,
     clearMessages,
     setIsLoading,
     setIsRecording: setStoreIsRecording,
     setIsPlaying: setStoreIsPlaying,
+    updatePhaseInfo,
   } = useConversationStore()
 
   const {
@@ -48,11 +50,16 @@ export function useConversation() {
         }
 
         // Step 2: Add user message with transcribed text
-        addMessage({ role: 'user', content: transcribedText })
+        addMessage({ role: 'user', content: transcribedText, agentMode })
 
-        // Step 3: Get AI response
-        const response = await sendMessage(transcribedText, selectedLessonNumber, messages)
-        addMessage({ role: 'assistant', content: response.text })
+        // Step 3: Get AI response (route to appropriate agent)
+        const response = await sendMessage(transcribedText, selectedLessonNumber, messages, agentMode)
+        addMessage({ role: 'assistant', content: response.text, agentMode })
+
+        // Update phase info if lesson agent returned it
+        if (response.phase) {
+          updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
+        }
 
         // Step 4: Play agent-generated audio if available
         if (response.audio_base64) {
@@ -79,10 +86,12 @@ export function useConversation() {
     [
       selectedLessonNumber,
       messages,
+      agentMode,
       addMessage,
       setIsLoading,
       setStoreIsPlaying,
       playAudio,
+      updatePhaseInfo,
     ]
   )
 
@@ -122,13 +131,18 @@ export function useConversation() {
       if (!selectedLessonNumber || !text.trim()) return
 
       // Add user message
-      addMessage({ role: 'user', content: text })
+      addMessage({ role: 'user', content: text, agentMode })
       setIsLoading(true)
 
       try {
-        // Get AI response (agent may include audio from speak() tool)
-        const response = await sendMessage(text, selectedLessonNumber, messages)
-        addMessage({ role: 'assistant', content: response.text })
+        // Get AI response (route to appropriate agent)
+        const response = await sendMessage(text, selectedLessonNumber, messages, agentMode)
+        addMessage({ role: 'assistant', content: response.text, agentMode })
+
+        // Update phase info if lesson agent returned it
+        if (response.phase) {
+          updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
+        }
 
         // Play agent-generated audio if available
         if (response.audio_base64) {
@@ -155,10 +169,12 @@ export function useConversation() {
     [
       selectedLessonNumber,
       messages,
+      agentMode,
       addMessage,
       setIsLoading,
       setStoreIsPlaying,
       playAudio,
+      updatePhaseInfo,
     ]
   )
 

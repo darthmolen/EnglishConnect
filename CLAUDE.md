@@ -120,5 +120,16 @@ python -m pytest tests/
 ## Architecture Decision Records
 
 When making decisions that affect the architecture, consult and update:
+
 - `documentation/ADR/` - Architecture Decision Records
 - Create new ADR documents for significant architectural changes
+
+## Planning Process
+
+Phase-based development workflow:
+
+1. **Start a phase:** Create `planning/in_progress/phase-XX-name.md` with goals and tasks
+2. **Complete a phase:** Move file to `planning/completed/` when done
+3. **Backlog items:** Add user-requested future work to `planning/backlog/backlog.md`
+
+Current phases are tracked in `planning/backlog/backlog.md` with status indicators (✅ Complete, etc.).

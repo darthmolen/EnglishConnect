@@ -37,9 +37,12 @@ export interface LessonDetail {
 
 export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary' | 'patterns'
 
+export type AgentMode = 'conversation' | 'lesson' | 'demo'
+
 export interface ChatMessage {
   role: "user" | "assistant"
   content: string
+  agentMode?: AgentMode  // Track which agent generated this message
 }
 
 export interface ConversationRequest {
@@ -108,4 +111,23 @@ export interface LessonConversationResponse {
   audio_base64: string | null
   audio_format: string
   language: string
+}
+
+export interface DemoConversationResponse {
+  text: string
+  lesson_number: number
+  audio_base64: string | null
+  audio_format: string
+  language: string
+  demo_played: number | null  // Index of demo that was played
+}
+
+// Unified response type that handles all agent responses
+export type AgentResponse = ConversationResponse & {
+  // Optional fields from lesson agent
+  phase?: LessonPhase
+  phase_state?: PhaseState
+  phase_progress?: PhaseProgress | null
+  // Optional fields from demo agent
+  demo_played?: number | null
 }

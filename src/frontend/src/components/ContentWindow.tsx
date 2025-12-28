@@ -67,6 +67,7 @@ export function ContentWindow({
           isPatternPhase={isPatternPhase}
           patternIndex={patternIndex}
           phaseState={phaseState}
+          lessonNumber={lesson.lesson_number}
         />
       )}
       {activeSection === 'vocabulary' && (

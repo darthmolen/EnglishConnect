@@ -42,9 +42,9 @@ function SectionButton({ title, isActive, onClick }: SectionButtonProps) {
 const SECTIONS: { id: LessonSection; title: string }[] = [
   { id: 'principle', title: 'Learning Principle' },
   { id: 'goals', title: 'Learning Goals' },
-  { id: 'practice', title: 'Practice' },
   { id: 'vocabulary', title: 'Vocabulary' },
   { id: 'patterns', title: 'Patterns' },
+  { id: 'practice', title: 'Practice' },
 ]
 
 export function LessonSections({

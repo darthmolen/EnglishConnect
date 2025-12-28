@@ -6,11 +6,12 @@ import type {
   LessonSummary,
   LessonDetail,
   ConversationRequest,
-  ConversationResponse,
   TTSRequest,
   TTSResponse,
   STTResponse,
   ChatMessage,
+  AgentMode,
+  AgentResponse,
 } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -58,21 +59,31 @@ export async function fetchLessonDetail(
   return response.json()
 }
 
+// Agent endpoint mapping
+const AGENT_ENDPOINTS: Record<AgentMode, string> = {
+  conversation: '/conversation',
+  lesson: '/lesson/conversation',
+  demo: '/demo/conversation',
+}
+
 /**
  * Send a conversation message and get AI response.
+ * Routes to the appropriate agent based on agentMode.
  */
 export async function sendMessage(
   message: string,
   lessonNumber: number,
-  history: ChatMessage[]
-): Promise<ConversationResponse> {
+  history: ChatMessage[],
+  agentMode: AgentMode = 'conversation'
+): Promise<AgentResponse> {
   const request: ConversationRequest = {
     message,
     lesson_number: lessonNumber,
     history,
   }
 
-  const response = await fetchWithAuth(`${API_BASE}/conversation`, {
+  const endpoint = AGENT_ENDPOINTS[agentMode]
+  const response = await fetchWithAuth(`${API_BASE}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

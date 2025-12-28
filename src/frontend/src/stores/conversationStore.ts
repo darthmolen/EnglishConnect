@@ -8,6 +8,7 @@ import type {
   PhaseState,
   PhaseProgress,
   LessonSection,
+  AgentMode,
 } from '@/types'
 
 interface ConversationState {
@@ -35,6 +36,9 @@ interface ConversationState {
   isRecording: boolean
   isPlaying: boolean
 
+  // Agent mode (which agent handles conversation)
+  agentMode: AgentMode
+
   // Actions
   setLessons: (lessons: LessonSummary[]) => void
   setCurrentLesson: (lesson: LessonDetail | null) => void
@@ -52,6 +56,7 @@ interface ConversationState {
     progress: PhaseProgress | null
   ) => void
   clearPhaseInfo: () => void
+  setAgentMode: (mode: AgentMode) => void
 }
 
 export const useConversationStore = create<ConversationState>()(
@@ -73,6 +78,9 @@ export const useConversationStore = create<ConversationState>()(
       phaseState: null,
       phaseProgress: null,
 
+      // Agent mode - default to conversation partner
+      agentMode: 'conversation' as AgentMode,
+
       // Actions
       setLessons: (lessons) => set({ lessons }),
 
@@ -83,13 +91,22 @@ export const useConversationStore = create<ConversationState>()(
           selectedLessonNumber: lessonNumber,
           messages: [], // Clear conversation when switching lessons
           activeSection: 'principle',  // Reset to principle when switching lessons
+          agentMode: 'conversation',  // Reset to conversation agent when switching lessons
           // Reset phase info when switching lessons
           currentPhase: null,
           phaseState: null,
           phaseProgress: null,
         }),
 
-      setActiveSection: (section) => set({ activeSection: section }),
+      setActiveSection: (section) => {
+        // Determine agent mode based on section
+        let newAgentMode: AgentMode = 'conversation'
+        if (section === 'vocabulary' || section === 'patterns') {
+          newAgentMode = 'lesson'
+        }
+        // Note: 'demo' mode is set explicitly via setAgentMode when user clicks Demo Play
+        return set({ activeSection: section, agentMode: newAgentMode })
+      },
 
       toggleGoal: (lessonNumber, goalIndex) =>
         set((state) => {
@@ -139,6 +156,8 @@ export const useConversationStore = create<ConversationState>()(
           phaseState: null,
           phaseProgress: null,
         }),
+
+      setAgentMode: (mode) => set({ agentMode: mode }),
     }),
     {
       name: 'englishconnect-goals',

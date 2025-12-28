@@ -1,0 +1,21 @@
+{
+  "lesson_number": 5,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why do you like to sing?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I like to sing because it's fun."
+    }
+  ],
+  "created_at": "2025-12-28T16:04:43.224315+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

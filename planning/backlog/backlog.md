@@ -82,13 +82,26 @@ Free practice with prompts for uncovered content:
 
 See `planning/completed/phase-06*.md` for details.
 
-## Phase 7: Demo Agent (Optional)
+## Phase 7: Demo Agent ✅ Complete
 
-*Can be done with static files, not as impressive as live conversation.*
+Demo dialogue generator implemented with TTS audio generation.
 
-- Build demo dialogue generator from lesson Q&A patterns
-- Use TTS MCP to generate 2-voice audio files
-- Pre-rendered examples for marketing/docs
+**Implemented:**
+
+- `src/tools/demo-generator/generate_demos.py` - CLI tool for generating demo audio
+- Content MCP tools: `list_demo_audio()`, `get_demo_audio()`
+- Backend audio streaming: `GET /api/audio/demos/{course_id}`, `GET /api/audio/stream/{path}`
+- 19 demo audio files generated (5.3MB) with Grace (teacher) + Davis (student) voices
+
+**Usage:**
+
+```bash
+python src/tools/demo-generator/generate_demos.py --lesson 5 --single
+python src/tools/demo-generator/generate_demos.py --all
+```
+
+**Known Issue - Missing Example Sentences:**
+Lessons 1-4, 6-7, 10-13, 15, 18-21, 24-25 have no example sentences in the database. Their Q&A patterns were not extracted with concrete examples during content ingestion. This should be addressed by improving the content ingestion regex patterns or manually adding examples.
 
 ## Phase 8: Evaluations
 

@@ -1,4 +1,5 @@
 import { CompactVocabulary } from './CompactVocabulary'
+import { DemoPlayer } from './DemoPlayer'
 import { PatternsView } from './PatternsView'
 import type { VocabularyItem, QAPattern, PhaseState } from '@/types'
 
@@ -9,6 +10,8 @@ interface PracticeViewProps {
   isPatternPhase?: boolean
   patternIndex?: number
   phaseState?: PhaseState | null
+  courseId?: string
+  lessonNumber?: number
 }
 
 export function PracticeView({
@@ -18,6 +21,8 @@ export function PracticeView({
   isPatternPhase = false,
   patternIndex = 0,
   phaseState,
+  courseId = 'ec1',
+  lessonNumber,
 }: PracticeViewProps) {
   const hasVocabulary = vocabulary.length > 0
   const hasPatterns = patterns.length > 0
@@ -35,6 +40,11 @@ export function PracticeView({
       {/* Compact vocabulary bar at top */}
       {hasVocabulary && (
         <CompactVocabulary vocabulary={vocabulary} />
+      )}
+
+      {/* Demo player for pre-recorded audio examples */}
+      {lessonNumber && (
+        <DemoPlayer courseId={courseId} lessonNumber={lessonNumber} />
       )}
 
       {/* Patterns section fills remaining space */}
