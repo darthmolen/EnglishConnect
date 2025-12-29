@@ -227,7 +227,13 @@ async def lesson_conversation(
                 language = result_data.get("language", "en")
                 spoken_text = result_data.get("text")
 
-    response_text = spoken_text if spoken_text else agent_result["text"]
+    # Build response text from all audio chunks (bilingual support)
+    # This ensures both Spanish and English spoken texts appear in the transcript
+    # Use double newline for visual separation between utterances in UI
+    if audio_chunks:
+        response_text = "\n\n".join(chunk.text for chunk in audio_chunks)
+    else:
+        response_text = agent_result["text"]
 
     # Auto-synthesize if agent didn't call speak
     if not audio_chunks and response_text:
