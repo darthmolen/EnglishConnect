@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What time is it?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "It's five o'clock."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:39.550028+00:00",
+  "duration_seconds": 3.7,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

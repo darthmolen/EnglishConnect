@@ -72,7 +72,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What is wrong? A: My (*noun*) hurts.
+Q: What is wrong?
+
+A: My (*noun*) hurts.
 
 #### **Questions**
 
@@ -104,7 +106,9 @@ A: Her head hurts.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
-Q: What happened to your (*noun*)? A: I (*verb past*) my (*noun*).
+Q: What happened to your (*noun*)?
+
+A: I (*verb past*) my (*noun*).
 
 ## **Questions**
 

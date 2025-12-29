@@ -84,7 +84,9 @@ En la lección 20 puedes ver más *nouns*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where is the (*noun*)? A: It's next to the (*noun*).
+Q: Where is the (*noun*)?
+
+A: It's next to the (*noun*).
 
 #### **Questions**
 
@@ -112,7 +114,9 @@ A: It's between the restaurant and the bank.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: How do I get to the (*noun*)? A: Go (*adverb*) on First Street.
+Q: How do I get to the (*noun*)?
+
+A: Go (*adverb*) on First Street.
 
 ### **Questions**
 
@@ -124,7 +128,9 @@ Q: How do I get to the (*noun*)? A: Go (*adverb*) on First Street.
 
 #### **Examples**
 
-Q: How do I get to the store? A: Go north. Turn right on First Street.
+Q: How do I get to the store?
+
+A: Go north. Turn right on First Street.
 
 Q: How do I get to the train station?
 

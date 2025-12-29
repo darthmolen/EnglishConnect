@@ -96,7 +96,9 @@ En el apéndice puedes ver más food nouns.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What are the ingredients for (*noun*)? A: You need (*noun*), (*noun*), and (*noun*).
+Q: What are the ingredients for (*noun*)?
+
+A: You need (*noun*), (*noun*), and (*noun*).
 
 ## **Questions**
 

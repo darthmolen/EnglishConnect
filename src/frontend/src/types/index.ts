@@ -100,6 +100,15 @@ export interface LessonConversationRequest {
   message: string
   lesson_number: number
   history: ChatMessage[]
+  section?: string  // Optional: 'vocabulary', 'patterns', 'practice', etc.
+}
+
+// Single audio chunk from a speak() call
+export interface AudioChunk {
+  audio_base64: string
+  format: string
+  language: string
+  text: string
 }
 
 export interface LessonConversationResponse {
@@ -108,9 +117,10 @@ export interface LessonConversationResponse {
   phase: LessonPhase
   phase_state: PhaseState
   phase_progress: PhaseProgress | null
-  audio_base64: string | null
+  audio_base64: string | null  // Deprecated: use audio_chunks
   audio_format: string
   language: string
+  audio_chunks: AudioChunk[] | null  // All speak() audio in order
 }
 
 export interface DemoConversationResponse {
@@ -130,4 +140,6 @@ export type AgentResponse = ConversationResponse & {
   phase_progress?: PhaseProgress | null
   // Optional fields from demo agent
   demo_played?: number | null
+  // Multiple audio chunks (for bilingual responses)
+  audio_chunks?: AudioChunk[] | null
 }

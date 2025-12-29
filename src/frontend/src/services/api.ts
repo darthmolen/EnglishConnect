@@ -74,12 +74,19 @@ export async function sendMessage(
   message: string,
   lessonNumber: number,
   history: ChatMessage[],
-  agentMode: AgentMode = 'conversation'
+  agentMode: AgentMode = 'conversation',
+  section?: string  // Optional section to override phase (e.g., 'patterns', 'vocabulary')
 ): Promise<AgentResponse> {
-  const request: ConversationRequest = {
+  // Build request with optional section for lesson mode
+  const request: ConversationRequest & { section?: string } = {
     message,
     lesson_number: lessonNumber,
     history,
+  }
+
+  // Only include section for lesson agent
+  if (agentMode === 'lesson' && section) {
+    request.section = section
   }
 
   const endpoint = AGENT_ENDPOINTS[agentMode]

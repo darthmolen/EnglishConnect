@@ -83,7 +83,9 @@ En la lección 11 puedes ver más *verbs*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What time is it? A: It's (*time*).
+Q: What time is it?
+
+A: It's (*time*).
 
 ### **Questions**
 
@@ -95,11 +97,17 @@ Q: What time is it? A: It's (*time*).
 
 ### **Examples**
 
-Q: What time is it? A: It's five o'clock.
+Q: What time is it?
 
-Q: What day is it? A: It is Sunday.
+A: It's five o'clock.
 
-Q: What day is it? A: It's February 5th.
+Q: What day is it?
+
+A: It is Sunday.
+
+Q: What day is it?
+
+A: It's February 5th.
 
 ![](../_page_96_Figure_24.jpeg)
 
@@ -109,7 +117,9 @@ Q: What day is it? A: It's February 5th.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: When do you (*verb*)? A: I (*verb*) on (*day*).
+Q: When do you (*verb*)?
+
+A: I (*verb*) on (*day*).
 
 #### **Questions**
 
@@ -121,7 +131,9 @@ Q: When do you (*verb*)? A: I (*verb*) on (*day*).
 
 #### **Examples**
 
-Q: When do they clean the house? A: They clean the house on Monday.
+Q: When do they clean the house?
+
+A: They clean the house on Monday.
 
 Q: When do you get the mail?
 

@@ -3,6 +3,7 @@ import { useConversationStore } from '@/stores/conversationStore'
 import { useAudioRecorder } from './useAudioRecorder'
 import { useAudioPlayer } from './useAudioPlayer'
 import { sendMessage, transcribeAudio } from '@/services/api'
+import type { AgentResponse } from '@/types'
 
 export function useConversation() {
   const {
@@ -10,6 +11,7 @@ export function useConversation() {
     selectedLessonNumber,
     isLoading,
     agentMode,
+    activeSection,
     addMessage,
     clearMessages,
     setIsLoading,
@@ -28,6 +30,39 @@ export function useConversation() {
 
   // Track whether we should auto-send after recording stops
   const shouldSendVoiceRef = useRef(false)
+
+  // Play audio chunks sequentially (for bilingual responses)
+  const playAudioChunks = useCallback(
+    async (response: AgentResponse) => {
+      // Prefer audio_chunks if available (new format)
+      if (response.audio_chunks && response.audio_chunks.length > 0) {
+        console.log(`Playing ${response.audio_chunks.length} audio chunk(s)`)
+        setStoreIsPlaying(true)
+        try {
+          for (const chunk of response.audio_chunks) {
+            console.log(`Playing chunk: ${chunk.language} - "${chunk.text.substring(0, 50)}..."`)
+            await playAudio(chunk.audio_base64, chunk.format || 'wav')
+          }
+        } catch (err) {
+          console.error('Audio playback failed:', err)
+        } finally {
+          setStoreIsPlaying(false)
+        }
+      } else if (response.audio_base64) {
+        // Fallback to single audio (backward compat)
+        setStoreIsPlaying(true)
+        try {
+          await playAudio(response.audio_base64, response.audio_format || 'wav')
+          console.log(`Agent spoke in ${response.language}`)
+        } catch (err) {
+          console.error('Audio playback failed:', err)
+        } finally {
+          setStoreIsPlaying(false)
+        }
+      }
+    },
+    [playAudio, setStoreIsPlaying]
+  )
 
   // Send voice message (transcribe audio then send)
   const sendVoiceMessage = useCallback(
@@ -52,8 +87,14 @@ export function useConversation() {
         // Step 2: Add user message with transcribed text
         addMessage({ role: 'user', content: transcribedText, agentMode })
 
-        // Step 3: Get AI response (route to appropriate agent)
-        const response = await sendMessage(transcribedText, selectedLessonNumber, messages, agentMode)
+        // Step 3: Get AI response (route to appropriate agent, include section for lesson mode)
+        const response = await sendMessage(
+          transcribedText,
+          selectedLessonNumber,
+          messages,
+          agentMode,
+          activeSection ?? undefined
+        )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
         // Update phase info if lesson agent returned it
@@ -61,23 +102,14 @@ export function useConversation() {
           updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
         }
 
-        // Step 4: Play agent-generated audio if available
-        if (response.audio_base64) {
-          setStoreIsPlaying(true)
-          try {
-            await playAudio(response.audio_base64, response.audio_format || 'wav')
-            console.log(`Agent spoke in ${response.language}`)
-          } catch (err) {
-            console.error('Audio playback failed:', err)
-          } finally {
-            setStoreIsPlaying(false)
-          }
-        }
+        // Step 4: Play all audio chunks sequentially
+        await playAudioChunks(response)
       } catch (error) {
         console.error('Voice message error:', error)
         addMessage({
           role: 'assistant',
           content: 'Sorry, I had trouble understanding. Please try again.',
+          agentMode,
         })
       } finally {
         setIsLoading(false)
@@ -87,10 +119,10 @@ export function useConversation() {
       selectedLessonNumber,
       messages,
       agentMode,
+      activeSection,
       addMessage,
       setIsLoading,
-      setStoreIsPlaying,
-      playAudio,
+      playAudioChunks,
       updatePhaseInfo,
     ]
   )
@@ -135,8 +167,14 @@ export function useConversation() {
       setIsLoading(true)
 
       try {
-        // Get AI response (route to appropriate agent)
-        const response = await sendMessage(text, selectedLessonNumber, messages, agentMode)
+        // Get AI response (route to appropriate agent, include section for lesson mode)
+        const response = await sendMessage(
+          text,
+          selectedLessonNumber,
+          messages,
+          agentMode,
+          activeSection ?? undefined
+        )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
         // Update phase info if lesson agent returned it
@@ -144,23 +182,14 @@ export function useConversation() {
           updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
         }
 
-        // Play agent-generated audio if available
-        if (response.audio_base64) {
-          setStoreIsPlaying(true)
-          try {
-            await playAudio(response.audio_base64, response.audio_format || 'wav')
-            console.log(`Agent spoke in ${response.language}`)
-          } catch (err) {
-            console.error('Audio playback failed:', err)
-          } finally {
-            setStoreIsPlaying(false)
-          }
-        }
+        // Play all audio chunks sequentially
+        await playAudioChunks(response)
       } catch (error) {
         console.error('Conversation error:', error)
         addMessage({
           role: 'assistant',
           content: 'Sorry, I had trouble understanding. Please try again.',
+          agentMode,
         })
       } finally {
         setIsLoading(false)
@@ -170,10 +199,10 @@ export function useConversation() {
       selectedLessonNumber,
       messages,
       agentMode,
+      activeSection,
       addMessage,
       setIsLoading,
-      setStoreIsPlaying,
-      playAudio,
+      playAudioChunks,
       updatePhaseInfo,
     ]
   )

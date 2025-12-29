@@ -73,6 +73,7 @@ export function ContentWindow({
       {activeSection === 'vocabulary' && (
         <VocabularyView
           vocabulary={lesson.vocabulary}
+          lessonNumber={lesson.lesson_number}
           isVocabPhase={isVocabPhase}
           vocabIndex={vocabIndex}
           phaseState={phaseState}
@@ -82,6 +83,7 @@ export function ContentWindow({
         <PatternsView
           patterns={lesson.patterns}
           patternImages={lesson.pattern_images}
+          lessonNumber={lesson.lesson_number}
           isPatternPhase={isPatternPhase}
           patternIndex={patternIndex}
           phaseState={phaseState}

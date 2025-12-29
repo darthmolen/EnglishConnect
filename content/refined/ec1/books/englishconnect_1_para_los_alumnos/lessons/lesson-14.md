@@ -77,7 +77,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where do you work? A: I work at a (*noun 1*).
+Q: Where do you work?
+
+A: I work at a (*noun 1*).
 
 #### **Questions**
 
@@ -105,7 +107,9 @@ A: She works at an office.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
-Q: What's your job? A: I'm a (*noun 2*).
+Q: What's your job?
+
+A: I'm a (*noun 2*).
 
 #### **Questions**
 
@@ -117,11 +121,17 @@ Q: What's your job? A: I'm a (*noun 2*).
 
 #### **Examples**
 
-Q: What's your job? A: I'm a nurse.
+Q: What's your job?
 
-Q: What's his job? A: He's an electrician.
+A: I'm a nurse.
 
-Q: What's her job? A: She's an artist.
+Q: What's his job?
+
+A: He's an electrician.
+
+Q: What's her job?
+
+A: She's an artist.
 
 ![](../_page_113_Picture_13.jpeg)
 

@@ -72,7 +72,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza.
 
-Q: What are you doing now? A: I am (*verb* + ing).
+Q: What are you doing now?
+
+A: I am (*verb* + ing).
 
 #### **Questions**
 
@@ -99,7 +101,9 @@ Q: What are you doing now? A: I am (*verb* + ing).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
-Q: When do you (*verb*)? A: I (*verb*) in the (*time*).
+Q: When do you (*verb*)?
+
+A: I (*verb*) in the (*time*).
 
 #### **Questions**
 
@@ -111,13 +115,17 @@ Q: When do you (*verb*)? A: I (*verb*) in the (*time*).
 
 #### **Examples**
 
-Q: When do you work? A: I work in the morning.
+Q: When do you work?
+
+A: I work in the morning.
 
 Q: When do they eat dinner?
 
 A: They eat dinner in the evening.
 
-Q: When does she do homework? A: She does homework in the afternoon.
+Q: When does she do homework?
+
+A: She does homework in the afternoon.
 
 ![](../_page_91_Picture_14.jpeg)
 

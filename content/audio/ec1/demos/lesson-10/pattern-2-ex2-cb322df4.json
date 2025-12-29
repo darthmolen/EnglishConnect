@@ -1,0 +1,21 @@
+{
+  "lesson_number": 10,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What does he do after he gets ready?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "After he gets ready, he goes to the store."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:28.685262+00:00",
+  "duration_seconds": 5.3,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

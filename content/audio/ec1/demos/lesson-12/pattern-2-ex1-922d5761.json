@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "When do they clean the house?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They clean the house on Monday."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:44.056763+00:00",
+  "duration_seconds": 5.57,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

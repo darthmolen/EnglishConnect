@@ -72,7 +72,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Do you (*verb*) in the (*noun*)? A: Yes, I (*verb*) in the (*noun*).
+Q: Do you (*verb*) in the (*noun*)?
+
+A: Yes, I (*verb*) in the (*noun*).
 
 ### **Questions**
 
@@ -84,11 +86,17 @@ Q: Do you (*verb*) in the (*noun*)? A: Yes, I (*verb*) in the (*noun*).
 
 ## **Examples**
 
-Q: Do you exercise in the morning? A: Yes, I exercise in the morning.
+Q: Do you exercise in the morning?
 
-Q: Does she brush her teeth in the evening? A: Yes, she brushes her teeth in the evening.
+A: Yes, I exercise in the morning.
 
-Q: Do you go to the store in the morning? A: No, I go to the store in the afternoon.
+Q: Does she brush her teeth in the evening?
+
+A: Yes, she brushes her teeth in the evening.
+
+Q: Do you go to the store in the morning?
+
+A: No, I go to the store in the afternoon.
 
 ![](../_page_83_Picture_13.jpeg)
 
@@ -98,7 +106,9 @@ Q: Do you go to the store in the morning? A: No, I go to the store in the aftern
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: What do you do before you (*verb*)? A: Before I (*verb*), I (*verb*).
+Q: What do you do before you (*verb*)?
+
+A: Before I (*verb*), I (*verb*).
 
 ### **Questions**
 
@@ -116,11 +126,17 @@ Q: What do you do before you (*verb*)? A: Before I (*verb*), I (*verb*).
 
 #### **Examples**
 
-Q: What do you do before you make breakfast? A: Before I make breakfast, I exercise.
+Q: What do you do before you make breakfast?
 
-Q: What does he do after he gets ready? A: After he gets ready, he goes to the store.
+A: Before I make breakfast, I exercise.
 
-Q: What does she do after she makes breakfast? A: She goes to work.
+Q: What does he do after he gets ready?
+
+A: After he gets ready, he goes to the store.
+
+Q: What does she do after she makes breakfast?
+
+A: She goes to work.
 
 ![](../_page_84_Picture_13.jpeg)
 

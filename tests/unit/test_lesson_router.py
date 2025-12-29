@@ -266,6 +266,57 @@ class TestLessonRouter:
                     app.dependency_overrides.pop(get_db, None)
 
 
+    @pytest.mark.asyncio
+    async def test_lesson_conversation_no_phases_returns_500_with_message(
+        self,
+        mock_auth,
+        mock_user,
+        sample_lesson_detail,
+        mock_lesson_model,
+    ):
+        """Should return 500 with clear message when lesson has no phases."""
+        with (
+            patch("app.routers.lesson.LessonService") as MockLessonService,
+            patch("app.routers.lesson.LessonProgressService") as MockProgressService,
+        ):
+            mock_service = MockLessonService.return_value
+            mock_service.get_lesson_detail = AsyncMock(return_value=sample_lesson_detail)
+
+            # Mock DB to return lesson model
+            mock_db = AsyncMock()
+            mock_result = MagicMock()
+            mock_result.scalar_one_or_none.return_value = mock_lesson_model
+            mock_db.execute = AsyncMock(return_value=mock_result)
+
+            from app.database import get_db
+
+            async def get_db_override():
+                yield mock_db
+
+            app.dependency_overrides[get_db] = get_db_override
+
+            # Progress service raises ValueError for missing phases
+            mock_progress_service = MockProgressService.return_value
+            mock_progress_service.get_or_create_progress = AsyncMock(
+                side_effect=ValueError("No phases defined for lesson 7")
+            )
+
+            try:
+                async with AsyncClient(
+                    transport=ASGITransport(app=app),
+                    base_url="http://test",
+                ) as client:
+                    response = await client.post(
+                        "/api/lesson/conversation",
+                        json={"message": "Hello", "lesson_number": 7, "history": []},
+                    )
+
+                assert response.status_code == 500
+                assert "no phases configured" in response.json()["detail"].lower()
+            finally:
+                app.dependency_overrides.pop(get_db, None)
+
+
 class TestLessonRouterPhaseAdvancement:
     """Test phase advancement via tool calls."""
 

@@ -546,11 +546,17 @@ Integrante del grupo 1: "I like pizza. I like French fries. I like chocolate. Wh
 
 Otros integrantes del grupo hacen preguntas:
 
-Q: What is your favorite kind of pizza? A: I like cheese pizza.
+Q: What is your favorite kind of pizza?
 
-Q: What is your favorite candy bar? A: I like chocolate and caramel.
+A: I like cheese pizza.
 
-Q: Where do you like to get French fries? A: I don't have a favorite place.
+Q: What is your favorite candy bar?
+
+A: I like chocolate and caramel.
+
+Q: Where do you like to get French fries?
+
+A: I don't have a favorite place.
 
 Otros integrantes del grupo adivinan: "I think you don't like French fries."
 

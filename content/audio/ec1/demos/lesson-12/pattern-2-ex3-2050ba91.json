@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 2,
+  "example_index": 3,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "When does he wash the dishes?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "He washes the dishes at 5:30 p.m."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:47.706782+00:00",
+  "duration_seconds": 5.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

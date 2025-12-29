@@ -88,7 +88,9 @@ En la lección 7 puedes ver más *colors*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What are you wearing? A: I'm wearing a (*adjective*) (*noun*).
+Q: What are you wearing?
+
+A: I'm wearing a (*adjective*) (*noun*).
 
 #### **Questions**
 
@@ -118,7 +120,9 @@ A: They're looking for black shoes.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza.
 
-Q: Do you like this (*adjective*) (*noun*)? A: Yes, I like that (*adjective*) (*noun*).
+Q: Do you like this (*adjective*) (*noun*)?
+
+A: Yes, I like that (*adjective*) (*noun*).
 
 ### **Questions**
 

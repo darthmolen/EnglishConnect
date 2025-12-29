@@ -1,0 +1,21 @@
+{
+  "lesson_number": 18,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "How do you make a cheese sandwich?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "First, put the cheese on the bread.Then, add the oil to the pan.Then, heat the pan on the stove. Last, cook the sandwich."
+    }
+  ],
+  "created_at": "2025-12-29T00:45:22.590868+00:00",
+  "duration_seconds": 11.3,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

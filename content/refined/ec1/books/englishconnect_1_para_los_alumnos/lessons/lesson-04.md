@@ -63,7 +63,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What do you like to do? A: I like to (*verb*).
+Q: What do you like to do?
+
+A: I like to (*verb*).
 
 ### **Questions**
 
@@ -90,7 +92,9 @@ Q: What do you like to do? A: I like to (*verb*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: Do you like to (*verb*)? A: Yes, I like to (*verb*).
+Q: Do you like to (*verb*)?
+
+A: Yes, I like to (*verb*).
 
 ## **Questions**
 
@@ -102,9 +106,13 @@ Q: Do you like to (*verb*)? A: Yes, I like to (*verb*).
 
 ## **Examples**
 
-Q: Do you like to travel? A: Yes, I like to travel.
+Q: Do you like to travel?
 
-Q: Do you like to shop? A: No, I don't like to shop.
+A: Yes, I like to travel.
+
+Q: Do you like to shop?
+
+A: No, I don't like to shop.
 
 Q: Does she like to paint?
 

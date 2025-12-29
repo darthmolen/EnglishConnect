@@ -266,6 +266,12 @@ async def get_agent_response(
     for i, h in enumerate(history):
         logger.info(f"    [{i}] {h['role']}: {h['content'][:80]}{'...' if len(h['content']) > 80 else ''}")
     logger.info(f"  System prompt: {len(system_prompt)} chars")
+    logger.info("=" * 60)
+    logger.info("FULL SYSTEM PROMPT:")
+    logger.info("=" * 60)
+    logger.info(system_prompt)
+    logger.info("=" * 60)
+    logger.info("END SYSTEM PROMPT")
     logger.info("-" * 60)
 
     # Tool calling loop

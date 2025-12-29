@@ -43,7 +43,12 @@
       "Bash(planning/backlog/phases-04-10-future.md)",
       "Bash(python -c:*)",
       "Bash(python src/tools/audit_lessons.py:*)",
-      "Bash(docker exec:*)"
+      "Bash(docker exec:*)",
+      "Bash(npm run build:*)",
+      "Bash(python:*)",
+      "Bash(source .venv-test/bin/activate)",
+      "Bash(docker ps:*)",
+      "Bash(source:*)"
     ],
     "deny": [],
     "ask": []

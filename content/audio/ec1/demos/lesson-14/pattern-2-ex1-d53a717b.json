@@ -1,0 +1,21 @@
+{
+  "lesson_number": 14,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What's your job?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I'm a nurse."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:53.253368+00:00",
+  "duration_seconds": 3.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

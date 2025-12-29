@@ -83,7 +83,9 @@ En el apéndice puedes ver más *currency*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How much does this (*noun*) cost? A: It costs (*price*).
+Q: How much does this (*noun*) cost?
+
+A: It costs (*price*).
 
 ### **Questions**
 
@@ -95,9 +97,13 @@ Q: How much does this (*noun*) cost? A: It costs (*price*).
 
 #### **Examples**
 
-Q: How much does this phone cost? A: It costs five hundred dollars.
+Q: How much does this phone cost?
 
-Q: How much do these pants cost? A: They cost twenty dollars.
+A: It costs five hundred dollars.
+
+Q: How much do these pants cost?
+
+A: They cost twenty dollars.
 
 ![](../_page_149_Picture_12.jpeg)
 
@@ -121,9 +127,13 @@ A: Yes, this (*noun*) is (*adjective*).
 
 ## **Examples**
 
-Q: Do you want to buy that car? A: Yes, that car is cheap.
+Q: Do you want to buy that car?
 
-Q: Does she want to buy these shoes? A: No, those shoes are expensive.
+A: Yes, that car is cheap.
+
+Q: Does she want to buy these shoes?
+
+A: No, those shoes are expensive.
 
 ![](../_page_150_Picture_13.jpeg)
 

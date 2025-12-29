@@ -85,7 +85,9 @@ En el apéndice puedes ver más *family nouns*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How many (*noun*) are in your family? A: There are (*number*) (*noun*) in my family.
+Q: How many (*noun*) are in your family?
+
+A: There are (*number*) (*noun*) in my family.
 
 #### Questions
 
@@ -97,11 +99,17 @@ Q: How many (*noun*) are in your family? A: There are (*number*) (*noun*) in my 
 
 ## **Examples**
 
-Q: How many people are in <u>Sam</u>'s family? A: There are four people in his family.
+Q: How many people are in Sam's family?
 
-Q: How many <u>sisters</u> are in your family? A: There are <u>two sisters</u> in my family.
+A: There are four people in his family.
 
-Q: How many sons are in your family? A: There is one son in my family.
+Q: How many sisters are in your family?
+
+A: There are two sisters in my family.
+
+Q: How many sons are in your family?
+
+A: There is one son in my family.
 
 ![](../_page_53_Picture_13.jpeg)
 
@@ -111,7 +119,9 @@ Q: How many sons are in your family? A: There is one son in my family.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: How many (*noun*) do you have? A: I have (*number*) (*noun*).
+Q: How many (*noun*) do you have?
+
+A: I have (*number*) (*noun*).
 
 ### **Questions**
 
@@ -123,9 +133,13 @@ Q: How many (*noun*) do you have? A: I have (*number*) (*noun*).
 
 #### **Examples**
 
-Q: How many children do you have? A: I have six children.
+Q: How many children do you have?
 
-Q: How many brothers does she have? A: She has three brothers.
+A: I have six children.
+
+Q: How many brothers does she have?
+
+A: She has three brothers.
 
 ![](../_page_54_Picture_12.jpeg)
 

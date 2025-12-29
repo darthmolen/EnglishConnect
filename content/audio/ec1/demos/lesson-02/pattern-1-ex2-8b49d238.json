@@ -1,0 +1,21 @@
+{
+  "lesson_number": 2,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Hi, how are you?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I'm OK, thanks."
+    }
+  ],
+  "created_at": "2025-12-29T00:43:30.658793+00:00",
+  "duration_seconds": 3.57,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

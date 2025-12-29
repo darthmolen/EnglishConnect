@@ -1,0 +1,12 @@
+{
+  "lesson_number": 4,
+  "english_word": "read",
+  "spanish_translation": "leer",
+  "category": "verb",
+  "pronunciation_text": "read",
+  "voice": "speaker_b",
+  "created_at": "2025-12-29T13:12:40.528993+00:00",
+  "duration_seconds": 0.8,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

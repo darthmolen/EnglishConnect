@@ -1,0 +1,21 @@
+{
+  "lesson_number": 7,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Tell me about your aunt."
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "She has blue eyes."
+    }
+  ],
+  "created_at": "2025-12-29T15:28:44.890877+00:00",
+  "duration_seconds": 3.97,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

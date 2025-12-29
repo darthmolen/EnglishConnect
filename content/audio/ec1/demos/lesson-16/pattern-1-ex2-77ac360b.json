@@ -1,0 +1,21 @@
+{
+  "lesson_number": 16,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What do they eat for dinner?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They eat rice and beans for dinner."
+    }
+  ],
+  "created_at": "2025-12-29T00:45:03.192162+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

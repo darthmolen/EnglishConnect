@@ -32,6 +32,22 @@ class DemoMetadata(BaseModel):
     stream_url: str
 
 
+class VocabAudioMetadata(BaseModel):
+    """Vocabulary audio metadata."""
+
+    lesson_number: int
+    english_word: str
+    spanish_translation: str
+    category: str | None
+    pronunciation_text: str
+    voice: str
+    created_at: str
+    duration_seconds: float
+    audio_format: str
+    sample_rate: int
+    stream_url: str
+
+
 @router.get("/demos/{course_id}")
 async def list_demos(
     course_id: str,
@@ -80,6 +96,51 @@ async def list_demos(
     ))
 
     return demos
+
+
+@router.get("/vocab/{course_id}")
+async def list_vocab_audio(
+    course_id: str,
+    lesson_number: int = Query(..., description="Lesson number"),
+) -> list[dict]:
+    """List available vocabulary audio files for a lesson.
+
+    Args:
+        course_id: Course identifier (e.g., 'ec1')
+        lesson_number: Lesson number (required)
+
+    Returns:
+        List of vocabulary audio metadata with stream URLs
+    """
+    import glob
+
+    vocab_dir = AUDIO_BASE / course_id / "vocab" / f"lesson-{lesson_number:02d}"
+    if not vocab_dir.exists():
+        return []
+
+    pattern = str(vocab_dir / "*.json")
+
+    vocab_items = []
+    for meta_path in glob.glob(pattern):
+        try:
+            with open(meta_path) as f:
+                meta = json.load(f)
+
+            # Add streaming URL
+            audio_path = Path(meta_path).with_suffix(".wav")
+            relative_path = audio_path.relative_to(AUDIO_BASE)
+            meta["stream_url"] = f"/api/audio/stream/{relative_path}"
+            vocab_items.append(meta)
+        except Exception:
+            continue
+
+    # Sort by category, then by filename (which has index)
+    vocab_items.sort(key=lambda v: (
+        v.get("category") or "zzz",  # Put uncategorized last
+        v.get("english_word", ""),
+    ))
+
+    return vocab_items
 
 
 @router.get("/stream/{file_path:path}")

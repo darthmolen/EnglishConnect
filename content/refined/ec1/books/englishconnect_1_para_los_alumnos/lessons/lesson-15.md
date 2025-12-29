@@ -80,7 +80,9 @@ En la lección 5 puedes ver más *adjectives*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What do you do for work? A: I (*verb*) (*noun*).
+Q: What do you do for work?
+
+A: I (*verb*) (*noun*).
 
 ### **Questions**
 
@@ -107,7 +109,9 @@ Q: What do you do for work? A: I (*verb*) (*noun*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: Do you like to (*verb*) (*noun*)? A: Yes, it's (*adjective*).
+Q: Do you like to (*verb*) (*noun*)?
+
+A: Yes, it's (*adjective*).
 
 ## **Questions**
 

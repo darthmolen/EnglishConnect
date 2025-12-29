@@ -76,6 +76,10 @@ Q: What do you like to do?
 
 A: I like to (*verb*).
 
+## **Practice Pattern 2**
+
+Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
+
 Q: Why do you like to (*verb*)?
 
 A: I like to (*verb*) because it's (*adjective*).

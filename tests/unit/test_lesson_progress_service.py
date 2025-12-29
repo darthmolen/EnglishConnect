@@ -309,3 +309,21 @@ class TestLessonProgressService:
 
         # Check that item was NOT added (since it was incorrect)
         assert "vocab_0" not in mock_progress.phase_state["items_completed"]
+
+    @pytest.mark.asyncio
+    async def test_get_or_create_progress_raises_when_no_phases(self, mock_db):
+        """Should raise ValueError when lesson has no phases defined."""
+        # Mock: no existing progress
+        mock_result_none = MagicMock()
+        mock_result_none.scalar_one_or_none.return_value = None
+
+        # Mock: empty phases list
+        mock_result_empty = MagicMock()
+        mock_result_empty.scalars.return_value.all.return_value = []
+
+        mock_db.execute = AsyncMock(side_effect=[mock_result_none, mock_result_empty])
+
+        service = LessonProgressService(mock_db)
+
+        with pytest.raises(ValueError, match="No phases defined"):
+            await service.get_or_create_progress(user_id=uuid4(), lesson_id=7)

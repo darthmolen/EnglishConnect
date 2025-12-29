@@ -110,7 +110,9 @@ A: I'd like soup and a salad, please.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: What do you want in your (*noun*)? A: I want (*noun*) in my (*noun*).
+Q: What do you want in your (*noun*)?
+
+A: I want (*noun*) in my (*noun*).
 
 ## **Questions**
 
@@ -122,7 +124,9 @@ Q: What do you want in your (*noun*)? A: I want (*noun*) in my (*noun*).
 
 ## **Examples**
 
-Q: What do you want in your soup? A: I want noodles in my soup.
+Q: What do you want in your soup?
+
+A: I want noodles in my soup.
 
 - Q: What do you want with your hamburger?
 - A: I want a drink with my hamburger.

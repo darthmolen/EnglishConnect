@@ -1,0 +1,21 @@
+{
+  "lesson_number": 8,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What is this?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "This is a watch."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:07.390335+00:00",
+  "duration_seconds": 3.83,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

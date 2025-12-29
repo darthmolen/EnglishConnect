@@ -47,6 +47,16 @@ class LessonConversationRequest(BaseModel):
     message: str
     lesson_number: int
     history: list[ChatMessage] = []
+    section: str | None = None  # Optional: 'vocabulary', 'patterns', 'practice', etc.
+
+
+class AudioChunkSchema(BaseModel):
+    """Single audio chunk from a speak() tool call."""
+
+    audio_base64: str
+    format: str = "wav"
+    language: str  # 'en' or 'es'
+    text: str  # The text that was spoken
 
 
 class LessonConversationResponse(BaseModel):
@@ -60,9 +70,10 @@ class LessonConversationResponse(BaseModel):
     phase: LessonPhaseSchema
     phase_state: PhaseStateSchema
     phase_progress: PhaseProgressSchema | None = None  # e.g., {"current": 3, "total": 10}
-    audio_base64: str | None = None
-    audio_format: str = "wav"
-    language: str = "en"  # Language the agent chose to respond in
+    audio_base64: str | None = None  # Deprecated: use audio_chunks instead
+    audio_format: str = "wav"  # Deprecated: use audio_chunks instead
+    language: str = "en"  # Deprecated: use audio_chunks instead
+    audio_chunks: list[AudioChunkSchema] | None = None  # All speak() audio in order
 
 
 class AdvancePhaseRequest(BaseModel):

@@ -77,13 +77,19 @@ Puedes orar a Dios; Él te escuchará. Puedes pedirle que te ayude a aprender in
 
 ## **Practice Pattern 1**
 
-Q: What is your (*noun*)? A: My (*noun*) is [answer].
+Q: What is your (*noun*)?
+
+A: My (*noun*) is [answer].
 
 ### **Examples**
 
-Q: What is your name? A: My name is Rosa.
+Q: What is your name?
 
-Q: What's his name? A: His name is Niko.
+A: My name is Rosa.
+
+Q: What's his name?
+
+A: His name is Niko.
 
 ## **Part 2: Practica el patrón 1 con un compañero.**
 

@@ -103,6 +103,56 @@ python src/tools/demo-generator/generate_demos.py --all
 **Known Issue - Missing Example Sentences:**
 Lessons 1-4, 6-7, 10-13, 15, 18-21, 24-25 have no example sentences in the database. Their Q&A patterns were not extracted with concrete examples during content ingestion. This should be addressed by improving the content ingestion regex patterns or manually adding examples.
 
+### Phase 7D: Vocabulary Audio ✅ Complete
+
+Vocabulary audio generation with play buttons in UI.
+
+**Implemented:**
+
+- `src/tools/vocab-generator/generate_vocab.py` - CLI tool for generating vocab audio
+- Backend audio endpoint: `GET /api/audio/vocab/{course_id}?lesson_number=N`
+- Frontend play buttons in VocabularyView component
+- 487 vocab audio files generated (60MB) with Emma (speaker_b) voice
+
+**Usage:**
+
+```bash
+python src/tools/vocab-generator/generate_vocab.py --lesson 5
+python src/tools/vocab-generator/generate_vocab.py --all
+```
+
+### Phase 7E: Vocabulary Audio Quality (Backlog)
+
+**Problem:** VibeVoice is optimized for sentences, not single-word pronunciations. Issues observed:
+
+- Variable voice frequency as TTS tries to sound "organic"
+- Some files have unexpected background music
+- Some pronunciations are garbled or unclear
+- Inconsistent quality across different words
+
+**Potential Solutions:**
+
+1. **Settings fix** - Find VibeVoice configuration to disable prosody variation
+2. **Prompt workaround** - Add punctuation (e.g., "book." instead of "book") to signal complete utterance
+3. **Alternative TTS** - Evaluate other TTS options for single-word pronunciation:
+   - Azure Neural TTS (cloud)
+   - Bark (local)
+   - Piper (local, lightweight)
+   - gpt-4o-mini-tts (cloud)
+
+**Verification Pipeline (Future):**
+
+- Create STT script to transcribe generated vocab audio
+- Compare transcription to expected pronunciation text
+- Build agent to review mismatches and suggest regeneration
+- Automated loop: generate → verify → flag issues → regenerate
+
+**Example problematic file:**
+
+- `content/samples/vocab/noun-06-b37c25c1.wav`
+- Input: "brother... brothers"
+- Voice: speaker_b (Emma)
+
 ## Phase 8: Evaluations
 
 **Goal**: Systematic approach to measuring and improving agent quality over time.
@@ -223,6 +273,23 @@ Cloud:  Mic → Realtime API → Speaker (1 service)
 | PostgreSQL | ~$25/month |
 
 For a non-profit learner app, budget ~$100-200/month at moderate usage.
+
+## Backlog: TTS Streaming Investigation
+
+**Context**: When agent responds in multiple languages (Spanish + English), TTS generates full WAV files sequentially. Current implementation waits for all TTS calls to complete before playing first audio.
+
+**Opportunity**: VibeVoice uses `VibeVoiceStreamingForConditionalGenerationInference` which supports streaming inference. Streaming would:
+- Reduce time to first audio (user hears first words while rest generates)
+- More natural conversation pacing
+- Lower perceived latency
+
+**Investigation Needed**:
+1. Can VibeVoice streaming be exposed via WebSocket or SSE?
+2. How to stream audio chunks to frontend incrementally?
+3. Frontend changes to play audio as chunks arrive
+4. Latency measurements to validate improvement
+
+**Priority**: Low (current queue-based playback works, streaming is optimization)
 
 ## Phase 13: Notifications (Stretch)
 

@@ -68,7 +68,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What is this? A: This is a (*noun*).
+Q: What is this?
+
+A: This is a (*noun*).
 
 #### **Questions**
 
@@ -84,7 +86,9 @@ Q: What is this? A: This is a (*noun*).
 
 ## **Examples**
 
-Q: What is this? A: This is a watch.
+Q: What is this?
+
+A: This is a watch.
 
 Q: What are these?
 
@@ -98,7 +102,9 @@ A: These are pencils.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: Is this my (*noun*)? A: Yes, it is.
+Q: Is this my (*noun*)?
+
+A: Yes, it is.
 
 ## **Questions**
 
@@ -113,9 +119,13 @@ Q: Is this my (*noun*)? A: Yes, it is.
 
 #### **Examples**
 
-Q: Is this your book? A: No, it is not.
+Q: Is this your book?
 
-Q: Are those her keys? A: Yes, they are.
+A: No, it is not.
+
+Q: Are those her keys?
+
+A: Yes, they are.
 
 ![](../_page_67_Picture_12.jpeg)
 

@@ -110,7 +110,9 @@ B: They have (*adjective*) (*noun*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria. Cambia de compañero y vuelve a practicar.
 
-Q: Is your (*noun*) (*adjective*)? A: Yes, he is (*adjective*).
+Q: Is your (*noun*) (*adjective*)?
+
+A: Yes, he is (*adjective*).
 
 #### Questions
 
@@ -122,11 +124,17 @@ Q: Is your (*noun*) (*adjective*)? A: Yes, he is (*adjective*).
 
 ## Examples
 
-Q: Is your sister married? A: Yes, she is married.
+Q: Is your sister married?
 
-Q: Are you married? A: No, I am single.
+A: Yes, she is married.
 
-Q: Are your <u>sisters tall?</u> A: No, they are <u>short</u>.
+Q: Are you married?
+
+A: No, I am single.
+
+Q: Are your sisters tall?
+
+A: No, they are short.
 
 ![](../_page_61_Picture_13.jpeg)
 

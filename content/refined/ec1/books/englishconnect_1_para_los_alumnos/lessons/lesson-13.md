@@ -79,7 +79,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What's the weather in London? A: It's (*adjective*) in London.
+Q: What's the weather in London?
+
+A: It's (*adjective*) in London.
 
 #### **Questions**
 
@@ -106,7 +108,9 @@ Q: What's the weather in London? A: It's (*adjective*) in London.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
-Q: Will it (*verb*) (*day*)? A: No, it won't (*verb*) (*day*).
+Q: Will it (*verb*) (*day*)?
+
+A: No, it won't (*verb*) (*day*).
 
 #### Questions
 

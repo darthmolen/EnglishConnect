@@ -18,7 +18,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
 
 from app.database import Base
-from app.models.content import Course, Lesson, VocabularyItem, QAPattern, EvaluationCriterion, ExampleSentence
+from app.models.content import Course, Lesson, VocabularyItem, QAPattern, EvaluationCriterion, ExampleSentence, LessonPhase
 
 
 class LessonParser:
@@ -239,53 +239,127 @@ class LessonParser:
         return self._guess_category_at_pos(word_pos, context)
 
     def _extract_patterns(self) -> list[dict]:
-        """Extract Q&A patterns from markdown."""
+        """Extract Q&A patterns from markdown.
+
+        Finds each Practice Pattern section and extracts:
+        - The Q/A template
+        - Examples from the Examples subsection within that pattern's area
+        """
         patterns = []
 
-        # Look for Practice Pattern sections
-        pattern_sections = re.finditer(
-            r"## \*\*Practice Pattern (\d+)\*\*(.+?)(?=## |\Z)",
+        # Find all pattern header positions
+        pattern_headers = list(re.finditer(
+            r"## \*\*Practice Pattern (\d+)\*\*",
             self.content,
-            re.DOTALL,
-        )
+        ))
 
-        for match in pattern_sections:
+        for i, match in enumerate(pattern_headers):
             pattern_num = int(match.group(1))
-            section_text = match.group(2)
+            section_start = match.end()
 
-            # Extract Q: and A: lines
+            # Section ends at next pattern header
+            if i + 1 < len(pattern_headers):
+                section_end = pattern_headers[i + 1].start()
+            else:
+                # For last pattern, end at next major section (not Examples/Questions/Answers)
+                # Look for headers like "Use the Patterns", "Additional Activities", etc.
+                remaining = self.content[section_start:]
+                next_major = re.search(
+                    r"\n## (?!\*{0,2}Examples|\*{0,2}Questions|\*{0,2}Answers)",
+                    remaining,
+                )
+                section_end = section_start + next_major.start() if next_major else len(self.content)
+
+            section_text = self.content[section_start:section_end]
+
+            # Extract pattern template - try Q:/A: first, then A:/B: (dialogue format)
             q_match = re.search(r"Q:\s*(.+?)(?:\n|$)", section_text)
             a_match = re.search(r"A:\s*(.+?)(?:\n|$)", section_text)
 
+            # Check for A:/B: dialogue format if Q:/A: not found
+            is_dialogue = False
+            if not q_match:
+                q_match = re.search(r"A:\s*(.+?)(?:\n|$)", section_text)
+                a_match = re.search(r"B:\s*(.+?)(?:\n|$)", section_text)
+                is_dialogue = True
+
             if q_match and a_match:
-                patterns.append({
+                pattern_data = {
                     "pattern_number": pattern_num,
                     "question_template": q_match.group(1).strip(),
                     "answer_template": a_match.group(1).strip(),
-                    "examples": None,  # Will be populated below
-                })
+                    "examples": None,
+                }
 
-        # Look for separate Examples sections (may be outside Pattern sections)
-        examples_section = re.search(
-            r"## \*\*Examples\*\*(.+?)(?=## |\Z)",
-            self.content,
-            re.DOTALL,
-        )
+                # Look for Examples section within this pattern's area
+                # Match any header level (##, ###, ####) with or without bold **
+                examples_match = re.search(
+                    r"#{2,4}\s*\*{0,2}Examples\*{0,2}\s*\n(.+?)(?=#{2,4}\s|\Z)",
+                    section_text,
+                    re.DOTALL | re.IGNORECASE,
+                )
 
-        if examples_section:
-            section_text = examples_section.group(1)
-            # Extract Q/A pairs from Examples section
-            example_pairs = re.findall(
-                r"Q:\s*(.+?)\n+A:\s*(.+?)(?:\n|$)",
-                section_text,
-            )
-            examples = [{"q": q.strip(), "a": a.strip()} for q, a in example_pairs]
+                if examples_match:
+                    examples_text = examples_match.group(1)
+                    # Extract pairs from Examples section
+                    # Handle Q:/A: format, A:/B: dialogue format, and bullet list variants
+                    if is_dialogue:
+                        # A:/B: dialogue format
+                        example_pairs = re.findall(
+                            r"(?:^|\n)\s*-?\s*A:\s*(.+?)\n+\s*-?\s*B:\s*(.+?)(?:\n|$)",
+                            examples_text,
+                        )
+                    else:
+                        # Q:/A: question-answer format
+                        example_pairs = re.findall(
+                            r"(?:^|\n)\s*-?\s*Q:\s*(.+?)\n+\s*-?\s*A:\s*(.+?)(?:\n|$)",
+                            examples_text,
+                        )
+                    if example_pairs:
+                        pattern_data["examples"] = [
+                            {"q": q.strip(), "a": a.strip()}
+                            for q, a in example_pairs
+                        ]
 
-            # Associate examples with the first pattern (most common case)
-            if examples and patterns:
-                patterns[0]["examples"] = examples
+                patterns.append(pattern_data)
 
         return patterns
+
+    def _find_best_pattern_for_examples(
+        self, examples: list[dict], patterns: list[dict]
+    ) -> int:
+        """Find which pattern the examples best match based on keywords.
+
+        Extracts key question words from pattern templates and examples,
+        then scores each pattern by how many examples match its keywords.
+        """
+        if len(patterns) == 1:
+            return 0
+
+        # Extract first significant word from each pattern's question template
+        pattern_keywords = []
+        for p in patterns:
+            q_template = p.get("question_template", "").lower()
+            # Get the first question word (What, Why, Do, Does, etc.)
+            words = q_template.split()
+            keyword = words[0] if words else ""
+            pattern_keywords.append(keyword)
+
+        # Score each pattern by counting matching examples
+        scores = [0] * len(patterns)
+        for example in examples:
+            example_q = example.get("q", "").lower()
+            first_word = example_q.split()[0] if example_q.split() else ""
+
+            for i, keyword in enumerate(pattern_keywords):
+                if keyword and first_word == keyword:
+                    scores[i] += 1
+
+        # Return pattern with highest score, defaulting to first if tied
+        max_score = max(scores) if scores else 0
+        if max_score > 0:
+            return scores.index(max_score)
+        return 0
 
     def _extract_criteria(self) -> list[str]:
         """Extract evaluation criteria ('I can:' statements)."""
@@ -380,6 +454,47 @@ async def ingest_course(
             )
             session.add(lesson)
             await session.flush()  # Get the lesson ID
+
+            # Create default phases for new lesson
+            default_phases = [
+                ("intro", "Introduction", 0),
+                ("vocabulary", "Vocabulary", 1),
+                ("patterns", "Q&A Patterns", 2),
+                ("practice", "Practice", 3),
+                ("wrapup", "Wrap-up", 4),
+            ]
+            for phase_type, phase_name, sort_order in default_phases:
+                phase = LessonPhase(
+                    lesson_id=lesson.id,
+                    phase_type=phase_type,
+                    phase_name=phase_name,
+                    sort_order=sort_order,
+                )
+                session.add(phase)
+            print(f"  - Created {len(default_phases)} phases")
+
+        # Ensure phases exist for existing lessons too
+        existing_phases = await session.execute(
+            select(LessonPhase).where(LessonPhase.lesson_id == lesson.id)
+        )
+        if not existing_phases.scalars().first():
+            # No phases exist, create them
+            default_phases = [
+                ("intro", "Introduction", 0),
+                ("vocabulary", "Vocabulary", 1),
+                ("patterns", "Q&A Patterns", 2),
+                ("practice", "Practice", 3),
+                ("wrapup", "Wrap-up", 4),
+            ]
+            for phase_type, phase_name, sort_order in default_phases:
+                phase = LessonPhase(
+                    lesson_id=lesson.id,
+                    phase_type=phase_type,
+                    phase_name=phase_name,
+                    sort_order=sort_order,
+                )
+                session.add(phase)
+            print(f"  - Created missing phases for existing lesson")
 
         # Clear existing child records for this lesson (makes ingestion idempotent)
         await session.execute(

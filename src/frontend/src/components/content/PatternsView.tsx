@@ -1,11 +1,19 @@
-import { Check } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Check, Play, Pause } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AuthenticatedImage } from '@/components/AuthenticatedImage'
 import type { QAPattern, PhaseState } from '@/types'
 
+interface DemoMetadata {
+  pattern_number: number
+  example_index: number
+  stream_url: string
+}
+
 interface PatternsViewProps {
   patterns: QAPattern[]
   patternImages: string[]
+  lessonNumber?: number
   isPatternPhase?: boolean
   patternIndex?: number
   phaseState?: PhaseState | null
@@ -14,10 +22,54 @@ interface PatternsViewProps {
 export function PatternsView({
   patterns,
   patternImages,
+  lessonNumber,
   isPatternPhase = false,
   patternIndex = 0,
   phaseState,
 }: PatternsViewProps) {
+  const [demos, setDemos] = useState<DemoMetadata[]>([])
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  // Fetch demos for this lesson
+  useEffect(() => {
+    if (!lessonNumber) return
+
+    fetch(`/api/audio/demos/ec1?lesson_number=${lessonNumber}`)
+      .then(r => r.ok ? r.json() : [])
+      .then(setDemos)
+      .catch(() => setDemos([]))
+  }, [lessonNumber])
+
+  // Handle audio end
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const handleEnded = () => setPlayingId(null)
+    audio.addEventListener('ended', handleEnded)
+    return () => audio.removeEventListener('ended', handleEnded)
+  }, [])
+
+  const handlePlay = (demo: DemoMetadata) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const demoId = `${demo.pattern_number}-${demo.example_index}`
+
+    if (playingId === demoId) {
+      audio.pause()
+      setPlayingId(null)
+    } else {
+      audio.src = demo.stream_url
+      audio.play().catch(() => setPlayingId(null))
+      setPlayingId(demoId)
+    }
+  }
+
+  const findDemo = (patternNumber: number, exampleIndex: number) =>
+    demos.find(d => d.pattern_number === patternNumber && d.example_index === exampleIndex)
+
   if (patterns.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
@@ -64,15 +116,42 @@ export function PatternsView({
                   </div>
                   {/* Examples */}
                   {pattern.examples && pattern.examples.length > 0 && (
-                    <div className="mt-3 pl-3 border-l-2 border-muted space-y-1">
+                    <div className="mt-3 pl-3 border-l-2 border-muted space-y-1.5">
                       <span className="text-xs font-medium text-muted-foreground uppercase">
                         Examples
                       </span>
-                      {pattern.examples.slice(0, 3).map((ex, i) => (
-                        <p key={i} className="text-sm text-muted-foreground">
-                          {Object.values(ex)[0]}
-                        </p>
-                      ))}
+                      {pattern.examples.slice(0, 3).map((ex, i) => {
+                        const demo = findDemo(pattern.pattern_number, i + 1)
+                        const demoId = `${pattern.pattern_number}-${i + 1}`
+                        const isPlaying = playingId === demoId
+
+                        return (
+                          <div key={i} className="flex items-center gap-2">
+                            {demo && (
+                              <button
+                                type="button"
+                                onClick={() => handlePlay(demo)}
+                                className={cn(
+                                  'flex items-center justify-center rounded-full p-1 transition-colors shrink-0',
+                                  isPlaying
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+                                )}
+                                aria-label={isPlaying ? 'Pause' : 'Play example'}
+                              >
+                                {isPlaying ? (
+                                  <Pause className="h-3 w-3" />
+                                ) : (
+                                  <Play className="h-3 w-3 ml-0.5" />
+                                )}
+                              </button>
+                            )}
+                            <p className="text-sm text-muted-foreground">
+                              {ex.a || Object.values(ex)[0]}
+                            </p>
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                 </div>
@@ -101,6 +180,9 @@ export function PatternsView({
           </div>
         </div>
       )}
+
+      {/* Hidden audio element for playback */}
+      <audio ref={audioRef} />
     </div>
   )
 }

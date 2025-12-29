@@ -53,6 +53,7 @@ export function PracticeView({
           <PatternsView
             patterns={patterns}
             patternImages={patternImages}
+            lessonNumber={lessonNumber}
             isPatternPhase={isPatternPhase}
             patternIndex={patternIndex}
             phaseState={phaseState}

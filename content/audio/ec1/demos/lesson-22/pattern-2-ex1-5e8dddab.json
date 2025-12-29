@@ -1,0 +1,21 @@
+{
+  "lesson_number": 22,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "How do I get to the store?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Go north. Turn right on First Street."
+    }
+  ],
+  "created_at": "2025-12-29T00:45:42.792174+00:00",
+  "duration_seconds": 5.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

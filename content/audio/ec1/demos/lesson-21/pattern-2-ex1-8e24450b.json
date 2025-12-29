@@ -1,0 +1,21 @@
+{
+  "lesson_number": 21,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Where are the towels?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "The towels are under the sink."
+    }
+  ],
+  "created_at": "2025-12-29T15:29:12.297007+00:00",
+  "duration_seconds": 5.03,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

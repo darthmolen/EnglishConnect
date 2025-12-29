@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "When do you get the mail?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I get the mail at noon."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:45.386179+00:00",
+  "duration_seconds": 4.5,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

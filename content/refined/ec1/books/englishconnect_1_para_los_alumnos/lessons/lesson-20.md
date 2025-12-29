@@ -80,7 +80,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where do you live? A: I live in an (*noun 1*).
+Q: Where do you live?
+
+A: I live in an (*noun 1*).
 
 #### **Questions**
 
@@ -92,9 +94,13 @@ Q: Where do you live? A: I live in an (*noun 1*).
 
 ## **Examples**
 
-Q: Where do you live? A: I live in an apartment.
+Q: Where do you live?
 
-Q: Where does she live? A: She lives in a house.
+A: I live in an apartment.
+
+Q: Where does she live?
+
+A: She lives in a house.
 
 ![](../_page_156_Picture_22.jpeg)
 
@@ -104,7 +110,9 @@ Q: Where does she live? A: She lives in a house.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
-Q: Where is the (*noun 2*)? A: It's (*preposition*) the (*noun 2*).
+Q: Where is the (*noun 2*)?
+
+A: It's (*preposition*) the (*noun 2*).
 
 ## **Questions**
 
@@ -116,9 +124,13 @@ Q: Where is the (*noun 2*)? A: It's (*preposition*) the (*noun 2*).
 
 ## **Examples**
 
-Q: Where is the closet? A: It's next to the bedroom.
+Q: Where is the closet?
 
-Q: Where is the dining room? A: It's to the right of the kitchen.
+A: It's next to the bedroom.
+
+Q: Where is the dining room?
+
+A: It's to the right of the kitchen.
 
 ![](../_page_157_Picture_12.jpeg)
 

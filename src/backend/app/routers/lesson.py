@@ -10,6 +10,7 @@ from app.database import get_db
 from app.middleware.auth import CurrentUser
 from app.models.content import Lesson
 from app.schemas.lesson_session import (
+    AudioChunkSchema,
     LessonConversationRequest,
     LessonConversationResponse,
     LessonPhaseSchema,
@@ -74,10 +75,18 @@ async def lesson_conversation(
 
     # Get or create user progress with phase tracking
     progress_service = LessonProgressService(db)
-    progress, is_new = await progress_service.get_or_create_progress(
-        user_id=current_user.id,
-        lesson_id=lesson_model.id,
-    )
+    try:
+        progress, is_new = await progress_service.get_or_create_progress(
+            user_id=current_user.id,
+            lesson_id=lesson_model.id,
+        )
+    except ValueError as e:
+        if "No phases defined" in str(e):
+            raise HTTPException(
+                status_code=500,
+                detail=f"Lesson {request.lesson_number} has no phases configured. Please contact support."
+            )
+        raise
 
     # Get current phase and state
     phase = progress.current_phase
@@ -88,6 +97,18 @@ async def lesson_conversation(
             status_code=500,
             detail="Lesson has no phases configured"
         )
+
+    # If section is specified, use that phase instead of user's progress phase
+    if request.section:
+        section_phase = await progress_service.get_phase_by_type(
+            lesson_id=lesson_model.id,
+            phase_type=request.section,
+        )
+        if section_phase:
+            logger.info(f"Using section override: {request.section} (was {phase.phase_type})")
+            phase = section_phase
+            # Reset phase state for the overridden phase
+            phase_state = PhaseStateSchema()
 
     # Build the teacher agent with current phase context
     agent = LessonBasedTeacherAgent(
@@ -181,7 +202,9 @@ async def lesson_conversation(
         tools=LESSON_AGENT_TOOLS,
     )
 
-    # Extract audio from tool results
+    # Extract audio from tool results - ACCUMULATE all chunks, not just last one
+    audio_chunks: list[AudioChunkSchema] = []
+    # Also keep last values for backward compatibility
     audio_base64 = None
     audio_format = "wav"
     language = "en"
@@ -191,6 +214,14 @@ async def lesson_conversation(
         if tool_result.get("tool") == "speak" and tool_result.get("success"):
             result_data = tool_result.get("result", {})
             if result_data.get("spoken"):
+                # Accumulate audio chunk
+                audio_chunks.append(AudioChunkSchema(
+                    audio_base64=result_data.get("audio_base64", ""),
+                    format=result_data.get("format", "wav"),
+                    language=result_data.get("language", "en"),
+                    text=result_data.get("text", ""),
+                ))
+                # Keep last values for backward compatibility
                 audio_base64 = result_data.get("audio_base64")
                 audio_format = result_data.get("format", "wav")
                 language = result_data.get("language", "en")
@@ -199,13 +230,20 @@ async def lesson_conversation(
     response_text = spoken_text if spoken_text else agent_result["text"]
 
     # Auto-synthesize if agent didn't call speak
-    if not spoken_text and response_text:
+    if not audio_chunks and response_text:
         logger.warning("Agent did NOT call speak() - auto-synthesizing response")
         try:
             tts_result = await synthesize_speech(text=response_text, voice="speaker_b")
             audio_base64 = tts_result["audio_base64"]
             audio_format = tts_result.get("format", "wav")
             language = "en"
+            # Also add to chunks
+            audio_chunks.append(AudioChunkSchema(
+                audio_base64=tts_result["audio_base64"],
+                format=tts_result.get("format", "wav"),
+                language="en",
+                text=response_text,
+            ))
         except Exception as e:
             logger.error(f"Auto-synthesis failed: {e}")
 
@@ -232,7 +270,8 @@ async def lesson_conversation(
         phase=LessonPhaseSchema.model_validate(new_phase),
         phase_state=new_phase_state,
         phase_progress=updated_agent.get_phase_progress(),
-        audio_base64=audio_base64,
+        audio_base64=audio_base64,  # Backward compat: last audio
         audio_format=audio_format,
         language=language,
+        audio_chunks=audio_chunks if audio_chunks else None,  # All audio in order
     )

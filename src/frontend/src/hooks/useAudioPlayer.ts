@@ -11,7 +11,7 @@ export function useAudioPlayer(): UseAudioPlayerReturn {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const playAudio = useCallback(
-    async (base64Audio: string, format = 'wav') => {
+    async (base64Audio: string, format = 'wav'): Promise<void> => {
       // Stop any existing playback
       if (audioRef.current) {
         audioRef.current.pause()
@@ -22,19 +22,26 @@ export function useAudioPlayer(): UseAudioPlayerReturn {
       const audio = new Audio(dataUrl)
       audioRef.current = audio
 
-      // Handle playback end
-      audio.onended = () => {
-        setIsPlaying(false)
-      }
-
-      // Handle errors
-      audio.onerror = () => {
-        setIsPlaying(false)
-        console.error('Audio playback error')
-      }
-
       setIsPlaying(true)
-      await audio.play()
+
+      // Return promise that resolves when audio FINISHES playing
+      return new Promise((resolve, reject) => {
+        audio.onended = () => {
+          setIsPlaying(false)
+          resolve()
+        }
+
+        audio.onerror = (e) => {
+          setIsPlaying(false)
+          console.error('Audio playback error:', e)
+          reject(new Error('Audio playback failed'))
+        }
+
+        audio.play().catch((err) => {
+          setIsPlaying(false)
+          reject(err)
+        })
+      })
     },
     []
   )

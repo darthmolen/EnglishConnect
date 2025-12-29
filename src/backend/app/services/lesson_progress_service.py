@@ -35,6 +35,27 @@ class LessonProgressService:
         )
         return list(result.scalars().all())
 
+    async def get_phase_by_type(
+        self, lesson_id: int, phase_type: str
+    ) -> LessonPhase | None:
+        """Get a specific phase by its type.
+
+        Args:
+            lesson_id: Database ID of the lesson
+            phase_type: Phase type string ('intro', 'vocabulary', 'patterns', 'practice', 'wrapup')
+
+        Returns:
+            LessonPhase if found, None otherwise
+        """
+        result = await self.session.execute(
+            select(LessonPhase)
+            .where(
+                LessonPhase.lesson_id == lesson_id,
+                LessonPhase.phase_type == phase_type,
+            )
+        )
+        return result.scalar_one_or_none()
+
     async def get_user_progress(
         self, user_id: uuid.UUID, lesson_id: int
     ) -> UserProgress | None:

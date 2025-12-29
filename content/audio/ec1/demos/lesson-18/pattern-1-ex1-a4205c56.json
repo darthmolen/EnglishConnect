@@ -1,0 +1,21 @@
+{
+  "lesson_number": 18,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What are the ingredients for bread?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "You need flour, eggs, and water."
+    }
+  ],
+  "created_at": "2025-12-29T00:45:18.924339+00:00",
+  "duration_seconds": 4.63,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

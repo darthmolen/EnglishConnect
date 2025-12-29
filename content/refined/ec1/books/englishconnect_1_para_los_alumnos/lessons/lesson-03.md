@@ -86,7 +86,9 @@ En el apéndice puedes ver más *months*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: When is your (*noun 1*)? A: My (*noun 1*) is (*day*).
+Q: When is your (*noun 1*)?
+
+A: My (*noun 1*) is (*day*).
 
 #### **Questions**
 
@@ -111,7 +113,9 @@ Q: When is your (*noun 1*)? A: My (*noun 1*) is (*day*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza.
 
-Q: What is your (*noun 2*)? A: My (*noun 2*) is ( ).
+Q: What is your (*noun 2*)?
+
+A: My (*noun 2*) is ( ).
 
 ### **Questions**
 

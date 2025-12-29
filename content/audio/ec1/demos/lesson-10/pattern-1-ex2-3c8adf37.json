@@ -1,0 +1,21 @@
+{
+  "lesson_number": 10,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Does she brush her teeth in the evening?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, she brushes her teeth in the evening."
+    }
+  ],
+  "created_at": "2025-12-29T00:44:21.991825+00:00",
+  "duration_seconds": 5.3,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}
