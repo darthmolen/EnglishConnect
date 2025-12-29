@@ -1,0 +1,24 @@
+{
+  "lesson_number": 9,
+  "english_word": "he's",
+  "spanish_translation": "\u00e9l es/est\u00e1",
+  "category": "pronoun",
+  "english_parts": [
+    "he's"
+  ],
+  "spanish_parts": [
+    "\u00e9l es",
+    "est\u00e1"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:52:35.115724+00:00",
+  "duration_seconds": 2.96,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

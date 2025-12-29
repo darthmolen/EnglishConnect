@@ -1,0 +1,25 @@
+{
+  "lesson_number": 20,
+  "english_word": "closet/closets",
+  "spanish_translation": "armario/armarios",
+  "category": "noun",
+  "english_parts": [
+    "closet",
+    "closets"
+  ],
+  "spanish_parts": [
+    "armario",
+    "armarios"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:19.226426+00:00",
+  "duration_seconds": 4.45,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

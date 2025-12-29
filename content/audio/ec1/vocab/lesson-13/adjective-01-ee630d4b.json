@@ -1,0 +1,23 @@
+{
+  "lesson_number": 13,
+  "english_word": "nice",
+  "spanish_translation": "buen tiempo",
+  "category": "adjective",
+  "english_parts": [
+    "nice"
+  ],
+  "spanish_parts": [
+    "buen tiempo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T20:10:44.334993+00:00",
+  "duration_seconds": 2.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

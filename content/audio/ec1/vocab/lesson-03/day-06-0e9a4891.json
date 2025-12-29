@@ -1,0 +1,23 @@
+{
+  "lesson_number": 3,
+  "english_word": "June 6th",
+  "spanish_translation": "6 de junio",
+  "category": "day",
+  "english_parts": [
+    "June 6th"
+  ],
+  "spanish_parts": [
+    "6 de junio"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:50:08.451658+00:00",
+  "duration_seconds": 2.6,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

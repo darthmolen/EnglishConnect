@@ -1,0 +1,23 @@
+{
+  "lesson_number": 20,
+  "english_word": "I live in \u2026",
+  "spanish_translation": "Vivo en\u2026",
+  "category": "phrase",
+  "english_parts": [
+    "I live in \u2026"
+  ],
+  "spanish_parts": [
+    "Vivo en\u2026"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:28.302040+00:00",
+  "duration_seconds": 1.91,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

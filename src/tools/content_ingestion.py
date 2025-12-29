@@ -163,8 +163,8 @@ class LessonParser:
 
             # Extract table rows
             for match in re.finditer(table_pattern, section_text):
-                english = match.group(1).strip()
-                spanish = match.group(2).strip()
+                english = match.group(1).strip().rstrip('*')  # Remove trailing asterisks
+                spanish = match.group(2).strip().rstrip('*')  # Remove trailing asterisks
                 word_pos = match.start()
 
                 # Skip header rows and empty rows

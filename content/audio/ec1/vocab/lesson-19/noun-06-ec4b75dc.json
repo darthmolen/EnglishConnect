@@ -1,0 +1,25 @@
+{
+  "lesson_number": 19,
+  "english_word": "tie/ties",
+  "spanish_translation": "corbata/corbatas",
+  "category": "noun",
+  "english_parts": [
+    "tie",
+    "ties"
+  ],
+  "spanish_parts": [
+    "corbata",
+    "corbatas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:00.883351+00:00",
+  "duration_seconds": 4.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

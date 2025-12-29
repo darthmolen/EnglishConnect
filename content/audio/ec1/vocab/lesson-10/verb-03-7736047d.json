@@ -1,0 +1,25 @@
+{
+  "lesson_number": 10,
+  "english_word": "do my hair/does her hair",
+  "spanish_translation": "me arreglo el cabello / se<br>arregla el cabello",
+  "category": "verb",
+  "english_parts": [
+    "do my hair",
+    "does her hair"
+  ],
+  "spanish_parts": [
+    "me arreglo el cabello",
+    "se<br>arregla el cabello"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:52:55.306972+00:00",
+  "duration_seconds": 6.18,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

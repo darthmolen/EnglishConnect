@@ -1,0 +1,23 @@
+{
+  "lesson_number": 21,
+  "english_word": "under",
+  "spanish_translation": "debajo",
+  "category": "preposition",
+  "english_parts": [
+    "under"
+  ],
+  "spanish_parts": [
+    "debajo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:13.186733+00:00",
+  "duration_seconds": 1.78,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

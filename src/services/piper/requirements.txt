@@ -1,0 +1,5 @@
+# Piper TTS Service Dependencies
+piper-tts>=1.2.0    # Piper TTS with CLI
+soundfile>=0.12.0   # Audio I/O
+numpy>=1.24.0       # Array operations
+scipy>=1.11.0       # Resampling

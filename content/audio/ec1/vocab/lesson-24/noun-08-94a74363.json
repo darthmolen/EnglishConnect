@@ -1,0 +1,23 @@
+{
+  "lesson_number": 24,
+  "english_word": "toothache",
+  "spanish_translation": "dolor de muelas",
+  "category": "noun",
+  "english_parts": [
+    "toothache"
+  ],
+  "spanish_parts": [
+    "dolor de muelas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:59:24.512058+00:00",
+  "duration_seconds": 2.52,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

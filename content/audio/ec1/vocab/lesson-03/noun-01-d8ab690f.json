@@ -1,0 +1,23 @@
+{
+  "lesson_number": 3,
+  "english_word": "anniversary",
+  "spanish_translation": "aniversario",
+  "category": "noun",
+  "english_parts": [
+    "anniversary"
+  ],
+  "spanish_parts": [
+    "aniversario"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:50:09.504846+00:00",
+  "duration_seconds": 2.61,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

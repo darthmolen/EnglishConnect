@@ -1,0 +1,25 @@
+{
+  "lesson_number": 11,
+  "english_word": "make lunch/making lunch",
+  "spanish_translation": "preparar el almuerzo/<br>preparando el almuerzo",
+  "category": "verb",
+  "english_parts": [
+    "make lunch",
+    "making lunch"
+  ],
+  "spanish_parts": [
+    "preparar el almuerzo",
+    "<br>preparando el almuerzo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:53:38.088354+00:00",
+  "duration_seconds": 6.62,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

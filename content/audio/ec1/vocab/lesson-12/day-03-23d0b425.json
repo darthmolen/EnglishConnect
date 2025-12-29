@@ -1,0 +1,23 @@
+{
+  "lesson_number": 12,
+  "english_word": "Tuesday",
+  "spanish_translation": "martes",
+  "category": "day",
+  "english_parts": [
+    "Tuesday"
+  ],
+  "spanish_parts": [
+    "martes"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:53:55.016630+00:00",
+  "duration_seconds": 2.1,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

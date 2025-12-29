@@ -1,0 +1,23 @@
+{
+  "lesson_number": 16,
+  "english_word": "fruit",
+  "spanish_translation": "fruta",
+  "category": "noun",
+  "english_parts": [
+    "fruit"
+  ],
+  "spanish_parts": [
+    "fruta"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:55:40.077644+00:00",
+  "duration_seconds": 1.72,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

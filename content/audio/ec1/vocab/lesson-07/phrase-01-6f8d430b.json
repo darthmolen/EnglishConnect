@@ -1,0 +1,23 @@
+{
+  "lesson_number": 7,
+  "english_word": "Tell me about \u2026",
+  "spanish_translation": "H\u00e1blame de\u2026",
+  "category": "phrase",
+  "english_parts": [
+    "Tell me about \u2026"
+  ],
+  "spanish_parts": [
+    "H\u00e1blame de\u2026"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T20:10:41.724056+00:00",
+  "duration_seconds": 2.66,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

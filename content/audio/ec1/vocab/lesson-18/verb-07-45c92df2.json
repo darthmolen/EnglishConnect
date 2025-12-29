@@ -1,0 +1,23 @@
+{
+  "lesson_number": 18,
+  "english_word": "put",
+  "spanish_translation": "poner",
+  "category": "verb",
+  "english_parts": [
+    "put"
+  ],
+  "spanish_parts": [
+    "poner"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:56:45.900005+00:00",
+  "duration_seconds": 1.58,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

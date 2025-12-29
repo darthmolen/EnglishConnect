@@ -1,0 +1,23 @@
+{
+  "lesson_number": 6,
+  "english_word": "mother (mom)",
+  "spanish_translation": "madre (mam\u00e1)",
+  "category": "noun",
+  "english_parts": [
+    "mother"
+  ],
+  "spanish_parts": [
+    "madre"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:50:57.540284+00:00",
+  "duration_seconds": 1.83,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

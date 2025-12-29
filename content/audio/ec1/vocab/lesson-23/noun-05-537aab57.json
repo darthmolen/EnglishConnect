@@ -1,0 +1,25 @@
+{
+  "lesson_number": 23,
+  "english_word": "finger/fingers",
+  "spanish_translation": "dedo/dedos (de las<br>manos)",
+  "category": "noun",
+  "english_parts": [
+    "finger",
+    "fingers"
+  ],
+  "spanish_parts": [
+    "dedo",
+    "dedos"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:44.062411+00:00",
+  "duration_seconds": 4.24,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

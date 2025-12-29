@@ -1,0 +1,25 @@
+{
+  "lesson_number": 21,
+  "english_word": "window/windows",
+  "spanish_translation": "ventana/ventanas",
+  "category": "noun",
+  "english_parts": [
+    "window",
+    "windows"
+  ],
+  "spanish_parts": [
+    "ventana",
+    "ventanas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:06.175283+00:00",
+  "duration_seconds": 4.44,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

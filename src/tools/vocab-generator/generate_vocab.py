@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Vocabulary audio generator for EnglishConnect.
 
-Reads vocabulary items from database, generates pronunciation audio
-using TTS HTTP API, and saves to content/audio/ec1/vocab/.
+Reads vocabulary items from database, generates bilingual pronunciation audio
+using Piper TTS, and saves to content/audio/ec1/vocab/.
 
 Usage:
-    # Ensure TTS server is running in HTTP mode:
-    # cd src/services/tts-mcp && source .venv/bin/activate && python server.py --http
+    # Ensure Piper venv is activated:
+    # source src/services/piper/.venv/bin/activate
 
     # Generate vocab audio for one lesson
     python generate_vocab.py --lesson 5
@@ -20,7 +20,6 @@ Usage:
 
 import argparse
 import asyncio
-import base64
 import io
 import json
 import re
@@ -28,115 +27,54 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-import httpx
 import soundfile as sf
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # Add parent paths for imports
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "backend"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "services" / "piper"))
 
 from app.database import Base
 from app.models.content import Lesson, VocabularyItem
+from service import PiperService
 
 
 # Configuration
-VOICE = "speaker_b"  # Emma - clear, slower diction for vocabulary
 OUTPUT_BASE = Path(__file__).parent.parent.parent.parent / "content" / "audio" / "ec1" / "vocab"
-TTS_HTTP_URL = "http://localhost:8002"
 DATABASE_URL = "postgresql+asyncpg://englishconnect:devpassword@localhost:5432/englishconnect"
-PAUSE_SECONDS = 0.7  # Pause between singular and plural forms
+INTRA_PAUSE = 0.5  # Pause between singular/plural forms
+INTER_PAUSE = 0.8  # Pause between English and Spanish
 SAMPLE_RATE = 24000
 
 
-def parse_pronunciation_text(english_word: str) -> str:
-    """Convert English word to pronunciation text.
+def split_forms(word: str) -> list[str]:
+    """Split word into separate forms for pronunciation.
 
-    Handles slash notation for plurals:
-    - "book/books" -> "book... books"
-    - "child/children" -> "child... children"
-    - "go to the beach" -> "go to the beach" (unchanged)
-    - "father (dad)" -> "father" (parenthetical removed)
+    Handles slash notation for plurals and removes parentheticals:
+    - "book/books" -> ["book", "books"]
+    - "child/children" -> ["child", "children"]
+    - "go to the beach" -> ["go to the beach"]
+    - "father (dad)" -> ["father"]
 
     Args:
-        english_word: English word/phrase from database
+        word: Word/phrase from database
 
     Returns:
-        Text suitable for TTS pronunciation
+        List of forms to pronounce
     """
-    text = english_word.strip()
+    text = word.strip()
 
     # Remove parenthetical alternatives like "father (dad)"
     text = re.sub(r'\s*\([^)]+\)\s*', ' ', text).strip()
 
     # Handle slash notation for singular/plural
     if '/' in text:
-        parts = [p.strip() for p in text.split('/')]
-        # Join with pause indicator (TTS will pause on "...")
-        return '... '.join(parts)
+        return [p.strip() for p in text.split('/') if p.strip()]
 
-    return text
-
-
-def concatenate_wav_bytes(audio_segments: list[bytes], pause_seconds: float = 0.7) -> bytes:
-    """Concatenate WAV audio bytes with pauses between segments.
-
-    Args:
-        audio_segments: List of WAV audio bytes
-        pause_seconds: Pause duration between segments
-
-    Returns:
-        Combined WAV audio bytes
-    """
-    if not audio_segments:
-        return b""
-
-    if len(audio_segments) == 1:
-        return audio_segments[0]
-
-    import numpy as np
-
-    pause_samples = int(SAMPLE_RATE * pause_seconds)
-    all_segments = []
-
-    for i, wav_bytes in enumerate(audio_segments):
-        buffer = io.BytesIO(wav_bytes)
-        audio_data, _ = sf.read(buffer)
-        all_segments.append(audio_data)
-
-        if i < len(audio_segments) - 1:
-            all_segments.append(np.zeros(pause_samples, dtype=np.float32))
-
-    combined_audio = np.concatenate(all_segments)
-
-    output_io = io.BytesIO()
-    sf.write(output_io, combined_audio, SAMPLE_RATE, format="WAV")
-    output_io.seek(0)
-    return output_io.read()
-
-
-async def synthesize_text(client: httpx.AsyncClient, tts_url: str, text: str) -> bytes:
-    """Call TTS HTTP API to synthesize text.
-
-    Args:
-        client: HTTP client
-        tts_url: TTS server URL
-        text: Text to synthesize
-
-    Returns:
-        WAV audio bytes
-    """
-    response = await client.post(
-        f"{tts_url}/synthesize",
-        json={"text": text, "voice": VOICE},
-        timeout=60.0,
-    )
-    response.raise_for_status()
-
-    data = response.json()
-    audio_b64 = data["audio_base64"]
-    return base64.b64decode(audio_b64)
+    return [text] if text else []
 
 
 def calculate_duration(audio_bytes: bytes) -> float:
@@ -146,7 +84,9 @@ def calculate_duration(audio_bytes: bytes) -> float:
     return len(audio_data) / sample_rate
 
 
-async def fetch_lesson_vocabulary(session: AsyncSession, lesson_number: int) -> tuple[Lesson | None, list[VocabularyItem]]:
+async def fetch_lesson_vocabulary(
+    session: AsyncSession, lesson_number: int
+) -> tuple[Lesson | None, list[VocabularyItem]]:
     """Fetch vocabulary items for a lesson.
 
     Returns:
@@ -154,8 +94,7 @@ async def fetch_lesson_vocabulary(session: AsyncSession, lesson_number: int) -> 
     """
     # Get lesson
     stmt = select(Lesson).where(
-        Lesson.course_id == "ec1",
-        Lesson.lesson_number == lesson_number
+        Lesson.course_id == "ec1", Lesson.lesson_number == lesson_number
     )
     result = await session.execute(stmt)
     lesson = result.scalar_one_or_none()
@@ -164,9 +103,11 @@ async def fetch_lesson_vocabulary(session: AsyncSession, lesson_number: int) -> 
         return None, []
 
     # Get vocabulary items
-    stmt = select(VocabularyItem).where(
-        VocabularyItem.lesson_id == lesson.id
-    ).order_by(VocabularyItem.category, VocabularyItem.id)
+    stmt = (
+        select(VocabularyItem)
+        .where(VocabularyItem.lesson_id == lesson.id)
+        .order_by(VocabularyItem.category, VocabularyItem.id)
+    )
     result = await session.execute(stmt)
     vocab_items = list(result.scalars().all())
 
@@ -187,19 +128,17 @@ def generate_filename(category: str, index: int) -> str:
     return f"{safe_category}-{index:02d}-{unique_id}"
 
 
-async def generate_vocab_audio(
-    client: httpx.AsyncClient,
-    tts_url: str,
+def generate_vocab_audio(
+    piper: PiperService,
     lesson_number: int,
     vocab: VocabularyItem,
     index: int,
     dry_run: bool = False,
 ) -> Path | None:
-    """Generate audio for a single vocabulary item.
+    """Generate bilingual audio for a single vocabulary item.
 
     Args:
-        client: HTTP client
-        tts_url: TTS server URL
+        piper: PiperService instance
         lesson_number: Lesson number
         vocab: Vocabulary item from database
         index: Index within category (for filename)
@@ -208,17 +147,25 @@ async def generate_vocab_audio(
     Returns:
         Path to generated audio file, or None on error/dry-run
     """
-    pronunciation_text = parse_pronunciation_text(vocab.english_word)
+    english_parts = split_forms(vocab.english_word)
+    spanish_parts = split_forms(vocab.spanish_translation or "")
 
     print(f"  [{vocab.category or 'uncategorized'}] {vocab.english_word}")
-    print(f"    → Pronunciation: \"{pronunciation_text}\"")
+    print(f"    → EN: {english_parts}")
+    print(f"    → ES: {spanish_parts}")
 
     if dry_run:
         return None
 
     try:
-        # Generate audio
-        audio_bytes = await synthesize_text(client, tts_url, pronunciation_text)
+        # Generate bilingual audio
+        audio_bytes = piper.synthesize_vocabulary(
+            english_parts=english_parts,
+            spanish_parts=spanish_parts,
+            intra_pause=INTRA_PAUSE,
+            inter_pause=INTER_PAUSE,
+            sample_rate=SAMPLE_RATE,
+        )
         duration = calculate_duration(audio_bytes)
 
         # Prepare output paths
@@ -233,13 +180,18 @@ async def generate_vocab_audio(
         audio_path.write_bytes(audio_bytes)
 
         # Save metadata
+        voices = piper.get_voice_info()
         metadata = {
             "lesson_number": lesson_number,
             "english_word": vocab.english_word,
             "spanish_translation": vocab.spanish_translation,
             "category": vocab.category,
-            "pronunciation_text": pronunciation_text,
-            "voice": VOICE,
+            "english_parts": english_parts,
+            "spanish_parts": spanish_parts,
+            "format": "bilingual",
+            "voices": voices,
+            "intra_pause": INTRA_PAUSE,
+            "inter_pause": INTER_PAUSE,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "duration_seconds": round(duration, 2),
             "audio_format": "wav",
@@ -257,8 +209,7 @@ async def generate_vocab_audio(
 
 async def generate_vocab_for_lesson(
     session: AsyncSession,
-    client: httpx.AsyncClient,
-    tts_url: str,
+    piper: PiperService,
     lesson_number: int,
     dry_run: bool = False,
 ) -> list[Path]:
@@ -266,8 +217,7 @@ async def generate_vocab_for_lesson(
 
     Args:
         session: Database session
-        client: HTTP client
-        tts_url: TTS server URL
+        piper: PiperService instance
         lesson_number: Lesson number
         dry_run: If True, preview without generating
 
@@ -300,9 +250,7 @@ async def generate_vocab_for_lesson(
         category_indices[category] = category_indices.get(category, 0) + 1
         index = category_indices[category]
 
-        path = await generate_vocab_audio(
-            client, tts_url, lesson_number, vocab, index, dry_run
-        )
+        path = generate_vocab_audio(piper, lesson_number, vocab, index, dry_run)
         if path:
             generated.append(path)
 
@@ -310,7 +258,7 @@ async def generate_vocab_for_lesson(
 
 
 async def main():
-    parser = argparse.ArgumentParser(description="Generate vocabulary audio files")
+    parser = argparse.ArgumentParser(description="Generate bilingual vocabulary audio files")
     parser.add_argument("--lesson", type=int, help="Lesson number to generate for")
     parser.add_argument("--all", action="store_true", help="Generate for all lessons")
     parser.add_argument("--dry-run", action="store_true", help="Preview without generating")
@@ -319,68 +267,71 @@ async def main():
         default=DATABASE_URL,
         help="Database URL",
     )
-    parser.add_argument(
-        "--tts-url",
-        default=TTS_HTTP_URL,
-        help="TTS HTTP server URL",
-    )
     args = parser.parse_args()
 
     if not args.lesson and not args.all:
         parser.error("Either --lesson or --all is required")
 
+    # Initialize Piper service
+    piper = PiperService()
+    available_langs = piper.get_available_languages()
+
+    if not args.dry_run:
+        if not available_langs:
+            print("Error: No Piper voice models found")
+            print("Download models with:")
+            print("  cd src/services/piper/models")
+            print("  wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx")
+            print("  wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json")
+            print("  wget https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_MX/ald/medium/es_MX-ald-medium.onnx")
+            print("  wget https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_MX/ald/medium/es_MX-ald-medium.onnx.json")
+            return
+
+        if "en" not in available_langs or "es" not in available_langs:
+            print(f"Error: Need both English and Spanish voices. Have: {available_langs}")
+            return
+
+        print(f"Piper TTS ready: {piper.get_voice_info()}")
+    else:
+        print("DRY RUN - Piper voice check skipped")
+
+    print(f"Output: {OUTPUT_BASE}/")
+    print()
+
     # Create engine and session
     engine = create_async_engine(args.database_url, echo=False)
     async_session = async_sessionmaker(engine, expire_on_commit=False)
 
-    # Create HTTP client for TTS
-    async with httpx.AsyncClient() as client:
-        # Test TTS connection (skip for dry run)
-        if not args.dry_run:
-            try:
-                response = await client.get(f"{args.tts_url}/health", timeout=5.0)
-                response.raise_for_status()
-                print(f"TTS server connected: {args.tts_url}")
-            except Exception as e:
-                print(f"Error: Cannot connect to TTS server at {args.tts_url}")
-                print(f"Start it with: cd src/services/tts-mcp && python server.py --http")
-                print(f"Error details: {e}")
-                return
+    async with async_session() as session:
+        if args.all:
+            # Get all lesson numbers
+            stmt = (
+                select(Lesson.lesson_number)
+                .where(Lesson.course_id == "ec1")
+                .order_by(Lesson.lesson_number)
+            )
+            result = await session.execute(stmt)
+            lesson_numbers = [row[0] for row in result.all()]
 
-        print(f"Voice: {VOICE} (Emma)")
-        print(f"Output: {OUTPUT_BASE}/")
-        print()
+            print(f"Generating vocab for {len(lesson_numbers)} lessons...")
 
-        async with async_session() as session:
-            if args.all:
-                # Get all lesson numbers
-                stmt = (
-                    select(Lesson.lesson_number)
-                    .where(Lesson.course_id == "ec1")
-                    .order_by(Lesson.lesson_number)
-                )
-                result = await session.execute(stmt)
-                lesson_numbers = [row[0] for row in result.all()]
-
-                print(f"Generating vocab for {len(lesson_numbers)} lessons...")
-
-                total_generated = []
-                for lesson_num in lesson_numbers:
-                    print(f"\n{'='*60}")
-                    print(f"Lesson {lesson_num}")
-                    print(f"{'='*60}")
-                    generated = await generate_vocab_for_lesson(
-                        session, client, args.tts_url, lesson_num, args.dry_run
-                    )
-                    total_generated.extend(generated)
-
-                print(f"\n\nTotal generated: {len(total_generated)} audio files")
-            else:
+            total_generated = []
+            for lesson_num in lesson_numbers:
+                print(f"\n{'=' * 60}")
+                print(f"Lesson {lesson_num}")
+                print(f"{'=' * 60}")
                 generated = await generate_vocab_for_lesson(
-                    session, client, args.tts_url, args.lesson, args.dry_run
+                    session, piper, lesson_num, args.dry_run
                 )
-                if not args.dry_run:
-                    print(f"\nGenerated: {len(generated)} audio files")
+                total_generated.extend(generated)
+
+            print(f"\n\nTotal generated: {len(total_generated)} audio files")
+        else:
+            generated = await generate_vocab_for_lesson(
+                session, piper, args.lesson, args.dry_run
+            )
+            if not args.dry_run:
+                print(f"\nGenerated: {len(generated)} audio files")
 
     await engine.dispose()
 

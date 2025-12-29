@@ -1,0 +1,25 @@
+{
+  "lesson_number": 22,
+  "english_word": "First Street/1st Street",
+  "spanish_translation": "Calle Primera/Calle 1.\u00aa",
+  "category": "noun",
+  "english_parts": [
+    "First Street",
+    "1st Street"
+  ],
+  "spanish_parts": [
+    "Calle Primera",
+    "Calle 1.\u00aa"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:26.902286+00:00",
+  "duration_seconds": 5.61,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

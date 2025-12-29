@@ -1,0 +1,25 @@
+{
+  "lesson_number": 1,
+  "english_word": "she/her",
+  "spanish_translation": "ella/su (de ella)",
+  "category": "pronoun",
+  "english_parts": [
+    "she",
+    "her"
+  ],
+  "spanish_parts": [
+    "ella",
+    "su"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:49:36.382536+00:00",
+  "duration_seconds": 3.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

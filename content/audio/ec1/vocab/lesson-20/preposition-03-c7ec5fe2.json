@@ -1,0 +1,23 @@
+{
+  "lesson_number": 20,
+  "english_word": "below",
+  "spanish_translation": "abajo",
+  "category": "preposition",
+  "english_parts": [
+    "below"
+  ],
+  "spanish_parts": [
+    "abajo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:31.325032+00:00",
+  "duration_seconds": 1.81,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

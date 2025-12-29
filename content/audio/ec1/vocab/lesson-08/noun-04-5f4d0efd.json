@@ -1,0 +1,25 @@
+{
+  "lesson_number": 8,
+  "english_word": "computer/computers",
+  "spanish_translation": "computadora/<br>computadoras",
+  "category": "noun",
+  "english_parts": [
+    "computer",
+    "computers"
+  ],
+  "spanish_parts": [
+    "computadora",
+    "<br>computadoras"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:51:53.783476+00:00",
+  "duration_seconds": 5.52,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,23 @@
+{
+  "lesson_number": 13,
+  "english_word": "in Mexico",
+  "spanish_translation": "en M\u00e9xico",
+  "category": "phrase",
+  "english_parts": [
+    "in Mexico"
+  ],
+  "spanish_parts": [
+    "en M\u00e9xico"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T20:11:00.641935+00:00",
+  "duration_seconds": 2.48,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

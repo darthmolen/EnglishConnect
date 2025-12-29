@@ -1,0 +1,23 @@
+{
+  "lesson_number": 20,
+  "english_word": "living room",
+  "spanish_translation": "sala de estar",
+  "category": "noun",
+  "english_parts": [
+    "living room"
+  ],
+  "spanish_parts": [
+    "sala de estar"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:23.213492+00:00",
+  "duration_seconds": 2.53,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

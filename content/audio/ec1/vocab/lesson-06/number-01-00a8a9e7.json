@@ -1,0 +1,23 @@
+{
+  "lesson_number": 6,
+  "english_word": "1 \u2013 one",
+  "spanish_translation": "1: uno",
+  "category": "number",
+  "english_parts": [
+    "1 \u2013 one"
+  ],
+  "spanish_parts": [
+    "1: uno"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:51:14.228726+00:00",
+  "duration_seconds": 2.72,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

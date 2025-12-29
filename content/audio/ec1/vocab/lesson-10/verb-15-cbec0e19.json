@@ -1,0 +1,25 @@
+{
+  "lesson_number": 10,
+  "english_word": "wake up/wakes up",
+  "spanish_translation": "me despierto/se despierta",
+  "category": "verb",
+  "english_parts": [
+    "wake up",
+    "wakes up"
+  ],
+  "spanish_parts": [
+    "me despierto",
+    "se despierta"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:53:19.286622+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

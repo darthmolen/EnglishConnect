@@ -1,0 +1,23 @@
+{
+  "lesson_number": 20,
+  "english_word": "stairs",
+  "spanish_translation": "escaleras",
+  "category": "noun",
+  "english_parts": [
+    "stairs"
+  ],
+  "spanish_parts": [
+    "escaleras"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:57:26.242098+00:00",
+  "duration_seconds": 2.26,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

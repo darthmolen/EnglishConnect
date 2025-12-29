@@ -1,0 +1,23 @@
+{
+  "lesson_number": 24,
+  "english_word": "backache",
+  "spanish_translation": "dolor de espalda",
+  "category": "noun",
+  "english_parts": [
+    "backache"
+  ],
+  "spanish_parts": [
+    "dolor de espalda"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:59:17.585029+00:00",
+  "duration_seconds": 2.48,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

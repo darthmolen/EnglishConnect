@@ -1,0 +1,25 @@
+{
+  "lesson_number": 6,
+  "english_word": "sister/sisters",
+  "spanish_translation": "hermana/hermanas",
+  "category": "noun",
+  "english_parts": [
+    "sister",
+    "sisters"
+  ],
+  "spanish_parts": [
+    "hermana",
+    "hermanas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:51:01.473540+00:00",
+  "duration_seconds": 4.26,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

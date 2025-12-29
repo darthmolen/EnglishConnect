@@ -38,3 +38,7 @@ redis_data/
 
 # Research/reference repos (not part of project)
 research/
+
+# Piper TTS models (large ONNX files, download separately)
+src/services/piper/models/*.onnx
+src/services/piper/models/*.onnx.json

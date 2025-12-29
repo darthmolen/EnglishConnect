@@ -1,0 +1,25 @@
+{
+  "lesson_number": 23,
+  "english_word": "ear/ears",
+  "spanish_translation": "oreja/orejas (o\u00eddo/o\u00eddos)",
+  "category": "noun",
+  "english_parts": [
+    "ear",
+    "ears"
+  ],
+  "spanish_parts": [
+    "oreja",
+    "orejas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:40.184867+00:00",
+  "duration_seconds": 4.19,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

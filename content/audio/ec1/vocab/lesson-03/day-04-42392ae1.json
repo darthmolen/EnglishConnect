@@ -1,0 +1,23 @@
+{
+  "lesson_number": 3,
+  "english_word": "April 4th",
+  "spanish_translation": "4 de abril",
+  "category": "day",
+  "english_parts": [
+    "April 4th"
+  ],
+  "spanish_parts": [
+    "4 de abril"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:50:06.466371+00:00",
+  "duration_seconds": 2.85,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

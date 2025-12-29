@@ -1,0 +1,25 @@
+{
+  "lesson_number": 9,
+  "english_word": "color/colors",
+  "spanish_translation": "color/colores",
+  "category": "noun",
+  "english_parts": [
+    "color",
+    "colors"
+  ],
+  "spanish_parts": [
+    "color",
+    "colores"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:52:19.192488+00:00",
+  "duration_seconds": 4.19,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

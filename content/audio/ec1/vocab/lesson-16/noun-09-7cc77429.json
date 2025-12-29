@@ -1,0 +1,23 @@
+{
+  "lesson_number": 16,
+  "english_word": "meat",
+  "spanish_translation": "carne",
+  "category": "noun",
+  "english_parts": [
+    "meat"
+  ],
+  "spanish_parts": [
+    "carne"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:55:45.926522+00:00",
+  "duration_seconds": 1.71,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

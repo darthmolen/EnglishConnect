@@ -1,0 +1,23 @@
+{
+  "lesson_number": 24,
+  "english_word": "eat nuts",
+  "spanish_translation": "comer frutos secos",
+  "category": "verb",
+  "english_parts": [
+    "eat nuts"
+  ],
+  "spanish_parts": [
+    "comer frutos secos"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:59:26.535234+00:00",
+  "duration_seconds": 2.87,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

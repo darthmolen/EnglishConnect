@@ -1,0 +1,23 @@
+{
+  "lesson_number": 14,
+  "english_word": "electrician",
+  "spanish_translation": "electricista",
+  "category": "noun",
+  "english_parts": [
+    "electrician"
+  ],
+  "spanish_parts": [
+    "electricista"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:54:53.970623+00:00",
+  "duration_seconds": 2.8,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

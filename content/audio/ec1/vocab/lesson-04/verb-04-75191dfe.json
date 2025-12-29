@@ -1,0 +1,23 @@
+{
+  "lesson_number": 4,
+  "english_word": "garden",
+  "spanish_translation": "cuidar del jard\u00edn",
+  "category": "verb",
+  "english_parts": [
+    "garden"
+  ],
+  "spanish_parts": [
+    "cuidar del jard\u00edn"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:50:22.300611+00:00",
+  "duration_seconds": 2.36,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

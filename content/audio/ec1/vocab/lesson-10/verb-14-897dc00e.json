@@ -1,0 +1,25 @@
+{
+  "lesson_number": 10,
+  "english_word": "take a shower/takes a<br>shower",
+  "spanish_translation": "me ducho/se ducha",
+  "category": "verb",
+  "english_parts": [
+    "take a shower",
+    "takes a<br>shower"
+  ],
+  "spanish_parts": [
+    "me ducho",
+    "se ducha"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:53:17.353069+00:00",
+  "duration_seconds": 5.5,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

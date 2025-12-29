@@ -1,0 +1,25 @@
+{
+  "lesson_number": 15,
+  "english_word": "employee/employees",
+  "spanish_translation": "empleado/empleados",
+  "category": "noun",
+  "english_parts": [
+    "employee",
+    "employees"
+  ],
+  "spanish_parts": [
+    "empleado",
+    "empleados"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:55:17.956462+00:00",
+  "duration_seconds": 5.33,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

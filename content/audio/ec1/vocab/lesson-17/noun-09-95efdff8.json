@@ -1,0 +1,23 @@
+{
+  "lesson_number": 17,
+  "english_word": "pizza",
+  "spanish_translation": "pizza",
+  "category": "noun",
+  "english_parts": [
+    "pizza"
+  ],
+  "spanish_parts": [
+    "pizza"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:56:03.396358+00:00",
+  "duration_seconds": 2.07,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

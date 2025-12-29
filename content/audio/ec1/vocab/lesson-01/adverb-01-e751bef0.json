@@ -1,0 +1,23 @@
+{
+  "lesson_number": 1,
+  "english_word": "no",
+  "spanish_translation": "no",
+  "category": "adverb",
+  "english_parts": [
+    "no"
+  ],
+  "spanish_parts": [
+    "no"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:49:21.212028+00:00",
+  "duration_seconds": 1.65,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

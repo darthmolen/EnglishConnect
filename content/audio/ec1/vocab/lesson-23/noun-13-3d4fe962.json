@@ -1,0 +1,23 @@
+{
+  "lesson_number": 23,
+  "english_word": "stomach",
+  "spanish_translation": "est\u00f3mago",
+  "category": "noun",
+  "english_parts": [
+    "stomach"
+  ],
+  "spanish_parts": [
+    "est\u00f3mago"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2025-12-29T19:58:55.762978+00:00",
+  "duration_seconds": 2.07,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}
