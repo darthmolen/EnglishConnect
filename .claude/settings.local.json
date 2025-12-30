@@ -48,7 +48,8 @@
       "Bash(python:*)",
       "Bash(source .venv-test/bin/activate)",
       "Bash(docker ps:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(nvcc:*)"
     ],
     "deny": [],
     "ask": []

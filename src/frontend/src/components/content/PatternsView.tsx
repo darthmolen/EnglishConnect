@@ -92,20 +92,10 @@ export function PatternsView({
           return (
             <div
               key={pattern.pattern_number}
-              role={onPatternClick ? 'button' : undefined}
-              tabIndex={onPatternClick ? 0 : undefined}
-              onClick={() => onPatternClick?.(index)}
-              onKeyDown={(e) => {
-                if (onPatternClick && (e.key === 'Enter' || e.key === ' ')) {
-                  e.preventDefault()
-                  onPatternClick(index)
-                }
-              }}
               className={cn(
                 'rounded-lg border p-4 transition-colors',
                 isCurrent && 'bg-primary/10 border-primary border-l-4',
-                isCompleted && !isCurrent && 'opacity-75',
-                onPatternClick && 'cursor-pointer hover:border-primary/50 hover:shadow-sm'
+                isCompleted && !isCurrent && 'opacity-75'
               )}
             >
               <div className="flex items-start gap-3">
@@ -113,10 +103,25 @@ export function PatternsView({
                   <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
                       Pattern {pattern.pattern_number}
                     </span>
+                    {onPatternClick && (
+                      <button
+                        type="button"
+                        onClick={() => onPatternClick(index)}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          isCurrent
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-green-600 hover:bg-green-700 text-white'
+                        )}
+                      >
+                        <Play className="h-3 w-3" />
+                        {isCurrent ? 'Practicing' : 'Practice'}
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <p className="font-medium">
@@ -142,7 +147,10 @@ export function PatternsView({
                             {demo && (
                               <button
                                 type="button"
-                                onClick={() => handlePlay(demo)}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handlePlay(demo)
+                                }}
                                 className={cn(
                                   'flex items-center justify-center rounded-full p-1 transition-colors shrink-0',
                                   isPlaying
