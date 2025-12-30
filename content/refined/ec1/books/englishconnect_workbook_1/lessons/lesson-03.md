@@ -27,23 +27,6 @@ September birthday October today your
 
 ![](../_page_14_Picture_17.jpeg)
 
-- 1. Good morning, sir! What is your number?
-- 2. My phone is (435) 210-8769.
-- 3. What's your ?
-- 4. 229 West Palm Avenue.
-- 5. your email?
-
-**FEBRUARY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28**
-
-> **JUNE1 2 3**
-
-- 6. email is dan@email.com.
-- 7. you!
-
-Thank number phone My address It's What's
-
-> **MARCH 1 2 3 4 6 7 8 9 10 11 13 14 15 16 17 18 20 21 22 23 24 25 27 28 29 30 31**
-
 ### **ACTIVITY 2: MY BIRTHDAY IS IN . . .**
 
 A. Listen. Choose the correct month.
@@ -186,132 +169,8 @@ November 7th
 
 December 6th
 
-### **ACTIVITY 6: PERSONAL INFORMATION**
-
-![](../_page_15_Picture_31.jpeg)
-
-![](../_page_15_Picture_32.jpeg)
-
-A. Listen to the question. Choose the correct answer.
-
-- 1. a. It's john@email.com.
-- b. It's John Harper.
-- c. It's August 5th.
-- 2.
-- a. It's Remy.
-- b. It's (307) 198-5642.
-- c. It's jrc@email.com
-- 3.
-- a. It's dcm@email.com.
-- b. It's January 2nd.
-- c. It's 950 West 3rd Avenue.
-- 4. a. It's kma@email.com.
-- b. It's 459 Baker Street.
-- c. It's (808) 432-7719.
-
-B. Read the answer. Choose the correct question.
-
-| 1.                      | a. Where are you from?       | 2.                | a. When's your birthday?     |
-|-------------------------|------------------------------|-------------------|------------------------------|
-| A:                      | b. When's your birthday?     | A:                | b. Where are you from?       |
-| B: It's (370) 198-5642. | c. What's your phone number? | B: February 28th. | c. What's your phone number? |
-| 3.                      | a. Where are you from?       | 4.                | a. Where are you from?       |
-| A:                      | b. What's your address?      | A:                | b. What's your name?         |
-| B: I'm from Prague.     | c. What's your name?         | B: I'm Amelie.    | c. When's your birthday?     |
-
-### **ACTIVITY 7: PERSONAL INFORMATION—WRITING**
-
-![](../_page_16_Picture_2.jpeg)
-
-![](../_page_16_Picture_3.jpeg)
-
-![](../_page_16_Picture_4.jpeg)
-
-A. Listen. Write the information you hear.
-
-![](../_page_16_Picture_6.jpeg)
-
-Name Emiko Phone number 1.
-
-![](../_page_16_Picture_8.jpeg)
-
-![](../_page_16_Picture_9.jpeg)
-
-- Name Tomas Email 3.
-- 4. Name Talia Address
-
-Name: Birthday:
-
-Address:
-
-Email: Phone number:
-
-### **ACTIVITY 8: THE EMERGENCY**
-
-![](../_page_16_Picture_19.jpeg)
-
-![](../_page_16_Picture_20.jpeg)
-
-![](../_page_16_Picture_21.jpeg)
-
-![](../_page_16_Picture_22.jpeg)
-
-A. Learn the vocabulary: doctor, breathe, oxygen, lie detector B. Listen and read. C. Read aloud.
-
-![](../_page_16_Picture_26.jpeg)
-
-![](../_page_16_Picture_28.jpeg)
-
-![](../_page_16_Picture_29.jpeg)
-
-A woman calls the doctor. "Can I help you?" asks the doctor.
-
-![](../_page_16_Picture_31.jpeg)
-
-![](../_page_16_Picture_32.jpeg)
-
-"I can't breathe," says the woman. "What is your name?" asks the doctor. "Joan Harris," says the woman.
-
-![](../_page_16_Picture_34.jpeg)
-
-![](../_page_16_Picture_35.jpeg)
-
-- "What is your phone number?" he asks. "It's 125-730-1986," she says.
-- "What is your address?" he asks.
-- "My address is 906 Main Street," she says.
-
-![](../_page_16_Picture_39.jpeg)
-
-![](../_page_16_Picture_40.jpeg)
-
-The doctor goes to Joan's house. He asks, "How old are you?" "I'm 48," says Joan.
-
-![](../_page_16_Picture_42.jpeg)
-
-![](../_page_16_Picture_43.jpeg)
-
-He puts something on her finger. It shows her oxygen. "What is that for?" she asks. "It's a lie detector," jokes the doctor.
-
-![](../_page_16_Picture_45.jpeg)
-
-"Oh," says Joan. "I'm really 57."
-
-![](../_page_16_Picture_47.jpeg)
-
-- A. Help your practice partner review the vocabulary for this lesson in the back of this book. Make sure they understand the meaning of the vocabulary. Help them retell the story in Activity 8.
-- B. Role-play calling the doctor's office. Ask your partner for personal information. Then switch roles.
-
-![](../_page_17_Picture_5.jpeg)
-
-"What's your name?"
-
-"When is your birthday?"
-
-"What is your phone number?"
-
-"What is your email?"
-
-C. Look at pictures of your practice partner's friends and family. Ask about their birthdays.
+- A. Help your practice partner review the vocabulary for this lesson in the back of this book. Make sure they understand the meaning of the vocabulary.
+- B. Look at pictures of your practice partner's friends and family. Ask about their birthdays.
 
 "When is his birthday?" "When is her birthday?" "When is your birthday?"
 
