@@ -85,8 +85,10 @@ En la lección 20 puedes ver más *nouns*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Where is the (*noun*)?
+Q_es: ¿Dónde está el (*sustantivo*)?
 
 A: It's next to the (*noun*).
+A_es: Es junto al (*sustantivo*).
 
 #### **Questions**
 
@@ -99,12 +101,16 @@ A: It's next to the (*noun*).
 ## **Examples**
 
 Q: Where is the grocery store?
+Q_es: ¿Dónde está la tienda de víveres?
 
 A: It's next to the bank.
+A_es: Es al lado del banco.
 
 Q: Where is the grocery store?
+Q_es: ¿Dónde está la tienda de comestibles?
 
 A: It's between the restaurant and the bank.
+A_es: Es entre el restaurante y la banca.
 
 ![](../_page_170_Picture_25.jpeg)
 
@@ -115,8 +121,10 @@ A: It's between the restaurant and the bank.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
 Q: How do I get to the (*noun*)?
+Q_es: ¿Cómo llego al (*sustantivo*)?
 
 A: Go (*adverb*) on First Street.
+A_es: Ve (*adverbio*) por First Street.
 
 ### **Questions**
 
@@ -129,12 +137,16 @@ A: Go (*adverb*) on First Street.
 #### **Examples**
 
 Q: How do I get to the store?
+Q_es: ¿Cómo llego a la tienda?
 
 A: Go north. Turn right on First Street.
+A_es: Ve hacia el norte. Gira a la derecha en la Primera Calle.
 
 Q: How do I get to the train station?
+Q_es: ¿Cómo llego a la estación de tren?
 
 A: Go straight. Turn left on Green Lane. Turn right on B Street.
+A_es: Avance recto. Gire a la izquierda en Verdes Lane. Gire a la derecha en B Street.
 
 ![](../_page_171_Picture_13.jpeg)
 

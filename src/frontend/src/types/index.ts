@@ -17,8 +17,10 @@ export interface VocabularyItem {
 export interface QAPattern {
   pattern_number: number
   question_template: string
+  question_translation: string | null  // Native language translation (language-agnostic)
   answer_template: string
-  examples: Record<string, string>[] | null
+  answer_translation: string | null  // Native language translation (language-agnostic)
+  examples: Record<string, string | null>[] | null  // Has q, a, optionally q_translation, a_translation
 }
 
 export interface LessonDetail {

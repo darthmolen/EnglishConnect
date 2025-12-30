@@ -79,8 +79,10 @@ En la lección 16 puedes ver más *food nouns*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Can I take your order?
+Q_es: ¿Puedo tomar su pedido?
 
 A: I'd like to order (*noun*), please.
+A_es: Me gustaría ordenar (*sustantivo*), por favor.
 
 ### **Questions**
 
@@ -95,12 +97,16 @@ What would you like to order?
 ## **Examples**
 
 Q: Can I take your order?
+Q_es: ¿Puedo tomar su pedido?
 
 A: Yes, I'd like to order beans, rice, and a drink, please.
+A_es: Sí, me gustaría ordenar frijoles, arroz y una bebida, por favor.
 
 Q: What would you like to order?
+Q_es: ¿Qué te gustaría ordenar?
 
 A: I'd like soup and a salad, please.
+A_es: Me gustaría sopa y una ensalada, por favor.
 
 ![](../_page_133_Picture_16.jpeg)
 
@@ -111,8 +117,10 @@ A: I'd like soup and a salad, please.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
 Q: What do you want in your (*noun*)?
+Q_es: ¿Qué quieres en tu (*sustantivo*)?
 
 A: I want (*noun*) in my (*noun*).
+A_es: Quiero (*sustantivo*) en mi (*sustantivo*).
 
 ## **Questions**
 

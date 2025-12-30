@@ -84,8 +84,10 @@ En el apéndice puedes ver más *currency*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: How much does this (*noun*) cost?
+Q_es: ¿Cuánto cuesta este (*sustantivo*)?
 
 A: It costs (*price*).
+A_es: Cuesta (*precio*).
 
 ### **Questions**
 
@@ -98,12 +100,16 @@ A: It costs (*price*).
 #### **Examples**
 
 Q: How much does this phone cost?
+Q_es: ¿Cuánto cuesta este teléfono?
 
 A: It costs five hundred dollars.
+A_es: Cuesta quinientos dólares.
 
 Q: How much do these pants cost?
+Q_es: ¿Cuánto cuestan estas pantalones?
 
 A: They cost twenty dollars.
+A_es: Costan veinte dólares.
 
 ![](../_page_149_Picture_12.jpeg)
 
@@ -114,8 +120,10 @@ A: They cost twenty dollars.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
 Q: Do you want to buy this (*noun*)?
+Q_es: ¿Quieres comprar este (*sustantivo*)?
 
 A: Yes, this (*noun*) is (*adjective*).
+A_es: Sí, este (*sustantivo*) es (*adjetivo*).
 
 ### **Questions**
 
@@ -128,12 +136,16 @@ A: Yes, this (*noun*) is (*adjective*).
 ## **Examples**
 
 Q: Do you want to buy that car?
+Q_es: ¿Quieres comprar ese coche?
 
 A: Yes, that car is cheap.
+A_es: Sí, ese coche es barato.
 
 Q: Does she want to buy these shoes?
+Q_es: ¿Quiere comprar estos zapatos?
 
 A: No, those shoes are expensive.
+A_es: No, esos zapatos son caros.
 
 ![](../_page_150_Picture_13.jpeg)
 

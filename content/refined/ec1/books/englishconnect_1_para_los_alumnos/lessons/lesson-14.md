@@ -78,8 +78,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Where do you work?
+Q_es: ¿En qué lugar trabajas?
 
 A: I work at a (*noun 1*).
+A_es: Trabajo en un (*sustantivo 1*).
 
 #### **Questions**
 
@@ -92,12 +94,16 @@ A: I work at a (*noun 1*).
 ## **Examples**
 
 Q: Where do you work?
+Q_es: ¿Dónde trabajas?
 
 A: I work at a hospital.
+A_es: Trabajo en un hospital.
 
 Q: Where does she work?
+Q_es: ¿En qué lugar trabaja ella?
 
 A: She works at an office.
+A_es: Ella trabaja en una oficina.
 
 ![](../_page_112_Picture_22.jpeg)
 
@@ -108,8 +114,10 @@ A: She works at an office.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
 Q: What's your job?
+Q_es: ¿Cuál es tu trabajo?
 
 A: I'm a (*noun 2*).
+A_es: Soy un (*sustantivo 2*).
 
 #### **Questions**
 
@@ -122,16 +130,22 @@ A: I'm a (*noun 2*).
 #### **Examples**
 
 Q: What's your job?
+Q_es: ¿Cuál es tu trabajo?
 
 A: I'm a nurse.
+A_es: Soy una enfermera.
 
 Q: What's his job?
+Q_es: ¿Cuál es su trabajo?
 
 A: He's an electrician.
+A_es: Él es un electricista.
 
 Q: What's her job?
+Q_es: ¿Cuál es su trabajo?
 
 A: She's an artist.
+A_es: Ella es una artista.
 
 ![](../_page_113_Picture_13.jpeg)
 

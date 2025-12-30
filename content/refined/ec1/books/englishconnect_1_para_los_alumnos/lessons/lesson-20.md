@@ -81,8 +81,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Where do you live?
+Q_es: ¿Dónde vives?
 
 A: I live in an (*noun 1*).
+A_es: Vivo en un (*sustantivo 1*).
 
 #### **Questions**
 
@@ -111,8 +113,10 @@ A: She lives in a house.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
 Q: Where is the (*noun 2*)?
+Q_es: ¿Dónde está el (*sustantivo 2*)?
 
 A: It's (*preposition*) the (*noun 2*).
+A_es: Es (*preposición*) el (*sustantivo 2*).
 
 ## **Questions**
 

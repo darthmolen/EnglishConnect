@@ -274,7 +274,9 @@ class LessonParser:
 
             # Extract pattern template - try Q:/A: first, then A:/B: (dialogue format)
             q_match = re.search(r"Q:\s*(.+?)(?:\n|$)", section_text)
+            q_es_match = re.search(r"Q_es:\s*(.+?)(?:\n|$)", section_text)
             a_match = re.search(r"A:\s*(.+?)(?:\n|$)", section_text)
+            a_es_match = re.search(r"A_es:\s*(.+?)(?:\n|$)", section_text)
 
             # Check for A:/B: dialogue format if Q:/A: not found
             is_dialogue = False
@@ -287,7 +289,9 @@ class LessonParser:
                 pattern_data = {
                     "pattern_number": pattern_num,
                     "question_template": q_match.group(1).strip(),
+                    "question_template_es": q_es_match.group(1).strip() if q_es_match else None,
                     "answer_template": a_match.group(1).strip(),
+                    "answer_template_es": a_es_match.group(1).strip() if a_es_match else None,
                     "examples": None,
                 }
 
@@ -302,24 +306,40 @@ class LessonParser:
                 if examples_match:
                     examples_text = examples_match.group(1)
                     # Extract pairs from Examples section
-                    # Handle Q:/A: format, A:/B: dialogue format, and bullet list variants
+                    # Handle Q:/A: format with optional Q_es:/A_es: translations
                     if is_dialogue:
-                        # A:/B: dialogue format
+                        # A:/B: dialogue format (no Spanish translation support)
                         example_pairs = re.findall(
                             r"(?:^|\n)\s*-?\s*A:\s*(.+?)\n+\s*-?\s*B:\s*(.+?)(?:\n|$)",
                             examples_text,
                         )
+                        if example_pairs:
+                            pattern_data["examples"] = [
+                                {"q": q.strip(), "a": a.strip()}
+                                for q, a in example_pairs
+                            ]
                     else:
-                        # Q:/A: question-answer format
-                        example_pairs = re.findall(
-                            r"(?:^|\n)\s*-?\s*Q:\s*(.+?)\n+\s*-?\s*A:\s*(.+?)(?:\n|$)",
-                            examples_text,
+                        # Q:/A: question-answer format with optional Q_es:/A_es:
+                        # Match Q: followed optionally by Q_es:, then A: followed optionally by A_es:
+                        example_pattern = re.compile(
+                            r"(?:^|\n)\s*-?\s*Q:\s*(.+?)\n"  # Q: line
+                            r"(?:\s*Q_es:\s*(.+?)\n)?"        # Optional Q_es: line
+                            r"\s*-?\s*A:\s*(.+?)"             # A: line
+                            r"(?:\n\s*A_es:\s*(.+?))?"        # Optional A_es: line
+                            r"(?:\n|$)",
+                            re.MULTILINE
                         )
-                    if example_pairs:
-                        pattern_data["examples"] = [
-                            {"q": q.strip(), "a": a.strip()}
-                            for q, a in example_pairs
-                        ]
+                        example_matches = example_pattern.findall(examples_text)
+                        if example_matches:
+                            pattern_data["examples"] = [
+                                {
+                                    "q": q.strip(),
+                                    "q_es": q_es.strip() if q_es else None,
+                                    "a": a.strip(),
+                                    "a_es": a_es.strip() if a_es else None,
+                                }
+                                for q, q_es, a, a_es in example_matches
+                            ]
 
                 patterns.append(pattern_data)
 
@@ -527,7 +547,9 @@ async def ingest_course(
                 lesson_id=lesson.id,
                 pattern_number=pattern["pattern_number"],
                 question_template=pattern["question_template"],
+                question_template_es=pattern.get("question_template_es"),
                 answer_template=pattern["answer_template"],
+                answer_template_es=pattern.get("answer_template_es"),
                 examples=pattern.get("examples"),
             )
             session.add(qa_pattern)

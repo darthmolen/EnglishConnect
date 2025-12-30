@@ -97,8 +97,10 @@ En el apéndice puedes ver más food nouns.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: What are the ingredients for (*noun*)?
+Q_es: ¿Cuáles son los ingredientes para (*sustantivo*)?
 
 A: You need (*noun*), (*noun*), and (*noun*).
+A_es: Necesitas (*sustantivo*), (*sustantivo*) y (*sustantivo*).
 
 ## **Questions**
 
@@ -124,8 +126,10 @@ A: You need (*noun*), (*noun*), and (*noun*).
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
 Q: How do you make (*noun*)?
+Q_es: ¿Cómo haces (*sustantivo*)?
 
 A: First, (*verb*) the (*noun*) (*preposition*) the (*noun*). Then, (*verb*) the (*noun*) (*preposition*) the (*noun*). Last, (*verb*) the (*noun*) (*preposition*) the (*noun*).
+A_es: Primero, (*verbo*) la (*sustantivo*) (*preposición*) la (*sustantivo*). Luego, (*verbo*) el (*sustantivo*) (*preposición*) el (*sustantivo*). Finalmente, (*verbo*) el (*sustantivo*) (*preposición*) el (*sustantivo*).
 
 ## **Questions**
 

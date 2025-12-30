@@ -73,8 +73,10 @@ En la lección 10 puedes ver más *verbs*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: How do you feel?
+Q_es: ¿Cómo te sientes?
 
 A: I have a (*noun*).
+A_es: Tengo un (*sustantivo*).
 
 #### **Questions**
 
@@ -87,12 +89,16 @@ A: I have a (*noun*).
 ## **Examples**
 
 Q: How do you feel?
+Q_es: ¿Cómo te sientes?
 
 A: I have a sore throat.
+A_es: Tengo un dolor de garganta.
 
 Q: How does he feel?
+Q_es: ¿Cómo se siente él?
 
 A: He has diarrhea.
+A_es: Él tiene diarrea.
 
 ![](../_page_182_Picture_23.jpeg)
 

@@ -84,8 +84,10 @@ En la lección 11 puedes ver más *verbs*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: What time is it?
+Q_es: ¿A qué hora es?
 
 A: It's (*time*).
+A_es: Es (*hora*).
 
 ### **Questions**
 
@@ -98,16 +100,22 @@ A: It's (*time*).
 ### **Examples**
 
 Q: What time is it?
+Q_es: ¿A qué hora es?
 
 A: It's five o'clock.
+A_es: Es cinco de la tarde.
 
 Q: What day is it?
+Q_es: ¿Qué día es hoy?
 
 A: It is Sunday.
+A_es: Es domingo.
 
 Q: What day is it?
+Q_es: ¿Qué día es hoy?
 
 A: It's February 5th.
+A_es: Es el 5 de febrero.
 
 ![](../_page_96_Figure_24.jpeg)
 
@@ -118,8 +126,10 @@ A: It's February 5th.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
 Q: When do you (*verb*)?
+Q_es: Cuándo doy tú (*verbo*)?
 
 A: I (*verb*) on (*day*).
+A_es: Yo (*verbo*) en (*día*).
 
 #### **Questions**
 
@@ -132,16 +142,22 @@ A: I (*verb*) on (*day*).
 #### **Examples**
 
 Q: When do they clean the house?
+Q_es: ¿Cuándo limpian la casa?
 
 A: They clean the house on Monday.
+A_es: Limpian la casa el lunes.
 
 Q: When do you get the mail?
+Q_es: ¿Cuándo recibes el correo?
 
 A: I get the mail at noon.
+A_es: Recibo el correo a mediodía.
 
 Q: When does he wash the dishes?
+Q_es: ¿Cuándo se lavan los platos?
 
 A: He washes the dishes at 5:30 p.m.
+A_es: Él limpia los platos a las 5:30 p.m.
 
 ![](../_page_97_Picture_15.jpeg)
 

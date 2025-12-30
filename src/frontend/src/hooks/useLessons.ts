@@ -7,6 +7,7 @@ export function useLessons() {
     lessons,
     currentLesson,
     selectedLessonNumber,
+    instructionLanguage,
     setLessons,
     setCurrentLesson,
     selectLesson,
@@ -19,10 +20,10 @@ export function useLessons() {
       .catch((error) => console.error('Failed to fetch lessons:', error))
   }, [setLessons])
 
-  // Fetch lesson details when selection changes
+  // Fetch lesson details when selection or instruction language changes
   useEffect(() => {
     if (selectedLessonNumber !== null) {
-      fetchLessonDetail(selectedLessonNumber)
+      fetchLessonDetail(selectedLessonNumber, 'ec1', instructionLanguage)
         .then(setCurrentLesson)
         .catch((error) =>
           console.error('Failed to fetch lesson detail:', error)
@@ -30,7 +31,7 @@ export function useLessons() {
     } else {
       setCurrentLesson(null)
     }
-  }, [selectedLessonNumber, setCurrentLesson])
+  }, [selectedLessonNumber, instructionLanguage, setCurrentLesson])
 
   return {
     lessons,

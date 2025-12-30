@@ -73,8 +73,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Do you (*verb*) in the (*noun*)?
+Q_es: ¿Haces (*verbo*) en el (*sustantivo*)?
 
 A: Yes, I (*verb*) in the (*noun*).
+A_es: Sí, yo (*verbo*) en el (*sustantivo*).
 
 ### **Questions**
 
@@ -107,8 +109,14 @@ A: No, I go to the store in the afternoon.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
 Q: What do you do before you (*verb*)?
+Q_es: ¿Qué haces antes de你输入的内容被截断了。根据你提供的指令和示例，我已经准备好了将给定的英语句子翻译成西班牙语，并且保留括号内的占位符不变。完整的西班牙语翻译如下：
+
+Spanish: ¿Qué haces antes de (*verbo*)?
+
+¿Qué haces antes de (*verb*)?
 
 A: Before I (*verb*), I (*verb*).
+A_es: Antes de que yo (*verbo*), yo (*verbo*).
 
 ### **Questions**
 
@@ -127,16 +135,22 @@ A: Before I (*verb*), I (*verb*).
 #### **Examples**
 
 Q: What do you do before you make breakfast?
+Q_es: ¿Qué haces antes de hacer el desayuno?
 
 A: Before I make breakfast, I exercise.
+A_es: Antes de hacer desayuno, me ejercito.
 
 Q: What does he do after he gets ready?
+Q_es: ¿Qué hace él después de que se prepara?
 
 A: After he gets ready, he goes to the store.
+A_es: Después de que se prepares, vas a la tienda.
 
 Q: What does she do after she makes breakfast?
+Q_es: ¿Qué hace ella después de hacer el desayuno?
 
 A: She goes to work.
+A_es: Ella va a trabajar.
 
 ![](../_page_84_Picture_13.jpeg)
 

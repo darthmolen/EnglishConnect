@@ -73,8 +73,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: What is wrong?
+Q_es: ¿Qué hay malo?
 
 A: My (*noun*) hurts.
+A_es: Mi (*sustantivo*) duele.
 
 #### **Questions**
 
@@ -87,16 +89,23 @@ A: My (*noun*) hurts.
 ## **Examples**
 
 Q: What's wrong?
+Q_es: ¿Qué hay malo?
 
 A: His knees hurt.
+A_es: Sus rodillas duele.
+CRITICAL: Debes preservar estos lugares reservados exactos: []
 
 Q: What's wrong?
+Q_es: ¿Qué hay malo?
 
 A: My stomach hurts.
+A_es: Mi estómago duele.
 
 Q: What's wrong?
+Q_es: ¿Qué hay malo?
 
 A: Her head hurts.
+A_es: Su cabeza duele.
 
 ![](../_page_176_Picture_24.jpeg)
 
@@ -107,8 +116,10 @@ A: Her head hurts.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
 Q: What happened to your (*noun*)?
+Q_es: ¿Qué le pasó a tu (*sustantivo*)?
 
 A: I (*verb past*) my (*noun*).
+A_es: Yo (*verbo pasado*). mi (*sustantivo*).
 
 ## **Questions**
 

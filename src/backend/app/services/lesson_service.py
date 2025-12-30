@@ -19,6 +19,40 @@ class LessonService:
         """Initialize with database session."""
         self.session = session
 
+    def _transform_examples(
+        self, examples: list[dict] | None, language: str = "es"
+    ) -> list[dict] | None:
+        """Transform example field names from _{lang} to generic _translation.
+
+        Maps q_{lang} -> q_translation and a_{lang} -> a_translation for
+        language-agnostic frontend consumption.
+
+        Args:
+            examples: List of example dicts with q, a, and optionally q_{lang}, a_{lang}
+            language: Instruction language code (e.g., 'es', 'fr'). If 'en', no
+                      translations are included since English speakers don't need them.
+
+        Returns:
+            Transformed examples with _translation fields, or None if no examples.
+        """
+        if not examples:
+            return examples
+
+        transformed = []
+        for ex in examples:
+            new_ex = {"q": ex.get("q"), "a": ex.get("a")}
+
+            # Skip translations for English instruction language
+            if language != "en":
+                suffix = f"_{language}"
+                if ex.get(f"q{suffix}"):
+                    new_ex["q_translation"] = ex[f"q{suffix}"]
+                if ex.get(f"a{suffix}"):
+                    new_ex["a_translation"] = ex[f"a{suffix}"]
+
+            transformed.append(new_ex)
+        return transformed
+
     async def list_lessons(self, course_id: str) -> list[LessonSummary]:
         """List all lessons for a course.
 
@@ -43,13 +77,15 @@ class LessonService:
         ]
 
     async def get_lesson_detail(
-        self, course_id: str, lesson_number: int
+        self, course_id: str, lesson_number: int, language: str = "es"
     ) -> LessonDetail | None:
         """Get detailed lesson data including vocabulary and patterns.
 
         Args:
             course_id: Course identifier (e.g., 'ec1')
             lesson_number: Lesson number within the course
+            language: Instruction language code (e.g., 'es', 'fr'). If 'en',
+                      translations are omitted since English speakers don't need them.
 
         Returns:
             LessonDetail with all related data, or None if not found
@@ -102,8 +138,16 @@ class LessonService:
                 QAPatternSchema(
                     pattern_number=p.pattern_number,
                     question_template=p.question_template,
+                    question_translation=(
+                        getattr(p, f"question_template_{language}", None)
+                        if language != "en" else None
+                    ),
                     answer_template=p.answer_template,
-                    examples=p.examples,
+                    answer_translation=(
+                        getattr(p, f"answer_template_{language}", None)
+                        if language != "en" else None
+                    ),
+                    examples=self._transform_examples(p.examples, language),
                 )
                 for p in patterns_result.scalars()
             ],

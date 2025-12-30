@@ -77,6 +77,7 @@ En la lección 20 puedes ver más *nouns*.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 A: Tell me about your (*noun*).
+A_es: Cuéntame sobre tu (*sustantivo*).
 
 B: There is (*noun*) in the (*noun*).
 
@@ -106,8 +107,10 @@ B: There is (*noun*) in the (*noun*).
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
 Q: Where is the (*noun*)?
+Q_es: ¿Dónde está el (*sustantivo*)?
 
 A: The (*noun*) is above the (*noun*).
+A_es: El (*sustantivo*) está encima del/la (*sustantivo*).
 
 #### **Questions**
 
@@ -123,12 +126,16 @@ A: The (*noun*) is above the (*noun*).
 ## **Examples**
 
 Q: Where are the towels?
+Q_es: ¿Dónde están los toallas?
 
 A: The towels are under the sink.
+A_es: Las toallas están bajo el fregadero.
 
 Q: Where is the window?
+Q_es: ¿Dónde está la ventana?
 
 A: The window is above the bed.
+A_es: La ventana está sobre la cama.
 
 ![](../_page_163_Picture_15.jpeg)
 

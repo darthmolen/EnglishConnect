@@ -73,16 +73,20 @@ En la lección 4 puedes ver más verbs.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
 Q: What do you like to do?
+Q_es: ¿Qué te gusta hacer?
 
 A: I like to (*verb*).
+A_es: Me gusta (*verbo*).
 
 ## **Practice Pattern 2**
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
 Q: Why do you like to (*verb*)?
+Q_es: ¿Por qué te gusta hacer (*verbo*)?
 
 A: I like to (*verb*) because it's (*adjective*).
+A_es: Me gusta (*verbo*) porque es (*adjetivo*).
 
 ## **Questions**
 

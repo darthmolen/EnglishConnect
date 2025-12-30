@@ -57,7 +57,9 @@ async def lesson_conversation(
     """
     # Get lesson details
     lesson_service = LessonService(db)
-    lesson = await lesson_service.get_lesson_detail("ec1", request.lesson_number)
+    lesson = await lesson_service.get_lesson_detail(
+        "ec1", request.lesson_number, request.instruction_language or "es"
+    )
 
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson not found")

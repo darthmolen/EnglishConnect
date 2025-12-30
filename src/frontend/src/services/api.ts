@@ -45,13 +45,23 @@ export async function fetchLessons(courseId = 'ec1'): Promise<LessonSummary[]> {
 
 /**
  * Fetch detailed lesson data.
+ *
+ * @param lessonNumber - Lesson number to fetch
+ * @param courseId - Course identifier (default: ec1)
+ * @param instructionLanguage - Language for translations (default: es).
+ *   Use 'en' to omit translations for English speakers.
  */
 export async function fetchLessonDetail(
   lessonNumber: number,
-  courseId = 'ec1'
+  courseId = 'ec1',
+  instructionLanguage = 'es'
 ): Promise<LessonDetail> {
+  const params = new URLSearchParams({
+    course_id: courseId,
+    instruction_language: instructionLanguage,
+  })
   const response = await fetchWithAuth(
-    `${API_BASE}/lessons/${lessonNumber}?course_id=${courseId}`
+    `${API_BASE}/lessons/${lessonNumber}?${params}`
   )
   if (!response.ok) {
     throw new Error(`Lesson ${lessonNumber} not found`)

@@ -36,6 +36,7 @@ async def get_lesson(
     lesson_number: int,
     current_user: CurrentUser,
     course_id: str = "ec1",
+    instruction_language: str = "es",
     db: AsyncSession = Depends(get_db),
 ):
     """Get detailed lesson data including vocabulary and patterns (requires authentication).
@@ -44,6 +45,8 @@ async def get_lesson(
         lesson_number: Lesson number within the course
         current_user: Authenticated user (injected)
         course_id: Course identifier (default: ec1)
+        instruction_language: Language for translations (default: es).
+            Use 'en' to omit translations (English speakers don't need them).
         db: Database session dependency
 
     Returns:
@@ -53,7 +56,7 @@ async def get_lesson(
         HTTPException: 404 if lesson not found
     """
     service = LessonService(db)
-    detail = await service.get_lesson_detail(course_id, lesson_number)
+    detail = await service.get_lesson_detail(course_id, lesson_number, instruction_language)
 
     if not detail:
         raise HTTPException(status_code=404, detail="Lesson not found")

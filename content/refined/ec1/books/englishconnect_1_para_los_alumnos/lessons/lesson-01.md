@@ -78,18 +78,24 @@ Puedes orar a Dios; Él te escuchará. Puedes pedirle que te ayude a aprender in
 ## **Practice Pattern 1**
 
 Q: What is your (*noun*)?
+Q_es: ¿Cuál es tu (*sustantivo*)?
 
 A: My (*noun*) is [answer].
+A_es: Mi (*sustantivo*) es [respuesta].
 
 ### **Examples**
 
 Q: What is your name?
+Q_es: ¿Cuál es tu nombre?
 
 A: My name is Rosa.
+A_es: Mi nombre es Rosa.
 
 Q: What's his name?
+Q_es: ¿Cuál es su nombre?
 
 A: His name is Niko.
+A_es: Su nombre es Niko.
 
 ## **Part 2: Practica el patrón 1 con un compañero.**
 

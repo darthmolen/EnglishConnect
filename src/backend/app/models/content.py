@@ -104,9 +104,11 @@ class QAPattern(Base):
     lesson_id: Mapped[int] = mapped_column(Integer, ForeignKey("lessons.id"))
     pattern_number: Mapped[int] = mapped_column(Integer, nullable=False)  # 1 or 2
     question_template: Mapped[str] = mapped_column(String(500), nullable=False)
+    question_template_es: Mapped[str | None] = mapped_column(String(500))
     answer_template: Mapped[str] = mapped_column(String(500), nullable=False)
+    answer_template_es: Mapped[str | None] = mapped_column(String(500))
     placeholders: Mapped[dict | None] = mapped_column(JSONB)  # Variable slots
-    examples: Mapped[list | None] = mapped_column(JSONB)  # Example Q&A pairs
+    examples: Mapped[list | None] = mapped_column(JSONB)  # Example Q&A pairs (with q_es, a_es)
 
     # Relationships
     lesson: Mapped["Lesson"] = relationship(back_populates="qa_patterns")

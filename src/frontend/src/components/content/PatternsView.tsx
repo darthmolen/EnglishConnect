@@ -123,13 +123,27 @@ export function PatternsView({
                       </button>
                     )}
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-medium">
-                      <span className="text-primary">Q:</span> {pattern.question_template}
-                    </p>
-                    <p className="text-muted-foreground">
-                      <span className="text-primary">A:</span> {pattern.answer_template}
-                    </p>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="font-medium">
+                        <span className="text-primary">Q:</span> {pattern.question_template}
+                      </p>
+                      {pattern.question_translation && (
+                        <p className="text-sm text-muted-foreground/70 italic pl-6">
+                          ({pattern.question_translation})
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">
+                        <span className="text-primary">A:</span> {pattern.answer_template}
+                      </p>
+                      {pattern.answer_translation && (
+                        <p className="text-sm text-muted-foreground/70 italic pl-6">
+                          ({pattern.answer_translation})
+                        </p>
+                      )}
+                    </div>
                   </div>
                   {/* Examples */}
                   {pattern.examples && pattern.examples.length > 0 && (
@@ -143,7 +157,7 @@ export function PatternsView({
                         const isPlaying = playingId === demoId
 
                         return (
-                          <div key={i} className="flex items-center gap-2">
+                          <div key={i} className="flex items-start gap-2">
                             {demo && (
                               <button
                                 type="button"
@@ -152,7 +166,7 @@ export function PatternsView({
                                   handlePlay(demo)
                                 }}
                                 className={cn(
-                                  'flex items-center justify-center rounded-full p-1 transition-colors shrink-0',
+                                  'flex items-center justify-center rounded-full p-1 transition-colors shrink-0 mt-0.5',
                                   isPlaying
                                     ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground'
@@ -166,9 +180,24 @@ export function PatternsView({
                                 )}
                               </button>
                             )}
-                            <p className="text-sm text-muted-foreground">
-                              {ex.a || Object.values(ex)[0]}
-                            </p>
+                            <div className="space-y-0.5">
+                              <p className="text-sm text-muted-foreground">
+                                Q: {ex.q}
+                              </p>
+                              {ex.q_translation && (
+                                <p className="text-xs text-muted-foreground/60 italic pl-4">
+                                  ({ex.q_translation})
+                                </p>
+                              )}
+                              <p className="text-sm text-muted-foreground">
+                                A: {ex.a}
+                              </p>
+                              {ex.a_translation && (
+                                <p className="text-xs text-muted-foreground/60 italic pl-4">
+                                  ({ex.a_translation})
+                                </p>
+                              )}
+                            </div>
                           </div>
                         )
                       })}

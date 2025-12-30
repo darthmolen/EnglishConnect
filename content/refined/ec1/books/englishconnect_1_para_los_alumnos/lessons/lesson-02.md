@@ -90,8 +90,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 El inglés tiene muchos patrones. Con un patrón y unas cuantas palabras de vocabulario, ¡puedes crear docenas de oraciones! Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: How are you?
+Q_es: ¿Cómo estás?
 
 A: I'm (*adjective*), thanks.
+A_es: Soy (*adjetivo*), gracias.
 
 ## **Questions**
 
@@ -120,8 +122,10 @@ A: I'm OK, thanks.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Si algo te resulta confuso, ora para pedir ayuda y sigue trabajando en ello. Dios te ayudará.
 
 Q: Where are you from?
+Q_es: De dónde eres?
 
 A: I'm from (*noun*).
+A_es: Yo soy de (*sustantivo*).
 
 ### **Questions**
 
@@ -134,16 +138,22 @@ A: I'm from (*noun*).
 #### **Examples**
 
 Q: Where are you from?
+Q_es: De dónde eres?
 
 A: I'm from Mexico.
+A_es: Soy de México.
 
 Q: Where are they from?
+Q_es: De dónde son?
 
 A: They are from Japan.
+A_es: Son de Japón.
 
 Q: Where is she from?
+Q_es: De dónde es ella?
 
 A: She is from Kenya.
+A_es: Ella es de Kenia.
 
 ![](../_page_25_Picture_13.jpeg)
 

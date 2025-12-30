@@ -84,8 +84,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: What do you eat for (*noun 1*)?
+Q_es: ¿Qué comes para (*sustantivo 1*)?
 
 A: I eat (*noun 2*) for (*noun 1*).
+A_es: Comiendo (*sustantivo 2*) para (*sustantivo 1*).
 
 ### **Questions**
 
@@ -118,8 +120,10 @@ A: He eats chicken, bread, and an apple for lunch.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
 Q: What food do you like?
+Q_es: ¿Qué comida te gusta?
 
 A: I like (*noun 2*) because it's (*adjective*).
+A_es: Me gusta (*sustantivo 2*) porque es (*adjetivo*).
 
 ### **Questions**
 
@@ -132,12 +136,16 @@ A: I like (*noun 2*) because it's (*adjective*).
 #### **Examples**
 
 Q: What food do you like?
+Q_es: ¿Qué comida te gusta?
 
 A: I like apples because they're sweet.
+A_es: Me gustan las manzanas porque son dulces.
 
 Q: What food doesn't she like?
+Q_es: ¿Qué comida no le gusta a ella?
 
 A: She doesn't like rice because it's bland.
+A_es: No le gusta el arroz porque es insípido.
 
 ![](../_page_126_Picture_15.jpeg)
 

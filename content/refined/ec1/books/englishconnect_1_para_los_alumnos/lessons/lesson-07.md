@@ -82,6 +82,7 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 A: Tell me about your (*noun*).
+A_es: Cuéntame sobre tu (*sustantivo*).
 
 B: They have (*adjective*) (*noun*).
 
@@ -111,8 +112,10 @@ B: They have (*adjective*) (*noun*).
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria. Cambia de compañero y vuelve a practicar.
 
 Q: Is your (*noun*) (*adjective*)?
+Q_es: ¿Tu (*sustantivo*) (*adjetivo*)?
 
 A: Yes, he is (*adjective*).
+A_es: Sí, él es (*adjetivo*).
 
 #### Questions
 

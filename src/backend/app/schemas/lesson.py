@@ -20,12 +20,18 @@ class VocabularyItemSchema(BaseModel):
 
 
 class QAPatternSchema(BaseModel):
-    """Q&A pattern template."""
+    """Q&A pattern template with optional native language translations.
+
+    The 'translation' fields contain the learner's native language equivalent.
+    The frontend displays these without assuming any specific language.
+    """
 
     pattern_number: int
     question_template: str
+    question_translation: str | None = None  # Native language translation
     answer_template: str
-    examples: list[dict] | None = None
+    answer_translation: str | None = None  # Native language translation
+    examples: list[dict] | None = None  # Each dict has q, a, optionally q_translation, a_translation
 
 
 class LessonDetail(BaseModel):
