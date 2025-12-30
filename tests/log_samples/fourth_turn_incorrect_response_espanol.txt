@@ -1,0 +1,476 @@
+19:05:28 WARNING app.services.azure_openai: Failed to register client with Memori: Unsupported LLM client type: openai.lib.azure.AsyncAzureOpenAI
+19:05:28 INFO app.services.azure_openai: ============================================================
+19:05:28 INFO app.services.azure_openai: CONVERSATION REQUEST
+19:05:28 INFO app.services.azure_openai:   User message: I'm ready to practice!
+19:05:28 INFO app.services.azure_openai:   History: 0 messages
+19:05:28 INFO app.services.azure_openai:   System prompt: 2392 chars
+19:05:28 INFO app.services.azure_openai: ============================================================
+19:05:28 INFO app.services.azure_openai: FULL SYSTEM PROMPT:
+19:05:28 INFO app.services.azure_openai: ============================================================
+19:05:28 INFO app.services.azure_openai: You are a friendly, patient English conversation partner helping Spanish-speaking learners practice conversational English.
+
+## Current Lesson: 2 - Greetings and Introductions
+
+**Objective**: APRENDERÉ A SALUDAR A LOS DEMÁS Y DECIR DE DÓNDE PROVIENE ALGUIEN.
+
+## Vocabulary to Practice:
+- I = yo
+- you = tú
+- we = nosotros
+- they = ellos/ellas
+- he = él
+- she = ella
+- I am/I'm = yo soy/estoy
+- you are = tú eres/estás
+- we are = nosotros somos/estamos
+- they are = ellos/ellas son/están
+- he is = él es/está
+- she is = ella es/está
+- How are you? = ¿Cómo estás?
+- Nice to meet you. = Es un placer conocerte.
+- what = qué
+- where = dónde
+- country = país
+- fine = bien
+- OK = bien
+- Japan = Japón
+- Kenya = Kenia
+- Mexico = México
+
+## Conversation Patterns:
+Pattern 1:
+  Q: How are you?
+  A: I'm (*adjective*), thanks.
+Pattern 2:
+  Q: Where are you from?
+  A: I'm from (*noun*).
+
+## Your Tools:
+You have a **speak** tool that speaks text aloud to the student. You MUST call this tool for EVERY response. NO EXCEPTIONS.
+
+The speak tool has these parameters:
+- text: The text to speak aloud (required)
+- language: "en" for English, "es" for Spanish (required)
+- voice: Use "speaker_b" for a friendly voice (optional, defaults to speaker_b)
+
+## Guidelines:
+1. **ALWAYS use the speak tool** - every response must include a speak() call
+2. **You are the TUTOR, not the student** - respond to what the student says, don't repeat their words as your own
+3. Speak in simple, clear English appropriate for beginners
+4. Focus on the vocabulary and patterns from this lesson
+5. If the student seems confused, call speak() with language "es" to explain in Spanish
+6. Keep each response concise (1-2 sentences)
+7. Usually the pattern is question followed by answer with a follow up query
+8. Once the patterns are complete, ask if they would like to practice more or end the session
+9. If the conversation is outside the lesson scope, gently steer it back to the lesson content
+10. If they ask for help, provide hints using the vocabulary and patterns
+11. Encourage the learner and celebrate their progress
+
+## Example Interaction:
+Student says: "I like play soccer"
+You should: Use the speak tool with text "That's great! You like to play soccer. Do you play with friends?" and language "en"
+
+Remember: Your goal is to help the learner practice speaking English in a supportive, low-pressure environment.
+
+19:05:28 INFO app.services.azure_openai: ============================================================
+19:05:28 INFO app.services.azure_openai: END SYSTEM PROMPT
+19:05:28 INFO app.services.azure_openai: ------------------------------------------------------------
+19:05:28 INFO app.services.azure_openai: LLM call iteration 1
+19:05:29 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:29 INFO app.services.azure_openai:   LLM response: content=None
+19:05:29 INFO app.services.azure_openai:   LLM tool_calls: 1
+19:05:29 INFO app.services.azure_openai:   TOOL CALL: speak
+19:05:29 INFO app.services.azure_openai:     args: {"text": "That's great! Let's start. How are you?", "language": "en", "voice": "speaker_b"}
+19:05:30 INFO httpx: HTTP Request: POST http://localhost:8002/synthesize "HTTP/1.1 200 OK"
+19:05:30 INFO app.services.azure_openai:     result: success=True, audio_size=477976 chars
+19:05:30 INFO app.services.azure_openai: LLM call iteration 2
+19:05:31 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:31 INFO app.services.azure_openai:   LLM response: content=How are you?
+19:05:31 INFO app.services.azure_openai:   LLM tool_calls: 0
+19:05:31 INFO app.services.azure_openai: ============================================================
+19:05:31 INFO app.services.azure_openai: CONVERSATION COMPLETE
+19:05:31 INFO app.services.azure_openai:   Final text: How are you?
+19:05:31 INFO app.services.azure_openai:   Tool calls made: 1
+19:05:31 INFO app.services.azure_openai:   Tool results: 1
+19:05:31 INFO app.services.azure_openai: ============================================================
+19:05:31 INFO app.routers.conversation: ============================================================
+19:05:31 INFO app.routers.conversation: RESPONSE TO FRONTEND
+19:05:31 INFO app.routers.conversation:   text: That's great! Let's start. How are you?
+19:05:31 INFO app.routers.conversation:   audio: yes (477976 chars)
+19:05:31 INFO app.routers.conversation:   language: en
+19:05:31 INFO app.routers.conversation:   source: speak() tool
+19:05:31 INFO app.routers.conversation: ============================================================
+2025-12-29 19:05:31,069 INFO sqlalchemy.engine.Engine SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.user_id = $1::UUID AND practice_sessions.lesson_id = $2::INTEGER AND practice_sessions.session_type = $3::VARCHAR AND practice_sessions.started_at >= $4::TIMESTAMP WITHOUT TIME ZONE AND practice_sessions.ended_at IS NULL ORDER BY practice_sessions.started_at DESC 
+ LIMIT $5::INTEGER
+19:05:31 INFO sqlalchemy.engine.Engine: SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.user_id = $1::UUID AND practice_sessions.lesson_id = $2::INTEGER AND practice_sessions.session_type = $3::VARCHAR AND practice_sessions.started_at >= $4::TIMESTAMP WITHOUT TIME ZONE AND practice_sessions.ended_at IS NULL ORDER BY practice_sessions.started_at DESC 
+ LIMIT $5::INTEGER
+2025-12-29 19:05:31,069 INFO sqlalchemy.engine.Engine [cached since 77.56s ago] (UUID('eefd682d-db0c-412f-ba71-7e92676e32b5'), 2, 'conversation_practice', datetime.datetime(2025, 12, 30, 0, 35, 31, 68637), 1)
+19:05:31 INFO sqlalchemy.engine.Engine: [cached since 77.56s ago] (UUID('eefd682d-db0c-412f-ba71-7e92676e32b5'), 2, 'conversation_practice', datetime.datetime(2025, 12, 30, 0, 35, 31, 68637), 1)
+19:05:31 INFO app.services.session_service: Reusing session 1 for lesson 2 (started 2025-12-30 01:04:18.258727)
+2025-12-29 19:05:31,070 INFO sqlalchemy.engine.Engine SELECT coalesce(max(conversation_exchanges.sequence_number), $1::INTEGER) AS coalesce_1 
+FROM conversation_exchanges 
+WHERE conversation_exchanges.session_id = $2::INTEGER
+19:05:31 INFO sqlalchemy.engine.Engine: SELECT coalesce(max(conversation_exchanges.sequence_number), $1::INTEGER) AS coalesce_1 
+FROM conversation_exchanges 
+WHERE conversation_exchanges.session_id = $2::INTEGER
+2025-12-29 19:05:31,070 INFO sqlalchemy.engine.Engine [cached since 77.53s ago] (0, 1)
+19:05:31 INFO sqlalchemy.engine.Engine: [cached since 77.53s ago] (0, 1)
+2025-12-29 19:05:31,072 INFO sqlalchemy.engine.Engine INSERT INTO conversation_exchanges (session_id, sequence_number, agent_utterance, user_utterance, user_audio_url, transcription_confidence, pronunciation_feedback, grammar_feedback, created_at) VALUES ($1::INTEGER, $2::INTEGER, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::FLOAT, $7::JSONB, $8::JSONB, $9::TIMESTAMP WITHOUT TIME ZONE) RETURNING conversation_exchanges.id
+19:05:31 INFO sqlalchemy.engine.Engine: INSERT INTO conversation_exchanges (session_id, sequence_number, agent_utterance, user_utterance, user_audio_url, transcription_confidence, pronunciation_feedback, grammar_feedback, created_at) VALUES ($1::INTEGER, $2::INTEGER, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::FLOAT, $7::JSONB, $8::JSONB, $9::TIMESTAMP WITHOUT TIME ZONE) RETURNING conversation_exchanges.id
+2025-12-29 19:05:31,072 INFO sqlalchemy.engine.Engine [cached since 77.53s ago] (1, 3, "That's great! Let's start. How are you?", "I'm ready to practice!", None, None, 'null', 'null', datetime.datetime(2025, 12, 30, 1, 5, 31, 71747))
+19:05:31 INFO sqlalchemy.engine.Engine: [cached since 77.53s ago] (1, 3, "That's great! Let's start. How are you?", "I'm ready to practice!", None, None, 'null', 'null', datetime.datetime(2025, 12, 30, 1, 5, 31, 71747))
+2025-12-29 19:05:31,073 INFO sqlalchemy.engine.Engine SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.id = $1::INTEGER
+19:05:31 INFO sqlalchemy.engine.Engine: SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.id = $1::INTEGER
+2025-12-29 19:05:31,073 INFO sqlalchemy.engine.Engine [cached since 77.53s ago] (1,)
+19:05:31 INFO sqlalchemy.engine.Engine: [cached since 77.53s ago] (1,)
+2025-12-29 19:05:31,074 INFO sqlalchemy.engine.Engine UPDATE practice_sessions SET exchanges_count=$1::INTEGER WHERE practice_sessions.id = $2::INTEGER
+19:05:31 INFO sqlalchemy.engine.Engine: UPDATE practice_sessions SET exchanges_count=$1::INTEGER WHERE practice_sessions.id = $2::INTEGER
+2025-12-29 19:05:31,074 INFO sqlalchemy.engine.Engine [cached since 77.53s ago] (3, 1)
+19:05:31 INFO sqlalchemy.engine.Engine: [cached since 77.53s ago] (3, 1)
+2025-12-29 19:05:31,075 INFO sqlalchemy.engine.Engine COMMIT
+19:05:31 INFO sqlalchemy.engine.Engine: COMMIT
+INFO:     127.0.0.1:35650 - "POST /api/practice/conversation HTTP/1.1" 200 OK
+2025-12-29 19:05:43,999 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+19:05:43 INFO sqlalchemy.engine.Engine: BEGIN (implicit)
+2025-12-29 19:05:44,000 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.display_name, users.oauth_provider, users.oauth_id, users.native_language, users.timezone, users.created_at, users.updated_at 
+FROM users 
+WHERE users.oauth_provider = $1::VARCHAR AND users.oauth_id = $2::VARCHAR
+19:05:44 INFO sqlalchemy.engine.Engine: SELECT users.id, users.email, users.display_name, users.oauth_provider, users.oauth_id, users.native_language, users.timezone, users.created_at, users.updated_at 
+FROM users 
+WHERE users.oauth_provider = $1::VARCHAR AND users.oauth_id = $2::VARCHAR
+2025-12-29 19:05:44,000 INFO sqlalchemy.engine.Engine [cached since 9788s ago] ('microsoft', '3ed405ce-b994-46e1-805a-fae21b7fa0b0')
+19:05:44 INFO sqlalchemy.engine.Engine: [cached since 9788s ago] ('microsoft', '3ed405ce-b994-46e1-805a-fae21b7fa0b0')
+2025-12-29 19:05:44,001 INFO sqlalchemy.engine.Engine SELECT lessons.id, lessons.course_id, lessons.lesson_number, lessons.title, lessons.objective, lessons.learning_principle, lessons.learning_principle_title, lessons.learning_principle_full, lessons.ponder_questions, lessons.pattern_images, lessons.content_path 
+FROM lessons 
+WHERE lessons.course_id = $1::VARCHAR AND lessons.lesson_number = $2::INTEGER
+19:05:44 INFO sqlalchemy.engine.Engine: SELECT lessons.id, lessons.course_id, lessons.lesson_number, lessons.title, lessons.objective, lessons.learning_principle, lessons.learning_principle_title, lessons.learning_principle_full, lessons.ponder_questions, lessons.pattern_images, lessons.content_path 
+FROM lessons 
+WHERE lessons.course_id = $1::VARCHAR AND lessons.lesson_number = $2::INTEGER
+2025-12-29 19:05:44,001 INFO sqlalchemy.engine.Engine [cached since 9275s ago] ('ec1', 2)
+19:05:44 INFO sqlalchemy.engine.Engine: [cached since 9275s ago] ('ec1', 2)
+2025-12-29 19:05:44,002 INFO sqlalchemy.engine.Engine SELECT vocabulary_items.id, vocabulary_items.lesson_id, vocabulary_items.english_word, vocabulary_items.spanish_translation, vocabulary_items.pronunciation_hint, vocabulary_items.category, vocabulary_items.audio_url 
+FROM vocabulary_items 
+WHERE vocabulary_items.lesson_id = $1::INTEGER
+19:05:44 INFO sqlalchemy.engine.Engine: SELECT vocabulary_items.id, vocabulary_items.lesson_id, vocabulary_items.english_word, vocabulary_items.spanish_translation, vocabulary_items.pronunciation_hint, vocabulary_items.category, vocabulary_items.audio_url 
+FROM vocabulary_items 
+WHERE vocabulary_items.lesson_id = $1::INTEGER
+2025-12-29 19:05:44,002 INFO sqlalchemy.engine.Engine [cached since 9275s ago] (2,)
+19:05:44 INFO sqlalchemy.engine.Engine: [cached since 9275s ago] (2,)
+2025-12-29 19:05:44,003 INFO sqlalchemy.engine.Engine SELECT qa_patterns.id, qa_patterns.lesson_id, qa_patterns.pattern_number, qa_patterns.question_template, qa_patterns.answer_template, qa_patterns.placeholders, qa_patterns.examples 
+FROM qa_patterns 
+WHERE qa_patterns.lesson_id = $1::INTEGER ORDER BY qa_patterns.pattern_number
+19:05:44 INFO sqlalchemy.engine.Engine: SELECT qa_patterns.id, qa_patterns.lesson_id, qa_patterns.pattern_number, qa_patterns.question_template, qa_patterns.answer_template, qa_patterns.placeholders, qa_patterns.examples 
+FROM qa_patterns 
+WHERE qa_patterns.lesson_id = $1::INTEGER ORDER BY qa_patterns.pattern_number
+2025-12-29 19:05:44,003 INFO sqlalchemy.engine.Engine [cached since 9275s ago] (2,)
+19:05:44 INFO sqlalchemy.engine.Engine: [cached since 9275s ago] (2,)
+2025-12-29 19:05:44,004 INFO sqlalchemy.engine.Engine SELECT evaluation_criteria.id, evaluation_criteria.lesson_id, evaluation_criteria.criterion, evaluation_criteria.sort_order 
+FROM evaluation_criteria 
+WHERE evaluation_criteria.lesson_id = $1::INTEGER ORDER BY evaluation_criteria.sort_order
+19:05:44 INFO sqlalchemy.engine.Engine: SELECT evaluation_criteria.id, evaluation_criteria.lesson_id, evaluation_criteria.criterion, evaluation_criteria.sort_order 
+FROM evaluation_criteria 
+WHERE evaluation_criteria.lesson_id = $1::INTEGER ORDER BY evaluation_criteria.sort_order
+2025-12-29 19:05:44,004 INFO sqlalchemy.engine.Engine [cached since 9275s ago] (2,)
+19:05:44 INFO sqlalchemy.engine.Engine: [cached since 9275s ago] (2,)
+19:05:44 WARNING app.services.azure_openai: Failed to register client with Memori: Unsupported LLM client type: openai.lib.azure.AsyncAzureOpenAI
+19:05:44 INFO app.services.azure_openai: ============================================================
+19:05:44 INFO app.services.azure_openai: CONVERSATION REQUEST
+19:05:44 INFO app.services.azure_openai:   User message: I'm fine, thanks.
+19:05:44 INFO app.services.azure_openai:   History: 2 messages
+19:05:44 INFO app.services.azure_openai:     [0] user: I'm ready to practice!
+19:05:44 INFO app.services.azure_openai:     [1] assistant: That's great! Let's start. How are you?
+19:05:44 INFO app.services.azure_openai:   System prompt: 2392 chars
+19:05:44 INFO app.services.azure_openai: ============================================================
+19:05:44 INFO app.services.azure_openai: FULL SYSTEM PROMPT:
+19:05:44 INFO app.services.azure_openai: ============================================================
+19:05:44 INFO app.services.azure_openai: You are a friendly, patient English conversation partner helping Spanish-speaking learners practice conversational English.
+
+## Current Lesson: 2 - Greetings and Introductions
+
+**Objective**: APRENDERÉ A SALUDAR A LOS DEMÁS Y DECIR DE DÓNDE PROVIENE ALGUIEN.
+
+## Vocabulary to Practice:
+- I = yo
+- you = tú
+- we = nosotros
+- they = ellos/ellas
+- he = él
+- she = ella
+- I am/I'm = yo soy/estoy
+- you are = tú eres/estás
+- we are = nosotros somos/estamos
+- they are = ellos/ellas son/están
+- he is = él es/está
+- she is = ella es/está
+- How are you? = ¿Cómo estás?
+- Nice to meet you. = Es un placer conocerte.
+- what = qué
+- where = dónde
+- country = país
+- fine = bien
+- OK = bien
+- Japan = Japón
+- Kenya = Kenia
+- Mexico = México
+
+## Conversation Patterns:
+Pattern 1:
+  Q: How are you?
+  A: I'm (*adjective*), thanks.
+Pattern 2:
+  Q: Where are you from?
+  A: I'm from (*noun*).
+
+## Your Tools:
+You have a **speak** tool that speaks text aloud to the student. You MUST call this tool for EVERY response. NO EXCEPTIONS.
+
+The speak tool has these parameters:
+- text: The text to speak aloud (required)
+- language: "en" for English, "es" for Spanish (required)
+- voice: Use "speaker_b" for a friendly voice (optional, defaults to speaker_b)
+
+## Guidelines:
+1. **ALWAYS use the speak tool** - every response must include a speak() call
+2. **You are the TUTOR, not the student** - respond to what the student says, don't repeat their words as your own
+3. Speak in simple, clear English appropriate for beginners
+4. Focus on the vocabulary and patterns from this lesson
+5. If the student seems confused, call speak() with language "es" to explain in Spanish
+6. Keep each response concise (1-2 sentences)
+7. Usually the pattern is question followed by answer with a follow up query
+8. Once the patterns are complete, ask if they would like to practice more or end the session
+9. If the conversation is outside the lesson scope, gently steer it back to the lesson content
+10. If they ask for help, provide hints using the vocabulary and patterns
+11. Encourage the learner and celebrate their progress
+
+## Example Interaction:
+Student says: "I like play soccer"
+You should: Use the speak tool with text "That's great! You like to play soccer. Do you play with friends?" and language "en"
+
+Remember: Your goal is to help the learner practice speaking English in a supportive, low-pressure environment.
+
+19:05:44 INFO app.services.azure_openai: ============================================================
+19:05:44 INFO app.services.azure_openai: END SYSTEM PROMPT
+19:05:44 INFO app.services.azure_openai: ------------------------------------------------------------
+19:05:44 INFO app.services.azure_openai: LLM call iteration 1
+19:05:44 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:44 INFO app.services.azure_openai:   LLM response: content=None
+19:05:44 INFO app.services.azure_openai:   LLM tool_calls: 1
+19:05:44 INFO app.services.azure_openai:   TOOL CALL: speak
+19:05:44 INFO app.services.azure_openai:     args: {"text": "I'm glad to hear that! Where are you from?", "language": "en"}
+19:05:46 INFO httpx: HTTP Request: POST http://localhost:8002/synthesize "HTTP/1.1 200 OK"
+19:05:46 INFO app.services.azure_openai:     result: success=True, audio_size=426776 chars
+19:05:46 INFO app.services.azure_openai: LLM call iteration 2
+19:05:46 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:46 INFO app.services.azure_openai:   LLM response: content=Where are you from?
+19:05:46 INFO app.services.azure_openai:   LLM tool_calls: 0
+19:05:46 INFO app.services.azure_openai: ============================================================
+19:05:46 INFO app.services.azure_openai: CONVERSATION COMPLETE
+19:05:46 INFO app.services.azure_openai:   Final text: Where are you from?
+19:05:46 INFO app.services.azure_openai:   Tool calls made: 1
+19:05:46 INFO app.services.azure_openai:   Tool results: 1
+19:05:46 INFO app.services.azure_openai: ============================================================
+19:05:46 INFO app.routers.conversation: ============================================================
+19:05:46 INFO app.routers.conversation: RESPONSE TO FRONTEND
+19:05:46 INFO app.routers.conversation:   text: I'm glad to hear that! Where are you from?
+19:05:46 INFO app.routers.conversation:   audio: yes (426776 chars)
+19:05:46 INFO app.routers.conversation:   language: en
+19:05:46 INFO app.routers.conversation:   source: speak() tool
+19:05:46 INFO app.routers.conversation: ============================================================
+2025-12-29 19:05:46,708 INFO sqlalchemy.engine.Engine SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.user_id = $1::UUID AND practice_sessions.lesson_id = $2::INTEGER AND practice_sessions.session_type = $3::VARCHAR AND practice_sessions.started_at >= $4::TIMESTAMP WITHOUT TIME ZONE AND practice_sessions.ended_at IS NULL ORDER BY practice_sessions.started_at DESC 
+ LIMIT $5::INTEGER
+19:05:46 INFO sqlalchemy.engine.Engine: SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.user_id = $1::UUID AND practice_sessions.lesson_id = $2::INTEGER AND practice_sessions.session_type = $3::VARCHAR AND practice_sessions.started_at >= $4::TIMESTAMP WITHOUT TIME ZONE AND practice_sessions.ended_at IS NULL ORDER BY practice_sessions.started_at DESC 
+ LIMIT $5::INTEGER
+2025-12-29 19:05:46,709 INFO sqlalchemy.engine.Engine [cached since 93.2s ago] (UUID('eefd682d-db0c-412f-ba71-7e92676e32b5'), 2, 'conversation_practice', datetime.datetime(2025, 12, 30, 0, 35, 46, 708512), 1)
+19:05:46 INFO sqlalchemy.engine.Engine: [cached since 93.2s ago] (UUID('eefd682d-db0c-412f-ba71-7e92676e32b5'), 2, 'conversation_practice', datetime.datetime(2025, 12, 30, 0, 35, 46, 708512), 1)
+19:05:46 INFO app.services.session_service: Reusing session 1 for lesson 2 (started 2025-12-30 01:04:18.258727)
+2025-12-29 19:05:46,710 INFO sqlalchemy.engine.Engine SELECT coalesce(max(conversation_exchanges.sequence_number), $1::INTEGER) AS coalesce_1 
+FROM conversation_exchanges 
+WHERE conversation_exchanges.session_id = $2::INTEGER
+19:05:46 INFO sqlalchemy.engine.Engine: SELECT coalesce(max(conversation_exchanges.sequence_number), $1::INTEGER) AS coalesce_1 
+FROM conversation_exchanges 
+WHERE conversation_exchanges.session_id = $2::INTEGER
+2025-12-29 19:05:46,710 INFO sqlalchemy.engine.Engine [cached since 93.17s ago] (0, 1)
+19:05:46 INFO sqlalchemy.engine.Engine: [cached since 93.17s ago] (0, 1)
+2025-12-29 19:05:46,711 INFO sqlalchemy.engine.Engine INSERT INTO conversation_exchanges (session_id, sequence_number, agent_utterance, user_utterance, user_audio_url, transcription_confidence, pronunciation_feedback, grammar_feedback, created_at) VALUES ($1::INTEGER, $2::INTEGER, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::FLOAT, $7::JSONB, $8::JSONB, $9::TIMESTAMP WITHOUT TIME ZONE) RETURNING conversation_exchanges.id
+19:05:46 INFO sqlalchemy.engine.Engine: INSERT INTO conversation_exchanges (session_id, sequence_number, agent_utterance, user_utterance, user_audio_url, transcription_confidence, pronunciation_feedback, grammar_feedback, created_at) VALUES ($1::INTEGER, $2::INTEGER, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::FLOAT, $7::JSONB, $8::JSONB, $9::TIMESTAMP WITHOUT TIME ZONE) RETURNING conversation_exchanges.id
+2025-12-29 19:05:46,712 INFO sqlalchemy.engine.Engine [cached since 93.17s ago] (1, 4, "I'm glad to hear that! Where are you from?", "I'm fine, thanks.", None, None, 'null', 'null', datetime.datetime(2025, 12, 30, 1, 5, 46, 711682))
+19:05:46 INFO sqlalchemy.engine.Engine: [cached since 93.17s ago] (1, 4, "I'm glad to hear that! Where are you from?", "I'm fine, thanks.", None, None, 'null', 'null', datetime.datetime(2025, 12, 30, 1, 5, 46, 711682))
+2025-12-29 19:05:46,713 INFO sqlalchemy.engine.Engine SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.id = $1::INTEGER
+19:05:46 INFO sqlalchemy.engine.Engine: SELECT practice_sessions.id, practice_sessions.user_id, practice_sessions.lesson_id, practice_sessions.session_type, practice_sessions.started_at, practice_sessions.ended_at, practice_sessions.duration_seconds, practice_sessions.exchanges_count, practice_sessions.feedback_summary 
+FROM practice_sessions 
+WHERE practice_sessions.id = $1::INTEGER
+2025-12-29 19:05:46,714 INFO sqlalchemy.engine.Engine [cached since 93.17s ago] (1,)
+19:05:46 INFO sqlalchemy.engine.Engine: [cached since 93.17s ago] (1,)
+2025-12-29 19:05:46,714 INFO sqlalchemy.engine.Engine UPDATE practice_sessions SET exchanges_count=$1::INTEGER WHERE practice_sessions.id = $2::INTEGER
+19:05:46 INFO sqlalchemy.engine.Engine: UPDATE practice_sessions SET exchanges_count=$1::INTEGER WHERE practice_sessions.id = $2::INTEGER
+2025-12-29 19:05:46,715 INFO sqlalchemy.engine.Engine [cached since 93.17s ago] (4, 1)
+19:05:46 INFO sqlalchemy.engine.Engine: [cached since 93.17s ago] (4, 1)
+2025-12-29 19:05:46,715 INFO sqlalchemy.engine.Engine COMMIT
+19:05:46 INFO sqlalchemy.engine.Engine: COMMIT
+INFO:     127.0.0.1:46784 - "POST /api/practice/conversation HTTP/1.1" 200 OK
+2025-12-29 19:05:55,090 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+19:05:55 INFO sqlalchemy.engine.Engine: BEGIN (implicit)
+2025-12-29 19:05:55,091 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.display_name, users.oauth_provider, users.oauth_id, users.native_language, users.timezone, users.created_at, users.updated_at 
+FROM users 
+WHERE users.oauth_provider = $1::VARCHAR AND users.oauth_id = $2::VARCHAR
+19:05:55 INFO sqlalchemy.engine.Engine: SELECT users.id, users.email, users.display_name, users.oauth_provider, users.oauth_id, users.native_language, users.timezone, users.created_at, users.updated_at 
+FROM users 
+WHERE users.oauth_provider = $1::VARCHAR AND users.oauth_id = $2::VARCHAR
+2025-12-29 19:05:55,091 INFO sqlalchemy.engine.Engine [cached since 9799s ago] ('microsoft', '3ed405ce-b994-46e1-805a-fae21b7fa0b0')
+19:05:55 INFO sqlalchemy.engine.Engine: [cached since 9799s ago] ('microsoft', '3ed405ce-b994-46e1-805a-fae21b7fa0b0')
+2025-12-29 19:05:55,093 INFO sqlalchemy.engine.Engine SELECT lessons.id, lessons.course_id, lessons.lesson_number, lessons.title, lessons.objective, lessons.learning_principle, lessons.learning_principle_title, lessons.learning_principle_full, lessons.ponder_questions, lessons.pattern_images, lessons.content_path 
+FROM lessons 
+WHERE lessons.course_id = $1::VARCHAR AND lessons.lesson_number = $2::INTEGER
+19:05:55 INFO sqlalchemy.engine.Engine: SELECT lessons.id, lessons.course_id, lessons.lesson_number, lessons.title, lessons.objective, lessons.learning_principle, lessons.learning_principle_title, lessons.learning_principle_full, lessons.ponder_questions, lessons.pattern_images, lessons.content_path 
+FROM lessons 
+WHERE lessons.course_id = $1::VARCHAR AND lessons.lesson_number = $2::INTEGER
+2025-12-29 19:05:55,093 INFO sqlalchemy.engine.Engine [cached since 9286s ago] ('ec1', 2)
+19:05:55 INFO sqlalchemy.engine.Engine: [cached since 9286s ago] ('ec1', 2)
+2025-12-29 19:05:55,094 INFO sqlalchemy.engine.Engine SELECT vocabulary_items.id, vocabulary_items.lesson_id, vocabulary_items.english_word, vocabulary_items.spanish_translation, vocabulary_items.pronunciation_hint, vocabulary_items.category, vocabulary_items.audio_url 
+FROM vocabulary_items 
+WHERE vocabulary_items.lesson_id = $1::INTEGER
+19:05:55 INFO sqlalchemy.engine.Engine: SELECT vocabulary_items.id, vocabulary_items.lesson_id, vocabulary_items.english_word, vocabulary_items.spanish_translation, vocabulary_items.pronunciation_hint, vocabulary_items.category, vocabulary_items.audio_url 
+FROM vocabulary_items 
+WHERE vocabulary_items.lesson_id = $1::INTEGER
+2025-12-29 19:05:55,094 INFO sqlalchemy.engine.Engine [cached since 9286s ago] (2,)
+19:05:55 INFO sqlalchemy.engine.Engine: [cached since 9286s ago] (2,)
+2025-12-29 19:05:55,095 INFO sqlalchemy.engine.Engine SELECT qa_patterns.id, qa_patterns.lesson_id, qa_patterns.pattern_number, qa_patterns.question_template, qa_patterns.answer_template, qa_patterns.placeholders, qa_patterns.examples 
+FROM qa_patterns 
+WHERE qa_patterns.lesson_id = $1::INTEGER ORDER BY qa_patterns.pattern_number
+19:05:55 INFO sqlalchemy.engine.Engine: SELECT qa_patterns.id, qa_patterns.lesson_id, qa_patterns.pattern_number, qa_patterns.question_template, qa_patterns.answer_template, qa_patterns.placeholders, qa_patterns.examples 
+FROM qa_patterns 
+WHERE qa_patterns.lesson_id = $1::INTEGER ORDER BY qa_patterns.pattern_number
+2025-12-29 19:05:55,095 INFO sqlalchemy.engine.Engine [cached since 9286s ago] (2,)
+19:05:55 INFO sqlalchemy.engine.Engine: [cached since 9286s ago] (2,)
+2025-12-29 19:05:55,096 INFO sqlalchemy.engine.Engine SELECT evaluation_criteria.id, evaluation_criteria.lesson_id, evaluation_criteria.criterion, evaluation_criteria.sort_order 
+FROM evaluation_criteria 
+WHERE evaluation_criteria.lesson_id = $1::INTEGER ORDER BY evaluation_criteria.sort_order
+19:05:55 INFO sqlalchemy.engine.Engine: SELECT evaluation_criteria.id, evaluation_criteria.lesson_id, evaluation_criteria.criterion, evaluation_criteria.sort_order 
+FROM evaluation_criteria 
+WHERE evaluation_criteria.lesson_id = $1::INTEGER ORDER BY evaluation_criteria.sort_order
+2025-12-29 19:05:55,096 INFO sqlalchemy.engine.Engine [cached since 9286s ago] (2,)
+19:05:55 INFO sqlalchemy.engine.Engine: [cached since 9286s ago] (2,)
+19:05:55 WARNING app.services.azure_openai: Failed to register client with Memori: Unsupported LLM client type: openai.lib.azure.AsyncAzureOpenAI
+19:05:55 INFO app.services.azure_openai: ============================================================
+19:05:55 INFO app.services.azure_openai: CONVERSATION REQUEST
+19:05:55 INFO app.services.azure_openai:   User message: I'm from Houston.
+19:05:55 INFO app.services.azure_openai:   History: 4 messages
+19:05:55 INFO app.services.azure_openai:     [0] user: I'm ready to practice!
+19:05:55 INFO app.services.azure_openai:     [1] assistant: That's great! Let's start. How are you?
+19:05:55 INFO app.services.azure_openai:     [2] user: I'm fine, thanks.
+19:05:55 INFO app.services.azure_openai:     [3] assistant: I'm glad to hear that! Where are you from?
+19:05:55 INFO app.services.azure_openai:   System prompt: 2392 chars
+19:05:55 INFO app.services.azure_openai: ============================================================
+19:05:55 INFO app.services.azure_openai: FULL SYSTEM PROMPT:
+19:05:55 INFO app.services.azure_openai: ============================================================
+19:05:55 INFO app.services.azure_openai: You are a friendly, patient English conversation partner helping Spanish-speaking learners practice conversational English.
+
+## Current Lesson: 2 - Greetings and Introductions
+
+**Objective**: APRENDERÉ A SALUDAR A LOS DEMÁS Y DECIR DE DÓNDE PROVIENE ALGUIEN.
+
+## Vocabulary to Practice:
+- I = yo
+- you = tú
+- we = nosotros
+- they = ellos/ellas
+- he = él
+- she = ella
+- I am/I'm = yo soy/estoy
+- you are = tú eres/estás
+- we are = nosotros somos/estamos
+- they are = ellos/ellas son/están
+- he is = él es/está
+- she is = ella es/está
+- How are you? = ¿Cómo estás?
+- Nice to meet you. = Es un placer conocerte.
+- what = qué
+- where = dónde
+- country = país
+- fine = bien
+- OK = bien
+- Japan = Japón
+- Kenya = Kenia
+- Mexico = México
+
+## Conversation Patterns:
+Pattern 1:
+  Q: How are you?
+  A: I'm (*adjective*), thanks.
+Pattern 2:
+  Q: Where are you from?
+  A: I'm from (*noun*).
+
+## Your Tools:
+You have a **speak** tool that speaks text aloud to the student. You MUST call this tool for EVERY response. NO EXCEPTIONS.
+
+The speak tool has these parameters:
+- text: The text to speak aloud (required)
+- language: "en" for English, "es" for Spanish (required)
+- voice: Use "speaker_b" for a friendly voice (optional, defaults to speaker_b)
+
+## Guidelines:
+1. **ALWAYS use the speak tool** - every response must include a speak() call
+2. **You are the TUTOR, not the student** - respond to what the student says, don't repeat their words as your own
+3. Speak in simple, clear English appropriate for beginners
+4. Focus on the vocabulary and patterns from this lesson
+5. If the student seems confused, call speak() with language "es" to explain in Spanish
+6. Keep each response concise (1-2 sentences)
+7. Usually the pattern is question followed by answer with a follow up query
+8. Once the patterns are complete, ask if they would like to practice more or end the session
+9. If the conversation is outside the lesson scope, gently steer it back to the lesson content
+10. If they ask for help, provide hints using the vocabulary and patterns
+11. Encourage the learner and celebrate their progress
+
+## Example Interaction:
+Student says: "I like play soccer"
+You should: Use the speak tool with text "That's great! You like to play soccer. Do you play with friends?" and language "en"
+
+Remember: Your goal is to help the learner practice speaking English in a supportive, low-pressure environment.
+
+19:05:55 INFO app.services.azure_openai: ============================================================
+19:05:55 INFO app.services.azure_openai: END SYSTEM PROMPT
+19:05:55 INFO app.services.azure_openai: ------------------------------------------------------------
+19:05:55 INFO app.services.azure_openai: LLM call iteration 1
+19:05:56 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:56 INFO app.services.azure_openai:   LLM response: content=None
+19:05:56 INFO app.services.azure_openai:   LLM tool_calls: 2
+19:05:56 INFO app.services.azure_openai:   TOOL CALL: speak
+19:05:56 INFO app.services.azure_openai:     args: {"text": "Nice to meet you! Houston is a great city. How are you today?", "language": "en", "voice": "speaker_b"}
+19:05:56 INFO httpx: HTTP Request: POST http://localhost:8002/synthesize "HTTP/1.1 200 OK"
+19:05:56 INFO app.services.azure_openai:     result: success=True, audio_size=563308 chars
+19:05:56 INFO app.services.azure_openai:   TOOL CALL: speak
+19:05:56 INFO app.services.azure_openai:     args: {"text": "\u00a1Encantado de conocerte! Houston es una gran ciudad. \u00bfC\u00f3mo est\u00e1s hoy?", "language": "es", "voice": "speaker_b"}
+19:05:58 INFO httpx: HTTP Request: POST http://localhost:8002/synthesize "HTTP/1.1 200 OK"
+19:05:58 INFO app.services.azure_openai:     result: success=True, audio_size=785176 chars
+19:05:58 INFO app.services.azure_openai: LLM call iteration 2
+19:05:59 INFO httpx: HTTP Request: POST https://aif-vozloop-preprod-001.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-10-21 "HTTP/1.1 200 OK"
+19:05:59 INFO app.services.azure_openai:   LLM response: content=Nice to meet you! Houston is a great city. How are you today?
+19:05:59 INFO app.services.azure_openai:   LLM tool_calls: 0
+19:05:59 INFO app.services.azure_openai: ============================================================
+19:05:59 INFO app.services.azure_openai: CONVERSATION COMPLETE
+19:05:59 INFO app.services.azure_openai:   Final text: Nice to meet you! Houston is a great city. How are you today?
+19:05:59 INFO app.services.azure_openai:   Tool calls made: 2
+19:05:59 INFO app.services.azure_openai:   Tool results: 2
+19:05:59 INFO app.services.azure_openai: ============================================================
+19:05:59 INFO app.routers.conversation: ============================================================
+19:05:59 INFO app.routers.conversation: RESPONSE TO FRONTEND
+19:05:59 INFO app.routers.conversation:   text: ¡Encantado de conocerte! Houston es una gran ciudad. ¿Cómo estás hoy?
+19:05:59 INFO app.routers.conversation:   audio: yes (785176 chars)
+19:05:59 INFO app.routers.conversation:   language: es
+19:05:59 INFO app.routers.conversation:   source: speak() tool
+19:05:59 INFO app.routers.conversation: ============================================================

@@ -17,6 +17,7 @@ interface PatternsViewProps {
   isPatternPhase?: boolean
   patternIndex?: number
   phaseState?: PhaseState | null
+  onPatternClick?: (patternIndex: number) => void
 }
 
 export function PatternsView({
@@ -26,6 +27,7 @@ export function PatternsView({
   isPatternPhase = false,
   patternIndex = 0,
   phaseState,
+  onPatternClick,
 }: PatternsViewProps) {
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -90,10 +92,20 @@ export function PatternsView({
           return (
             <div
               key={pattern.pattern_number}
+              role={onPatternClick ? 'button' : undefined}
+              tabIndex={onPatternClick ? 0 : undefined}
+              onClick={() => onPatternClick?.(index)}
+              onKeyDown={(e) => {
+                if (onPatternClick && (e.key === 'Enter' || e.key === ' ')) {
+                  e.preventDefault()
+                  onPatternClick(index)
+                }
+              }}
               className={cn(
                 'rounded-lg border p-4 transition-colors',
                 isCurrent && 'bg-primary/10 border-primary border-l-4',
-                isCompleted && !isCurrent && 'opacity-75'
+                isCompleted && !isCurrent && 'opacity-75',
+                onPatternClick && 'cursor-pointer hover:border-primary/50 hover:shadow-sm'
               )}
             >
               <div className="flex items-start gap-3">

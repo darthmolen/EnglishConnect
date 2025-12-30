@@ -4,7 +4,6 @@ import { PrincipleView } from './content/PrincipleView'
 import { GoalsView } from './content/GoalsView'
 import { PracticeView } from './content/PracticeView'
 import { VocabularyView } from './content/VocabularyView'
-import { PatternsView } from './content/PatternsView'
 
 interface ContentWindowProps {
   lesson: LessonDetail | null
@@ -13,6 +12,8 @@ interface ContentWindowProps {
   phaseState: PhaseState | null
   completedGoals: number[]
   onToggleGoal: (lessonNumber: number, goalIndex: number) => void
+  onPatternClick?: (patternIndex: number) => void
+  onStartConversation?: () => void
   className?: string
 }
 
@@ -23,6 +24,8 @@ export function ContentWindow({
   phaseState,
   completedGoals,
   onToggleGoal,
+  onPatternClick,
+  onStartConversation,
   className,
 }: ContentWindowProps) {
   if (!lesson) {
@@ -68,6 +71,8 @@ export function ContentWindow({
           patternIndex={patternIndex}
           phaseState={phaseState}
           lessonNumber={lesson.lesson_number}
+          onPatternClick={onPatternClick}
+          onStartConversation={onStartConversation}
         />
       )}
       {activeSection === 'vocabulary' && (
@@ -76,16 +81,6 @@ export function ContentWindow({
           lessonNumber={lesson.lesson_number}
           isVocabPhase={isVocabPhase}
           vocabIndex={vocabIndex}
-          phaseState={phaseState}
-        />
-      )}
-      {activeSection === 'patterns' && (
-        <PatternsView
-          patterns={lesson.patterns}
-          patternImages={lesson.pattern_images}
-          lessonNumber={lesson.lesson_number}
-          isPatternPhase={isPatternPhase}
-          patternIndex={patternIndex}
           phaseState={phaseState}
         />
       )}

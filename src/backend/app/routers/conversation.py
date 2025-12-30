@@ -88,20 +88,39 @@ async def conversation(
         user_id=user_id,
     )
 
-    # Extract audio and spoken text from tool results (use last successful speak call)
+    # Extract audio and spoken text from tool results
+    # Prefer English speak() call; only use Spanish if it's the only option
     audio_base64 = None
     audio_format = "wav"
     language = "en"
     spoken_text = None  # What was actually spoken
+    english_speak = None  # First English speak() result
+    spanish_speak = None  # First Spanish speak() result (fallback)
 
     for tool_result in agent_result.get("tool_results", []):
         if tool_result.get("tool") == "speak" and tool_result.get("success"):
             result_data = tool_result.get("result", {})
             if result_data.get("spoken"):
-                audio_base64 = result_data.get("audio_base64")
-                audio_format = result_data.get("format", "wav")
-                language = result_data.get("language", "en")
-                spoken_text = result_data.get("text")  # The actual spoken text
+                result_lang = result_data.get("language", "en")
+                # Capture first of each language type
+                if result_lang == "en" and english_speak is None:
+                    english_speak = result_data
+                elif result_lang == "es" and spanish_speak is None:
+                    spanish_speak = result_data
+
+    # Prefer English, fall back to Spanish only if no English speak() was called
+    chosen_speak = english_speak if english_speak else spanish_speak
+    if chosen_speak:
+        audio_base64 = chosen_speak.get("audio_base64")
+        audio_format = chosen_speak.get("format", "wav")
+        language = chosen_speak.get("language", "en")
+        spoken_text = chosen_speak.get("text")
+        if english_speak and spanish_speak:
+            logger.warning(
+                "Agent made both EN and ES speak() calls - using English. "
+                f"EN: {english_speak.get('text', '')[:50]}... "
+                f"ES: {spanish_speak.get('text', '')[:50]}..."
+            )
 
     # Use spoken text if available, otherwise fall back to agent's text response
     response_text = spoken_text if spoken_text else agent_result["text"]

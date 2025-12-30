@@ -25,6 +25,8 @@ function AppContent() {
     setActiveSection,
     completedGoals,
     toggleGoal,
+    instructionLanguage,
+    setInstructionLanguage,
   } = useConversationStore()
   const {
     messages,
@@ -54,6 +56,20 @@ function AppContent() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
+    }
+  }
+
+  const handlePatternClick = (patternIndex: number) => {
+    if (selectedLessonNumber && !isLoading) {
+      // Send a message that will trigger the agent to switch to this pattern
+      sendTextMessage(`Let's practice pattern ${patternIndex + 1}`)
+    }
+  }
+
+  const handleStartConversation = () => {
+    if (selectedLessonNumber && !isLoading) {
+      // Send a message to start the conversation practice
+      sendTextMessage("I'm ready to practice!")
     }
   }
 
@@ -109,6 +125,25 @@ function AppContent() {
       <main className="flex flex-1 flex-col min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between border-b px-4 py-2 shrink-0">
+          {/* Instruction Language Toggle */}
+          <div className="flex items-center gap-2 shrink-0 mr-4">
+            <span className="text-xs text-muted-foreground">Instruction:</span>
+            <button
+              type="button"
+              onClick={() => setInstructionLanguage(instructionLanguage === 'es' ? 'en' : 'es')}
+              className={cn(
+                'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors',
+                'border hover:bg-accent',
+                instructionLanguage === 'es' ? 'bg-primary/10 text-primary border-primary' : 'bg-muted'
+              )}
+              title="Toggle instruction language"
+            >
+              <span className={cn(instructionLanguage === 'es' && 'font-bold')}>ES</span>
+              <span className="text-muted-foreground">/</span>
+              <span className={cn(instructionLanguage === 'en' && 'font-bold')}>EN</span>
+            </button>
+          </div>
+
           <div className="flex-1 min-w-0">
             {currentLesson ? (
               <div>
@@ -158,6 +193,8 @@ function AppContent() {
             phaseState={phaseState}
             completedGoals={lessonGoals}
             onToggleGoal={toggleGoal}
+            onPatternClick={handlePatternClick}
+            onStartConversation={handleStartConversation}
             className="h-full"
           />
           <ConversationDrawer

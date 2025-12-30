@@ -43,7 +43,6 @@ const SECTIONS: { id: LessonSection; title: string }[] = [
   { id: 'principle', title: 'Learning Principle' },
   { id: 'goals', title: 'Learning Goals' },
   { id: 'vocabulary', title: 'Vocabulary' },
-  { id: 'patterns', title: 'Patterns' },
   { id: 'practice', title: 'Practice' },
 ]
 

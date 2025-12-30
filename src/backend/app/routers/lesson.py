@@ -115,6 +115,7 @@ async def lesson_conversation(
         lesson=lesson,
         phase=phase,
         phase_state=phase_state,
+        instruction_language=request.instruction_language,
     )
     system_prompt = agent.build_system_prompt()
 
@@ -184,10 +185,43 @@ async def lesson_conversation(
 
         return {"recorded": True, "item_type": item_type, "correct": correct}
 
+    async def set_pattern_handler(pattern_index: int) -> dict:
+        """Handle set_pattern tool calls to jump to a specific pattern."""
+        nonlocal new_phase_state
+
+        logger.info(f"set_pattern called: pattern_index={pattern_index}")
+
+        # Validate index
+        total_patterns = len(lesson.patterns)
+        if pattern_index < 0 or pattern_index >= total_patterns:
+            return {
+                "success": False,
+                "error": f"Invalid pattern index. Must be 0-{total_patterns - 1}"
+            }
+
+        # Update phase state with new pattern index
+        new_phase_state.pattern_index = pattern_index
+        progress.phase_state = new_phase_state.model_dump()
+
+        # Persist the change
+        await db.flush()
+
+        # Get the pattern info for confirmation
+        pattern = lesson.patterns[pattern_index]
+
+        return {
+            "success": True,
+            "pattern_index": pattern_index,
+            "pattern_number": pattern_index + 1,
+            "question_template": pattern.question_template,
+            "total_patterns": total_patterns
+        }
+
     tool_handlers = {
         "speak": speak_tool_handler,
         "advance_phase": advance_phase_handler,
         "record_attempt": record_attempt_handler,
+        "set_pattern": set_pattern_handler,
     }
 
     # Call the agent with lesson-specific tools
@@ -268,6 +302,7 @@ async def lesson_conversation(
         lesson=lesson,
         phase=new_phase,
         phase_state=new_phase_state,
+        instruction_language=request.instruction_language,
     )
 
     return LessonConversationResponse(

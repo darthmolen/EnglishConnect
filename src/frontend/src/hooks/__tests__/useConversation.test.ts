@@ -38,7 +38,7 @@ describe('useConversation error handling', () => {
       selectedLessonNumber: 1,
       isLoading: false,
       agentMode: 'lesson', // Set to lesson mode (teacher)
-      activeSection: 'patterns',
+      activeSection: 'vocabulary',
     })
   })
 

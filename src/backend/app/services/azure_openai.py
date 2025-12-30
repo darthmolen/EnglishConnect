@@ -166,6 +166,23 @@ LESSON_AGENT_TOOLS = [
                 "required": ["item_type", "correct"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "set_pattern",
+            "description": "Jump to a specific pattern within the practice phase. Use this to announce pattern changes conversationally (e.g., 'Let's practice pattern 2 now!'). Can also be triggered when user clicks a pattern card.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern_index": {
+                        "type": "integer",
+                        "description": "Zero-based index of the pattern to practice (0 = first pattern, 1 = second, etc.)"
+                    }
+                },
+                "required": ["pattern_index"]
+            }
+        }
     }
 ]
 

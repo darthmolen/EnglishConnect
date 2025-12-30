@@ -20,6 +20,7 @@ class LessonBasedTeacherAgent:
         lesson: LessonDetail,
         phase: LessonPhase,
         phase_state: PhaseStateSchema,
+        instruction_language: str = "es",
     ):
         """Initialize the teacher agent.
 
@@ -27,10 +28,12 @@ class LessonBasedTeacherAgent:
             lesson: Full lesson details with vocabulary and patterns
             phase: Current lesson phase from database
             phase_state: Current state within the phase (indices, completed items)
+            instruction_language: Language for explanations ('es' or 'en', default 'es')
         """
         self.lesson = lesson
         self.phase = phase
         self.phase_state = phase_state
+        self.instruction_language = instruction_language
 
     def build_system_prompt(self) -> str:
         """Build phase-specific system prompt for the LLM.
@@ -182,8 +185,18 @@ class LessonBasedTeacherAgent:
         else:
             patterns_list = "No patterns for this lesson."
 
+        # Instruction language for explanations
+        instruction_lang_text = "Spanish" if self.instruction_language == "es" else "English"
+
         template = load_prompt("teacher/phase_practice.md")
-        return render_prompt(template, vocab_words=vocab_words, patterns_list=patterns_list)
+        return render_prompt(
+            template,
+            vocab_words=vocab_words,
+            patterns_list=patterns_list,
+            instruction_language=instruction_lang_text,
+            current_pattern_index=self.phase_state.pattern_index,
+            total_patterns=len(self.lesson.patterns) if self.lesson.patterns else 0,
+        )
 
     def _wrapup_prompt(self) -> str:
         """Prompt for the wrap-up phase."""

@@ -48,6 +48,7 @@ class LessonConversationRequest(BaseModel):
     lesson_number: int
     history: list[ChatMessage] = []
     section: str | None = None  # Optional: 'vocabulary', 'patterns', 'practice', etc.
+    instruction_language: Literal["es", "en"] = "es"  # Language for explanations (default Spanish)
 
 
 class AudioChunkSchema(BaseModel):

@@ -35,9 +35,11 @@ export interface LessonDetail {
   evaluation_criteria: string[]
 }
 
-export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary' | 'patterns'
+export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary'
 
 export type AgentMode = 'conversation' | 'lesson' | 'demo'
+
+export type InstructionLanguage = 'es' | 'en'
 
 export interface ChatMessage {
   role: "user" | "assistant"
@@ -100,7 +102,8 @@ export interface LessonConversationRequest {
   message: string
   lesson_number: number
   history: ChatMessage[]
-  section?: string  // Optional: 'vocabulary', 'patterns', 'practice', etc.
+  section?: string  // Optional: 'vocabulary', 'practice', etc.
+  instruction_language?: InstructionLanguage  // Language for agent explanations (default 'es')
 }
 
 // Single audio chunk from a speak() call

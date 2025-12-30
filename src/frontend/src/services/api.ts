@@ -61,7 +61,7 @@ export async function fetchLessonDetail(
 
 // Agent endpoint mapping
 const AGENT_ENDPOINTS: Record<AgentMode, string> = {
-  conversation: '/conversation',
+  conversation: '/practice/conversation',
   lesson: '/lesson/conversation',
   demo: '/demo/conversation',
 }

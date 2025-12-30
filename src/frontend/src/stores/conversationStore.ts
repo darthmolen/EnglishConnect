@@ -9,6 +9,7 @@ import type {
   PhaseProgress,
   LessonSection,
   AgentMode,
+  InstructionLanguage,
 } from '@/types'
 
 interface ConversationState {
@@ -36,8 +37,15 @@ interface ConversationState {
   isRecording: boolean
   isPlaying: boolean
 
+  // Intro playback tracking (not persisted - fresh each session)
+  // Keys are "lessonNumber-language" (e.g., "5-es", "5-en")
+  introPlayedKeys: string[]
+
   // Agent mode (which agent handles conversation)
   agentMode: AgentMode
+
+  // Instruction language for agent explanations (persisted)
+  instructionLanguage: InstructionLanguage
 
   // Actions
   setLessons: (lessons: LessonSummary[]) => void
@@ -57,6 +65,8 @@ interface ConversationState {
   ) => void
   clearPhaseInfo: () => void
   setAgentMode: (mode: AgentMode) => void
+  setInstructionLanguage: (language: InstructionLanguage) => void
+  markIntroPlayed: (key: string) => void
 }
 
 export const useConversationStore = create<ConversationState>()(
@@ -73,6 +83,9 @@ export const useConversationStore = create<ConversationState>()(
       isRecording: false,
       isPlaying: false,
 
+      // Intro playback tracking (not persisted)
+      introPlayedKeys: [],
+
       // Phase tracking initial state
       currentPhase: null,
       phaseState: null,
@@ -80,6 +93,9 @@ export const useConversationStore = create<ConversationState>()(
 
       // Agent mode - default to conversation partner
       agentMode: 'conversation' as AgentMode,
+
+      // Instruction language - default to Spanish
+      instructionLanguage: 'es' as InstructionLanguage,
 
       // Actions
       setLessons: (lessons) => set({ lessons }),
@@ -101,10 +117,11 @@ export const useConversationStore = create<ConversationState>()(
       setActiveSection: (section) => {
         // Determine agent mode based on section
         let newAgentMode: AgentMode = 'conversation'
-        if (section === 'vocabulary' || section === 'patterns') {
+        if (section === 'vocabulary') {
           newAgentMode = 'lesson'
         }
         // Note: 'demo' mode is set explicitly via setAgentMode when user clicks Demo Play
+        // Practice section uses 'conversation' mode (conversation partner)
         return set({ activeSection: section, agentMode: newAgentMode })
       },
 
@@ -158,11 +175,23 @@ export const useConversationStore = create<ConversationState>()(
         }),
 
       setAgentMode: (mode) => set({ agentMode: mode }),
+
+      setInstructionLanguage: (language) => set({ instructionLanguage: language }),
+
+      markIntroPlayed: (key) =>
+        set((state) => ({
+          introPlayedKeys: state.introPlayedKeys.includes(key)
+            ? state.introPlayedKeys
+            : [...state.introPlayedKeys, key],
+        })),
     }),
     {
-      name: 'englishconnect-goals',
-      // Only persist completedGoals to localStorage
-      partialize: (state) => ({ completedGoals: state.completedGoals }),
+      name: 'englishconnect-settings',
+      // Persist completedGoals and instructionLanguage to localStorage
+      partialize: (state) => ({
+        completedGoals: state.completedGoals,
+        instructionLanguage: state.instructionLanguage,
+      }),
     }
   )
 )
