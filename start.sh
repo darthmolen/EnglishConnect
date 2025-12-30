@@ -9,6 +9,7 @@
 #   ./start.sh infra    # Start only infrastructure (postgres, redis)
 #   ./start.sh services # Start only local services (assumes infra is running)
 #   ./start.sh ingest   # Run content ingestion
+#   ./start.sh llm      # Start local LLM server (vLLM for Memori)
 #
 # See also:
 #   ./stop.sh           # Stop everything
@@ -144,14 +145,34 @@ start_services() {
     log_info "Running services:"
     log_info "  - PostgreSQL:      localhost:5432"
     log_info "  - Redis:           localhost:6379"
-    log_info "  - Content MCP:     (MCP server, no HTTP port)"
-    log_info "  - STT:             http://localhost:8001 (medium model, float16)"
+    log_info "  - Content MCP:     localhost:8003"
+    log_info "  - STT:             localhost:8001 (medium model, float16)"
     log_info ""
     log_info "Start manually in VSCode debugger:"
-    log_info "  - Backend API:     port 8000"
-    log_info "  - TTS MCP:         port 8002"
+    log_info "  - Backend API:     localhost:8000"
+    log_info "  - TTS MCP:         localhost:8002"
+    log_info "  - LLM (vLLM):      localhost:8004 (run ./start.sh llm)"
     log_info ""
     log_info "To stop: ./stop.sh"
+}
+
+# Start local LLM server (vLLM for Memori)
+start_llm() {
+    log_info "Starting local LLM server (vLLM for Memori)..."
+
+    if [ ! -d "src/services/llm-local/.venv" ]; then
+        log_error "LLM venv not found. Run setup first or install manually."
+        log_info "See src/services/llm-local/start.sh for setup instructions."
+        exit 1
+    fi
+
+    cd src/services/llm-local
+    ./start.sh "$@" &
+    echo $! > ../../../.pids/llm.pid
+    cd ../../..
+
+    log_info "LLM server starting on port 8004..."
+    log_info "Note: First startup downloads model (~28GB) and may take several minutes."
 }
 
 # Main command handling
@@ -170,20 +191,27 @@ case "${1:-all}" in
         setup_venvs
         ingest_content
         ;;
+    llm)
+        check_env
+        shift  # Remove 'llm' from args
+        start_llm "$@"
+        ;;
     all|"")
         check_env
         start_infra
         setup_venvs
         ingest_content
         start_services
+        start_llm
         ;;
     *)
-        echo "Usage: $0 [infra|services|ingest|all]"
+        echo "Usage: $0 [infra|services|ingest|llm|all]"
         echo ""
         echo "Commands:"
         echo "  infra     - Start only infrastructure (PostgreSQL, Redis)"
         echo "  services  - Start only local services (assumes infra is running)"
         echo "  ingest    - Run content ingestion"
+        echo "  llm       - Start local LLM server (vLLM for Memori)"
         echo "  all       - Start everything (default)"
         echo ""
         echo "See also:"

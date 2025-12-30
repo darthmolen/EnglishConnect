@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     # OpenAI API (for Memori memory extraction)
     openai_api_key: str = ""
 
+    # Local LLM for Memori (vLLM with OpenAI-compatible API)
+    use_local_memori_llm: bool = False
+    memori_llm_url: str = "http://localhost:8004/v1"
+    memori_llm_model: str = "Qwen/Qwen2.5-7B-Instruct"
+
     # Voice Services (local endpoints for POC)
     stt_service_url: str = "http://localhost:8001"
     tts_mcp_url: str = "http://localhost:8002"

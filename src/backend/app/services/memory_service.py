@@ -50,8 +50,13 @@ def get_memori() -> Memori:
         settings = get_settings()
 
         # Configure OpenAI credentials for Memori's Advanced Augmentation
-        # Priority: 1) Azure OpenAI (via compatibility endpoint), 2) Standard OpenAI
-        if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        # Priority: 1) Local vLLM, 2) Azure OpenAI, 3) Standard OpenAI
+        if settings.use_local_memori_llm and settings.memori_llm_url:
+            # Use local vLLM with OpenAI-compatible API
+            os.environ["OPENAI_BASE_URL"] = settings.memori_llm_url
+            os.environ["OPENAI_API_KEY"] = "local"  # vLLM doesn't require auth
+            logger.info(f"Memori using local LLM: {settings.memori_llm_url}")
+        elif settings.azure_openai_endpoint and settings.azure_openai_api_key:
             # Use Azure OpenAI's compatibility endpoint
             base_url = settings.azure_openai_endpoint.rstrip('/') + "/openai/v1/"
             os.environ["OPENAI_BASE_URL"] = base_url
@@ -65,7 +70,7 @@ def get_memori() -> Memori:
         else:
             logger.warning(
                 "No OpenAI credentials configured - Memori memory extraction disabled. "
-                "Set AZURE_OPENAI_ENDPOINT/AZURE_OPENAI_API_KEY or OPENAI_API_KEY."
+                "Set USE_LOCAL_MEMORI_LLM=true, AZURE_OPENAI_ENDPOINT/KEY, or OPENAI_API_KEY."
             )
 
         try:
