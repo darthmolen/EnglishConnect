@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Mic, Square, Volume2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -14,6 +15,7 @@ export function VoiceButton({
   onPress,
   disabled = false,
 }: VoiceButtonProps) {
+  const { t } = useTranslation()
   const isDisabled = disabled || isPlaying
 
   return (
@@ -29,7 +31,7 @@ export function VoiceButton({
           : 'bg-primary text-primary-foreground hover:bg-primary/90',
         isDisabled && 'opacity-50 cursor-not-allowed'
       )}
-      aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+      aria-label={isRecording ? t('voice.stopRecording') : t('voice.startRecording')}
     >
       {isPlaying ? (
         <Volume2 className="h-8 w-8 animate-pulse" />

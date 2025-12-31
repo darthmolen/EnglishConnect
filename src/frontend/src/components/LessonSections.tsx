@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { LessonSection } from '@/types'
@@ -39,41 +40,45 @@ function SectionButton({ title, isActive, onClick }: SectionButtonProps) {
   )
 }
 
-const SECTIONS: { id: LessonSection; title: string }[] = [
-  { id: 'principle', title: 'Learning Principle' },
-  { id: 'goals', title: 'Learning Goals' },
-  { id: 'vocabulary', title: 'Vocabulary' },
-  { id: 'practice', title: 'Practice' },
-]
+const SECTION_IDS: LessonSection[] = ['principle', 'goals', 'vocabulary', 'practice']
 
 export function LessonSections({
   activeSection,
   onSelectSection,
   hasLesson,
 }: LessonSectionsProps) {
+  const { t } = useTranslation()
+
   if (!hasLesson) {
     return (
       <div className="flex h-full items-center justify-center p-4 text-center text-muted-foreground">
-        <p>Select a lesson to view sections</p>
+        <p>{t('lessons.selectToView')}</p>
       </div>
     )
+  }
+
+  const sectionTitles: Record<LessonSection, string> = {
+    principle: t('sections.principle'),
+    goals: t('sections.goals'),
+    vocabulary: t('sections.vocabulary'),
+    practice: t('sections.practice'),
   }
 
   return (
     <div className="flex flex-col">
       <div className="border-b p-3">
         <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
-          Sections
+          {t('lessons.sections')}
         </h3>
       </div>
       <nav className="flex flex-col">
-        {SECTIONS.map((section) => (
+        {SECTION_IDS.map((sectionId) => (
           <SectionButton
-            key={section.id}
-            title={section.title}
-            section={section.id}
-            isActive={activeSection === section.id}
-            onClick={() => onSelectSection(section.id)}
+            key={sectionId}
+            title={sectionTitles[sectionId]}
+            section={sectionId}
+            isActive={activeSection === sectionId}
+            onClick={() => onSelectSection(sectionId)}
           />
         ))}
       </nav>

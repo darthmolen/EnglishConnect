@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, Play, Pause } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AuthenticatedImage } from '@/components/AuthenticatedImage'
@@ -29,6 +30,7 @@ export function PatternsView({
   phaseState,
   onPatternClick,
 }: PatternsViewProps) {
+  const { t } = useTranslation()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -75,7 +77,7 @@ export function PatternsView({
   if (patterns.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>No patterns available for this lesson</p>
+        <p>{t('patterns.empty')}</p>
       </div>
     )
   }
@@ -105,7 +107,7 @@ export function PatternsView({
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                      Pattern {pattern.pattern_number}
+                      {t('patterns.pattern', { number: pattern.pattern_number })}
                     </span>
                     {onPatternClick && (
                       <button
@@ -119,7 +121,7 @@ export function PatternsView({
                         )}
                       >
                         <Play className="h-3 w-3" />
-                        {isCurrent ? 'Practicing' : 'Practice'}
+                        {isCurrent ? t('patterns.practicing') : t('patterns.practice')}
                       </button>
                     )}
                   </div>
@@ -149,7 +151,7 @@ export function PatternsView({
                   {pattern.examples && pattern.examples.length > 0 && (
                     <div className="mt-3 pl-3 border-l-2 border-muted space-y-1.5">
                       <span className="text-xs font-medium text-muted-foreground uppercase">
-                        Examples
+                        {t('patterns.examples')}
                       </span>
                       {pattern.examples.slice(0, 3).map((ex, i) => {
                         const demo = findDemo(pattern.pattern_number, i + 1)

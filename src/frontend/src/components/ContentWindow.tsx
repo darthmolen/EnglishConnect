@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { LessonDetail, LessonSection, LessonPhase, PhaseState } from '@/types'
 import { PrincipleView } from './content/PrincipleView'
@@ -28,12 +29,14 @@ export function ContentWindow({
   onStartConversation,
   className,
 }: ContentWindowProps) {
+  const { t } = useTranslation()
+
   if (!lesson) {
     return (
       <div className={cn('flex items-center justify-center bg-muted/30', className)}>
         <div className="text-center text-muted-foreground">
-          <p className="text-lg font-medium">Select a lesson</p>
-          <p className="text-sm">Choose a lesson from the left to view its content</p>
+          <p className="text-lg font-medium">{t('lessons.selectLesson')}</p>
+          <p className="text-sm">{t('lessons.selectLessonHint')}</p>
         </div>
       </div>
     )

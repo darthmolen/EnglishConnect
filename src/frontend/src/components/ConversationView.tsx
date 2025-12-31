@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MessageBubble } from './MessageBubble'
 import type { ChatMessage, AgentMode } from '@/types'
 
@@ -9,10 +10,11 @@ interface ConversationViewProps {
 
 // Agent mode separator component
 function AgentSeparator({ mode }: { mode: AgentMode }) {
+  const { t } = useTranslation()
   const labels: Record<AgentMode, string> = {
-    lesson: 'Switched to Teacher',
-    demo: 'Switched to Demo',
-    conversation: 'Switched to Practice Partner',
+    lesson: t('agents.switchedToTeacher'),
+    demo: t('agents.switchedToDemo'),
+    conversation: t('agents.switchedToPartner'),
   }
 
   return (
@@ -55,6 +57,7 @@ export function ConversationView({
   messages,
   isLoading = false,
 }: ConversationViewProps) {
+  const { t } = useTranslation()
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when new messages arrive
@@ -67,7 +70,7 @@ export function ConversationView({
   if (messages.length === 0 && !isLoading) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>Select a lesson and start practicing!</p>
+        <p>{t('conversation.emptyState')}</p>
       </div>
     )
   }
@@ -89,7 +92,7 @@ export function ConversationView({
       {isLoading && (
         <div className="flex justify-start">
           <div className="bg-muted rounded-2xl px-4 py-2">
-            <span className="animate-pulse">Thinking...</span>
+            <span className="animate-pulse">{t('conversation.thinking')}</span>
           </div>
         </div>
       )}

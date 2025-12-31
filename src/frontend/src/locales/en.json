@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "EnglishConnect",
+    "signInPrompt": "Sign in to start practicing English",
+    "lessonsSubtitle": "EC1 Lessons",
+    "welcome": "Welcome",
+    "selectLessonPrompt": "Select a lesson to start practicing",
+    "language": "Language",
+    "loading": "Loading..."
+  },
+  "auth": {
+    "signIn": "Sign in with Microsoft",
+    "signingIn": "Signing in...",
+    "signOut": "Sign out"
+  },
+  "lessons": {
+    "loading": "Loading lessons...",
+    "sections": "Sections",
+    "selectToView": "Select a lesson to view sections",
+    "selectLesson": "Select a lesson",
+    "selectLessonHint": "Choose a lesson from the left to view its content"
+  },
+  "sections": {
+    "principle": "Learning Principle",
+    "goals": "Learning Goals",
+    "vocabulary": "Vocabulary",
+    "practice": "Practice",
+    "patterns": "Patterns"
+  },
+  "conversation": {
+    "transcript": "Transcript",
+    "hide": "Hide",
+    "title": "Conversation",
+    "placeholder": "Type a message or press the mic...",
+    "selectFirst": "Select a lesson first",
+    "clearTitle": "Clear conversation",
+    "emptyState": "Select a lesson and start practicing!",
+    "thinking": "Thinking..."
+  },
+  "agents": {
+    "teacher": "Teacher",
+    "demo": "Demo",
+    "partner": "Partner",
+    "switchedToTeacher": "Switched to Teacher",
+    "switchedToDemo": "Switched to Demo",
+    "switchedToPartner": "Switched to Practice Partner"
+  },
+  "voice": {
+    "startRecording": "Start recording",
+    "stopRecording": "Stop recording"
+  },
+  "goals": {
+    "empty": "No learning goals available for this lesson",
+    "progress": "Progress",
+    "completed": "{{completed}} of {{total}} completed",
+    "iCan": "I can:"
+  },
+  "principle": {
+    "empty": "No learning principle available for this lesson",
+    "ponder": "Ponder"
+  },
+  "vocabulary": {
+    "empty": "No vocabulary available for this lesson"
+  },
+  "practice": {
+    "empty": "No practice content available for this lesson",
+    "playingIntro": "Playing intro...",
+    "skip": "Skip",
+    "startConversation": "Start the Conversation"
+  },
+  "patterns": {
+    "empty": "No patterns available for this lesson",
+    "pattern": "Pattern {{number}}",
+    "practice": "Practice",
+    "practicing": "Practicing",
+    "examples": "Examples"
+  },
+  "demo": {
+    "listen": "Hear the conversation patterns",
+    "listenSubtitle": "Listen to the English conversations",
+    "example": "example",
+    "examples": "examples",
+    "repeat": "Repeat",
+    "next": "Next",
+    "questions": "Questions",
+    "finished": "Finished"
+  },
+  "image": {
+    "unavailable": "Image unavailable",
+    "loading": "Loading..."
+  }
+}

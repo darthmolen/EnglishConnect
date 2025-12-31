@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronRight, Check, Volume2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { LessonDetail, LessonPhase, PhaseState } from '@/types'
@@ -46,6 +47,7 @@ export function LessonMaterialPanel({
   currentPhase,
   phaseState,
 }: LessonMaterialPanelProps) {
+  const { t } = useTranslation()
   const vocabIndex = phaseState?.vocab_index ?? 0
   const patternIndex = phaseState?.pattern_index ?? 0
   const isVocabPhase = currentPhase?.phase_type === 'vocabulary'
@@ -85,7 +87,7 @@ export function LessonMaterialPanel({
         )}
 
         {/* Vocabulary */}
-        <CollapsibleSection title="Vocabulary" defaultOpen={true}>
+        <CollapsibleSection title={t('sections.vocabulary')} defaultOpen={true}>
           <div className="space-y-3">
             {/* Group vocabulary by category */}
             {(() => {
@@ -169,7 +171,7 @@ export function LessonMaterialPanel({
         </CollapsibleSection>
 
         {/* Q&A Patterns */}
-        <CollapsibleSection title="Patterns" defaultOpen={true}>
+        <CollapsibleSection title={t('sections.patterns')} defaultOpen={true}>
           <div className="space-y-3">
             {lesson.patterns.map((pattern, index) => {
               const isCurrent = isPatternPhase && index === patternIndex
@@ -216,7 +218,7 @@ export function LessonMaterialPanel({
 
         {/* Evaluation Criteria */}
         {lesson.evaluation_criteria.length > 0 && (
-          <CollapsibleSection title="Learning Goals" defaultOpen={false}>
+          <CollapsibleSection title={t('sections.goals')} defaultOpen={false}>
             <ul className="space-y-1">
               {lesson.evaluation_criteria.map((criterion, index) => (
                 <li

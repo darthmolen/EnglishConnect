@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ConversationView } from './ConversationView'
@@ -16,6 +17,8 @@ export function ConversationDrawer({
   messages,
   isLoading,
 }: ConversationDrawerProps) {
+  const { t } = useTranslation()
+
   return (
     <>
       {/* Toggle button - hidden on mobile */}
@@ -33,7 +36,7 @@ export function ConversationDrawer({
       >
         <MessageSquare className="h-4 w-4" />
         <span className="text-sm font-medium">
-          {isOpen ? 'Hide' : 'Transcript'}
+          {isOpen ? t('conversation.hide') : t('conversation.transcript')}
         </span>
         {messages.length > 0 && !isOpen && (
           <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-xs">
@@ -54,7 +57,7 @@ export function ConversationDrawer({
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between border-b p-3 shrink-0">
-          <h3 className="font-semibold text-sm">Conversation</h3>
+          <h3 className="font-semibold text-sm">{t('conversation.title')}</h3>
           <button
             type="button"
             onClick={onToggle}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 
@@ -14,10 +15,12 @@ export function GoalsView({
   completedGoals,
   onToggleGoal,
 }: GoalsViewProps) {
+  const { t } = useTranslation()
+
   if (criteria.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>No learning goals available for this lesson</p>
+        <p>{t('goals.empty')}</p>
       </div>
     )
   }
@@ -31,9 +34,9 @@ export function GoalsView({
       {/* Progress indicator */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="font-medium">Progress</span>
+          <span className="font-medium">{t('goals.progress')}</span>
           <span className="text-muted-foreground">
-            {completedCount} of {totalCount} completed
+            {t('goals.completed', { completed: completedCount, total: totalCount })}
           </span>
         </div>
         <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -47,7 +50,7 @@ export function GoalsView({
       {/* Goals list */}
       <div className="space-y-2">
         <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          I can:
+          {t('goals.iCan')}
         </h4>
         <ul className="space-y-1">
           {criteria.map((goal, index) => {

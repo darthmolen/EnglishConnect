@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 interface PrincipleViewProps {
@@ -13,12 +14,13 @@ export function PrincipleView({
   fullContent,
   ponderQuestions,
 }: PrincipleViewProps) {
+  const { t } = useTranslation()
   const displayContent = fullContent || content
 
   if (!title && !displayContent && ponderQuestions.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>No learning principle available for this lesson</p>
+        <p>{t('principle.empty')}</p>
       </div>
     )
   }
@@ -53,7 +55,7 @@ export function PrincipleView({
       {ponderQuestions.length > 0 && (
         <div className="rounded-lg bg-primary/5 p-4 border border-primary/20">
           <h4 className="text-sm font-semibold uppercase tracking-wide text-primary mb-3">
-            Ponder
+            {t('principle.ponder')}
           </h4>
           <ul className="space-y-2">
             {ponderQuestions.map((question, i) => (

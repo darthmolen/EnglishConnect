@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 
@@ -20,6 +21,7 @@ export function AuthenticatedImage({
   className,
   loading = 'lazy',
 }: AuthenticatedImageProps) {
+  const { t } = useTranslation()
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [error, setError] = useState(false)
   const { getAccessToken } = useAuthStore()
@@ -71,7 +73,7 @@ export function AuthenticatedImage({
   if (error) {
     return (
       <div className={cn('flex items-center justify-center bg-muted text-muted-foreground text-sm', className)}>
-        Image unavailable
+        {t('image.unavailable')}
       </div>
     )
   }
@@ -79,7 +81,7 @@ export function AuthenticatedImage({
   if (!blobUrl) {
     return (
       <div className={cn('flex items-center justify-center bg-muted animate-pulse', className)}>
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">{t('image.loading')}</span>
       </div>
     )
   }

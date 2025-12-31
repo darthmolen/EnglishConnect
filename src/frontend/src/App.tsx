@@ -1,4 +1,5 @@
 import { useState, useEffect, type KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Send, Trash2 } from 'lucide-react'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
@@ -15,6 +16,7 @@ import { useConversationStore } from '@/stores/conversationStore'
 import { cn } from '@/lib/utils'
 
 function AppContent() {
+  const { t, i18n } = useTranslation()
   const { isAuthenticated, isLoading: authLoading, checkAuth } = useAuthStore()
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
@@ -76,7 +78,7 @@ function AppContent() {
   if (authLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('app.loading')}</div>
       </div>
     )
   }
@@ -84,8 +86,8 @@ function AppContent() {
   if (!isAuthenticated) {
     return (
       <div className="flex h-screen items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">EnglishConnect</h1>
-        <p className="text-muted-foreground">Sign in to start practicing English</p>
+        <h1 className="text-2xl font-bold">{t('app.title')}</h1>
+        <p className="text-muted-foreground">{t('app.signInPrompt')}</p>
         <LoginButton />
       </div>
     )
@@ -100,8 +102,8 @@ function AppContent() {
       {/* Column 1: Lessons (narrower) */}
       <aside className="w-64 shrink-0 border-r bg-card">
         <header className="border-b p-3">
-          <h1 className="text-lg font-bold">EnglishConnect</h1>
-          <p className="text-xs text-muted-foreground">EC1 Lessons</p>
+          <h1 className="text-lg font-bold">{t('app.title')}</h1>
+          <p className="text-xs text-muted-foreground">{t('app.lessonsSubtitle')}</p>
         </header>
         <div className="h-[calc(100vh-65px)] overflow-y-auto">
           <LessonList
@@ -125,23 +127,21 @@ function AppContent() {
       <main className="flex flex-1 flex-col min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between border-b px-4 py-2 shrink-0">
-          {/* Instruction Language Toggle */}
+          {/* Language Dropdown */}
           <div className="flex items-center gap-2 shrink-0 mr-4">
-            <span className="text-xs text-muted-foreground">Instruction:</span>
-            <button
-              type="button"
-              onClick={() => setInstructionLanguage(instructionLanguage === 'es' ? 'en' : 'es')}
-              className={cn(
-                'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors',
-                'border hover:bg-accent',
-                instructionLanguage === 'es' ? 'bg-primary/10 text-primary border-primary' : 'bg-muted'
-              )}
-              title="Toggle instruction language"
+            <span className="text-xs text-muted-foreground">{t('app.language')}:</span>
+            <select
+              value={instructionLanguage}
+              onChange={(e) => {
+                const newLang = e.target.value as 'en' | 'es';
+                setInstructionLanguage(newLang);
+                i18n.changeLanguage(newLang);
+              }}
+              className="rounded-md border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <span className={cn(instructionLanguage === 'es' && 'font-bold')}>ES</span>
-              <span className="text-muted-foreground">/</span>
-              <span className={cn(instructionLanguage === 'en' && 'font-bold')}>EN</span>
-            </button>
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
           </div>
 
           <div className="flex-1 min-w-0">
@@ -158,9 +158,9 @@ function AppContent() {
               </div>
             ) : (
               <div>
-                <h2 className="text-base font-semibold">Welcome</h2>
+                <h2 className="text-base font-semibold">{t('app.welcome')}</h2>
                 <p className="text-xs text-muted-foreground">
-                  Select a lesson to start practicing
+                  {t('app.selectLessonPrompt')}
                 </p>
               </div>
             )}
@@ -175,7 +175,7 @@ function AppContent() {
                   'hover:bg-destructive/10 hover:text-destructive',
                   'focus:outline-none focus:ring-2 focus:ring-ring'
                 )}
-                title="Clear conversation"
+                title={t('conversation.clearTitle')}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -222,8 +222,8 @@ function AppContent() {
                 onKeyDown={handleKeyDown}
                 placeholder={
                   selectedLessonNumber
-                    ? 'Type a message or press the mic...'
-                    : 'Select a lesson first'
+                    ? t('conversation.placeholder')
+                    : t('conversation.selectFirst')
                 }
                 disabled={!selectedLessonNumber || isLoading}
                 className={cn(

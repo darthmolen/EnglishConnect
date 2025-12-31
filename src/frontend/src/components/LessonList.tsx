@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { LessonCard } from './LessonCard'
 import type { LessonSummary } from '@/types'
 
@@ -12,10 +13,12 @@ export function LessonList({
   selectedLessonNumber,
   onSelectLesson,
 }: LessonListProps) {
+  const { t } = useTranslation()
+
   if (lessons.length === 0) {
     return (
       <div className="p-4 text-center text-muted-foreground">
-        Loading lessons...
+        {t('lessons.loading')}
       </div>
     )
   }

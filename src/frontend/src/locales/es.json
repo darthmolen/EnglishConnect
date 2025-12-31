@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "EnglishConnect",
+    "signInPrompt": "Inicia sesión para practicar inglés",
+    "lessonsSubtitle": "Lecciones EC1",
+    "welcome": "Bienvenido",
+    "selectLessonPrompt": "Selecciona una lección para comenzar",
+    "language": "Idioma",
+    "loading": "Cargando..."
+  },
+  "auth": {
+    "signIn": "Iniciar sesión con Microsoft",
+    "signingIn": "Iniciando sesión...",
+    "signOut": "Cerrar sesión"
+  },
+  "lessons": {
+    "loading": "Cargando lecciones...",
+    "sections": "Secciones",
+    "selectToView": "Selecciona una lección para ver secciones",
+    "selectLesson": "Selecciona una lección",
+    "selectLessonHint": "Elige una lección de la izquierda para ver su contenido"
+  },
+  "sections": {
+    "principle": "Principio de Aprendizaje",
+    "goals": "Metas de Aprendizaje",
+    "vocabulary": "Vocabulario",
+    "practice": "Práctica",
+    "patterns": "Patrones"
+  },
+  "conversation": {
+    "transcript": "Transcripción",
+    "hide": "Ocultar",
+    "title": "Conversación",
+    "placeholder": "Escribe un mensaje o presiona el micrófono...",
+    "selectFirst": "Primero selecciona una lección",
+    "clearTitle": "Borrar conversación",
+    "emptyState": "¡Selecciona una lección y comienza a practicar!",
+    "thinking": "Pensando..."
+  },
+  "agents": {
+    "teacher": "Maestro",
+    "demo": "Demostración",
+    "partner": "Compañero",
+    "switchedToTeacher": "Cambió a Maestro",
+    "switchedToDemo": "Cambió a Demostración",
+    "switchedToPartner": "Cambió a Compañero de Práctica"
+  },
+  "voice": {
+    "startRecording": "Iniciar grabación",
+    "stopRecording": "Detener grabación"
+  },
+  "goals": {
+    "empty": "No hay metas de aprendizaje disponibles para esta lección",
+    "progress": "Progreso",
+    "completed": "{{completed}} de {{total}} completados",
+    "iCan": "Yo puedo:"
+  },
+  "principle": {
+    "empty": "No hay principio de aprendizaje disponible para esta lección",
+    "ponder": "Reflexiona"
+  },
+  "vocabulary": {
+    "empty": "No hay vocabulario disponible para esta lección"
+  },
+  "practice": {
+    "empty": "No hay contenido de práctica disponible para esta lección",
+    "playingIntro": "Reproduciendo intro...",
+    "skip": "Saltar",
+    "startConversation": "Comenzar la Conversación"
+  },
+  "patterns": {
+    "empty": "No hay patrones disponibles para esta lección",
+    "pattern": "Patrón {{number}}",
+    "practice": "Practicar",
+    "practicing": "Practicando",
+    "examples": "Ejemplos"
+  },
+  "demo": {
+    "listen": "Escucha los patrones de conversación",
+    "listenSubtitle": "Escucha las conversaciones en inglés",
+    "example": "ejemplo",
+    "examples": "ejemplos",
+    "repeat": "Repetir",
+    "next": "Siguiente",
+    "questions": "Preguntas",
+    "finished": "Terminado"
+  },
+  "image": {
+    "unavailable": "Imagen no disponible",
+    "loading": "Cargando..."
+  }
+}

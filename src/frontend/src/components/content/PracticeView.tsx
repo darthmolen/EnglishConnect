@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Play, SkipForward } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
 import { DemoPlayer } from './DemoPlayer'
@@ -32,6 +33,7 @@ export function PracticeView({
   onPatternClick,
   onStartConversation,
 }: PracticeViewProps) {
+  const { t } = useTranslation()
   const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
   const [introUrl, setIntroUrl] = useState<string | null>(null)
   const [isPlayingIntro, setIsPlayingIntro] = useState(false)
@@ -113,7 +115,7 @@ export function PracticeView({
   if (!hasVocabulary && !hasPatterns) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>No practice content available for this lesson</p>
+        <p>{t('practice.empty')}</p>
       </div>
     )
   }
@@ -128,7 +130,7 @@ export function PracticeView({
         <div className="px-4 py-2 border-b bg-primary/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium">Playing intro...</span>
+            <span className="text-sm font-medium">{t('practice.playingIntro')}</span>
           </div>
           <button
             type="button"
@@ -140,7 +142,7 @@ export function PracticeView({
             )}
           >
             <SkipForward className="h-3 w-3" />
-            <span>Skip</span>
+            <span>{t('practice.skip')}</span>
           </button>
         </div>
       )}
@@ -168,7 +170,7 @@ export function PracticeView({
             )}
           >
             <Play className="h-5 w-5" />
-            <span>Start the Conversation / Comenzar la Conversación</span>
+            <span>{t('practice.startConversation')}</span>
           </button>
         </div>
       )}

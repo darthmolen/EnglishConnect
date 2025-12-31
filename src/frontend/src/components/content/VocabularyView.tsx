@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Volume2, Check, Play, Pause } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { VocabularyItem, PhaseState } from '@/types'
@@ -38,6 +39,7 @@ export function VocabularyView({
   vocabIndex = 0,
   phaseState,
 }: VocabularyViewProps) {
+  const { t } = useTranslation()
   const [vocabAudio, setVocabAudio] = useState<VocabAudioMetadata[]>([])
   const [playingWord, setPlayingWord] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -82,7 +84,7 @@ export function VocabularyView({
   if (vocabulary.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <p>No vocabulary available for this lesson</p>
+        <p>{t('vocabulary.empty')}</p>
       </div>
     )
   }

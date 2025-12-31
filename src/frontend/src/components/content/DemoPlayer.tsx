@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Play, Pause, Volume2, RotateCcw, SkipForward, MessageCircle, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useConversationStore } from '@/stores/conversationStore'
@@ -18,6 +19,7 @@ interface DemoPlayerProps {
 }
 
 export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
+  const { t } = useTranslation()
   const { setAgentMode } = useConversationStore()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -162,18 +164,18 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
           <div className="flex items-center gap-2">
             <Volume2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="text-sm font-medium truncate">
-              Hear the conversation patterns
+              {t('demo.listen')}
             </span>
           </div>
           <span className="text-xs text-muted-foreground">
-            Escucha a las conversaciones en inglés
+            {t('demo.listenSubtitle')}
           </span>
         </div>
 
         {/* Demo count and duration */}
         {!isLoading && demos.length > 0 && (
           <div className="text-xs text-muted-foreground text-right flex-shrink-0">
-            <div>{demos.length} example{demos.length !== 1 ? 's' : ''}</div>
+            <div>{demos.length} {demos.length !== 1 ? t('demo.examples') : t('demo.example')}</div>
             {formattedDuration && <div>{formattedDuration}</div>}
           </div>
         )}
@@ -198,7 +200,7 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
             )}
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            Repeat
+            {t('demo.repeat')}
           </button>
 
           {currentIndex < demos.length - 1 && (
@@ -211,7 +213,7 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
               )}
             >
               <SkipForward className="h-3.5 w-3.5" />
-              Next
+              {t('demo.next')}
             </button>
           )}
 
@@ -225,7 +227,7 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
             )}
           >
             <MessageCircle className="h-3.5 w-3.5" />
-            Questions
+            {t('demo.questions')}
           </button>
 
           <button
@@ -238,7 +240,7 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
             )}
           >
             <Check className="h-3.5 w-3.5" />
-            Finished
+            {t('demo.finished')}
           </button>
         </div>
       )}
