@@ -1,23 +1,23 @@
 # Agent Conversation Workflow
 
-This document describes the data flow for voice-enabled agent conversations in EnglishConnect. Unlike traditional chatbots where text flows directly to the user, our agent controls TTS as a tool, deciding what to speak, in which language, and when.
+This document describes the data flow for voice-enabled agent conversations in EnglishConnect. The agent controls TTS as a tool, deciding what to speak, in which language, and when.
 
 ## Architecture Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           FRONTEND (React SPA)                              │
 │                                                                             │
 │  ┌─────────────┐    ┌──────────────────┐    ┌─────────────────────────┐    │
 │  │  Microphone │───▶│  STT Service     │───▶│  Text Message           │    │
-│  │  (Browser)  │    │  (faster-whisper)│    │  + activeSection        │    │
+│  │  (Browser)  │    │  (faster-whisper)│    │  + mode + exchange_count│    │
 │  └─────────────┘    └──────────────────┘    └───────────┬─────────────┘    │
 │                                                         │                   │
 │                                                         ▼                   │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                      API Request                                     │   │
-│  │  POST /api/lesson/conversation                                       │   │
-│  │  { message, lesson_number, history, section }                        │   │
+│  │  POST /api/practice/conversation                                     │   │
+│  │  { message, lesson_number, mode, exchange_count, history }           │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
 │                                    │                                        │
 └────────────────────────────────────┼────────────────────────────────────────┘
@@ -27,13 +27,12 @@ This document describes the data flow for voice-enabled agent conversations in E
 │                           BACKEND (FastAPI)                                 │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  lesson.py router                                                    │   │
+│  │  conversation.py router                                              │   │
 │  │                                                                      │   │
-│  │  1. Load lesson content from Content-MCP                             │   │
-│  │  2. Get/create user progress                                         │   │
-│  │  3. Override phase if section parameter provided                     │   │
-│  │  4. Build system prompt with phase-specific context                  │   │
-│  │  5. Call LLM agent with tool definitions                             │   │
+│  │  1. Load lesson content from database                                │   │
+│  │  2. Create UnifiedTeachingAgent with mode (help/practice)            │   │
+│  │  3. Build system prompt with mode-specific behavior                  │   │
+│  │  4. Call LLM agent with tool definitions                             │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
 │                                    │                                        │
 │                                    ▼                                        │
@@ -44,49 +43,41 @@ This document describes the data flow for voice-enabled agent conversations in E
 │  │                                                                      │   │
 │  │  ┌─────────────────────────────────────────────────────────────┐    │   │
 │  │  │  LLM (GPT-4o-mini) receives:                                 │    │   │
-│  │  │  - System prompt (phase context, lesson content)             │    │   │
+│  │  │  - System prompt (mode context, lesson content)              │    │   │
 │  │  │  - User message (transcribed speech)                         │    │   │
 │  │  │  - Conversation history                                      │    │   │
-│  │  │  - Available tools: speak(), advance_phase(), record_attempt()│   │   │
+│  │  │  - Available tools: speak(), get_teaching_help(),            │    │   │
+│  │  │                     record_attempt()                         │    │   │
 │  │  └─────────────────────────────────────────────────────────────┘    │   │
 │  │                         │                                            │   │
 │  │                         ▼                                            │   │
 │  │  ┌─────────────────────────────────────────────────────────────┐    │   │
 │  │  │  LLM decides to call tools:                                  │    │   │
 │  │  │                                                              │    │   │
-│  │  │  speak(text="Hola, el patrón es...", language="es")         │    │   │
+│  │  │  speak(text="Hello! Let's practice.", language="en")        │    │   │
 │  │  │       │                                                      │    │   │
 │  │  │       └──▶ TTS-MCP generates audio_base64                    │    │   │
 │  │  │       └──▶ Returns: { spoken: true, text, language, audio }  │    │   │
 │  │  │                                                              │    │   │
-│  │  │  speak(text="Hello, the pattern is...", language="en")      │    │   │
+│  │  │  get_teaching_help(query="family vocabulary")               │    │   │
 │  │  │       │                                                      │    │   │
-│  │  │       └──▶ TTS-MCP generates audio_base64                    │    │   │
-│  │  │       └──▶ Returns: { spoken: true, text, language, audio }  │    │   │
+│  │  │       └──▶ Returns vocabulary and patterns from lesson      │    │   │
 │  │  └─────────────────────────────────────────────────────────────┘    │   │
 │  │                         │                                            │   │
 │  │                         ▼                                            │   │
 │  │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│  │  │  LLM returns final response (no more tool calls):            │    │   │
-│  │  │                                                              │    │   │
-│  │  │  agent_result = {                                            │    │   │
-│  │  │    "text": "Final LLM message (may differ from spoken)",     │    │   │
-│  │  │    "tool_calls": [...],                                      │    │   │
-│  │  │    "tool_results": [                                         │    │   │
-│  │  │      { tool: "speak", result: { text, language, audio } },   │    │   │
-│  │  │      { tool: "speak", result: { text, language, audio } }    │    │   │
-│  │  │    ]                                                         │    │   │
-│  │  │  }                                                           │    │   │
+│  │  │  LLM returns final response (no more tool calls)            │    │   │
 │  │  └─────────────────────────────────────────────────────────────┘    │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
 │                                    │                                        │
 │                                    ▼                                        │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  lesson.py - Response Assembly                                       │   │
+│  │  conversation.py - Response Assembly                                 │   │
 │  │                                                                      │   │
-│  │  1. Collect all audio_chunks from speak() tool results              │   │
-│  │  2. Build response_text from all audio_chunks (joined with space)   │   │
-│  │  3. Return LessonConversationResponse with both                     │   │
+│  │  1. Extract audio from speak() tool result (prefers English)        │   │
+│  │  2. Use spoken text as response text                                │   │
+│  │  3. Auto-synthesize if agent didn't call speak()                    │   │
+│  │  4. Return ConversationResponse with text + audio                   │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
 │                                    │                                        │
 └────────────────────────────────────┼────────────────────────────────────────┘
@@ -96,13 +87,11 @@ This document describes the data flow for voice-enabled agent conversations in E
 │                           API Response                                      │
 │                                                                             │
 │  {                                                                          │
-│    "text": "Hola, el patrón es... Hello, the pattern is...",               │
-│    "audio_chunks": [                                                        │
-│      { "text": "Hola, el patrón es...", "language": "es", "audio_base64" }, │
-│      { "text": "Hello, the pattern is...", "language": "en", "audio_base64"}│
-│    ],                                                                       │
-│    "phase": { ... },                                                        │
-│    "phase_state": { ... }                                                   │
+│    "text": "Hello! Let's practice.",                                        │
+│    "audio_base64": "...",                                                   │
+│    "audio_format": "wav",                                                   │
+│    "language": "en",                                                        │
+│    "lesson_number": 5                                                       │
 │  }                                                                          │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -114,67 +103,42 @@ This document describes the data flow for voice-enabled agent conversations in E
 │  useConversation.ts:                                                        │
 │                                                                             │
 │  1. Add message to conversation:                                            │
-│     addMessage({ role: 'assistant', content: response.text })              │
-│     Shows: "Hola, el patrón es... Hello, the pattern is..."                │
+│     addMessage({ role: 'assistant', content: response.text })               │
 │                                                                             │
-│  2. Play audio chunks sequentially:                                         │
-│     for (chunk of response.audio_chunks) {                                  │
-│       await playAudio(chunk.audio_base64)  // Waits for each to finish     │
-│     }                                                                       │
-│     Plays: Spanish audio, then English audio                                │
+│  2. Play audio:                                                             │
+│     await playAudio(response.audio_base64)                                  │
+│                                                                             │
+│  3. Increment exchange count (for practice mode flip detection)             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Key Concepts
 
-### 1. Agent Controls TTS (Not a Pipeline)
+### 1. Unified Teaching Agent with Two Modes
+
+Single agent handles both pages with different behaviors:
+
+| Mode       | Page       | Behavior                                          |
+|------------|------------|---------------------------------------------------|
+| `help`     | Vocabulary | Answer questions only, use `get_teaching_help`    |
+| `practice` | Practice   | Lead conversation, flip roles after 3-5 exchanges |
+
+### 2. Agent Controls TTS (Not a Pipeline)
 
 This is NOT a traditional pipeline where text automatically flows through TTS. The LLM agent has a `speak()` tool and decides:
+
 - **What** to say (the text)
 - **Which language** to use (en/es)
-- **When** to speak (can speak multiple times)
 - **Whether** to speak at all (can just return text)
 
-### 2. Two Different "Text" Values
+### 3. Exchange Count for Role Flipping
 
-There are two distinct text values in the response:
+In practice mode, the frontend tracks `exchange_count`. After 3-5 exchanges, the agent prompts the student to ask questions instead of just responding.
 
-| Value | Source | Purpose |
-|-------|--------|---------|
-| `agent_result["text"]` | LLM's final message after tool calls | What the LLM "says" as text (may not be spoken) |
-| `tool_results[].result.text` | Text passed to each speak() call | What was actually spoken as audio |
+### 4. Agentic RAG via get_teaching_help
 
-**Important**: The `response.text` sent to frontend is the **joined spoken texts**, not the LLM's final text message. This ensures the conversation transcript accurately reflects what was heard.
-
-### 3. Audio Chunk Accumulation
-
-When the agent calls speak() multiple times:
-
-```python
-# Old (buggy): Only kept last audio
-for tool_result in tool_results:
-    spoken_text = tool_result["text"]  # Overwritten each time!
-
-# New (fixed): Accumulate all chunks
-audio_chunks = []
-for tool_result in tool_results:
-    audio_chunks.append(AudioChunkSchema(...))
-
-response_text = " ".join(chunk.text for chunk in audio_chunks)
-```
-
-### 4. Sequential Audio Playback
-
-Frontend plays audio chunks sequentially, waiting for each to finish:
-
-```typescript
-for (const chunk of response.audio_chunks) {
-  await playAudio(chunk.audio_base64)  // Promise resolves when audio ENDS
-}
-```
-
-This ensures proper pacing for bilingual responses (Spanish first, then English).
+The agent can retrieve vocabulary, patterns, and exercises from the current lesson context using the `get_teaching_help` tool. This enables context-aware responses.
 
 ## Tool Definitions
 
@@ -192,14 +156,14 @@ This ensures proper pacing for bilingual responses (Spanish first, then English)
 }
 ```
 
-### advance_phase()
+### get_teaching_help()
 
 ```json
 {
-  "name": "advance_phase",
-  "description": "Move to the next phase or item in the lesson.",
+  "name": "get_teaching_help",
+  "description": "Retrieve vocabulary, patterns, or exercises from the lesson.",
   "parameters": {
-    "reason": "Brief reason for advancing"
+    "query": "What to search for (e.g., 'family vocabulary', 'greeting patterns')"
   }
 }
 ```
@@ -219,18 +183,19 @@ This ensures proper pacing for bilingual responses (Spanish first, then English)
 
 ## Services Involved
 
-| Service | Port | Role |
-|---------|------|------|
-| Frontend | 5173 | React SPA, captures audio, displays conversation |
-| Backend | 8000 | FastAPI, orchestrates agent, assembles responses |
-| STT | 8001 | faster-whisper, transcribes speech to text |
-| TTS-MCP | stdio | VibeVoice, generates speech from text |
-| Content-MCP | stdio | Serves lesson content (vocabulary, patterns) |
+| Service     | Port  | Role                                            |
+|-------------|-------|-------------------------------------------------|
+| Frontend    | 5173  | React SPA, captures audio, displays chat        |
+| Backend     | 8000  | FastAPI, orchestrates agent, assembles response |
+| STT         | 8001  | faster-whisper, transcribes speech to text      |
+| TTS-MCP     | stdio | VibeVoice, generates speech from text           |
+| Content-MCP | stdio | Serves lesson content (vocabulary, patterns)    |
 
 ## Related Files
 
-- `src/backend/app/routers/lesson.py` - Main conversation endpoint
-- `src/backend/app/services/azure_openai.py` - Agent with tool calling
-- `src/backend/app/services/tool_handlers.py` - TTS integration
+- `src/backend/app/routers/conversation.py` - Unified conversation endpoint
+- `src/backend/app/agents/unified_teaching_agent.py` - Agent with mode-based prompts
+- `src/backend/app/services/azure_openai.py` - LLM with tool calling
+- `src/backend/app/services/tool_handlers.py` - Tool implementations
 - `src/frontend/src/hooks/useConversation.ts` - Response handling
-- `src/frontend/src/hooks/useAudioPlayer.ts` - Audio playback
+- `src/frontend/src/stores/conversationStore.ts` - State management

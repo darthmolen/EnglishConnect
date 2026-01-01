@@ -38,12 +38,17 @@ Review available skills in `.claude/skills/` and apply relevant methodologies ba
 ```
 src/                      # All source code
 ├── backend/              # FastAPI main application (port 8000)
+│   └── app/
+│       ├── agents/       # UnifiedTeachingAgent (single agent, two modes)
+│       ├── prompts/agent/  # Agent prompts (base, mode_help, mode_practice, tools)
+│       ├── routers/      # API endpoints (/api/practice/conversation)
+│       └── services/     # Business logic, tool handlers
 ├── services/
 │   ├── stt/              # Speech-to-Text (faster-whisper, port 8001)
 │   ├── tts-mcp/          # Text-to-Speech MCP server (VibeVoice)
 │   └── content-mcp/      # Lesson content MCP server
 ├── tools/                # PDF conversion, content ingestion
-└── frontend/             # React SPA (planned)
+└── frontend/             # React SPA (Vite + shadcn/ui)
 
 tests/                    # All tests
 ├── unit/                 # Unit tests
@@ -91,16 +96,31 @@ python -m pytest tests/
 
 - Phase 1: Foundation + Voice Stack (complete)
 - Phase 2: STT Streaming Harness (complete)
-- Phase 2B: Test Infrastructure + TDD (in progress)
-- Phase 3: React SPA Conversation Partner (in progress)
+- Phase 2B: Test Infrastructure + TDD (complete)
+- Phase 3: React SPA + Unified Teaching Agent (complete)
 - Phase 4+: Auth, Progress Tracking, Production (backlog)
+
+## Agent Architecture
+
+Single `UnifiedTeachingAgent` with two modes (see ADR-005):
+
+| Mode       | Page       | Behavior                                             |
+|------------|------------|------------------------------------------------------|
+| `help`     | Vocabulary | Answer questions only, use `get_teaching_help`       |
+| `practice` | Practice   | Lead conversation, flip roles after 3-5 exchanges    |
+
+**API Endpoint**: `POST /api/practice/conversation`
+
+**Tools**: `speak`, `get_teaching_help`, `record_attempt`
 
 ## Key Files
 
+- `src/backend/app/agents/unified_teaching_agent.py` - Single teaching agent
+- `src/backend/app/routers/conversation.py` - Unified conversation endpoint
+- `src/backend/app/prompts/agent/` - Agent prompts (base, modes, tools)
 - `src/services/stt/server.py` - STT FastAPI server
-- `src/services/stt/vad.py` - Voice Activity Detection
 - `src/services/tts-mcp/server.py` - TTS MCP server
-- `documentation/architecture.md` - Full architecture details
+- `documentation/ADR/ADR-005-unified-teaching-agent.md` - Architecture decision
 
 ## Performance Targets
 

@@ -1,6 +1,6 @@
 # EnglishConnect Architecture
 
-**Last Updated**: Phase 2 Complete (STT + VAD)
+**Last Updated**: Phase 3 Complete (Unified Teaching Agent)
 
 ## System Overview
 
@@ -237,30 +237,39 @@ python test_streaming.py --continuous --threshold 0.3 --min-silence 300 --langua
 ## File Structure
 
 ```
-services/
-├── stt/                          # Speech-to-Text
-│   ├── server.py                 # FastAPI server
-│   ├── vad.py                    # Voice Activity Detection
-│   ├── test_streaming.py         # Test harness
-│   ├── start.sh                  # Startup script
-│   ├── .env                      # Configuration
-│   ├── requirements.txt
-│   └── Dockerfile
+src/
+├── backend/                      # FastAPI main application
+│   └── app/
+│       ├── agents/
+│       │   └── unified_teaching_agent.py  # Single agent, two modes
+│       ├── prompts/agent/        # Agent prompts
+│       │   ├── base.md           # Core persona
+│       │   ├── mode_help.md      # Vocabulary page behavior
+│       │   ├── mode_practice.md  # Practice page behavior
+│       │   └── tools.md          # Tool usage instructions
+│       ├── routers/
+│       │   └── conversation.py   # POST /api/practice/conversation
+│       └── services/
+│           ├── azure_openai.py   # LLM with tool calling
+│           └── tool_handlers.py  # speak, get_teaching_help, record_attempt
 │
-├── tts-mcp/                      # Text-to-Speech
-│   ├── server.py                 # MCP server
-│   ├── test_streaming_playback.py
-│   ├── VibeVoice/                # Model files
-│   ├── requirements.txt
-│   └── Dockerfile
+├── services/
+│   ├── stt/                      # Speech-to-Text
+│   │   ├── server.py             # FastAPI server (port 8001)
+│   │   ├── vad.py                # Voice Activity Detection
+│   │   └── test_streaming.py     # Test harness
+│   │
+│   ├── tts-mcp/                  # Text-to-Speech
+│   │   ├── server.py             # MCP server
+│   │   └── VibeVoice/            # Model files
+│   │
+│   └── content-mcp/              # Lesson Content
+│       └── server.py
 │
-├── content-mcp/                  # Lesson Content
-│   ├── server.py
-│   └── requirements.txt
-│
-└── conversation/                 # (Phase 3 - Planned)
-    ├── test_conversation.py
-    └── requirements.txt
+└── frontend/                     # React SPA (Vite + shadcn/ui)
+    └── src/
+        ├── stores/conversationStore.ts
+        └── hooks/useConversation.ts
 ```
 
 ---
@@ -278,13 +287,27 @@ services/
 
 ---
 
-## Next Steps (Phase 3)
+## Agent Architecture
 
-Wire up the full conversation loop:
-1. VAD detects speech end
-2. STT transcribes utterance
-3. LLM generates streaming response
-4. TTS speaks response (streaming)
-5. Loop continues
+The system uses a single `UnifiedTeachingAgent` with two modes:
 
-See: `planning/in_progress/phase-03-conversation-partner.md`
+| Mode       | Page       | Behavior                                          |
+|------------|------------|---------------------------------------------------|
+| `help`     | Vocabulary | Answer questions only, use RAG for context        |
+| `practice` | Practice   | Lead conversation, flip roles after 3-5 exchanges |
+
+**API Endpoint**: `POST /api/practice/conversation`
+
+**Tools**:
+
+- `speak(text, language, voice)` - TTS output
+- `get_teaching_help(query)` - RAG for vocabulary/patterns
+- `record_attempt(item_type, correct)` - Track student performance
+
+See: `documentation/ADR/ADR-005-unified-teaching-agent.md`
+
+## Next Steps (Phase 4+)
+
+- Authentication & user accounts
+- Progress tracking persistence
+- Production deployment
