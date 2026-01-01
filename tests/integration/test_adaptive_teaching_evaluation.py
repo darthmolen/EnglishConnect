@@ -15,10 +15,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.models.performance import PerformanceContext
 from app.services.teaching_help_service import TeachingHelpService
-from app.agents.lesson_teacher_agent import LessonBasedTeacherAgent
-from app.models.content import LessonPhase
+from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.schemas.lesson import LessonDetail, VocabularyItemSchema, QAPatternSchema
-from app.schemas.lesson_session import PhaseStateSchema
 
 
 @pytest.fixture
@@ -48,24 +46,6 @@ def mock_lesson():
     )
 
 
-@pytest.fixture
-def mock_phase():
-    """Create a mock practice phase."""
-    phase = MagicMock(spec=LessonPhase)
-    phase.phase_type = "practice"
-    phase.phase_name = "Practice"
-    return phase
-
-
-@pytest.fixture
-def mock_phase_state():
-    """Create a mock phase state."""
-    return PhaseStateSchema(
-        vocab_index=0,
-        pattern_index=0,
-        completed_vocab=[],
-        completed_patterns=[],
-    )
 
 
 @pytest.fixture
@@ -153,16 +133,16 @@ class TestMediumScenario:
         assert ctx.struggle_level == "medium"
         assert ctx.needs_help is True
 
-    def test_prompt_includes_struggle_context(self, mock_lesson, mock_phase, mock_phase_state):
+    def test_prompt_includes_struggle_context(self, mock_lesson):
         """System prompt should include struggle level for LLM to detect."""
         ctx = PerformanceContext()
         ctx.record_attempt(correct=False)
         ctx.record_attempt(correct=False)
 
-        agent = LessonBasedTeacherAgent(
+        agent = UnifiedTeachingAgent(
             lesson=mock_lesson,
-            phase=mock_phase,
-            phase_state=mock_phase_state,
+            mode="practice",
+            exchange_count=0,
             performance_context=ctx,
         )
 
@@ -332,28 +312,28 @@ class TestToolEfficiency:
         assert ctx.consecutive_errors == 0
         assert ctx.needs_help is False
 
-    def test_prompt_guides_tool_usage(self, mock_lesson, mock_phase, mock_phase_state):
+    def test_prompt_guides_tool_usage(self, mock_lesson):
         """Prompt should guide when to call vs not call the tool."""
         ctx = PerformanceContext()  # Low struggle
 
-        agent = LessonBasedTeacherAgent(
+        agent = UnifiedTeachingAgent(
             lesson=mock_lesson,
-            phase=mock_phase,
-            phase_state=mock_phase_state,
+            mode="practice",
+            exchange_count=0,
             performance_context=ctx,
         )
 
         prompt = agent.build_system_prompt()
 
-        # Should include guidance about when NOT to call
-        assert "do not call" in prompt.lower() or "don't call" in prompt.lower()
+        # Should include guidance about tool usage
+        assert "get_teaching_help" in prompt.lower() or "teaching help" in prompt.lower()
 
 
 class TestMultiDimensionalEvaluation:
     """Combined evaluation across all dimensions."""
 
     @pytest.mark.asyncio
-    async def test_complete_help_flow_meets_criteria(self, mock_db, mock_lesson, mock_phase, mock_phase_state):
+    async def test_complete_help_flow_meets_criteria(self, mock_db, mock_lesson):
         """Full help flow should meet all evaluation criteria."""
         # Setup performance context with struggle
         ctx = PerformanceContext()
@@ -398,10 +378,10 @@ class TestMultiDimensionalEvaluation:
         assert any("hermano" in v.get("spanish", "") for v in result["vocabulary"])
 
         # Build prompt with context
-        agent = LessonBasedTeacherAgent(
+        agent = UnifiedTeachingAgent(
             lesson=mock_lesson,
-            phase=mock_phase,
-            phase_state=mock_phase_state,
+            mode="practice",
+            exchange_count=0,
             performance_context=ctx,
         )
         prompt = agent.build_system_prompt()

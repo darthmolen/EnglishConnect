@@ -74,8 +74,8 @@ class TestGetTeachingHelpHandler:
             pattern_result, pattern_query_result
         ]
 
-        # Import handler
-        from app.routers.lesson import create_teaching_help_handler
+        # Import handler from tool_handlers (moved from old lesson router)
+        from app.services.tool_handlers import create_teaching_help_handler
 
         handler = create_teaching_help_handler(mock_db, lesson_number=10)
         result = await handler(query="family brother")
@@ -105,7 +105,7 @@ class TestGetTeachingHelpHandler:
             pattern_lesson_result, pattern_result
         ]
 
-        from app.routers.lesson import create_teaching_help_handler
+        from app.services.tool_handlers import create_teaching_help_handler
 
         handler = create_teaching_help_handler(mock_db, lesson_number=10)
         result = await handler(query="family questions")
@@ -122,7 +122,7 @@ class TestGetTeachingHelpHandler:
         empty_result.fetchall.return_value = []
         mock_db.execute.return_value = empty_result
 
-        from app.routers.lesson import create_teaching_help_handler
+        from app.services.tool_handlers import create_teaching_help_handler
 
         with patch.object(
             TeachingHelpService, "get_workbook_exercises",
@@ -145,7 +145,7 @@ class TestGetTeachingHelpHandler:
         empty_result.fetchall.return_value = []
         mock_db.execute.return_value = empty_result
 
-        from app.routers.lesson import create_teaching_help_handler
+        from app.services.tool_handlers import create_teaching_help_handler
 
         handler = create_teaching_help_handler(mock_db, lesson_number=8)
         result = await handler(query="anything")
@@ -166,7 +166,7 @@ class TestHandlerInToolChain:
         empty_result.fetchall.return_value = []
         mock_db.execute.return_value = empty_result
 
-        from app.routers.lesson import create_teaching_help_handler
+        from app.services.tool_handlers import create_teaching_help_handler
 
         handler = create_teaching_help_handler(mock_db, lesson_number=5)
         result = await handler(query="test")

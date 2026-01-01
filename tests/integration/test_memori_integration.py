@@ -38,12 +38,12 @@ class TestMemoriConversationIntegration:
     @patch("app.routers.conversation.get_agent_response")
     @patch("app.routers.conversation.SessionService")
     @patch("app.routers.conversation.LessonService")
-    @patch("app.routers.conversation.ConversationAgentFactory")
+    @patch("app.routers.conversation.UnifiedTeachingAgent")
     @patch("app.routers.conversation.get_settings")
     async def test_conversation_passes_user_id_to_agent(
         self,
         mock_settings,
-        mock_agent_factory,
+        mock_agent_class,
         mock_lesson_service,
         mock_session_service,
         mock_agent_response,
@@ -64,8 +64,10 @@ class TestMemoriConversationIntegration:
         lesson_service.get_lesson_detail = AsyncMock(return_value=mock_lesson)
         mock_lesson_service.return_value = lesson_service
 
-        # Mock the agent factory to return a simple system prompt
-        mock_agent_factory.build_system_prompt.return_value = "You are an English tutor."
+        # Mock the unified teaching agent
+        mock_agent = MagicMock()
+        mock_agent.build_system_prompt.return_value = "You are an English tutor."
+        mock_agent_class.return_value = mock_agent
 
         session_service = AsyncMock()
         session_service.get_or_create_session = AsyncMock(return_value=MagicMock(id=uuid.uuid4()))
@@ -80,10 +82,13 @@ class TestMemoriConversationIntegration:
 
         mock_db = AsyncMock()
 
-        # Create request
+        # Create request with unified agent parameters
         request = ConversationRequest(
             message="Hello!",
             lesson_number=1,
+            mode="practice",
+            exchange_count=0,
+            instruction_language="es",
             history=[],
         )
 

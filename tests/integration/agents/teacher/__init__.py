@@ -1,1 +1,0 @@
-"""Teacher agent integration tests."""

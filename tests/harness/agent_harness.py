@@ -11,11 +11,11 @@ import logging
 from dataclasses import dataclass, field
 from typing import Literal
 
-from app.agents.lesson_teacher_agent import LessonBasedTeacherAgent
-from app.agents.conversation_agent import ConversationAgentFactory
+from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.schemas.lesson import LessonDetail, VocabularyItemSchema, QAPatternSchema
 from app.schemas.lesson_session import PhaseStateSchema
-from app.services.azure_openai import get_agent_response, LESSON_AGENT_TOOLS, AGENT_TOOLS
+from app.services.azure_openai import get_agent_response, UNIFIED_AGENT_TOOLS
+from app.models.performance import PerformanceContext
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class AgentTestHarness:
     def __init__(
         self,
         lesson: LessonDetail,
-        agent_type: Literal["teacher", "partner"] = "teacher",
+        agent_mode: Literal["help", "practice"] = "practice",
     ):
         """Initialize the harness with lesson data.
 
@@ -76,10 +76,12 @@ class AgentTestHarness:
 
         Args:
             lesson: LessonDetail with vocabulary and patterns
-            agent_type: "teacher" for structured lesson flow, "partner" for free-form
+            agent_mode: "help" for vocabulary page, "practice" for practice page
         """
         self.lesson = lesson
-        self.agent_type = agent_type
+        self.agent_mode = agent_mode
+        self.exchange_count = 0
+        self.performance_context = PerformanceContext()
 
         # Phase tracking (simulated in memory)
         self.phases = create_mock_phases()
@@ -97,14 +99,14 @@ class AgentTestHarness:
     async def create(
         cls,
         lesson_number: int,
-        agent_type: Literal["teacher", "partner"] = "teacher",
+        agent_mode: Literal["help", "practice"] = "practice",
         course_id: str = "ec1",
     ) -> "AgentTestHarness":
         """Create harness with lesson loaded from database.
 
         Args:
             lesson_number: Lesson number to load
-            agent_type: "teacher" or "partner"
+            agent_mode: "help" for vocabulary page, "practice" for practice page
             course_id: Course ID (default "ec1")
 
         Returns:
@@ -123,7 +125,7 @@ class AgentTestHarness:
             if not lesson:
                 raise ValueError(f"Lesson {lesson_number} not found in course {course_id}")
 
-            return cls(lesson=lesson, agent_type=agent_type)
+            return cls(lesson=lesson, agent_mode=agent_mode)
 
     @classmethod
     def create_with_mock_lesson(
@@ -133,7 +135,7 @@ class AgentTestHarness:
         objective: str = "Test objective",
         vocabulary: list[VocabularyItemSchema] | None = None,
         patterns: list[QAPatternSchema] | None = None,
-        agent_type: Literal["teacher", "partner"] = "teacher",
+        agent_mode: Literal["help", "practice"] = "practice",
     ) -> "AgentTestHarness":
         """Create harness with mock lesson data (no database needed).
 
@@ -143,7 +145,7 @@ class AgentTestHarness:
             objective: Lesson objective
             vocabulary: List of vocabulary items
             patterns: List of Q&A patterns
-            agent_type: "teacher" or "partner"
+            agent_mode: "help" for vocabulary page, "practice" for practice page
 
         Returns:
             Initialized AgentTestHarness with mock data
@@ -172,26 +174,22 @@ class AgentTestHarness:
             patterns=patterns,
         )
 
-        return cls(lesson=lesson, agent_type=agent_type)
+        return cls(lesson=lesson, agent_mode=agent_mode)
 
     def _build_system_prompt(self) -> str:
-        """Build system prompt based on agent type and current phase."""
-        if self.agent_type == "teacher":
-            agent = LessonBasedTeacherAgent(
-                lesson=self.lesson,
-                phase=self.phase,
-                phase_state=self.phase_state,
-            )
-            return agent.build_system_prompt()
-        else:
-            return ConversationAgentFactory.build_system_prompt(self.lesson)
+        """Build system prompt based on agent mode."""
+        agent = UnifiedTeachingAgent(
+            lesson=self.lesson,
+            mode=self.agent_mode,
+            exchange_count=self.exchange_count,
+            instruction_language="es",
+            performance_context=self.performance_context,
+        )
+        return agent.build_system_prompt()
 
     def _get_tools(self) -> list[dict]:
-        """Get tool definitions based on agent type."""
-        if self.agent_type == "teacher":
-            return LESSON_AGENT_TOOLS
-        else:
-            return AGENT_TOOLS
+        """Get tool definitions for the unified agent."""
+        return UNIFIED_AGENT_TOOLS
 
     async def _mock_speak_handler(
         self, text: str, language: str, voice: str = "speaker_b"
@@ -268,7 +266,28 @@ class AgentTestHarness:
         if correct and item_id not in self.phase_state.items_completed:
             self.phase_state.items_completed.append(item_id)
 
-        return {"recorded": True, "item_type": item_type, "correct": correct}
+        # Update performance context
+        self.performance_context.record_attempt(correct=correct)
+
+        return {
+            "success": True,
+            "item_type": item_type,
+            "correct": correct,
+            "struggle_level": self.performance_context.struggle_level,
+            "consecutive_errors": self.performance_context.consecutive_errors,
+            "needs_help": self.performance_context.needs_help,
+        }
+
+    async def _get_teaching_help_handler(self, query: str) -> dict:
+        """Mock get_teaching_help handler that returns mock data."""
+        logger.info(f"get_teaching_help called: {query}")
+        return {
+            "success": True,
+            "vocabulary": [{"english": "example", "spanish": "ejemplo"}],
+            "patterns": [],
+            "exercises": [],
+            "explanation": f"Mock explanation for: {query}",
+        }
 
     async def send(self, message: str) -> AgentResponse:
         """Send a message to the agent and get a response.
@@ -286,6 +305,7 @@ class AgentTestHarness:
             "speak": self._mock_speak_handler,
             "advance_phase": self._advance_phase_handler,
             "record_attempt": self._record_attempt_handler,
+            "get_teaching_help": self._get_teaching_help_handler,
         }
 
         # Call the real Azure OpenAI agent
@@ -322,6 +342,9 @@ class AgentTestHarness:
             self.history.append({"role": "user", "content": message})
         self.history.append({"role": "assistant", "content": response_text})
 
+        # Increment exchange count for flip detection
+        self.exchange_count += 1
+
         return AgentResponse(
             text=response_text,
             phase=self.phase,
@@ -340,12 +363,12 @@ class AgentTestHarness:
         """
         lines = []
         lines.append(f"=== Lesson {self.lesson.lesson_number}: {self.lesson.title} ===")
-        lines.append(f"Agent type: {self.agent_type}")
-        lines.append(f"Phases visited: {' -> '.join(self.phase_history)}")
+        lines.append(f"Agent mode: {self.agent_mode}")
+        lines.append(f"Exchange count: {self.exchange_count}")
         lines.append("")
 
         for msg in self.history:
-            role = "Student" if msg["role"] == "user" else "Teacher"
+            role = "Student" if msg["role"] == "user" else "Partner"
             lines.append(f"[{role}] {msg['content']}")
             lines.append("")
 
@@ -368,3 +391,5 @@ class AgentTestHarness:
         self.all_tool_calls = []
         self.all_tool_results = []
         self.phase_history = [self.phase.phase_type]
+        self.exchange_count = 0
+        self.performance_context = PerformanceContext()
