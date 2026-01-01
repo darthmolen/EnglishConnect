@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { GraduationCap, MessageCircle, Volume2 } from 'lucide-react'
+import { GraduationCap, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ChatMessage, AgentMode } from '@/types'
 
@@ -9,17 +9,12 @@ interface MessageBubbleProps {
 
 // Agent display configuration (icons and colors only - names are translated)
 const AGENT_CONFIG: Record<AgentMode, { nameKey: string; icon: typeof GraduationCap; colors: string }> = {
-  lesson: {
-    nameKey: 'agents.teacher',
+  help: {
+    nameKey: 'agents.helper',
     icon: GraduationCap,
     colors: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200',
   },
-  demo: {
-    nameKey: 'agents.demo',
-    icon: Volume2,
-    colors: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200',
-  },
-  conversation: {
+  practice: {
     nameKey: 'agents.partner',
     icon: MessageCircle,
     colors: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200',
@@ -29,7 +24,7 @@ const AGENT_CONFIG: Record<AgentMode, { nameKey: string; icon: typeof Graduation
 export function MessageBubble({ message }: MessageBubbleProps) {
   const { t } = useTranslation()
   const isUser = message.role === 'user'
-  const agentMode = message.agentMode || 'conversation'
+  const agentMode = message.agentMode || 'practice'
   const agentConfig = AGENT_CONFIG[agentMode]
   const Icon = agentConfig.icon
 

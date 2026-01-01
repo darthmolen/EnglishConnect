@@ -38,12 +38,10 @@
     "thinking": "Thinking..."
   },
   "agents": {
-    "teacher": "Teacher",
-    "demo": "Demo",
+    "helper": "Helper",
     "partner": "Partner",
-    "switchedToTeacher": "Switched to Teacher",
-    "switchedToDemo": "Switched to Demo",
-    "switchedToPartner": "Switched to Practice Partner"
+    "switchedToHelp": "Switched to Help Mode",
+    "switchedToPractice": "Switched to Practice Mode"
   },
   "voice": {
     "startRecording": "Start recording",

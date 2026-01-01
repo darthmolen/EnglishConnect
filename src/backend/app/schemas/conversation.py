@@ -13,12 +13,20 @@ class ChatMessage(BaseModel):
 
 
 class ConversationRequest(BaseModel):
-    """Request body for POST /api/conversation."""
+    """Request body for POST /api/conversation.
+
+    The unified endpoint supports two modes:
+    - "help": Vocabulary page - agent answers questions only
+    - "practice": Practice page - agent leads conversation, flips roles
+    """
 
     message: str
     lesson_number: int
+    mode: Literal["help", "practice"] = "practice"  # Agent mode
+    exchange_count: int = 0  # Number of exchanges (for flip detection in practice mode)
+    instruction_language: Literal["es", "en"] = "es"  # Language for explanations
     history: list[ChatMessage] = []
-    user_id: str | None = None  # Optional user ID for memory tracking (Phase 4B: from auth)
+    user_id: str | None = None  # Optional user ID for memory tracking
 
 
 class ConversationResponse(BaseModel):

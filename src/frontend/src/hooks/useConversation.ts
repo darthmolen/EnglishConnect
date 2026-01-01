@@ -11,13 +11,15 @@ export function useConversation() {
     selectedLessonNumber,
     isLoading,
     agentMode,
-    activeSection,
+    exchangeCount,
+    instructionLanguage,
     addMessage,
     clearMessages,
     setIsLoading,
     setIsRecording: setStoreIsRecording,
     setIsPlaying: setStoreIsPlaying,
     updatePhaseInfo,
+    incrementExchangeCount,
   } = useConversationStore()
 
   const {
@@ -87,17 +89,21 @@ export function useConversation() {
         // Step 2: Add user message with transcribed text
         addMessage({ role: 'user', content: transcribedText, agentMode })
 
-        // Step 3: Get AI response (route to appropriate agent, include section for lesson mode)
+        // Step 3: Get AI response (unified agent with mode)
         const response = await sendMessage(
           transcribedText,
           selectedLessonNumber,
           messages,
           agentMode,
-          activeSection ?? undefined
+          exchangeCount,
+          instructionLanguage
         )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
-        // Update phase info if lesson agent returned it
+        // Increment exchange count for flip detection in practice mode
+        incrementExchangeCount()
+
+        // Update phase info if returned (backward compat)
         if (response.phase) {
           updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
         }
@@ -119,11 +125,13 @@ export function useConversation() {
       selectedLessonNumber,
       messages,
       agentMode,
-      activeSection,
+      exchangeCount,
+      instructionLanguage,
       addMessage,
       setIsLoading,
       playAudioChunks,
       updatePhaseInfo,
+      incrementExchangeCount,
     ]
   )
 
@@ -167,17 +175,21 @@ export function useConversation() {
       setIsLoading(true)
 
       try {
-        // Get AI response (route to appropriate agent, include section for lesson mode)
+        // Get AI response (unified agent with mode)
         const response = await sendMessage(
           text,
           selectedLessonNumber,
           messages,
           agentMode,
-          activeSection ?? undefined
+          exchangeCount,
+          instructionLanguage
         )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
-        // Update phase info if lesson agent returned it
+        // Increment exchange count for flip detection in practice mode
+        incrementExchangeCount()
+
+        // Update phase info if returned (backward compat)
         if (response.phase) {
           updatePhaseInfo(response.phase, response.phase_state ?? null, response.phase_progress ?? null)
         }
@@ -199,11 +211,13 @@ export function useConversation() {
       selectedLessonNumber,
       messages,
       agentMode,
-      activeSection,
+      exchangeCount,
+      instructionLanguage,
       addMessage,
       setIsLoading,
       playAudioChunks,
       updatePhaseInfo,
+      incrementExchangeCount,
     ]
   )
 

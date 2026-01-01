@@ -12,9 +12,8 @@ interface ConversationViewProps {
 function AgentSeparator({ mode }: { mode: AgentMode }) {
   const { t } = useTranslation()
   const labels: Record<AgentMode, string> = {
-    lesson: t('agents.switchedToTeacher'),
-    demo: t('agents.switchedToDemo'),
-    conversation: t('agents.switchedToPartner'),
+    help: t('agents.switchedToHelp'),
+    practice: t('agents.switchedToPractice'),
   }
 
   return (
@@ -37,12 +36,12 @@ function shouldShowSeparator(
   if (index === 0) return null
   if (message.role === 'user') return null
 
-  const currentMode = message.agentMode || 'conversation'
+  const currentMode = message.agentMode || 'practice'
 
   // Find the previous assistant message
   for (let i = index - 1; i >= 0; i--) {
     if (messages[i].role === 'assistant') {
-      const prevMode = messages[i].agentMode || 'conversation'
+      const prevMode = messages[i].agentMode || 'practice'
       if (prevMode !== currentMode) {
         return currentMode
       }

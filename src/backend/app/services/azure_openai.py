@@ -133,10 +133,41 @@ DO NOT CALL:
     }
 }
 
-# Tool definitions for the free-form practice conversation agent
+# Tool definitions for the free-form practice conversation agent (legacy)
 AGENT_TOOLS = [SPEAK_TOOL]
 
-# Tool definitions for the structured lesson teacher agent
+# Record attempt tool for unified agent
+RECORD_ATTEMPT_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "record_attempt",
+        "description": "Record the student's attempt at a vocabulary word or pattern. Call this after evaluating their response in practice mode.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "item_type": {
+                    "type": "string",
+                    "enum": ["vocab", "pattern"],
+                    "description": "Type of item being practiced"
+                },
+                "correct": {
+                    "type": "boolean",
+                    "description": "Whether the student's attempt was correct"
+                }
+            },
+            "required": ["item_type", "correct"]
+        }
+    }
+}
+
+# Tool definitions for unified teaching agent (help + practice modes)
+UNIFIED_AGENT_TOOLS = [
+    SPEAK_TOOL,
+    GET_TEACHING_HELP_TOOL,
+    RECORD_ATTEMPT_TOOL,
+]
+
+# Tool definitions for the structured lesson teacher agent (legacy)
 LESSON_AGENT_TOOLS = [
     SPEAK_TOOL,
     GET_TEACHING_HELP_TOOL,

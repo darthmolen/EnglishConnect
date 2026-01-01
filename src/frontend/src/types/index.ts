@@ -39,7 +39,8 @@ export interface LessonDetail {
 
 export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary'
 
-export type AgentMode = 'conversation' | 'lesson' | 'demo'
+// Unified agent modes (replaces old multi-agent: 'conversation' | 'lesson' | 'demo')
+export type AgentMode = 'help' | 'practice'
 
 export type InstructionLanguage = 'es' | 'en'
 
@@ -52,6 +53,9 @@ export interface ChatMessage {
 export interface ConversationRequest {
   message: string
   lesson_number: number
+  mode: AgentMode  // 'help' for vocabulary page, 'practice' for practice page
+  exchange_count: number  // Track exchanges for flip detection in practice mode
+  instruction_language: InstructionLanguage  // Language for explanations
   history: ChatMessage[]
 }
 

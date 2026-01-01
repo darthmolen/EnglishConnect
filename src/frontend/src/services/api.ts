@@ -12,6 +12,7 @@ import type {
   ChatMessage,
   AgentMode,
   AgentResponse,
+  InstructionLanguage,
 } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -69,38 +70,35 @@ export async function fetchLessonDetail(
   return response.json()
 }
 
-// Agent endpoint mapping
-const AGENT_ENDPOINTS: Record<AgentMode, string> = {
-  conversation: '/practice/conversation',
-  lesson: '/lesson/conversation',
-  demo: '/demo/conversation',
-}
-
 /**
  * Send a conversation message and get AI response.
- * Routes to the appropriate agent based on agentMode.
+ * Uses unified endpoint with mode parameter.
+ *
+ * @param message - User's message
+ * @param lessonNumber - Current lesson number
+ * @param history - Conversation history
+ * @param agentMode - 'help' for vocabulary page, 'practice' for practice page
+ * @param exchangeCount - Number of exchanges (for flip detection in practice mode)
+ * @param instructionLanguage - Language for explanations ('es' or 'en')
  */
 export async function sendMessage(
   message: string,
   lessonNumber: number,
   history: ChatMessage[],
-  agentMode: AgentMode = 'conversation',
-  section?: string  // Optional section to override phase (e.g., 'patterns', 'vocabulary')
+  agentMode: AgentMode = 'practice',
+  exchangeCount: number = 0,
+  instructionLanguage: InstructionLanguage = 'es'
 ): Promise<AgentResponse> {
-  // Build request with optional section for lesson mode
-  const request: ConversationRequest & { section?: string } = {
+  const request: ConversationRequest = {
     message,
     lesson_number: lessonNumber,
+    mode: agentMode,
+    exchange_count: exchangeCount,
+    instruction_language: instructionLanguage,
     history,
   }
 
-  // Only include section for lesson agent
-  if (agentMode === 'lesson' && section) {
-    request.section = section
-  }
-
-  const endpoint = AGENT_ENDPOINTS[agentMode]
-  const response = await fetchWithAuth(`${API_BASE}${endpoint}`, {
+  const response = await fetchWithAuth(`${API_BASE}/practice/conversation`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

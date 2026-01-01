@@ -116,13 +116,13 @@ export function DemoPlayer({ courseId, lessonNumber }: DemoPlayerProps) {
   }
 
   const handleQuestions = () => {
-    setAgentMode('demo')
+    setAgentMode('practice')  // Use practice mode for questions about demos
     setShowControls(false)
     // TODO: Could also open conversation drawer or focus input
   }
 
   const handleFinished = () => {
-    setAgentMode('conversation')  // Always return to conversation partner
+    setAgentMode('practice')  // Stay in practice mode
     setShowControls(false)
     setCurrentIndex(0)
   }

@@ -41,8 +41,11 @@ interface ConversationState {
   // Keys are "lessonNumber-language" (e.g., "5-es", "5-en")
   introPlayedKeys: string[]
 
-  // Agent mode (which agent handles conversation)
+  // Agent mode ('help' for vocabulary page, 'practice' for practice page)
   agentMode: AgentMode
+
+  // Exchange count for flip detection in practice mode
+  exchangeCount: number
 
   // Instruction language for agent explanations (persisted)
   instructionLanguage: InstructionLanguage
@@ -67,6 +70,8 @@ interface ConversationState {
   setAgentMode: (mode: AgentMode) => void
   setInstructionLanguage: (language: InstructionLanguage) => void
   markIntroPlayed: (key: string) => void
+  incrementExchangeCount: () => void
+  resetExchangeCount: () => void
 }
 
 export const useConversationStore = create<ConversationState>()(
@@ -91,8 +96,11 @@ export const useConversationStore = create<ConversationState>()(
       phaseState: null,
       phaseProgress: null,
 
-      // Agent mode - default to conversation partner
-      agentMode: 'conversation' as AgentMode,
+      // Agent mode - default to practice mode
+      agentMode: 'practice' as AgentMode,
+
+      // Exchange count for flip detection
+      exchangeCount: 0,
 
       // Instruction language - default to Spanish
       instructionLanguage: 'es' as InstructionLanguage,
@@ -107,7 +115,8 @@ export const useConversationStore = create<ConversationState>()(
           selectedLessonNumber: lessonNumber,
           messages: [], // Clear conversation when switching lessons
           activeSection: 'principle',  // Reset to principle when switching lessons
-          agentMode: 'conversation',  // Reset to conversation agent when switching lessons
+          agentMode: 'practice',  // Reset to practice mode when switching lessons
+          exchangeCount: 0,  // Reset exchange count when switching lessons
           // Reset phase info when switching lessons
           currentPhase: null,
           phaseState: null,
@@ -116,13 +125,14 @@ export const useConversationStore = create<ConversationState>()(
 
       setActiveSection: (section) => {
         // Determine agent mode based on section
-        let newAgentMode: AgentMode = 'conversation'
-        if (section === 'vocabulary') {
-          newAgentMode = 'lesson'
-        }
-        // Note: 'demo' mode is set explicitly via setAgentMode when user clicks Demo Play
-        // Practice section uses 'conversation' mode (conversation partner)
-        return set({ activeSection: section, agentMode: newAgentMode })
+        // Vocabulary page → 'help' mode (answer questions only)
+        // Practice page → 'practice' mode (lead conversation, flip roles)
+        const newAgentMode: AgentMode = section === 'vocabulary' ? 'help' : 'practice'
+        return set({
+          activeSection: section,
+          agentMode: newAgentMode,
+          exchangeCount: 0,  // Reset exchange count when switching sections
+        })
       },
 
       toggleGoal: (lessonNumber, goalIndex) =>
@@ -184,6 +194,11 @@ export const useConversationStore = create<ConversationState>()(
             ? state.introPlayedKeys
             : [...state.introPlayedKeys, key],
         })),
+
+      incrementExchangeCount: () =>
+        set((state) => ({ exchangeCount: state.exchangeCount + 1 })),
+
+      resetExchangeCount: () => set({ exchangeCount: 0 }),
     }),
     {
       name: 'englishconnect-settings',
