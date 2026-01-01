@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Volume2, Check, Play, Pause } from 'lucide-react'
+import { Volume2, Check, Play, Pause, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { VocabularyItem, PhaseState } from '@/types'
 
@@ -114,6 +114,21 @@ export function VocabularyView({
 
   return (
     <div className="p-4">
+      {/* Summary banner */}
+      <div className="mb-4 rounded-lg border bg-blue-50 dark:bg-blue-950/30 p-4">
+        <div className="flex items-start gap-3">
+          <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+              {t('vocabulary.summaryTitle')}
+            </h3>
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              {t('vocabulary.summary')}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Flex-wrap layout for categories */}
       <div className="flex flex-wrap gap-4">
         {sortedCategories.map((category) => (

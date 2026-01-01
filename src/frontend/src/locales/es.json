@@ -58,13 +58,17 @@
     "ponder": "Reflexiona"
   },
   "vocabulary": {
-    "empty": "No hay vocabulario disponible para esta lección"
+    "empty": "No hay vocabulario disponible para esta lección",
+    "summary": "Escucha cada palabra y repítela en voz alta. Haz clic en el botón de reproducción junto a cualquier palabra para escucharla. Practica diciendo la palabra hasta que te sientas cómodo. Usa el micrófono en la parte inferior de la página si tienes alguna pregunta.",
+    "summaryTitle": "Cómo Practicar"
   },
   "practice": {
     "empty": "No hay contenido de práctica disponible para esta lección",
     "playingIntro": "Reproduciendo intro...",
     "skip": "Saltar",
-    "startConversation": "Comenzar la Conversación"
+    "startConversation": "Comenzar la Conversación",
+    "summary": "Primero, escucha las conversaciones de demostración para escuchar cómo suenan los patrones. Luego haz clic en 'Comenzar la Conversación' para practicar con tu compañero de conversación. ¡Ellos te harán preguntas primero, y luego te invitarán a hacerles preguntas a ellos!",
+    "summaryTitle": "Práctica de Conversación"
   },
   "patterns": {
     "empty": "No hay patrones disponibles para esta lección",

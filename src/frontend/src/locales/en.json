@@ -58,13 +58,17 @@
     "ponder": "Ponder"
   },
   "vocabulary": {
-    "empty": "No vocabulary available for this lesson"
+    "empty": "No vocabulary available for this lesson",
+    "summary": "Listen to each word and repeat it out loud. Click the play button next to any word to hear it. Practice saying the word until you feel comfortable. Use the microphone at the bottom of the page if you have any questions.",
+    "summaryTitle": "How to Practice"
   },
   "practice": {
     "empty": "No practice content available for this lesson",
     "playingIntro": "Playing intro...",
     "skip": "Skip",
-    "startConversation": "Start the Conversation"
+    "startConversation": "Start the Conversation",
+    "summary": "First, listen to the demo conversations to hear how the patterns sound. Then click 'Start Conversation' to practice with your conversation partner. They will ask you questions first, then invite you to ask them questions too!",
+    "summaryTitle": "Practice Conversation"
   },
   "patterns": {
     "empty": "No patterns available for this lesson",
