@@ -97,12 +97,49 @@ SPEAK_TOOL = {
     }
 }
 
+# Get teaching help tool - retrieves additional content when student struggles
+GET_TEACHING_HELP_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "get_teaching_help",
+        "description": """Retrieve additional teaching content when student struggles.
+
+WHEN TO CALL:
+- Student says "I don't understand" or "No entiendo"
+- Student asks "How do I say...?" or "What does X mean?"
+- 2+ consecutive incorrect attempts (check struggle_level in context)
+- Student explicitly asks for help or examples
+
+WHAT IT RETURNS:
+- Related vocabulary from current and previous lessons
+- Similar patterns with examples
+- Workbook exercises for practice
+- Lesson explanations
+
+DO NOT CALL:
+- For normal correct responses
+- When student is progressing well
+- Multiple times in same turn""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "What the student is confused about (e.g., 'past tense verbs', 'how to ask questions', 'word brother')"
+                }
+            },
+            "required": ["query"]
+        }
+    }
+}
+
 # Tool definitions for the free-form practice conversation agent
 AGENT_TOOLS = [SPEAK_TOOL]
 
 # Tool definitions for the structured lesson teacher agent
 LESSON_AGENT_TOOLS = [
     SPEAK_TOOL,
+    GET_TEACHING_HELP_TOOL,
     {
         "type": "function",
         "function": {

@@ -1,6 +1,9 @@
 """Lesson-based teacher agent with structured phase progression."""
 
+from typing import Optional
+
 from app.models.content import LessonPhase
+from app.models.performance import PerformanceContext
 from app.prompts import load_prompt, render_prompt
 from app.schemas.lesson import LessonDetail
 from app.schemas.lesson_session import PhaseStateSchema, PhaseProgressSchema
@@ -21,6 +24,7 @@ class LessonBasedTeacherAgent:
         phase: LessonPhase,
         phase_state: PhaseStateSchema,
         instruction_language: str = "es",
+        performance_context: Optional[PerformanceContext] = None,
     ):
         """Initialize the teacher agent.
 
@@ -29,11 +33,13 @@ class LessonBasedTeacherAgent:
             phase: Current lesson phase from database
             phase_state: Current state within the phase (indices, completed items)
             instruction_language: Language for explanations ('es' or 'en', default 'es')
+            performance_context: Optional tracking of student struggle signals
         """
         self.lesson = lesson
         self.phase = phase
         self.phase_state = phase_state
         self.instruction_language = instruction_language
+        self.performance_context = performance_context or PerformanceContext()
 
     def build_system_prompt(self) -> str:
         """Build phase-specific system prompt for the LLM.
@@ -188,6 +194,9 @@ class LessonBasedTeacherAgent:
         # Instruction language for explanations
         instruction_lang_text = "Spanish" if self.instruction_language == "es" else "English"
 
+        # Get performance context for adaptive help
+        perf_ctx = self.performance_context.to_prompt_context()
+
         template = load_prompt("teacher/phase_practice.md")
         return render_prompt(
             template,
@@ -196,6 +205,10 @@ class LessonBasedTeacherAgent:
             instruction_language=instruction_lang_text,
             current_pattern_index=self.phase_state.pattern_index,
             total_patterns=len(self.lesson.patterns) if self.lesson.patterns else 0,
+            # Performance context for adaptive help
+            struggle_level=perf_ctx["struggle_level"],
+            consecutive_errors=perf_ctx["consecutive_errors"],
+            needs_help=perf_ctx["needs_help"],
         )
 
     def _wrapup_prompt(self) -> str:

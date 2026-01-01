@@ -18,6 +18,7 @@ from app.schemas.lesson_session import (
 )
 from app.services.lesson_service import LessonService
 from app.services.lesson_progress_service import LessonProgressService
+from app.services.teaching_help_service import TeachingHelpService
 from app.services.azure_openai import get_agent_response, LESSON_AGENT_TOOLS
 from app.services.tts_service import synthesize_speech
 from app.services.tool_handlers import speak_tool_handler
@@ -27,6 +28,37 @@ from app.config import get_settings
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/lesson", tags=["lesson"])
+
+
+def create_teaching_help_handler(db: AsyncSession, lesson_number: int):
+    """Create a get_teaching_help handler bound to a specific lesson.
+
+    This factory function returns an async handler that can be passed to
+    the tool_handlers dict. The handler retrieves vocabulary, patterns,
+    workbook exercises, and lesson explanations to help struggling students.
+
+    Args:
+        db: Async database session
+        lesson_number: Current lesson number (for cumulative content search)
+
+    Returns:
+        Async handler function compatible with the tool calling interface
+    """
+    async def handler(query: str) -> dict:
+        """Get teaching help content for a confused student.
+
+        Args:
+            query: What the student is confused about
+
+        Returns:
+            Dict with vocabulary, patterns, exercises, explanation, source
+        """
+        service = TeachingHelpService(db)
+        result = await service.get_teaching_help(query, lesson_number)
+        logger.info(f"get_teaching_help called: query='{query}', lesson={lesson_number}")
+        return result
+
+    return handler
 
 
 @router.post("/conversation", response_model=LessonConversationResponse)
@@ -224,6 +256,7 @@ async def lesson_conversation(
         "advance_phase": advance_phase_handler,
         "record_attempt": record_attempt_handler,
         "set_pattern": set_pattern_handler,
+        "get_teaching_help": create_teaching_help_handler(db, request.lesson_number),
     }
 
     # Call the agent with lesson-specific tools
