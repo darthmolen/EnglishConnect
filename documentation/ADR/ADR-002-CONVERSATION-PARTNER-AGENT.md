@@ -1,6 +1,6 @@
 # ADR-002: Conversation Partner Agent vs Pipeline
 
-**Status**: Accepted
+**Status**: Retired (Superseded by ADR-005)
 **Date**: 2025-12-13
 **Decision Makers**: Project Team
 
@@ -120,3 +120,7 @@ The conversation partner agent will:
 - [ADR-001: AI Agent Architecture](ADR-001-AI-AGENT-ARCHITECTURE.md)
 - [README: Vision Statement](../../README.md#vision-intelligent-conversation-partner)
 - [CLAUDE.md: Guiding Principle](../../CLAUDE.md#guiding-principle)
+
+---
+
+**Note (2025-12-31)**: This ADR is superseded by ADR-005. The core decision (agent controls TTS as tool, not pipeline) remains valid and is preserved in ADR-005. The multi-agent implementation implied by this ADR has been replaced with a single unified agent with modes.

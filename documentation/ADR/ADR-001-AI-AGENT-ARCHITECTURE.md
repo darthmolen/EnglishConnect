@@ -1,6 +1,6 @@
 # ADR-001: AI Agent Architecture
 
-**Status**: Accepted
+**Status**: Retired (Superseded by ADR-005)
 **Date**: 2025-12-12
 **Decision Makers**: Project Team
 
