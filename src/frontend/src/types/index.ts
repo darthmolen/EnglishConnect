@@ -57,6 +57,7 @@ export interface ConversationRequest {
   exchange_count: number  // Track exchanges for flip detection in practice mode
   instruction_language: InstructionLanguage  // Language for explanations
   history: ChatMessage[]
+  focus_pattern?: number | null  // Optional: specific pattern to focus practice on
 }
 
 export interface ConversationResponse {

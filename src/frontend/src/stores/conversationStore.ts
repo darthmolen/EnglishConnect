@@ -47,6 +47,9 @@ interface ConversationState {
   // Exchange count for flip detection in practice mode
   exchangeCount: number
 
+  // Focus pattern for targeted practice (null = all patterns)
+  focusPattern: number | null
+
   // Instruction language for agent explanations (persisted)
   instructionLanguage: InstructionLanguage
 
@@ -72,6 +75,8 @@ interface ConversationState {
   markIntroPlayed: (key: string) => void
   incrementExchangeCount: () => void
   resetExchangeCount: () => void
+  setFocusPattern: (pattern: number | null) => void
+  startPatternPractice: (pattern: number) => void
 }
 
 export const useConversationStore = create<ConversationState>()(
@@ -102,6 +107,9 @@ export const useConversationStore = create<ConversationState>()(
       // Exchange count for flip detection
       exchangeCount: 0,
 
+      // Focus pattern for targeted practice
+      focusPattern: null,
+
       // Instruction language - default to Spanish
       instructionLanguage: 'es' as InstructionLanguage,
 
@@ -117,6 +125,7 @@ export const useConversationStore = create<ConversationState>()(
           activeSection: 'principle',  // Reset to principle when switching lessons
           agentMode: 'practice',  // Reset to practice mode when switching lessons
           exchangeCount: 0,  // Reset exchange count when switching lessons
+          focusPattern: null,  // Reset focus pattern when switching lessons
           // Reset phase info when switching lessons
           currentPhase: null,
           phaseState: null,
@@ -199,6 +208,16 @@ export const useConversationStore = create<ConversationState>()(
         set((state) => ({ exchangeCount: state.exchangeCount + 1 })),
 
       resetExchangeCount: () => set({ exchangeCount: 0 }),
+
+      setFocusPattern: (pattern) => set({ focusPattern: pattern }),
+
+      startPatternPractice: (pattern) =>
+        set({
+          focusPattern: pattern,
+          exchangeCount: 0,
+          messages: [],  // Clear conversation when starting new pattern practice
+          agentMode: 'practice',
+        }),
     }),
     {
       name: 'englishconnect-settings',

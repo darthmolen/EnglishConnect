@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Generate pre-recorded intro audio for each lesson.
 
-These intros are played when a user enters the Practice section.
-They explain how the practice session works and what to expect.
+These intros are played when a user enters the Practice or Vocabulary sections.
+They explain how each section works and what to expect.
 
 Usage:
-    python src/tools/generate_intros.py
+    python src/tools/generate_intros.py                    # Generate all intros
+    python src/tools/generate_intros.py --page practice    # Practice only
+    python src/tools/generate_intros.py --page vocabulary  # Vocabulary only
+    python src/tools/generate_intros.py --language es      # Spanish only
 
 Requires:
     - TTS service running on port 8002 (for English/VibeVoice)
@@ -37,23 +40,44 @@ PIPER_SERVICE: PiperService | None = None  # Lazy init
 _db_url = os.getenv("DATABASE_URL", "postgresql://englishconnect:devpassword@localhost:5432/englishconnect")
 # Normalize the URL for psycopg2
 DATABASE_URL = _db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("postgresql://", "postgresql+psycopg2://")
-OUTPUT_DIR = Path("content/audio/ec1/intros")
+OUTPUT_BASE = Path("content/audio/ec1/intros")
 
 # Voice for intros (warm, friendly)
 INTRO_VOICE = "speaker_b"
 
-# Intro templates - personalized for each lesson
-INTRO_TEMPLATE_EN = """Welcome to conversation group where we practice different conversation patterns for Lesson {lesson_number}: {lesson_title}.
+# Practice page intro templates
+PRACTICE_TEMPLATE_EN = """Welcome to conversation group where we practice different conversation patterns for Lesson {lesson_number}: {lesson_title}.
 Feel free to look at the different patterns. There are play buttons by each example that you can listen to.
 If you have any questions about the patterns or vocabulary, please ask using the microphone button below.
 When you're ready, either use the microphone button and say "I'm ready" or hit the green Play button and we'll start conversing using the patterns on this page."""
 
-INTRO_TEMPLATE_ES = """Bienvenido al grupo de conversación donde practicamos diferentes patrones de conversación para la Lección {lesson_number}: {lesson_title}.
+PRACTICE_TEMPLATE_ES = """Bienvenido al grupo de conversación donde practicamos diferentes patrones de conversación para la Lección {lesson_number}: {lesson_title}.
 Siéntete libre de mirar los diferentes patrones. Hay botones de reproducción junto a cada ejemplo que puedes escuchar.
 Si tienes alguna pregunta sobre los patrones o el vocabulario, por favor pregunta usando el botón del micrófono abajo.
 Cuando estés listo, usa el botón del micrófono y di "Estoy listo" o presiona el botón verde de Play y comenzaremos a conversar usando los patrones en esta página."""
 
+# Vocabulary page intro templates
+VOCABULARY_TEMPLATE_EN = """Welcome to Lesson {lesson_number}: {lesson_title} vocabulary!
+Please go through all the vocabulary and memorize them. There are play buttons next to each word that can be used for listening.
+After you play the word, it's recommended to say that word out loud and mimic what you hear.
+You can do this as many times as you need before moving on to the practice session.
+If at any time you have questions about the vocabulary or how they are used, you can ask in Spanish or English for help by using the microphone button at the bottom of the page."""
+
+VOCABULARY_TEMPLATE_ES = """¡Bienvenido al vocabulario de la Lección {lesson_number}: {lesson_title}!
+Por favor revisa todo el vocabulario y memorízalo. Hay botones de reproducción junto a cada palabra que puedes usar para escuchar.
+Después de reproducir la palabra, se recomienda que la digas en voz alta e imites lo que escuchas.
+Puedes hacer esto tantas veces como necesites antes de pasar a la sesión de práctica.
+Si en algún momento tienes preguntas sobre el vocabulario o cómo se usa, puedes preguntar en español o inglés usando el botón del micrófono en la parte inferior de la página."""
+
+# Template mapping
+TEMPLATES = {
+    "practice": {"en": PRACTICE_TEMPLATE_EN, "es": PRACTICE_TEMPLATE_ES},
+    "vocabulary": {"en": VOCABULARY_TEMPLATE_EN, "es": VOCABULARY_TEMPLATE_ES},
+}
+
 # For backward compatibility
+INTRO_TEMPLATE_EN = PRACTICE_TEMPLATE_EN
+INTRO_TEMPLATE_ES = PRACTICE_TEMPLATE_ES
 INTRO_TEMPLATE = INTRO_TEMPLATE_EN
 
 
@@ -65,21 +89,34 @@ def get_piper_service() -> PiperService:
     return PIPER_SERVICE
 
 
-async def generate_intro(lesson_number: int, lesson_title: str, language: str = "en") -> bool:
-    """Generate intro audio for a lesson in the specified language.
+async def generate_intro(
+    lesson_number: int,
+    lesson_title: str,
+    language: str = "en",
+    page_type: str = "practice",
+) -> bool:
+    """Generate intro audio for a lesson page in the specified language.
 
     Uses:
     - VibeVoice (Emma) for English
     - Piper (Dave) for Spanish
+
+    Args:
+        lesson_number: The lesson number
+        lesson_title: The lesson title
+        language: 'en' or 'es'
+        page_type: 'practice' or 'vocabulary'
     """
-    template = INTRO_TEMPLATE_ES if language == "es" else INTRO_TEMPLATE_EN
+    template = TEMPLATES[page_type][language]
     text = template.format(
         lesson_number=lesson_number,
         lesson_title=lesson_title,
     )
-    output_file = OUTPUT_DIR / f"lesson-{lesson_number:02d}-{language}.wav"
+    output_dir = OUTPUT_BASE / page_type
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_file = output_dir / f"lesson-{lesson_number:02d}-{language}.wav"
 
-    print(f"Generating {language.upper()} intro for Lesson {lesson_number}: {lesson_title}...")
+    print(f"Generating {page_type}/{language.upper()} intro for Lesson {lesson_number}: {lesson_title}...")
 
     try:
         if language == "es":
@@ -129,16 +166,20 @@ def get_lessons() -> list[tuple[int, str]]:
         return [(row.lesson_number, row.title) for row in result.fetchall()]
 
 
-async def main(language: str = "both"):
+async def main(language: str = "both", page_type: str = "both"):
     """Generate intros for all lessons.
 
     Args:
         language: "en" for English only, "es" for Spanish only, "both" for both languages
+        page_type: "practice", "vocabulary", or "both" for all page types
     """
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_BASE.mkdir(parents=True, exist_ok=True)
 
     languages = ["en", "es"] if language == "both" else [language]
-    print(f"Generating lesson intros in {OUTPUT_DIR}/")
+    page_types = ["practice", "vocabulary"] if page_type == "both" else [page_type]
+
+    print(f"Generating lesson intros in {OUTPUT_BASE}/")
+    print(f"Page types: {', '.join(page_types)}")
     print(f"Languages: {', '.join(lang.upper() for lang in languages)}")
     print(f"Using TTS service at: {TTS_URL}")
     print("=" * 60)
@@ -159,19 +200,21 @@ async def main(language: str = "both"):
     print("=" * 60)
 
     # Generate intros sequentially (to avoid TTS overload)
-    total_count = len(lessons) * len(languages)
+    total_count = len(lessons) * len(languages) * len(page_types)
     success_count = 0
-    for lang in languages:
-        print(f"\n--- Generating {lang.upper()} intros ---")
-        for lesson_number, lesson_title in lessons:
-            if await generate_intro(lesson_number, lesson_title, lang):
-                success_count += 1
+
+    for ptype in page_types:
+        for lang in languages:
+            print(f"\n--- Generating {ptype}/{lang.upper()} intros ---")
+            for lesson_number, lesson_title in lessons:
+                if await generate_intro(lesson_number, lesson_title, lang, ptype):
+                    success_count += 1
 
     print("=" * 60)
     print(f"Generated {success_count}/{total_count} intros")
 
     if success_count > 0:
-        print(f"\nIntro files saved in: {OUTPUT_DIR}/")
+        print(f"\nIntro files saved in: {OUTPUT_BASE}/")
 
 
 if __name__ == "__main__":
@@ -183,5 +226,11 @@ if __name__ == "__main__":
         default="both",
         help="Language for intros: en (English), es (Spanish), or both (default)"
     )
+    parser.add_argument(
+        "--page", "-p",
+        choices=["practice", "vocabulary", "both"],
+        default="both",
+        help="Page type for intros: practice, vocabulary, or both (default)"
+    )
     args = parser.parse_args()
-    asyncio.run(main(args.language))
+    asyncio.run(main(args.language, args.page))

@@ -80,6 +80,7 @@ export async function fetchLessonDetail(
  * @param agentMode - 'help' for vocabulary page, 'practice' for practice page
  * @param exchangeCount - Number of exchanges (for flip detection in practice mode)
  * @param instructionLanguage - Language for explanations ('es' or 'en')
+ * @param focusPattern - Optional pattern number to focus practice on
  */
 export async function sendMessage(
   message: string,
@@ -87,7 +88,8 @@ export async function sendMessage(
   history: ChatMessage[],
   agentMode: AgentMode = 'practice',
   exchangeCount: number = 0,
-  instructionLanguage: InstructionLanguage = 'es'
+  instructionLanguage: InstructionLanguage = 'es',
+  focusPattern: number | null = null
 ): Promise<AgentResponse> {
   const request: ConversationRequest = {
     message,
@@ -96,6 +98,7 @@ export async function sendMessage(
     exchange_count: exchangeCount,
     instruction_language: instructionLanguage,
     history,
+    focus_pattern: focusPattern,
   }
 
   const response = await fetchWithAuth(`${API_BASE}/practice/conversation`, {

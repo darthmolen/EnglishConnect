@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import type { LessonDetail, LessonSection, LessonPhase, PhaseState } from '@/types'
+import type { LessonDetail, LessonSection } from '@/types'
 import { PrincipleView } from './content/PrincipleView'
 import { GoalsView } from './content/GoalsView'
 import { PracticeView } from './content/PracticeView'
@@ -9,11 +9,8 @@ import { VocabularyView } from './content/VocabularyView'
 interface ContentWindowProps {
   lesson: LessonDetail | null
   activeSection: LessonSection | null
-  currentPhase: LessonPhase | null
-  phaseState: PhaseState | null
   completedGoals: number[]
   onToggleGoal: (lessonNumber: number, goalIndex: number) => void
-  onPatternClick?: (patternIndex: number) => void
   onStartConversation?: () => void
   className?: string
 }
@@ -21,11 +18,8 @@ interface ContentWindowProps {
 export function ContentWindow({
   lesson,
   activeSection,
-  currentPhase,
-  phaseState,
   completedGoals,
   onToggleGoal,
-  onPatternClick,
   onStartConversation,
   className,
 }: ContentWindowProps) {
@@ -41,11 +35,6 @@ export function ContentWindow({
       </div>
     )
   }
-
-  const vocabIndex = phaseState?.vocab_index ?? 0
-  const patternIndex = phaseState?.pattern_index ?? 0
-  const isVocabPhase = currentPhase?.phase_type === 'vocabulary'
-  const isPatternPhase = currentPhase?.phase_type === 'patterns'
 
   return (
     <div className={cn('overflow-y-auto bg-background', className)}>
@@ -70,11 +59,7 @@ export function ContentWindow({
           vocabulary={lesson.vocabulary}
           patterns={lesson.patterns}
           patternImages={lesson.pattern_images}
-          isPatternPhase={isPatternPhase}
-          patternIndex={patternIndex}
-          phaseState={phaseState}
           lessonNumber={lesson.lesson_number}
-          onPatternClick={onPatternClick}
           onStartConversation={onStartConversation}
         />
       )}
@@ -82,9 +67,6 @@ export function ContentWindow({
         <VocabularyView
           vocabulary={lesson.vocabulary}
           lessonNumber={lesson.lesson_number}
-          isVocabPhase={isVocabPhase}
-          vocabIndex={vocabIndex}
-          phaseState={phaseState}
         />
       )}
     </div>

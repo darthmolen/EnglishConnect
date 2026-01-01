@@ -17,7 +17,8 @@ This document describes the data flow for voice-enabled agent conversations in E
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                      API Request                                     │   │
 │  │  POST /api/practice/conversation                                     │   │
-│  │  { message, lesson_number, mode, exchange_count, history }           │   │
+│  │  { message, lesson_number, mode, exchange_count, history,            │   │
+│  │    instruction_language, focus_pattern? }                            │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
 │                                    │                                        │
 └────────────────────────────────────┼────────────────────────────────────────┘
@@ -30,7 +31,7 @@ This document describes the data flow for voice-enabled agent conversations in E
 │  │  conversation.py router                                              │   │
 │  │                                                                      │   │
 │  │  1. Load lesson content from database                                │   │
-│  │  2. Create UnifiedTeachingAgent with mode (help/practice)            │   │
+│  │  2. Create UnifiedTeachingAgent with mode + optional focus_pattern   │   │
 │  │  3. Build system prompt with mode-specific behavior                  │   │
 │  │  4. Call LLM agent with tool definitions                             │   │
 │  └─────────────────────────────────┬───────────────────────────────────┘   │
@@ -124,7 +125,25 @@ Single agent handles both pages with different behaviors:
 | `help`     | Vocabulary | Answer questions only, use `get_teaching_help`    |
 | `practice` | Practice   | Lead conversation, flip roles after 3-5 exchanges |
 
-### 2. Agent Controls TTS (Not a Pipeline)
+### 2. Pattern-Focused Practice (Optional)
+
+In practice mode, an optional `focus_pattern` parameter allows targeted practice of a specific Q&A pattern. When set:
+
+- The agent's system prompt includes a `FOCUS PATTERN` section highlighting the specific pattern
+- The agent starts the conversation using that pattern
+- After practicing it a few times, the agent can naturally expand to related patterns
+
+**User Flow:**
+
+1. User clicks "Practice" button on a specific pattern in the UI
+2. Frontend calls `startPatternPractice(patternNumber)` which:
+   - Sets `focusPattern` in the store
+   - Clears messages and resets exchange count
+   - Ensures agent mode is "practice"
+3. Next API call includes `focus_pattern` parameter
+4. Agent receives focused instructions in its system prompt
+
+### 3. Agent Controls TTS (Not a Pipeline)
 
 This is NOT a traditional pipeline where text automatically flows through TTS. The LLM agent has a `speak()` tool and decides:
 
@@ -132,11 +151,11 @@ This is NOT a traditional pipeline where text automatically flows through TTS. T
 - **Which language** to use (en/es)
 - **Whether** to speak at all (can just return text)
 
-### 3. Exchange Count for Role Flipping
+### 4. Exchange Count for Role Flipping
 
 In practice mode, the frontend tracks `exchange_count`. After 3-5 exchanges, the agent prompts the student to ask questions instead of just responding.
 
-### 4. Agentic RAG via get_teaching_help
+### 5. Agentic RAG via get_teaching_help
 
 The agent can retrieve vocabulary, patterns, and exercises from the current lesson context using the `get_teaching_help` tool. This enables context-aware responses.
 

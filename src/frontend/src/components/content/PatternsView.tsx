@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Play, Pause } from 'lucide-react'
+import { Play, Pause } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AuthenticatedImage } from '@/components/AuthenticatedImage'
-import type { QAPattern, PhaseState } from '@/types'
+import { useConversationStore } from '@/stores/conversationStore'
+import type { QAPattern } from '@/types'
 
 interface DemoMetadata {
   pattern_number: number
@@ -15,22 +16,15 @@ interface PatternsViewProps {
   patterns: QAPattern[]
   patternImages: string[]
   lessonNumber?: number
-  isPatternPhase?: boolean
-  patternIndex?: number
-  phaseState?: PhaseState | null
-  onPatternClick?: (patternIndex: number) => void
 }
 
 export function PatternsView({
   patterns,
   patternImages,
   lessonNumber,
-  isPatternPhase = false,
-  patternIndex = 0,
-  phaseState,
-  onPatternClick,
 }: PatternsViewProps) {
   const { t } = useTranslation()
+  const { focusPattern, startPatternPractice } = useConversationStore()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -86,44 +80,36 @@ export function PatternsView({
     <div className="p-4 space-y-6">
       {/* Pattern cards */}
       <div className="space-y-4">
-        {patterns.map((pattern, index) => {
-          const isCurrent = isPatternPhase && index === patternIndex
-          const isCompleted =
-            phaseState?.items_completed?.includes(`pattern_${index}`) ?? false
+        {patterns.map((pattern) => {
+          const isFocused = focusPattern === pattern.pattern_number
 
           return (
             <div
               key={pattern.pattern_number}
               className={cn(
                 'rounded-lg border p-4 transition-colors',
-                isCurrent && 'bg-primary/10 border-primary border-l-4',
-                isCompleted && !isCurrent && 'opacity-75'
+                isFocused && 'bg-primary/10 border-primary border-l-4'
               )}
             >
               <div className="flex items-start gap-3">
-                {isCompleted && (
-                  <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                )}
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
                       {t('patterns.pattern', { number: pattern.pattern_number })}
                     </span>
-                    {onPatternClick && (
-                      <button
-                        type="button"
-                        onClick={() => onPatternClick(index)}
-                        className={cn(
-                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-                          isCurrent
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        )}
-                      >
-                        <Play className="h-3 w-3" />
-                        {isCurrent ? t('patterns.practicing') : t('patterns.practice')}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => startPatternPractice(pattern.pattern_number)}
+                      className={cn(
+                        'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                        isFocused
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-green-600 hover:bg-green-700 text-white'
+                      )}
+                    >
+                      <Play className="h-3 w-3" />
+                      {isFocused ? t('patterns.practicing') : t('patterns.practice')}
+                    </button>
                   </div>
                   <div className="space-y-2">
                     <div>

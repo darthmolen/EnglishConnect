@@ -8,10 +8,29 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.content import VocabularyItem, QAPattern, Lesson
+
+
+# Category mappings for natural language queries
+CATEGORY_MAP = {
+    # Spanish
+    "sustantivos": "noun",
+    "sustantivo": "noun",
+    "verbos": "verb",
+    "verbo": "verb",
+    "adjetivos": "adjective",
+    "adjetivo": "adjective",
+    # English
+    "nouns": "noun",
+    "noun": "noun",
+    "verbs": "verb",
+    "verb": "verb",
+    "adjectives": "adjective",
+    "adjective": "adjective",
+}
 
 
 # Content paths
@@ -35,15 +54,68 @@ class TeachingHelpService:
         """
         self.session = session
 
+    def _parse_query(self, query: str) -> dict:
+        """Parse natural language query into structured search parameters.
+
+        Extracts lesson numbers and category keywords from queries like:
+        - "sustantivos lección 6" → lesson_filter=6, category="noun"
+        - "nouns from lesson 6" → lesson_filter=6, category="noun"
+        - "what does brother mean" → lesson_filter=None, category=None, keywords=["brother"]
+
+        Args:
+            query: Natural language query string
+
+        Returns:
+            Dict with keys: lesson_filter, category, keywords
+        """
+        result = {
+            "lesson_filter": None,
+            "category": None,
+            "keywords": [],
+        }
+
+        query_lower = query.lower()
+
+        # Extract lesson number: "lección 6", "leccion 6", "lesson 6"
+        lesson_match = re.search(r'lecci[oó]n\s+(\d+)|lesson\s+(\d+)', query_lower)
+        if lesson_match:
+            result["lesson_filter"] = int(lesson_match.group(1) or lesson_match.group(2))
+
+        # Extract category from keywords
+        for keyword, category in CATEGORY_MAP.items():
+            if keyword in query_lower:
+                result["category"] = category
+                break
+
+        # Extract remaining keywords (words not matching lesson/category patterns)
+        # Remove lesson patterns and category words
+        cleaned = re.sub(r'lecci[oó]n\s+\d+|lesson\s+\d+', '', query_lower)
+        for cat_word in CATEGORY_MAP.keys():
+            cleaned = cleaned.replace(cat_word, '')
+        # Remove common filler words
+        cleaned = re.sub(r'\b(de|la|el|los|las|from|the|of|and|y)\b', '', cleaned)
+        # Extract remaining words
+        words = [w.strip() for w in cleaned.split() if w.strip()]
+        result["keywords"] = words
+
+        return result
+
     async def search_cumulative_vocab(
-        self, query: str, up_to_lesson: int, limit: int = 5
+        self,
+        query: str,
+        up_to_lesson: int,
+        limit: int = 5,
+        lesson_filter: Optional[int] = None,
+        category: Optional[str] = None,
     ) -> list[VocabularyItem]:
-        """Search vocabulary from all lessons up to specified lesson number.
+        """Search vocabulary from lessons, with optional lesson/category filters.
 
         Args:
             query: Search term (matches English word or Spanish translation)
             up_to_lesson: Maximum lesson number to include
             limit: Maximum results to return
+            lesson_filter: If set, only search this specific lesson
+            category: If set, only return vocab with this category (noun, verb, etc.)
 
         Returns:
             List of matching VocabularyItem objects
@@ -51,31 +123,57 @@ class TeachingHelpService:
         if not self.session:
             return []
 
-        # Build query with ILIKE for case-insensitive partial matching
-        query_lower = f"%{query.lower()}%"
-
-        # Get lesson IDs for lessons up to the specified number
-        lesson_result = await self.session.execute(
-            select(Lesson.id).where(
-                Lesson.course_id == "ec1",
-                Lesson.lesson_number <= up_to_lesson
+        # Determine which lessons to search
+        if lesson_filter is not None:
+            # Search only the specified lesson
+            lesson_result = await self.session.execute(
+                select(Lesson.id).where(
+                    Lesson.course_id == "ec1",
+                    Lesson.lesson_number == lesson_filter
+                )
             )
-        )
+        else:
+            # Search all lessons up to the specified number
+            lesson_result = await self.session.execute(
+                select(Lesson.id).where(
+                    Lesson.course_id == "ec1",
+                    Lesson.lesson_number <= up_to_lesson
+                )
+            )
         lesson_ids = [row[0] for row in lesson_result.fetchall()]
 
         if not lesson_ids:
             return []
 
-        # Search vocabulary in those lessons
+        # Build where conditions
+        conditions = [VocabularyItem.lesson_id.in_(lesson_ids)]
+
+        # Add category filter if specified
+        if category:
+            conditions.append(VocabularyItem.category == category)
+
+        # Add keyword search only if there are actual keywords to search
+        # (not if the query is just category/lesson references)
+        parsed = self._parse_query(query)
+        if parsed["keywords"]:
+            # Search by remaining keywords
+            keyword_conditions = []
+            for keyword in parsed["keywords"]:
+                keyword_pattern = f"%{keyword}%"
+                keyword_conditions.append(
+                    or_(
+                        VocabularyItem.english_word.ilike(keyword_pattern),
+                        VocabularyItem.spanish_translation.ilike(keyword_pattern),
+                    )
+                )
+            if keyword_conditions:
+                conditions.append(or_(*keyword_conditions))
+
+        # If we have category or lesson filter but no keywords, return all matching
+        # Otherwise we'd return nothing for "sustantivos lección 6"
         result = await self.session.execute(
             select(VocabularyItem)
-            .where(
-                VocabularyItem.lesson_id.in_(lesson_ids),
-                or_(
-                    VocabularyItem.english_word.ilike(query_lower),
-                    VocabularyItem.spanish_translation.ilike(query_lower),
-                )
-            )
+            .where(and_(*conditions))
             .limit(limit)
         )
         return list(result.scalars().all())
@@ -250,6 +348,10 @@ class TeachingHelpService:
         This is the main method called by the get_teaching_help tool.
         Combines vocabulary, patterns, exercises, and explanations.
 
+        Parses natural language queries to extract:
+        - Lesson numbers: "lección 6" → filter to lesson 6
+        - Categories: "sustantivos" → filter to category="noun"
+
         Args:
             query: What the student is confused about
             lesson_number: Current lesson number (searches up to this lesson)
@@ -257,8 +359,16 @@ class TeachingHelpService:
         Returns:
             Dict with keys: vocabulary, patterns, exercises, explanation, source
         """
-        # Search DB for vocabulary and patterns
-        vocabulary = await self.search_cumulative_vocab(query, lesson_number)
+        # Parse query to extract structured search parameters
+        parsed = self._parse_query(query)
+
+        # Search DB for vocabulary with parsed filters
+        vocabulary = await self.search_cumulative_vocab(
+            query=query,
+            up_to_lesson=lesson_number,
+            lesson_filter=parsed["lesson_filter"],
+            category=parsed["category"],
+        )
         patterns = await self.search_patterns(query, lesson_number)
 
         # Get workbook exercises and lesson explanation (file-based)

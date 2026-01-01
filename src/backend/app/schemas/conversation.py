@@ -27,6 +27,7 @@ class ConversationRequest(BaseModel):
     instruction_language: Literal["es", "en"] = "es"  # Language for explanations
     history: list[ChatMessage] = []
     user_id: str | None = None  # Optional user ID for memory tracking
+    focus_pattern: int | None = None  # Optional pattern number to focus practice on
 
 
 class ConversationResponse(BaseModel):

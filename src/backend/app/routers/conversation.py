@@ -81,6 +81,7 @@ async def conversation(
         exchange_count=request.exchange_count,
         instruction_language=request.instruction_language,
         performance_context=performance_context,
+        focus_pattern=request.focus_pattern,
     )
     system_prompt = agent.build_system_prompt()
 
@@ -97,7 +98,8 @@ async def conversation(
     # Use authenticated user's ID
     user_id = str(current_user.id)
 
-    logger.info(f"Conversation request: mode={request.mode}, exchange_count={request.exchange_count}")
+    focus_info = f", focus_pattern={request.focus_pattern}" if request.focus_pattern else ""
+    logger.info(f"Conversation request: mode={request.mode}, exchange_count={request.exchange_count}{focus_info}")
 
     agent_result = await get_agent_response(
         system_prompt=system_prompt,

@@ -60,7 +60,9 @@
   "vocabulary": {
     "empty": "No hay vocabulario disponible para esta lección",
     "summary": "Escucha cada palabra y repítela en voz alta. Haz clic en el botón de reproducción junto a cualquier palabra para escucharla. Practica diciendo la palabra hasta que te sientas cómodo. Usa el micrófono en la parte inferior de la página si tienes alguna pregunta.",
-    "summaryTitle": "Cómo Practicar"
+    "summaryTitle": "Cómo Practicar",
+    "playingIntro": "Reproduciendo intro...",
+    "skip": "Saltar"
   },
   "practice": {
     "empty": "No hay contenido de práctica disponible para esta lección",

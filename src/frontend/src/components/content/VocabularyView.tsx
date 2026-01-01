@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Volume2, Check, Play, Pause, HelpCircle } from 'lucide-react'
+import { Play, Pause, HelpCircle, SkipForward } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { VocabularyItem, PhaseState } from '@/types'
+import { useConversationStore } from '@/stores/conversationStore'
+import type { VocabularyItem } from '@/types'
 
 interface VocabAudioMetadata {
   english_word: string
@@ -14,9 +15,7 @@ interface VocabAudioMetadata {
 interface VocabularyViewProps {
   vocabulary: VocabularyItem[]
   lessonNumber?: number
-  isVocabPhase?: boolean
-  vocabIndex?: number
-  phaseState?: PhaseState | null
+  courseId?: string
 }
 
 // Category display order
@@ -35,24 +34,96 @@ function formatCategory(cat: string): string {
 export function VocabularyView({
   vocabulary,
   lessonNumber,
-  isVocabPhase = false,
-  vocabIndex = 0,
-  phaseState,
+  courseId = 'ec1',
 }: VocabularyViewProps) {
   const { t } = useTranslation()
+  const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
   const [vocabAudio, setVocabAudio] = useState<VocabAudioMetadata[]>([])
   const [playingWord, setPlayingWord] = useState<string | null>(null)
+  const [introUrl, setIntroUrl] = useState<string | null>(null)
+  const [isPlayingIntro, setIsPlayingIntro] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const introAudioRef = useRef<HTMLAudioElement>(null)
+
+  // Check if intro has been played for this lesson (per language, per page type)
+  const introKey = lessonNumber ? `vocab-${lessonNumber}-${instructionLanguage}` : null
+  const hasIntroPlayed = introKey ? introPlayedKeys.includes(introKey) : true
+
+  // Fetch intro URL when lesson or language changes
+  useEffect(() => {
+    if (!lessonNumber) {
+      setIntroUrl(null)
+      return
+    }
+
+    fetch(`/api/audio/intros/${courseId}?lesson_number=${lessonNumber}&language=${instructionLanguage}&page_type=vocabulary`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.stream_url) {
+          setIntroUrl(data.stream_url)
+        } else {
+          setIntroUrl(null)
+        }
+      })
+      .catch(() => setIntroUrl(null))
+  }, [lessonNumber, courseId, instructionLanguage])
+
+  // Auto-play intro when entering vocabulary section (if not already played)
+  useEffect(() => {
+    if (!introUrl || hasIntroPlayed || !lessonNumber) return
+
+    const audio = introAudioRef.current
+    if (!audio) return
+
+    // Set source and play
+    audio.src = introUrl
+    audio.play()
+      .then(() => {
+        setIsPlayingIntro(true)
+      })
+      .catch(() => {
+        // User may not have interacted with page yet, skip auto-play
+        setIsPlayingIntro(false)
+      })
+  }, [introUrl, hasIntroPlayed, lessonNumber])
+
+  // Handle intro audio end
+  useEffect(() => {
+    const audio = introAudioRef.current
+    if (!audio) return
+
+    const handleEnded = () => {
+      setIsPlayingIntro(false)
+      if (introKey) {
+        markIntroPlayed(introKey)
+      }
+    }
+
+    audio.addEventListener('ended', handleEnded)
+    return () => audio.removeEventListener('ended', handleEnded)
+  }, [introKey, markIntroPlayed])
+
+  const handleSkipIntro = () => {
+    const audio = introAudioRef.current
+    if (audio) {
+      audio.pause()
+      audio.currentTime = 0
+    }
+    setIsPlayingIntro(false)
+    if (introKey) {
+      markIntroPlayed(introKey)
+    }
+  }
 
   // Fetch vocab audio for this lesson
   useEffect(() => {
     if (!lessonNumber) return
 
-    fetch(`/api/audio/vocab/ec1?lesson_number=${lessonNumber}`)
+    fetch(`/api/audio/vocab/${courseId}?lesson_number=${lessonNumber}`)
       .then(r => r.ok ? r.json() : [])
       .then(setVocabAudio)
       .catch(() => setVocabAudio([]))
-  }, [lessonNumber])
+  }, [lessonNumber, courseId])
 
   // Handle audio end
   useEffect(() => {
@@ -113,7 +184,33 @@ export function VocabularyView({
   })
 
   return (
-    <div className="p-4">
+    <div className="flex flex-col h-full">
+      {/* Hidden audio element for intro playback */}
+      <audio ref={introAudioRef} />
+
+      {/* Intro playing banner */}
+      {isPlayingIntro && (
+        <div className="px-4 py-2 border-b bg-primary/10 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-sm font-medium">{t('vocabulary.playingIntro', 'Playing intro...')}</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleSkipIntro}
+            className={cn(
+              'flex items-center gap-1 rounded px-2 py-1 text-xs',
+              'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground',
+              'transition-colors'
+            )}
+          >
+            <SkipForward className="h-3 w-3" />
+            <span>{t('practice.skip', 'Skip')}</span>
+          </button>
+        </div>
+      )}
+
+      <div className="p-4 flex-1 overflow-y-auto">
       {/* Summary banner */}
       <div className="mb-4 rounded-lg border bg-blue-50 dark:bg-blue-950/30 p-4">
         <div className="flex items-start gap-3">
@@ -141,24 +238,14 @@ export function VocabularyView({
             </h4>
             <ul className="space-y-1">
               {grouped[category].map(({ item, index }) => {
-                const isCurrent = isVocabPhase && index === vocabIndex
-                const isCompleted =
-                  phaseState?.items_completed?.includes(`vocab_${index}`) ?? false
                 const audioMeta = findAudio(item.english)
                 const isPlaying = playingWord === item.english
 
                 return (
                   <li
                     key={index}
-                    className={cn(
-                      'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                      isCurrent && 'bg-primary/20 border-l-4 border-primary -ml-0.5',
-                      isCompleted && !isCurrent && 'text-muted-foreground'
-                    )}
+                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
                   >
-                    {isCompleted && (
-                      <Check className="h-3 w-3 text-green-600 shrink-0" />
-                    )}
                     {audioMeta && (
                       <button
                         type="button"
@@ -181,9 +268,6 @@ export function VocabularyView({
                     <span className="font-medium">{item.english}</span>
                     <span className="text-muted-foreground">—</span>
                     <span className="text-muted-foreground text-xs">{item.spanish}</span>
-                    {isCurrent && !audioMeta && (
-                      <Volume2 className="h-3 w-3 ml-auto text-primary shrink-0" />
-                    )}
                   </li>
                 )
               })}
@@ -194,6 +278,7 @@ export function VocabularyView({
 
       {/* Hidden audio element for playback */}
       <audio ref={audioRef} />
+      </div>
     </div>
   )
 }

@@ -13,6 +13,7 @@ export function useConversation() {
     agentMode,
     exchangeCount,
     instructionLanguage,
+    focusPattern,
     addMessage,
     clearMessages,
     setIsLoading,
@@ -96,7 +97,8 @@ export function useConversation() {
           messages,
           agentMode,
           exchangeCount,
-          instructionLanguage
+          instructionLanguage,
+          focusPattern
         )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
@@ -127,6 +129,7 @@ export function useConversation() {
       agentMode,
       exchangeCount,
       instructionLanguage,
+      focusPattern,
       addMessage,
       setIsLoading,
       playAudioChunks,
@@ -182,7 +185,8 @@ export function useConversation() {
           messages,
           agentMode,
           exchangeCount,
-          instructionLanguage
+          instructionLanguage,
+          focusPattern
         )
         addMessage({ role: 'assistant', content: response.text, agentMode })
 
@@ -213,6 +217,7 @@ export function useConversation() {
       agentMode,
       exchangeCount,
       instructionLanguage,
+      focusPattern,
       addMessage,
       setIsLoading,
       playAudioChunks,

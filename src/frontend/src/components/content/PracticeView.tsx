@@ -6,18 +6,14 @@ import { DemoPlayer } from './DemoPlayer'
 import { PatternsView } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
 import { cn } from '@/lib/utils'
-import type { VocabularyItem, QAPattern, PhaseState } from '@/types'
+import type { VocabularyItem, QAPattern } from '@/types'
 
 interface PracticeViewProps {
   vocabulary: VocabularyItem[]
   patterns: QAPattern[]
   patternImages: string[]
-  isPatternPhase?: boolean
-  patternIndex?: number
-  phaseState?: PhaseState | null
   courseId?: string
   lessonNumber?: number
-  onPatternClick?: (patternIndex: number) => void
   onStartConversation?: () => void
 }
 
@@ -25,12 +21,8 @@ export function PracticeView({
   vocabulary,
   patterns,
   patternImages,
-  isPatternPhase = false,
-  patternIndex = 0,
-  phaseState,
   courseId = 'ec1',
   lessonNumber,
-  onPatternClick,
   onStartConversation,
 }: PracticeViewProps) {
   const { t } = useTranslation()
@@ -53,7 +45,7 @@ export function PracticeView({
       return
     }
 
-    fetch(`/api/audio/intros/${courseId}?lesson_number=${lessonNumber}&language=${instructionLanguage}`)
+    fetch(`/api/audio/intros/${courseId}?lesson_number=${lessonNumber}&language=${instructionLanguage}&page_type=practice`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.stream_url) {
@@ -197,10 +189,6 @@ export function PracticeView({
             patterns={patterns}
             patternImages={patternImages}
             lessonNumber={lessonNumber}
-            isPatternPhase={isPatternPhase}
-            patternIndex={patternIndex}
-            phaseState={phaseState}
-            onPatternClick={onPatternClick}
           />
         </div>
       )}

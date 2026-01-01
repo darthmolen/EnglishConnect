@@ -148,20 +148,24 @@ async def get_intro(
     course_id: str,
     lesson_number: int = Query(..., description="Lesson number"),
     language: str = Query("es", description="Language for intro: 'en' or 'es'"),
+    page_type: str = Query("practice", description="Page type: 'practice' or 'vocabulary'"),
 ) -> dict:
-    """Get intro audio URL for a lesson in the specified language.
+    """Get intro audio URL for a lesson page in the specified language.
 
     Args:
         course_id: Course identifier (e.g., 'ec1')
         lesson_number: Lesson number (required)
         language: Language for intro ('en' or 'es', default 'es')
+        page_type: Page type ('practice' or 'vocabulary', default 'practice')
 
     Returns:
         Dict with stream_url if intro exists, or empty dict
     """
-    # Validate language
+    # Validate inputs
     lang = language if language in ("en", "es") else "es"
-    intro_path = AUDIO_BASE / course_id / "intros" / f"lesson-{lesson_number:02d}-{lang}.wav"
+    page = page_type if page_type in ("practice", "vocabulary") else "practice"
+
+    intro_path = AUDIO_BASE / course_id / "intros" / page / f"lesson-{lesson_number:02d}-{lang}.wav"
     if not intro_path.exists():
         return {}
 
@@ -169,6 +173,7 @@ async def get_intro(
     return {
         "lesson_number": lesson_number,
         "language": lang,
+        "page_type": page,
         "stream_url": f"/api/audio/stream/{relative_path}",
     }
 

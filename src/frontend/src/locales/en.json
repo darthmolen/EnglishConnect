@@ -60,7 +60,9 @@
   "vocabulary": {
     "empty": "No vocabulary available for this lesson",
     "summary": "Listen to each word and repeat it out loud. Click the play button next to any word to hear it. Practice saying the word until you feel comfortable. Use the microphone at the bottom of the page if you have any questions.",
-    "summaryTitle": "How to Practice"
+    "summaryTitle": "How to Practice",
+    "playingIntro": "Playing intro...",
+    "skip": "Skip"
   },
   "practice": {
     "empty": "No practice content available for this lesson",

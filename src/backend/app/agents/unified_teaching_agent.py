@@ -32,6 +32,7 @@ class UnifiedTeachingAgent:
         exchange_count: int = 0,
         instruction_language: str = "es",
         performance_context: Optional[PerformanceContext] = None,
+        focus_pattern: Optional[int] = None,
     ):
         """Initialize the unified teaching agent.
 
@@ -41,12 +42,14 @@ class UnifiedTeachingAgent:
             exchange_count: Number of conversation exchanges (for flip detection)
             instruction_language: Language for explanations ('es' or 'en', default 'es')
             performance_context: Optional tracking of student struggle signals
+            focus_pattern: Optional pattern number to focus practice on
         """
         self.lesson = lesson
         self.mode = mode
         self.exchange_count = exchange_count
         self.instruction_language = instruction_language
         self.performance_context = performance_context or PerformanceContext()
+        self.focus_pattern = focus_pattern
 
     def build_system_prompt(self) -> str:
         """Build mode-specific system prompt for the LLM.
@@ -121,6 +124,9 @@ class UnifiedTeachingAgent:
         # Flip instruction based on exchange count
         flip_instruction = self._get_flip_instruction()
 
+        # Focus pattern instruction
+        focus_instruction = self._get_focus_instruction()
+
         template = load_prompt("agent/mode_practice.md")
         return render_prompt(
             template,
@@ -132,7 +138,30 @@ class UnifiedTeachingAgent:
             needs_help=perf_ctx["needs_help"],
             instruction_language=instruction_lang_text,
             flip_instruction=flip_instruction,
+            focus_instruction=focus_instruction,
         )
+
+    def _get_focus_instruction(self) -> str:
+        """Get focus pattern instruction if a specific pattern is targeted."""
+        if not self.focus_pattern:
+            return ""
+
+        # Find the focused pattern
+        focused = None
+        for p in self.lesson.patterns:
+            if p.pattern_number == self.focus_pattern:
+                focused = p
+                break
+
+        if not focused:
+            return ""
+
+        return f"""
+**FOCUS PATTERN**: The student wants to practice Pattern {self.focus_pattern} specifically.
+- Q: {focused.question_template}
+- A: {focused.answer_template}
+
+Start the conversation using THIS pattern. After practicing it a few times, you can naturally expand to related patterns."""
 
     def _format_vocab_list(self) -> str:
         """Format vocabulary list for prompt."""

@@ -397,3 +397,96 @@ class TestEdgeCases:
 
         # Should mention English for explanations
         assert "english" in prompt.lower()
+
+
+class TestFocusPattern:
+    """Test focus_pattern functionality for targeted practice."""
+
+    def test_init_with_focus_pattern(self, sample_lesson):
+        """Agent should accept focus_pattern parameter."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+            focus_pattern=1,
+        )
+
+        assert agent.focus_pattern == 1
+
+    def test_init_without_focus_pattern(self, sample_lesson):
+        """Agent should default focus_pattern to None."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+        )
+
+        assert agent.focus_pattern is None
+
+    def test_focus_pattern_in_prompt(self, sample_lesson):
+        """Focus pattern should appear in system prompt."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+            focus_pattern=1,
+        )
+
+        prompt = agent.build_system_prompt()
+
+        # Should include focus pattern indicator
+        assert "focus" in prompt.lower() or "pattern 1" in prompt.lower()
+        # Should include the specific pattern's Q&A
+        assert "What do you like to do?" in prompt
+
+    def test_focus_pattern_includes_pattern_details(self, sample_lesson):
+        """Focus pattern prompt should include specific pattern Q&A."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+            focus_pattern=2,
+        )
+
+        prompt = agent.build_system_prompt()
+
+        # Pattern 2 should be highlighted
+        assert "Do you like to" in prompt
+        assert "Yes, I do" in prompt or "No, I don't" in prompt
+
+    def test_focus_pattern_ignored_in_help_mode(self, sample_lesson):
+        """Focus pattern should not affect help mode."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="help",
+            focus_pattern=1,
+        )
+
+        prompt = agent.build_system_prompt()
+
+        # Help mode should not have focus pattern section
+        # (it shouldn't break, just not use it)
+        assert len(prompt) > 0
+
+    def test_invalid_focus_pattern_number(self, sample_lesson):
+        """Agent should handle non-existent pattern number gracefully."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+            focus_pattern=99,  # Pattern doesn't exist
+        )
+
+        # Should not raise
+        prompt = agent.build_system_prompt()
+        assert len(prompt) > 0
+
+    def test_focus_pattern_resets_with_lesson(self, sample_lesson):
+        """Focus pattern combined with exchange count of 0 indicates fresh start."""
+        agent = UnifiedTeachingAgent(
+            lesson=sample_lesson,
+            mode="practice",
+            exchange_count=0,
+            focus_pattern=1,
+        )
+
+        prompt = agent.build_system_prompt()
+
+        # Should lead with the focused pattern
+        lead_indicators = ["start", "lead", "ask", "begin"]
+        assert any(ind in prompt.lower() for ind in lead_indicators)

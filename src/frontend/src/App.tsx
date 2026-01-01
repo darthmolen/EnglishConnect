@@ -21,8 +21,6 @@ function AppContent() {
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
   const {
-    currentPhase,
-    phaseState,
     activeSection,
     setActiveSection,
     completedGoals,
@@ -58,13 +56,6 @@ function AppContent() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
-    }
-  }
-
-  const handlePatternClick = (patternIndex: number) => {
-    if (selectedLessonNumber && !isLoading) {
-      // Send a message that will trigger the agent to switch to this pattern
-      sendTextMessage(`Let's practice pattern ${patternIndex + 1}`)
     }
   }
 
@@ -189,11 +180,8 @@ function AppContent() {
           <ContentWindow
             lesson={currentLesson}
             activeSection={activeSection}
-            currentPhase={currentPhase}
-            phaseState={phaseState}
             completedGoals={lessonGoals}
             onToggleGoal={toggleGoal}
-            onPatternClick={handlePatternClick}
             onStartConversation={handleStartConversation}
             className="h-full"
           />
