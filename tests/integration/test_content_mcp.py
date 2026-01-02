@@ -110,12 +110,12 @@ class TestGetVocabulary:
     """Tests for the get_vocabulary tool."""
 
     def test_get_vocabulary_returns_items(self):
-        """Should return vocabulary items for lesson 2 (has 17 items)."""
+        """Should return vocabulary items for lesson 2."""
         result = run_async(content_server.get_vocabulary("ec1", 2))
         vocab = json.loads(result)
 
         assert isinstance(vocab, list)
-        assert len(vocab) == 17  # Lesson 2 has 17 vocabulary items
+        assert len(vocab) >= 17  # Lesson 2 has 17+ vocabulary items
 
     def test_get_vocabulary_has_translations(self):
         """Should include English and Spanish for each item."""

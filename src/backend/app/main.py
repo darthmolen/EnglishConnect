@@ -73,11 +73,10 @@ async def health():
 
 
 # Import and include routers
-from app.routers import lessons, conversation, tts, progress, auth, content, audio
+from app.routers import lessons, conversation, progress, auth, content, audio
 
 app.include_router(lessons.router)
 app.include_router(conversation.router)  # Unified conversation (/api/practice/conversation)
-app.include_router(tts.router)
 app.include_router(progress.router)
 app.include_router(auth.router)
 app.include_router(content.router)  # Authenticated content images (/api/content/images)
