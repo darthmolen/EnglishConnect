@@ -266,6 +266,53 @@ Examples: Why do you like to cook? I like to cook because it's fun.
         assert explanation is None
 
 
+class TestQueryParsing:
+    """Test natural language query parsing."""
+
+    def test_parse_query_detects_pattern_keywords_spanish(self):
+        """Should detect 'frases' as a pattern request."""
+        service = TeachingHelpService(None)
+        parsed = service._parse_query("dame las frases de leccion 6")
+
+        assert parsed["wants_patterns"] is True
+        assert 6 in parsed["lesson_filters"]
+
+    def test_parse_query_detects_pattern_keywords_english(self):
+        """Should detect 'patterns' as a pattern request."""
+        service = TeachingHelpService(None)
+        parsed = service._parse_query("show me patterns from lesson 5")
+
+        assert parsed["wants_patterns"] is True
+        assert 5 in parsed["lesson_filters"]
+
+    def test_parse_query_detects_multiple_lessons(self):
+        """Should extract multiple lesson numbers from query."""
+        service = TeachingHelpService(None)
+        parsed = service._parse_query("frases de leccion 6 y 7")
+
+        assert parsed["wants_patterns"] is True
+        assert 6 in parsed["lesson_filters"]
+        assert 7 in parsed["lesson_filters"]
+
+    def test_parse_query_category_without_patterns(self):
+        """Should detect category when not asking for patterns."""
+        service = TeachingHelpService(None)
+        parsed = service._parse_query("sustantivos de leccion 6")
+
+        assert parsed["wants_patterns"] is False
+        assert parsed["category"] == "noun"
+        assert 6 in parsed["lesson_filters"]
+
+    def test_parse_query_backward_compatibility(self):
+        """Should maintain lesson_filter for backward compatibility."""
+        service = TeachingHelpService(None)
+        parsed = service._parse_query("what does brother mean")
+
+        # lesson_filter should be None when no lesson specified
+        assert parsed["lesson_filter"] is None
+        assert "brother" in parsed["keywords"]
+
+
 class TestGetTeachingHelp:
     """Test the main get_teaching_help method that combines all sources."""
 

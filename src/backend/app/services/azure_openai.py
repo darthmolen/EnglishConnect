@@ -160,11 +160,85 @@ RECORD_ATTEMPT_TOOL = {
     }
 }
 
+# Render vocabulary card tool - displays inline vocabulary with bilingual audio
+RENDER_VOCABULARY_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "render_vocabulary",
+        "description": """Render an interactive vocabulary card with bilingual audio in the conversation.
+
+USE THIS WHEN:
+- Student asks about a word: "Que significa 'exercise'?" or "What does X mean?"
+- Student asks how to say something: "Como se dice ejercicio en ingles?"
+- You want to show pronunciation with high-quality audio
+
+BEHAVIOR:
+- Shows vocabulary card with English word, Spanish translation, and category
+- Card has a play button for bilingual audio (English + Spanish pronunciation)
+- If word is not in curriculum (lessons 1 through current), returns not_in_curriculum=true
+  - In that case, explain the word using speak() instead
+
+DO NOT USE FOR:
+- General conversation not about vocabulary
+- When student already knows the word""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "english_word": {
+                    "type": "string",
+                    "description": "The English word to show (e.g., 'exercise', 'brother')"
+                }
+            },
+            "required": ["english_word"]
+        }
+    }
+}
+
+# Render pattern card tool - displays inline Q&A pattern with demo audio
+RENDER_PATTERN_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "render_pattern",
+        "description": """Render a Q&A pattern card with demo audio in the conversation.
+
+USE THIS WHEN:
+- Student asks for patterns/frases: "Dame las frases" or "Show me the patterns"
+- Student needs to practice sentence structures
+- Explaining how to ask/answer questions
+
+BEHAVIOR:
+- Shows pattern card with question template and answer template
+- Card has a play button for demo audio
+- Each lesson has 1-2 patterns
+
+EXAMPLE FLOW for "Dame las frases de lección 7":
+1. speak("Aquí están los patrones de la lección 7:", language="es")
+2. render_pattern(pattern_number=1, lesson_number=7)
+3. render_pattern(pattern_number=2, lesson_number=7)""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pattern_number": {
+                    "type": "integer",
+                    "description": "Pattern number (1 or 2) from the lesson"
+                },
+                "lesson_number": {
+                    "type": "integer",
+                    "description": "Lesson number to get pattern from (optional, defaults to current lesson)"
+                }
+            },
+            "required": ["pattern_number"]
+        }
+    }
+}
+
 # Tool definitions for unified teaching agent (help + practice modes)
 UNIFIED_AGENT_TOOLS = [
     SPEAK_TOOL,
     GET_TEACHING_HELP_TOOL,
     RECORD_ATTEMPT_TOOL,
+    RENDER_VOCABULARY_TOOL,
+    RENDER_PATTERN_TOOL,
 ]
 
 # Tool definitions for the structured lesson teacher agent (legacy)

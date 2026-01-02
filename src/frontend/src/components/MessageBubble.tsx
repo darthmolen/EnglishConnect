@@ -1,10 +1,27 @@
 import { useTranslation } from 'react-i18next'
 import { GraduationCap, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { ChatMessage, AgentMode } from '@/types'
+import type { ChatMessage, AgentMode, RichContent, VocabularyCardData, PatternCardData } from '@/types'
+import { InlineVocabularyCard } from './inline/InlineVocabularyCard'
+import { InlinePatternCard } from './inline/InlinePatternCard'
 
 interface MessageBubbleProps {
   message: ChatMessage
+}
+
+// Rich content renderer
+function RichContentRenderer({ content }: { content: RichContent }) {
+  switch (content.type) {
+    case 'vocabulary_card':
+      return <InlineVocabularyCard data={content.data as VocabularyCardData} />
+    case 'pattern_card':
+      return <InlinePatternCard data={content.data as PatternCardData} />
+    case 'lesson_link':
+      // TODO: Implement LessonLink
+      return null
+    default:
+      return null
+  }
 }
 
 // Agent display configuration (icons and colors only - names are translated)
@@ -54,6 +71,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           )}
         >
           <p className="whitespace-pre-wrap">{message.content}</p>
+
+          {/* Rich content (vocabulary cards, etc.) */}
+          {message.richContent?.map((content, idx) => (
+            <RichContentRenderer key={idx} content={content} />
+          ))}
         </div>
       </div>
     </div>

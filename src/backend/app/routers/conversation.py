@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.middleware.auth import CurrentUser
-from app.schemas.conversation import ConversationRequest, ConversationResponse
+from app.schemas.conversation import ConversationRequest, ConversationResponse, AudioChunk
 from app.services.lesson_service import LessonService
 from app.services.azure_openai import get_agent_response, UNIFIED_AGENT_TOOLS
 from app.services.tts_service import synthesize_speech
@@ -22,7 +22,10 @@ from app.services.tool_handlers import (
     speak_tool_handler,
     create_teaching_help_handler,
     create_record_attempt_handler,
+    create_render_vocabulary_handler,
+    create_render_pattern_handler,
 )
+from app.schemas.conversation import RichContent
 from app.services.session_service import SessionService
 from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.models.performance import PerformanceContext
@@ -90,6 +93,8 @@ async def conversation(
         "speak": speak_tool_handler,
         "get_teaching_help": create_teaching_help_handler(db, request.lesson_number),
         "record_attempt": create_record_attempt_handler(performance_context),
+        "render_vocabulary": create_render_vocabulary_handler(db, request.lesson_number),
+        "render_pattern": create_render_pattern_handler(db, request.lesson_number),
     }
 
     # Call the agent with tool support
@@ -110,39 +115,47 @@ async def conversation(
         tools=UNIFIED_AGENT_TOOLS,
     )
 
-    # Extract audio and spoken text from tool results
-    # Collect all speak() calls for multi-audio support
-    audio_base64 = None
-    audio_format = "wav"
-    language = "en"
-    spoken_text = None
-    english_speak = None
-    spanish_speak = None
+    # Extract audio, spoken text, and rich content from tool results
+    # Collect ALL speak() calls in order for sequential playback
+    audio_chunks: list[AudioChunk] = []
+    rich_content_items: list[RichContent] = []
 
     for tool_result in agent_result.get("tool_results", []):
         if tool_result.get("tool") == "speak" and tool_result.get("success"):
             result_data = tool_result.get("result", {})
-            if result_data.get("spoken"):
-                result_lang = result_data.get("language", "en")
-                # Capture first of each language type
-                if result_lang == "en" and english_speak is None:
-                    english_speak = result_data
-                elif result_lang == "es" and spanish_speak is None:
-                    spanish_speak = result_data
+            if result_data.get("spoken") and result_data.get("audio_base64"):
+                audio_chunks.append(AudioChunk(
+                    audio_base64=result_data["audio_base64"],
+                    format=result_data.get("format", "wav"),
+                    language=result_data.get("language", "en"),
+                    text=result_data.get("text", ""),
+                ))
 
-    # Prefer English, fall back to Spanish only if no English speak() was called
-    chosen_speak = english_speak if english_speak else spanish_speak
-    if chosen_speak:
-        audio_base64 = chosen_speak.get("audio_base64")
-        audio_format = chosen_speak.get("format", "wav")
-        language = chosen_speak.get("language", "en")
-        spoken_text = chosen_speak.get("text")
-        if english_speak and spanish_speak:
-            logger.info(
-                "Agent made both EN and ES speak() calls - using English. "
-                f"EN: {english_speak.get('text', '')[:50]}... "
-                f"ES: {spanish_speak.get('text', '')[:50]}..."
-            )
+        # Collect rich content from render_vocabulary calls
+        if tool_result.get("tool") == "render_vocabulary" and tool_result.get("success"):
+            result_data = tool_result.get("result", {})
+            if result_data.get("rich_content"):
+                rich_content_items.append(RichContent(**result_data["rich_content"]))
+
+        # Collect rich content from render_pattern calls
+        if tool_result.get("tool") == "render_pattern" and tool_result.get("success"):
+            result_data = tool_result.get("result", {})
+            if result_data.get("rich_content"):
+                rich_content_items.append(RichContent(**result_data["rich_content"]))
+
+    # Backward compatibility: set audio_base64/format/language from first chunk
+    audio_base64 = None
+    audio_format = "wav"
+    language = "en"
+    spoken_text = None
+    if audio_chunks:
+        first_chunk = audio_chunks[0]
+        audio_base64 = first_chunk.audio_base64
+        audio_format = first_chunk.format
+        language = first_chunk.language
+        spoken_text = first_chunk.text
+        if len(audio_chunks) > 1:
+            logger.info(f"Agent made {len(audio_chunks)} speak() calls - all captured in audio_chunks")
 
     # Use spoken text if available, otherwise fall back to agent's text response
     response_text = spoken_text if spoken_text else agent_result["text"]
@@ -189,4 +202,6 @@ async def conversation(
         audio_base64=audio_base64,
         audio_format=audio_format,
         language=language,
+        rich_content=rich_content_items if rich_content_items else None,
+        audio_chunks=audio_chunks if audio_chunks else None,
     )

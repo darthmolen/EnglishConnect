@@ -322,6 +322,31 @@ But have no Spanish translation to help them understand what they're practicing.
 
 **Priority**: Medium - Enhances comprehension but not blocking core functionality
 
+## Backlog: TTS Abstraction & Cloud Migration
+
+**Context**: Currently using VibeVoice (local GPU) for agent TTS and Piper (local CPU) for static vocabulary audio. Neither is deployable to cloud without significant infrastructure.
+
+**Goal**: Create abstraction layer enabling seamless switch between local and cloud TTS providers.
+
+**Target Provider**: `gpt-4o-mini-tts` (Azure AI Foundry)
+- 70% cheaper than gpt-realtime
+- 35% fewer word errors in multilingual
+- Native Spanish and English support
+- HD voice quality with emotion detection
+
+**Implementation Steps**:
+1. Create `TTSProvider` interface with `synthesize(text, language, voice_style)`
+2. Implement `VibeVoiceTTS` (current local provider)
+3. Implement `AzureTTS` using gpt-4o-mini-tts API
+4. Add provider selection via environment config (`TTS_PROVIDER=vibevoice|azure`)
+5. Test bilingual quality parity with current Piper static audio
+
+**Timing**: After customer cloud provider preferences are known, before Phase 12 cloud deployment.
+
+**Dependencies**: Phase 12 infrastructure decisions
+
+**Priority**: Medium - Required for cloud deployment but not blocking local development
+
 ## Phase 13: Notifications (Stretch)
 
 - Celery + Redis for task scheduling

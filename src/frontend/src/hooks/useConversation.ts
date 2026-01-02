@@ -100,7 +100,12 @@ export function useConversation() {
           instructionLanguage,
           focusPattern
         )
-        addMessage({ role: 'assistant', content: response.text, agentMode })
+        addMessage({
+          role: 'assistant',
+          content: response.text,
+          agentMode,
+          richContent: response.rich_content,
+        })
 
         // Increment exchange count for flip detection in practice mode
         incrementExchangeCount()
@@ -188,7 +193,12 @@ export function useConversation() {
           instructionLanguage,
           focusPattern
         )
-        addMessage({ role: 'assistant', content: response.text, agentMode })
+        addMessage({
+          role: 'assistant',
+          content: response.text,
+          agentMode,
+          richContent: response.rich_content,
+        })
 
         // Increment exchange count for flip detection in practice mode
         incrementExchangeCount()

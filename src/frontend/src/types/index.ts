@@ -48,6 +48,7 @@ export interface ChatMessage {
   role: "user" | "assistant"
   content: string
   agentMode?: AgentMode  // Track which agent generated this message
+  richContent?: RichContent[] | null  // Inline cards to render after text
 }
 
 export interface ConversationRequest {
@@ -60,12 +61,43 @@ export interface ConversationRequest {
   focus_pattern?: number | null  // Optional: specific pattern to focus practice on
 }
 
+// Rich content types for inline rendering
+export interface VocabularyCardData {
+  english_word: string
+  spanish_translation: string
+  category: string
+  lesson_number: number
+  audio_url: string | null
+}
+
+export interface PatternCardData {
+  pattern_number: number
+  question_template: string
+  answer_template: string
+  lesson_number: number
+  demo_audio_url: string | null
+}
+
+export interface LessonLinkData {
+  lesson_number: number
+  section?: string
+  title: string
+}
+
+export type RichContentType = 'vocabulary_card' | 'pattern_card' | 'lesson_link'
+
+export interface RichContent {
+  type: RichContentType
+  data: VocabularyCardData | PatternCardData | LessonLinkData
+}
+
 export interface ConversationResponse {
   text: string
   lesson_number: number
   audio_base64: string | null
   audio_format: string
   language: string
+  rich_content?: RichContent[] | null
 }
 
 export interface TTSRequest {
@@ -152,4 +184,6 @@ export type AgentResponse = ConversationResponse & {
   demo_played?: number | null
   // Multiple audio chunks (for bilingual responses)
   audio_chunks?: AudioChunk[] | null
+  // Rich content for inline rendering (vocabulary cards, etc.)
+  rich_content?: RichContent[] | null
 }

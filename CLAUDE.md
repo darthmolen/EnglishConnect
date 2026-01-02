@@ -2,9 +2,23 @@
 
 Open source, non-profit agentic system to help Spanish-speaking learners practice English through voice interaction.
 
-## Guiding Principle
+## Guiding Principles
 
 **Never implement anything that doesn't get us nearer to solving our problem.**
+
+**Always use skills and test first.** Before implementing new features:
+
+1. **Invoke `/using-superpowers`** - Check for applicable skills before writing code
+2. **Write tests first** - Unit tests for handlers, integration tests for flows
+3. **Verify before claiming done** - Run tests, check logs, confirm behavior
+
+This prevents the "6 manual iterations" problem where bugs slip through because:
+
+- Tool handler parameters don't match tool definitions
+- Frontend components have wrong behavior
+- Prompts don't guide the agent correctly
+
+See `.claude/skills/` for available methodologies.
 
 ## Vision: Intelligent Conversation Partner
 
@@ -111,7 +125,7 @@ Single `UnifiedTeachingAgent` with two modes (see ADR-005):
 
 **API Endpoint**: `POST /api/practice/conversation`
 
-**Tools**: `speak`, `get_teaching_help`, `record_attempt`
+**Tools**: `speak`, `get_teaching_help`, `record_attempt`, `render_vocabulary`, `render_pattern`
 
 ## Key Files
 

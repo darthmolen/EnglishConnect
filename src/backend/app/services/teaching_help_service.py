@@ -32,6 +32,13 @@ CATEGORY_MAP = {
     "adjective": "adjective",
 }
 
+# Keywords that indicate user wants patterns, not vocabulary
+PATTERN_KEYWORDS = {
+    "frases", "frase", "patrones", "patron", "patrón",
+    "patterns", "pattern", "phrases", "phrase",
+    "sentences", "sentence", "oraciones", "oracion", "oración",
+}
+
 
 # Content paths
 CONTENT_BASE = Path(__file__).parent.parent.parent.parent.parent.parent / "content" / "refined"
@@ -58,45 +65,64 @@ class TeachingHelpService:
         """Parse natural language query into structured search parameters.
 
         Extracts lesson numbers and category keywords from queries like:
-        - "sustantivos lección 6" → lesson_filter=6, category="noun"
-        - "nouns from lesson 6" → lesson_filter=6, category="noun"
-        - "what does brother mean" → lesson_filter=None, category=None, keywords=["brother"]
+        - "sustantivos lección 6" → lesson_filters=[6], category="noun"
+        - "nouns from lesson 6" → lesson_filters=[6], category="noun"
+        - "frases de leccion 6 y 7" → lesson_filters=[6, 7], wants_patterns=True
+        - "what does brother mean" → lesson_filters=[], category=None, keywords=["brother"]
 
         Args:
             query: Natural language query string
 
         Returns:
-            Dict with keys: lesson_filter, category, keywords
+            Dict with keys: lesson_filters, category, keywords, wants_patterns
         """
         result = {
-            "lesson_filter": None,
+            "lesson_filters": [],  # Now a list to support "lesson 6 y 7"
             "category": None,
             "keywords": [],
+            "wants_patterns": False,  # True when user asks for frases/patterns
         }
 
         query_lower = query.lower()
 
-        # Extract lesson number: "lección 6", "leccion 6", "lesson 6"
-        lesson_match = re.search(r'lecci[oó]n\s+(\d+)|lesson\s+(\d+)', query_lower)
-        if lesson_match:
-            result["lesson_filter"] = int(lesson_match.group(1) or lesson_match.group(2))
+        # Extract all lesson numbers: "lección 6 y 7", "lessons 6 and 7"
+        # Matches: lecci[oó]n 6, lesson 6, etc.
+        lesson_matches = re.findall(r'lecci[oó]n\s+(\d+)|lesson\s+(\d+)|(?<=\s)(\d+)(?=\s*(?:y|and|\s|$))', query_lower)
+        for match in lesson_matches:
+            # Each match is a tuple, one group will have the number
+            num = next((g for g in match if g), None)
+            if num:
+                lesson_num = int(num)
+                if lesson_num not in result["lesson_filters"]:
+                    result["lesson_filters"].append(lesson_num)
 
-        # Extract category from keywords
-        for keyword, category in CATEGORY_MAP.items():
-            if keyword in query_lower:
-                result["category"] = category
+        # Check if user wants patterns (frases, patrones, etc.)
+        for pattern_kw in PATTERN_KEYWORDS:
+            if pattern_kw in query_lower:
+                result["wants_patterns"] = True
                 break
 
-        # Extract remaining keywords (words not matching lesson/category patterns)
-        # Remove lesson patterns and category words
+        # Extract category from keywords (only if NOT asking for patterns)
+        if not result["wants_patterns"]:
+            for keyword, category in CATEGORY_MAP.items():
+                if keyword in query_lower:
+                    result["category"] = category
+                    break
+
+        # Extract remaining keywords (words not matching lesson/category/pattern patterns)
         cleaned = re.sub(r'lecci[oó]n\s+\d+|lesson\s+\d+', '', query_lower)
         for cat_word in CATEGORY_MAP.keys():
             cleaned = cleaned.replace(cat_word, '')
+        for pat_kw in PATTERN_KEYWORDS:
+            cleaned = cleaned.replace(pat_kw, '')
         # Remove common filler words
-        cleaned = re.sub(r'\b(de|la|el|los|las|from|the|of|and|y)\b', '', cleaned)
+        cleaned = re.sub(r'\b(de|la|el|los|las|from|the|of|and|y|dame|give|me|show|muestra|muéstrame)\b', '', cleaned)
         # Extract remaining words
         words = [w.strip() for w in cleaned.split() if w.strip()]
         result["keywords"] = words
+
+        # Backward compatibility: set lesson_filter to first lesson if any
+        result["lesson_filter"] = result["lesson_filters"][0] if result["lesson_filters"] else None
 
         return result
 
@@ -179,14 +205,21 @@ class TeachingHelpService:
         return list(result.scalars().all())
 
     async def search_patterns(
-        self, query: str, up_to_lesson: int, limit: int = 3
+        self,
+        query: str,
+        up_to_lesson: int,
+        limit: int = 10,
+        lesson_filters: Optional[list[int]] = None,
+        list_all: bool = False,
     ) -> list[QAPattern]:
-        """Search Q&A patterns from all lessons up to specified lesson number.
+        """Search Q&A patterns from lessons.
 
         Args:
             query: Search term (matches question/answer templates)
-            up_to_lesson: Maximum lesson number to include
+            up_to_lesson: Maximum lesson number to include (used if lesson_filters empty)
             limit: Maximum results to return
+            lesson_filters: If set, only search these specific lessons
+            list_all: If True, return all patterns without keyword filtering
 
         Returns:
             List of matching QAPattern objects
@@ -194,32 +227,50 @@ class TeachingHelpService:
         if not self.session:
             return []
 
-        query_lower = f"%{query.lower()}%"
-
-        # Get lesson IDs for lessons up to the specified number
-        lesson_result = await self.session.execute(
-            select(Lesson.id).where(
-                Lesson.course_id == "ec1",
-                Lesson.lesson_number <= up_to_lesson
+        # Determine which lessons to search
+        if lesson_filters:
+            # Search specific lessons
+            lesson_result = await self.session.execute(
+                select(Lesson.id, Lesson.lesson_number).where(
+                    Lesson.course_id == "ec1",
+                    Lesson.lesson_number.in_(lesson_filters)
+                )
             )
-        )
+        else:
+            # Search all lessons up to the specified number
+            lesson_result = await self.session.execute(
+                select(Lesson.id, Lesson.lesson_number).where(
+                    Lesson.course_id == "ec1",
+                    Lesson.lesson_number <= up_to_lesson
+                )
+            )
         lesson_ids = [row[0] for row in lesson_result.fetchall()]
 
         if not lesson_ids:
             return []
 
-        # Search patterns in those lessons
-        result = await self.session.execute(
-            select(QAPattern)
-            .where(
-                QAPattern.lesson_id.in_(lesson_ids),
-                or_(
-                    QAPattern.question_template.ilike(query_lower),
-                    QAPattern.answer_template.ilike(query_lower),
-                )
+        # Build query
+        if list_all:
+            # Return all patterns for the lessons (no keyword filtering)
+            result = await self.session.execute(
+                select(QAPattern)
+                .where(QAPattern.lesson_id.in_(lesson_ids))
+                .limit(limit)
             )
-            .limit(limit)
-        )
+        else:
+            # Search patterns by keyword
+            query_lower = f"%{query.lower()}%"
+            result = await self.session.execute(
+                select(QAPattern)
+                .where(
+                    QAPattern.lesson_id.in_(lesson_ids),
+                    or_(
+                        QAPattern.question_template.ilike(query_lower),
+                        QAPattern.answer_template.ilike(query_lower),
+                    )
+                )
+                .limit(limit)
+            )
         return list(result.scalars().all())
 
     def _load_workbook_content(self, lesson: int) -> Optional[str]:
@@ -349,8 +400,9 @@ class TeachingHelpService:
         Combines vocabulary, patterns, exercises, and explanations.
 
         Parses natural language queries to extract:
-        - Lesson numbers: "lección 6" → filter to lesson 6
+        - Lesson numbers: "lección 6 y 7" → filter to lessons 6 and 7
         - Categories: "sustantivos" → filter to category="noun"
+        - Pattern requests: "frases" → return patterns, not vocabulary
 
         Args:
             query: What the student is confused about
@@ -362,42 +414,85 @@ class TeachingHelpService:
         # Parse query to extract structured search parameters
         parsed = self._parse_query(query)
 
-        # Search DB for vocabulary with parsed filters
-        vocabulary = await self.search_cumulative_vocab(
-            query=query,
-            up_to_lesson=lesson_number,
-            lesson_filter=parsed["lesson_filter"],
-            category=parsed["category"],
-        )
-        patterns = await self.search_patterns(query, lesson_number)
+        vocab_list = []
+        pattern_list = []
+
+        if parsed["wants_patterns"]:
+            # User asked for patterns/frases - search both Q&A patterns AND phrase vocabulary
+            patterns = await self.search_patterns(
+                query=query,
+                up_to_lesson=lesson_number,
+                lesson_filters=parsed["lesson_filters"] if parsed["lesson_filters"] else None,
+                list_all=True,  # Get all patterns for the lesson(s)
+                limit=20,  # Higher limit for listing
+            )
+            pattern_list = [
+                {
+                    "question": p.question_template,
+                    "answer": p.answer_template,
+                    "examples": p.examples[:2] if p.examples else [],
+                }
+                for p in patterns
+            ]
+
+            # Also get vocabulary items with "phrase" category (multi-word expressions)
+            # These are stored in vocabulary but are phrases like "Tell me about..."
+            vocabulary = await self.search_cumulative_vocab(
+                query=query,
+                up_to_lesson=lesson_number,
+                lesson_filter=parsed["lesson_filter"],
+                category="phrase",  # Filter to phrase category
+            )
+            vocab_list = [
+                {
+                    "english": v.english_word,
+                    "spanish": v.spanish_translation,
+                    "category": v.category,
+                }
+                for v in vocabulary
+            ]
+        else:
+            # Search DB for vocabulary with parsed filters
+            vocabulary = await self.search_cumulative_vocab(
+                query=query,
+                up_to_lesson=lesson_number,
+                lesson_filter=parsed["lesson_filter"],
+                category=parsed["category"],
+            )
+            vocab_list = [
+                {
+                    "english": v.english_word,
+                    "spanish": v.spanish_translation,
+                    "category": v.category,
+                }
+                for v in vocabulary
+            ]
+
+            # Also search patterns by keyword (not listing all)
+            patterns = await self.search_patterns(query, lesson_number)
+            pattern_list = [
+                {
+                    "question": p.question_template,
+                    "answer": p.answer_template,
+                    "examples": p.examples[:2] if p.examples else [],
+                }
+                for p in patterns
+            ]
 
         # Get workbook exercises and lesson explanation (file-based)
         exercises = self.get_workbook_exercises(lesson_number, query)
         explanation = self.get_lesson_explanation(lesson_number, query)
 
-        # Transform DB results to serializable dicts
-        vocab_list = [
-            {
-                "english": v.english_word,
-                "spanish": v.spanish_translation,
-                "category": v.category,
-            }
-            for v in vocabulary
-        ]
-
-        pattern_list = [
-            {
-                "question": p.question_template,
-                "answer": p.answer_template,
-                "examples": p.examples[:2] if p.examples else [],
-            }
-            for p in patterns
-        ]
+        # Build source string
+        if parsed["lesson_filters"]:
+            source = f"lessons-{'-'.join(str(l) for l in parsed['lesson_filters'])}"
+        else:
+            source = f"lesson-{lesson_number}"
 
         return {
             "vocabulary": vocab_list,
             "patterns": pattern_list,
             "exercises": exercises,
             "explanation": explanation,
-            "source": f"lesson-{lesson_number}",
+            "source": source,
         }
