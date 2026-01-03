@@ -25,7 +25,8 @@
     "goals": "Metas de Aprendizaje",
     "vocabulary": "Vocabulario",
     "practice": "Práctica",
-    "patterns": "Patrones"
+    "patterns": "Patrones",
+    "evaluate": "Evaluar"
   },
   "conversation": {
     "transcript": "Transcripción",
@@ -92,5 +93,37 @@
   "image": {
     "unavailable": "Imagen no disponible",
     "loading": "Cargando..."
+  },
+  "evaluate": {
+    "selfAssessment": "Autoevaluación",
+    "selfAssessmentHint": "Califica tu confianza con cada habilidad",
+    "personalGoals": "Metas Personales",
+    "personalGoalsHint": "Establece tus propias metas",
+    "addGoal": "Agregar",
+    "addGoalPlaceholder": "Escribe una meta personal...",
+    "noGoals": "Aún no hay metas personales",
+    "studyRegistry": "Registro de Estudio",
+    "studyRegistryHint": "Registra tus hábitos de estudio para esta lección",
+    "studiedPrinciples": "Estudié los principios de aprendizaje",
+    "memorizedVocabulary": "Memoricé el Vocabulario",
+    "practicedPatterns": "Practiqué los Patrones",
+    "dailyPractice": "Práctica Diaria"
+  },
+  "registry": {
+    "title": "Registro de Estudio Personal",
+    "lessonProgress": "Progreso de Lecciones",
+    "lessonProgressHint": "Tu progreso de estudio en todas las lecciones",
+    "goals": "Metas",
+    "openGoals": "Metas Pendientes",
+    "completedGoals": "Metas Completadas",
+    "noOpenGoals": "No hay metas pendientes. ¡Agrega una desde la pestaña Evaluar!",
+    "noCompletedGoals": "Aún no hay metas completadas",
+    "lesson": "Lección"
+  },
+  "status": {
+    "none": "No actividad",
+    "red": "Esfuerzo mínimo",
+    "yellow": "Esfuerzo moderado",
+    "green": "Esfuerzo significativo"
   }
 }

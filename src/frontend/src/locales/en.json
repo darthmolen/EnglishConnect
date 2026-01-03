@@ -25,7 +25,8 @@
     "goals": "Learning Goals",
     "vocabulary": "Vocabulary",
     "practice": "Practice",
-    "patterns": "Patterns"
+    "patterns": "Patterns",
+    "evaluate": "Evaluate"
   },
   "conversation": {
     "transcript": "Transcript",
@@ -92,5 +93,37 @@
   "image": {
     "unavailable": "Image unavailable",
     "loading": "Loading..."
+  },
+  "evaluate": {
+    "selfAssessment": "Self Assessment",
+    "selfAssessmentHint": "Rate your confidence with each skill",
+    "personalGoals": "Personal Goals",
+    "personalGoalsHint": "Set your own learning goals",
+    "addGoal": "Add",
+    "addGoalPlaceholder": "Enter a personal goal...",
+    "noGoals": "No personal goals yet",
+    "studyRegistry": "Study Registry",
+    "studyRegistryHint": "Track your study habits for this lesson",
+    "studiedPrinciples": "Studied the principles of learning",
+    "memorizedVocabulary": "Memorized the Vocabulary",
+    "practicedPatterns": "Practiced the Patterns",
+    "dailyPractice": "Daily Practice"
+  },
+  "registry": {
+    "title": "Personal Study Registry",
+    "lessonProgress": "Lesson Progress",
+    "lessonProgressHint": "Your study progress across all lessons",
+    "goals": "Goals",
+    "openGoals": "Open Goals",
+    "completedGoals": "Completed Goals",
+    "noOpenGoals": "No open goals. Add one from any lesson's Evaluate tab!",
+    "noCompletedGoals": "No completed goals yet",
+    "lesson": "Lesson"
+  },
+  "status": {
+    "none": "No activity",
+    "red": "Needs work",
+    "yellow": "Progressing",
+    "green": "Outstanding"
   }
 }

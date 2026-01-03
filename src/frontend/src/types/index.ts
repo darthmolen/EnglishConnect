@@ -37,7 +37,26 @@ export interface LessonDetail {
   evaluation_criteria: string[]
 }
 
-export type LessonSection = 'principle' | 'goals' | 'practice' | 'vocabulary'
+export type LessonSection = 'principle' | 'goals' | 'vocabulary' | 'practice' | 'evaluate'
+
+// Personal goals with completion tracking
+export interface PersonalGoal {
+  id: string
+  text: string
+  completed: boolean
+  createdAt: number
+  completedAt?: number
+}
+
+// Study registry status (red/yellow/green)
+export type StudyRegistryStatus = 'red' | 'yellow' | 'green'
+
+// Study registry items
+export type StudyRegistryItem =
+  | 'studiedPrinciples'
+  | 'memorizedVocabulary'
+  | 'practicedPatterns'
+  | 'dailyPractice'
 
 // Unified agent modes (replaces old multi-agent: 'conversation' | 'lesson' | 'demo')
 export type AgentMode = 'help' | 'practice'

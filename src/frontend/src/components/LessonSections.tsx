@@ -40,7 +40,7 @@ function SectionButton({ title, isActive, onClick }: SectionButtonProps) {
   )
 }
 
-const SECTION_IDS: LessonSection[] = ['principle', 'goals', 'vocabulary', 'practice']
+const SECTION_IDS: LessonSection[] = ['principle', 'goals', 'vocabulary', 'practice', 'evaluate']
 
 export function LessonSections({
   activeSection,
@@ -62,6 +62,7 @@ export function LessonSections({
     goals: t('sections.goals'),
     vocabulary: t('sections.vocabulary'),
     practice: t('sections.practice'),
+    evaluate: t('sections.evaluate'),
   }
 
   return (

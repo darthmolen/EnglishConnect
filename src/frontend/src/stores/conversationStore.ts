@@ -10,6 +10,9 @@ import type {
   LessonSection,
   AgentMode,
   InstructionLanguage,
+  PersonalGoal,
+  StudyRegistryStatus,
+  StudyRegistryItem,
 } from '@/types'
 
 interface ConversationState {
@@ -53,6 +56,14 @@ interface ConversationState {
   // Instruction language for agent explanations (persisted)
   instructionLanguage: InstructionLanguage
 
+  // Evaluation state (persisted)
+  evaluationRatings: Record<number, Record<number, number>>  // lessonNumber -> criterionIndex -> rating (0-5)
+  personalGoals: PersonalGoal[]  // Global goals with completion status
+  studyRegistry: Record<number, Record<StudyRegistryItem, StudyRegistryStatus>>  // lessonNumber -> item -> status
+
+  // Registry page state
+  isRegistryPageSelected: boolean
+
   // Actions
   setLessons: (lessons: LessonSummary[]) => void
   setCurrentLesson: (lesson: LessonDetail | null) => void
@@ -77,6 +88,14 @@ interface ConversationState {
   resetExchangeCount: () => void
   setFocusPattern: (pattern: number | null) => void
   startPatternPractice: (pattern: number) => void
+
+  // Evaluation actions
+  setEvaluationRating: (lessonNumber: number, criterionIndex: number, rating: number) => void
+  addPersonalGoal: (text: string) => void
+  toggleGoalCompletion: (goalId: string) => void
+  removePersonalGoal: (goalId: string) => void
+  setStudyRegistryStatus: (lessonNumber: number, item: StudyRegistryItem, status: StudyRegistryStatus) => void
+  selectRegistryPage: () => void
 }
 
 export const useConversationStore = create<ConversationState>()(
@@ -113,6 +132,14 @@ export const useConversationStore = create<ConversationState>()(
       // Instruction language - default to Spanish
       instructionLanguage: 'es' as InstructionLanguage,
 
+      // Evaluation state (persisted)
+      evaluationRatings: {},
+      personalGoals: [],
+      studyRegistry: {},
+
+      // Registry page state
+      isRegistryPageSelected: false,
+
       // Actions
       setLessons: (lessons) => set({ lessons }),
 
@@ -126,6 +153,7 @@ export const useConversationStore = create<ConversationState>()(
           agentMode: 'practice',  // Reset to practice mode when switching lessons
           exchangeCount: 0,  // Reset exchange count when switching lessons
           focusPattern: null,  // Reset focus pattern when switching lessons
+          isRegistryPageSelected: false,  // Deselect registry page when selecting a lesson
           // Reset phase info when switching lessons
           currentPhase: null,
           phaseState: null,
@@ -218,13 +246,78 @@ export const useConversationStore = create<ConversationState>()(
           messages: [],  // Clear conversation when starting new pattern practice
           agentMode: 'practice',
         }),
+
+      // Evaluation actions
+      setEvaluationRating: (lessonNumber, criterionIndex, rating) =>
+        set((state) => ({
+          evaluationRatings: {
+            ...state.evaluationRatings,
+            [lessonNumber]: {
+              ...(state.evaluationRatings[lessonNumber] || {}),
+              [criterionIndex]: rating,
+            },
+          },
+        })),
+
+      addPersonalGoal: (text) =>
+        set((state) => ({
+          personalGoals: [
+            ...state.personalGoals,
+            {
+              id: crypto.randomUUID(),
+              text,
+              completed: false,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+
+      toggleGoalCompletion: (goalId) =>
+        set((state) => ({
+          personalGoals: state.personalGoals.map((goal) =>
+            goal.id === goalId
+              ? {
+                  ...goal,
+                  completed: !goal.completed,
+                  completedAt: !goal.completed ? Date.now() : undefined,
+                }
+              : goal
+          ),
+        })),
+
+      removePersonalGoal: (goalId) =>
+        set((state) => ({
+          personalGoals: state.personalGoals.filter((goal) => goal.id !== goalId),
+        })),
+
+      setStudyRegistryStatus: (lessonNumber, item, status) =>
+        set((state) => ({
+          studyRegistry: {
+            ...state.studyRegistry,
+            [lessonNumber]: {
+              ...(state.studyRegistry[lessonNumber] || {}),
+              [item]: status,
+            },
+          },
+        })),
+
+      selectRegistryPage: () =>
+        set({
+          isRegistryPageSelected: true,
+          selectedLessonNumber: null,
+          currentLesson: null,
+          activeSection: null,
+        }),
     }),
     {
       name: 'englishconnect-settings',
-      // Persist completedGoals and instructionLanguage to localStorage
+      // Persist goals and evaluation state to localStorage
       partialize: (state) => ({
         completedGoals: state.completedGoals,
         instructionLanguage: state.instructionLanguage,
+        evaluationRatings: state.evaluationRatings,
+        personalGoals: state.personalGoals,
+        studyRegistry: state.studyRegistry,
       }),
     }
   )

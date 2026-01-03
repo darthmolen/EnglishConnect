@@ -101,11 +101,11 @@ A_es: Hay (*número*) (*sustantivo*) en mi familia.
 
 ## **Examples**
 
-Q: How many people are in Sam's family?
-Q_es: ¿Cuántas personas hay en la familia de Sam?
+Q: How many people are in your family?
+Q_es: ¿Cuántas personas hay en tu familia?
 
-A: There are four people in his family.
-A_es: Hay cuatro personas en su familia.
+A: There are four people in my family.
+A_es: Hay cuatro personas en mi familia.
 
 Q: How many sisters are in your family?
 Q_es: ¿Cuántas hermanas tienes en tu familia?

@@ -7,6 +7,7 @@ import { LessonList } from '@/components/LessonList'
 import { LessonSections } from '@/components/LessonSections'
 import { ContentWindow } from '@/components/ContentWindow'
 import { ConversationDrawer } from '@/components/ConversationDrawer'
+import { RegistryDashboard } from '@/components/RegistryDashboard'
 import { VoiceButton } from '@/components/VoiceButton'
 import { LoginButton } from '@/components/LoginButton'
 import { UserProfile } from '@/components/UserProfile'
@@ -27,6 +28,18 @@ function AppContent() {
     toggleGoal,
     instructionLanguage,
     setInstructionLanguage,
+    // Evaluation state
+    evaluationRatings,
+    personalGoals,
+    studyRegistry,
+    isRegistryPageSelected,
+    // Evaluation actions
+    setEvaluationRating,
+    addPersonalGoal,
+    toggleGoalCompletion,
+    removePersonalGoal,
+    setStudyRegistryStatus,
+    selectRegistryPage,
   } = useConversationStore()
   const {
     messages,
@@ -100,21 +113,25 @@ function AppContent() {
           <LessonList
             lessons={lessons}
             selectedLessonNumber={selectedLessonNumber}
+            isRegistrySelected={isRegistryPageSelected}
             onSelectLesson={selectLesson}
+            onSelectRegistryPage={selectRegistryPage}
           />
         </div>
       </aside>
 
-      {/* Column 2: Lesson Sections */}
-      <aside className="w-48 shrink-0 border-r bg-card">
-        <LessonSections
-          activeSection={activeSection}
-          onSelectSection={setActiveSection}
-          hasLesson={!!currentLesson}
-        />
-      </aside>
+      {/* Column 2: Lesson Sections (hidden when registry page is selected) */}
+      {!isRegistryPageSelected && (
+        <aside className="w-48 shrink-0 border-r bg-card">
+          <LessonSections
+            activeSection={activeSection}
+            onSelectSection={setActiveSection}
+            hasLesson={!!currentLesson}
+          />
+        </aside>
+      )}
 
-      {/* Column 3: Content + Drawer */}
+      {/* Column 3: Content + Drawer (or Registry Dashboard) */}
       <main className="flex flex-1 flex-col min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between border-b px-4 py-2 shrink-0">
@@ -136,7 +153,14 @@ function AppContent() {
           </div>
 
           <div className="flex-1 min-w-0">
-            {currentLesson ? (
+            {isRegistryPageSelected ? (
+              <div>
+                <h2 className="text-base font-semibold">{t('registry.title')}</h2>
+                <p className="text-xs text-muted-foreground">
+                  {t('registry.lessonProgressHint')}
+                </p>
+              </div>
+            ) : currentLesson ? (
               <div>
                 <h2 className="text-base font-semibold truncate">
                   Lesson {currentLesson.lesson_number}: {currentLesson.title}
@@ -157,7 +181,7 @@ function AppContent() {
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {messages.length > 0 && (
+            {messages.length > 0 && !isRegistryPageSelected && (
               <button
                 type="button"
                 onClick={clearMessages}
@@ -175,68 +199,90 @@ function AppContent() {
           </div>
         </header>
 
-        {/* Content area with conversation drawer overlay */}
+        {/* Content area */}
         <div className="flex-1 relative overflow-hidden">
-          <ContentWindow
-            lesson={currentLesson}
-            activeSection={activeSection}
-            completedGoals={lessonGoals}
-            onToggleGoal={toggleGoal}
-            onStartConversation={handleStartConversation}
-            className="h-full"
-          />
-          <ConversationDrawer
-            isOpen={isDrawerOpen}
-            onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
-            messages={messages}
-            isLoading={isLoading}
-          />
+          {isRegistryPageSelected ? (
+            <RegistryDashboard
+              lessons={lessons}
+              studyRegistry={studyRegistry}
+              personalGoals={personalGoals}
+              onToggleGoal={toggleGoalCompletion}
+              onRemoveGoal={removePersonalGoal}
+              className="h-full"
+            />
+          ) : (
+            <>
+              <ContentWindow
+                lesson={currentLesson}
+                activeSection={activeSection}
+                completedGoals={lessonGoals}
+                onToggleGoal={toggleGoal}
+                onStartConversation={handleStartConversation}
+                className="h-full"
+                evaluationRatings={currentLesson ? evaluationRatings[currentLesson.lesson_number] || {} : {}}
+                personalGoals={personalGoals}
+                studyRegistry={currentLesson ? studyRegistry[currentLesson.lesson_number] || {} : {}}
+                onSetEvaluationRating={(idx, rating) => currentLesson && setEvaluationRating(currentLesson.lesson_number, idx, rating)}
+                onAddPersonalGoal={addPersonalGoal}
+                onRemovePersonalGoal={removePersonalGoal}
+                onSetStudyRegistryStatus={(item, status) => currentLesson && setStudyRegistryStatus(currentLesson.lesson_number, item, status)}
+              />
+              <ConversationDrawer
+                isOpen={isDrawerOpen}
+                onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+                messages={messages}
+                isLoading={isLoading}
+              />
+            </>
+          )}
         </div>
 
-        {/* Input bar - always visible at bottom */}
-        <footer className="border-t p-3 shrink-0">
-          <div className="mx-auto flex max-w-2xl items-center gap-2">
-            <VoiceButton
-              isRecording={isRecording}
-              isPlaying={isPlaying}
-              onPress={toggleRecording}
-              disabled={!selectedLessonNumber || isLoading}
-            />
-            <div className="relative flex-1">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  selectedLessonNumber
-                    ? t('conversation.placeholder')
-                    : t('conversation.selectFirst')
-                }
+        {/* Input bar - hidden when registry page is selected */}
+        {!isRegistryPageSelected && (
+          <footer className="border-t p-3 shrink-0">
+            <div className="mx-auto flex max-w-2xl items-center gap-2">
+              <VoiceButton
+                isRecording={isRecording}
+                isPlaying={isPlaying}
+                onPress={toggleRecording}
                 disabled={!selectedLessonNumber || isLoading}
-                className={cn(
-                  'w-full rounded-full border bg-background px-4 py-2 pr-10 text-sm',
-                  'placeholder:text-muted-foreground',
-                  'focus:outline-none focus:ring-2 focus:ring-ring',
-                  'disabled:cursor-not-allowed disabled:opacity-50'
-                )}
               />
-              <button
-                type="button"
-                onClick={handleSend}
-                disabled={!inputText.trim() || !selectedLessonNumber || isLoading}
-                className={cn(
-                  'absolute right-1.5 top-1/2 -translate-y-1/2',
-                  'rounded-full p-1.5 text-muted-foreground transition-colors',
-                  'hover:bg-accent hover:text-accent-foreground',
-                  'disabled:cursor-not-allowed disabled:opacity-50'
-                )}
-              >
-                <Send className="h-4 w-4" />
-              </button>
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={
+                    selectedLessonNumber
+                      ? t('conversation.placeholder')
+                      : t('conversation.selectFirst')
+                  }
+                  disabled={!selectedLessonNumber || isLoading}
+                  className={cn(
+                    'w-full rounded-full border bg-background px-4 py-2 pr-10 text-sm',
+                    'placeholder:text-muted-foreground',
+                    'focus:outline-none focus:ring-2 focus:ring-ring',
+                    'disabled:cursor-not-allowed disabled:opacity-50'
+                  )}
+                />
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={!inputText.trim() || !selectedLessonNumber || isLoading}
+                  className={cn(
+                    'absolute right-1.5 top-1/2 -translate-y-1/2',
+                    'rounded-full p-1.5 text-muted-foreground transition-colors',
+                    'hover:bg-accent hover:text-accent-foreground',
+                    'disabled:cursor-not-allowed disabled:opacity-50'
+                  )}
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-          </div>
-        </footer>
+          </footer>
+        )}
       </main>
     </div>
   )
