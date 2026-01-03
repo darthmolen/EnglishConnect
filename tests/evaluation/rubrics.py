@@ -175,19 +175,26 @@ FAIL: Found "[quote the problematic text]"
     ),
     Dimension.CONFUSION_RECOVERY: Rubric(
         dimension=Dimension.CONFUSION_RECOVERY,
-        description="Asks clarification when STT transcription is garbled",
+        description="Handles ambiguous or garbled input appropriately",
         modes=["help", "practice"],
         prompt_template="""You are evaluating an agent's handling of unclear student input.
 
 ## Rubric: Confusion Recovery
-When student input appears garbled, unclear, or when the student says "no" to correct the agent, the agent should ask for clarification rather than guessing.
+The agent should handle unclear input appropriately:
 
-Signs of problematic input:
-- Unusual spelling (e.g., "Merry" instead of "Mary")
-- Mixed language fragments that don't make sense
-- Incoherent sentences
-- Student explicitly says "no" or corrects a misunderstanding
-- Non-standard transcription artifacts
+1. **AMBIGUOUS input** (multiple valid meanings): Agent MUST ask for clarification or offer alternatives
+   - Example: "Merry" could mean "merry (happy)" OR "Mary (name)" - ask which one
+   - Example: Student says "No" to correct agent - ask what they meant
+
+2. **GARBLED but CLEAR INTENT** (STT errors but meaning obvious): Agent MAY proceed
+   - Example: "Tamei los sustantivos" clearly means "Dame los sustantivos" - OK to proceed
+   - Example: "lexion" clearly means "lección" - OK to proceed
+
+3. **INCOHERENT input** (no clear meaning): Agent MUST ask for clarification
+   - Example: "Merry Como Casabse Merry" makes no sense - ask to repeat
+
+## Context
+Vocabulary: {vocabulary}
 
 ## Student Input
 {user_input}
@@ -196,13 +203,12 @@ Signs of problematic input:
 {agent_response}
 
 ## Evaluation
-1. Is the input clearly problematic or unclear?
-2. If yes, did the agent ask for clarification or offer alternatives?
-3. If the input is clear, did the agent respond appropriately?
+1. Is the input ambiguous (multiple meanings), garbled (clear intent), or incoherent (no meaning)?
+2. Did the agent respond appropriately for that category?
 
 Respond with EXACTLY one of these formats:
-PASS: [reason - e.g., "Agent asked for clarification", "Input was clear and response appropriate"]
-FAIL: [reason - e.g., "Agent guessed instead of asking for clarification"]
+PASS: [reason - e.g., "Agent asked for clarification for ambiguous input", "Agent correctly understood garbled intent"]
+FAIL: [reason - e.g., "Agent guessed one meaning without acknowledging alternative", "Agent didn't ask for clarification on incoherent input"]
 N/A: Input was clear, standard evaluation not needed
 """,
     ),

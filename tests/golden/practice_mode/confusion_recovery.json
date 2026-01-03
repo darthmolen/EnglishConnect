@@ -14,7 +14,7 @@
         {"english": "married", "spanish": "casado/casada"}
       ]
     },
-    "expected_behavior": "Input is ambiguous - could be 'Mary' (name) or 'merry' (adjective). Agent should ask for clarification or offer both interpretations.",
+    "expected_behavior": "Phonetic ambiguity - 'Merry' sounds like 'Mary' (name in vocab), 'marry' (verb related to 'married' in vocab), or 'merry' (adjective). Agent should offer alternatives or ask for clarification.",
     "expected_pass": true
   },
   {
