@@ -7,6 +7,7 @@ from typing import Callable, Optional
 from openai import AsyncAzureOpenAI
 
 from app.config import get_settings
+from app.utils.timing import log_timing, log_timing_delta
 
 logger = logging.getLogger(__name__)
 
@@ -417,6 +418,9 @@ async def get_agent_response(
         # This ensures speak() is called at least once
         current_tool_choice = "required" if iteration == 0 else "auto"
 
+        # T2: LLM call start
+        t2_ts = log_timing("T2", "llm_start", iteration=iteration + 1)
+
         response = await client.chat.completions.create(
             model=settings.azure_openai_deployment,
             messages=messages,
@@ -425,6 +429,10 @@ async def get_agent_response(
             max_tokens=300,
             temperature=0.7,
         )
+
+        # T3: LLM call complete
+        tokens = response.usage.total_tokens if response.usage else 0
+        log_timing_delta("T3", "llm_complete", t2_ts, iteration=iteration + 1, tokens=tokens)
 
         message = response.choices[0].message
         logger.info(f"  LLM response: content={message.content[:100] if message.content else 'None'}{'...' if message.content and len(message.content) > 100 else ''}")
@@ -451,10 +459,16 @@ async def get_agent_response(
                 # Execute the tool
                 if tool_name in tool_handlers:
                     try:
+                        # T4: Tool call start
+                        t4_ts = log_timing("T4", "tool_start", tool=tool_name, text_len=len(tool_args.get("text", "")))
+
                         result = await tool_handlers[tool_name](**tool_args)
 
-                        # Log result (with audio size, not content)
+                        # T5: Tool call complete
                         audio_size = len(result.get("audio_base64", "")) if result.get("audio_base64") else 0
+                        log_timing_delta("T5", "tool_complete", t4_ts, tool=tool_name, audio_bytes=audio_size)
+
+                        # Log result (with audio size, not content)
                         logger.info(f"    result: success={result.get('spoken')}, audio_size={audio_size} chars")
 
                         tool_results.append({

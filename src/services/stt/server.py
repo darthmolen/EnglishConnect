@@ -12,17 +12,34 @@ import io
 import logging
 import os
 import tempfile
+import time
+import uuid
 from contextlib import asynccontextmanager
 from typing import Optional
 
 import numpy as np
 import soundfile as sf
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 load_dotenv()
+
+# Configure timing logger
+timing_logger = logging.getLogger("timing")
+
+
+def log_stt_timing(point: str, label: str, request_id: str = "unknown", **extra) -> float:
+    """Log STT timing point."""
+    ts = time.time()
+    extra_str = " ".join(f"{k}={v}" for k, v in extra.items())
+    timing_logger.info(
+        f"[TIMING] request_id={request_id} "
+        f"point={point} ts={ts:.3f} label={label!r}"
+        + (f" {extra_str}" if extra_str else "")
+    )
+    return ts
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -137,16 +154,24 @@ def get_file_extension(content_type: str, filename: str) -> str:
 async def transcribe_audio(
     file: UploadFile = File(...),
     language: Optional[str] = None,
+    x_request_id: Optional[str] = Header(None, alias="X-Request-ID"),
 ):
     """Transcribe an audio file.
 
     Args:
         file: Audio file (WAV, MP3, webm, etc.)
         language: Optional language code (e.g., 'en', 'es'). Auto-detects if not specified.
+        x_request_id: Optional request ID for timing correlation.
 
     Returns:
         Transcription result with text, language, and confidence.
     """
+    # Use provided request ID or generate one
+    req_id = x_request_id or str(uuid.uuid4())[:8]
+
+    # S2: Request received
+    s2_ts = log_stt_timing("S2", "request_received", req_id)
+
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
 
@@ -180,6 +205,9 @@ async def transcribe_audio(
     try:
         model = get_model()
 
+        # S3: Transcription start
+        s3_ts = log_stt_timing("S3", "transcription_start", req_id, audio_bytes=len(audio_bytes))
+
         # Transcribe
         logger.info(f"Transcribing {tmp_path}...")
         segments, info = model.transcribe(
@@ -202,6 +230,11 @@ async def transcribe_audio(
             full_text.append(segment.text)
 
         result_text = " ".join(full_text).strip()
+
+        # S4: Transcription complete
+        delta_ms = (time.time() - s3_ts) * 1000
+        log_stt_timing("S4", "transcription_complete", req_id, text_len=len(result_text), delta_ms=f"{delta_ms:.1f}")
+
         logger.info(
             f"Transcription complete: language={info.language}, "
             f"confidence={info.language_probability:.2f}, text_length={len(result_text)}"

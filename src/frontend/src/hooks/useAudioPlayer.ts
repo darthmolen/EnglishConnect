@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { logTotalLatency } from '@/utils/timing'
 
 interface UseAudioPlayerReturn {
   isPlaying: boolean
@@ -37,10 +38,16 @@ export function useAudioPlayer(): UseAudioPlayerReturn {
           reject(new Error('Audio playback failed'))
         }
 
-        audio.play().catch((err) => {
-          setIsPlaying(false)
-          reject(err)
-        })
+        audio
+          .play()
+          .then(() => {
+            // T11: Audio playback starts
+            logTotalLatency('T11', 'audio_playback_start')
+          })
+          .catch((err) => {
+            setIsPlaying(false)
+            reject(err)
+          })
       })
     },
     []

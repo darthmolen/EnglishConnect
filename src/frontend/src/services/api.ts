@@ -15,6 +15,12 @@ import type {
   InstructionLanguage,
 } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
+import {
+  logTiming,
+  logTimingDelta,
+  timingState,
+  generateRequestId,
+} from '@/utils/timing'
 
 const API_BASE = '/api'
 const STT_BASE = 'http://localhost:8001'
@@ -91,6 +97,12 @@ export async function sendMessage(
   instructionLanguage: InstructionLanguage = 'es',
   focusPattern: number | null = null
 ): Promise<AgentResponse> {
+  // T0: Request sent - start timing
+  const requestId = generateRequestId()
+  timingState.setRequestId(requestId)
+  const t0 = logTiming('T0', 'request_sent', { mode: agentMode, lesson: lessonNumber })
+  timingState.setT0(t0)
+
   const request: ConversationRequest = {
     message,
     lesson_number: lessonNumber,
@@ -105,9 +117,13 @@ export async function sendMessage(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'X-Request-ID': requestId, // Correlate with backend timing
     },
     body: JSON.stringify(request),
   })
+
+  // T10: Response received (first byte)
+  logTimingDelta('T10', 'response_received', t0)
 
   if (!response.ok) {
     throw new Error('Failed to send message')
@@ -148,6 +164,9 @@ export async function transcribeAudio(
 ): Promise<STTResponse> {
   console.log(`Sending audio to STT: ${audioBlob.size} bytes, type=${audioBlob.type}`)
 
+  // S1: Audio sent to STT service (recording already stopped)
+  const s1 = logTiming('S1', 'audio_sent', { audio_bytes: audioBlob.size })
+
   const formData = new FormData()
   formData.append('file', audioBlob, 'audio.webm')
 
@@ -158,8 +177,14 @@ export async function transcribeAudio(
 
   const response = await fetch(url.toString(), {
     method: 'POST',
+    headers: {
+      'X-Request-ID': timingState.getRequestId(), // Correlate with STT service timing
+    },
     body: formData,
   })
+
+  // S5: STT result received
+  logTimingDelta('S5', 'stt_result_received', s1)
 
   if (!response.ok) {
     throw new Error('Failed to transcribe audio')

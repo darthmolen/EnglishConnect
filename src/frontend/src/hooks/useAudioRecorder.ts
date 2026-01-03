@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { logTiming, timingState, generateRequestId } from '@/utils/timing'
 
 interface UseAudioRecorderReturn {
   isRecording: boolean
@@ -19,6 +20,12 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     try {
       // Clear previous recording to prevent race conditions
       setAudioBlob(null)
+
+      // S0: Recording starts - generate new request ID for this voice flow
+      const requestId = generateRequestId()
+      timingState.setRequestId(requestId)
+      const s0 = logTiming('S0', 'recording_start')
+      timingState.setS0(s0)
 
       // Request microphone permission
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })

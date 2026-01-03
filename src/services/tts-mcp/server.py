@@ -20,16 +20,37 @@ import base64
 import copy
 import io
 import json
+import logging
 import os
+import time
 import uuid
 from pathlib import Path
 
 import torch
+
+# Configure timing logger
+logging.basicConfig(level=logging.INFO)
+timing_logger = logging.getLogger("timing")
+
+
+def log_tts_timing(point: str, label: str, request_id: str = "unknown", **extra) -> float:
+    """Log TTS timing point."""
+    ts = time.time()
+    extra_str = " ".join(f"{k}={v}" for k, v in extra.items())
+    timing_logger.info(
+        f"[TIMING] request_id={request_id} "
+        f"point={point} ts={ts:.3f} label={label!r}"
+        + (f" {extra_str}" if extra_str else "")
+    )
+    return ts
+
+
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel
+from typing import Optional
 
 load_dotenv()
 
@@ -143,13 +164,16 @@ def get_model():
     return _model, _processor
 
 
-def _synthesize_sync(text: str, voice_id: str = "speaker_a") -> bytes:
+def _synthesize_sync(text: str, voice_id: str = "speaker_a", request_id: str = "unknown") -> bytes:
     """Synchronous synthesis - runs in thread pool.
 
     Returns WAV audio bytes.
     """
     import numpy as np
     import soundfile as sf
+
+    # T6: Synthesis start
+    t6_ts = log_tts_timing("T6", "synthesis_start", request_id, text_len=len(text), voice=voice_id)
 
     model, processor = get_model()
 
@@ -162,6 +186,8 @@ def _synthesize_sync(text: str, voice_id: str = "speaker_a") -> bytes:
         buffer = io.BytesIO()
         sf.write(buffer, audio, _sample_rate, format="WAV")
         buffer.seek(0)
+        # T8: Synthesis complete (placeholder)
+        log_tts_timing("T8", "synthesis_complete", request_id, audio_bytes=len(buffer.getvalue()), placeholder=True)
         return buffer.read()
 
     # Load voice preset (contains pre-computed KV cache for speaker)
@@ -190,6 +216,9 @@ def _synthesize_sync(text: str, voice_id: str = "speaker_a") -> bytes:
         if torch.is_tensor(v):
             inputs[k] = v.to(DEVICE)
 
+    # T7: Model inference start (TTFA not measurable without streaming)
+    t7_ts = log_tts_timing("T7", "inference_start", request_id)
+
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
@@ -214,15 +243,21 @@ def _synthesize_sync(text: str, voice_id: str = "speaker_a") -> bytes:
     buffer = io.BytesIO()
     sf.write(buffer, audio, _sample_rate, format="WAV", subtype="FLOAT")
     buffer.seek(0)
-    return buffer.read()
+    audio_bytes = buffer.read()
+
+    # T8: Synthesis complete
+    delta_ms = (time.time() - t6_ts) * 1000
+    log_tts_timing("T8", "synthesis_complete", request_id, audio_bytes=len(audio_bytes), delta_ms=f"{delta_ms:.1f}")
+
+    return audio_bytes
 
 
-async def synthesize_with_vibevoice(text: str, voice_id: str = "speaker_a") -> bytes:
+async def synthesize_with_vibevoice(text: str, voice_id: str = "speaker_a", request_id: str = "unknown") -> bytes:
     """Async synthesis - offloads CPU/GPU work to thread pool.
 
     This prevents blocking other requests while model inference runs.
     """
-    return await asyncio.to_thread(_synthesize_sync, text, voice_id)
+    return await asyncio.to_thread(_synthesize_sync, text, voice_id, request_id)
 
 
 def _concatenate_audio_sync(audio_segments: list[bytes], pause_seconds: float = 0.5) -> bytes:
@@ -470,15 +505,22 @@ async def list_voices_http():
 
 
 @http_app.post("/synthesize", response_model=SynthesizeResponse)
-async def synthesize_http(request: SynthesizeRequest):
+async def synthesize_http(
+    request: SynthesizeRequest,
+    x_request_id: Optional[str] = Header(None, alias="X-Request-ID"),
+):
     """Synthesize speech from text.
 
     Args:
         request: SynthesizeRequest with text and optional voice
+        x_request_id: Optional request ID for timing correlation
 
     Returns:
         SynthesizeResponse with base64-encoded WAV audio
     """
+    # Use provided request ID or generate one
+    req_id = x_request_id or str(uuid.uuid4())[:8]
+
     if request.voice not in VOICES:
         raise HTTPException(
             status_code=400,
@@ -488,7 +530,7 @@ async def synthesize_http(request: SynthesizeRequest):
     voice_config = VOICES[request.voice]
 
     try:
-        audio_bytes = await synthesize_with_vibevoice(request.text, request.voice)
+        audio_bytes = await synthesize_with_vibevoice(request.text, request.voice, req_id)
         audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
 
         return SynthesizeResponse(

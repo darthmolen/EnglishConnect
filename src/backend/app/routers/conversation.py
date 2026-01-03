@@ -8,9 +8,12 @@ See ADR-005 for architecture decision.
 """
 
 import logging
+import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.utils.timing import log_timing, request_id_var
 
 from app.database import get_db
 from app.middleware.auth import CurrentUser
@@ -58,6 +61,11 @@ async def conversation(
     Raises:
         HTTPException: 404 if lesson not found
     """
+    # T1: Request received - start timing
+    req_id = str(uuid.uuid4())[:8]
+    request_id_var.set(req_id)
+    log_timing("T1", "request_received", mode=request.mode, lesson=request.lesson_number)
+
     # Get lesson context
     service = LessonService(db)
     lesson = await service.get_lesson_detail("ec1", request.lesson_number)
@@ -195,6 +203,9 @@ async def conversation(
         await db.commit()
     except Exception as e:
         logger.warning(f"Failed to record exchange (non-critical): {e}")
+
+    # T9: Response ready to send
+    log_timing("T9", "response_sent", text_len=len(response_text), has_audio=bool(audio_base64))
 
     return ConversationResponse(
         text=response_text,

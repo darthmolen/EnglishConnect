@@ -17,6 +17,8 @@ logging.basicConfig(
 )
 # Set our app loggers to INFO
 logging.getLogger("app").setLevel(logging.INFO)
+# Timing logger for latency analysis
+logging.getLogger("timing").setLevel(logging.INFO)
 
 settings = get_settings()
 
@@ -73,7 +75,7 @@ async def health():
 
 
 # Import and include routers
-from app.routers import lessons, conversation, progress, auth, content, audio
+from app.routers import lessons, conversation, progress, auth, content, audio, timing
 
 app.include_router(lessons.router)
 app.include_router(conversation.router)  # Unified conversation (/api/practice/conversation)
@@ -81,3 +83,4 @@ app.include_router(progress.router)
 app.include_router(auth.router)
 app.include_router(content.router)  # Authenticated content images (/api/content/images)
 app.include_router(audio.router)  # Demo audio streaming (/api/audio)
+app.include_router(timing.router)  # Timing log aggregation (/api/timing)
