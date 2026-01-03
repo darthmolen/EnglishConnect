@@ -1,0 +1,40 @@
+[
+  {
+    "id": "ca-practice-001",
+    "dimension": "curriculum_alignment",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Tell me about your family",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1,
+      "vocabulary": [
+        {"english": "brother", "spanish": "hermano"},
+        {"english": "sister", "spanish": "hermana"},
+        {"english": "mother", "spanish": "madre"},
+        {"english": "father", "spanish": "padre"},
+        {"english": "married", "spanish": "casado"}
+      ]
+    },
+    "expected_behavior": "Agent response should use vocabulary appropriate for lesson 7 - family words. Should not use advanced vocabulary that would confuse a beginner.",
+    "expected_pass": true
+  },
+  {
+    "id": "ca-practice-002",
+    "dimension": "curriculum_alignment",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "I have two brothers",
+    "context": {
+      "lesson_number": 3,
+      "exchange_count": 2,
+      "vocabulary": [
+        {"english": "hello", "spanish": "hola"},
+        {"english": "name", "spanish": "nombre"},
+        {"english": "nice", "spanish": "agradable"}
+      ]
+    },
+    "expected_behavior": "Early lesson - agent should use very simple vocabulary. Words like 'excellent' or 'wonderful' are fine, but complex grammar structures should be avoided.",
+    "expected_pass": true
+  }
+]

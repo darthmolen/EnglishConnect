@@ -1,0 +1,66 @@
+[
+  {
+    "id": "cr-practice-001",
+    "dimension": "confusion_recovery",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 3",
+    "user_input": "Que significa Merry?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 2,
+      "vocabulary": [
+        {"english": "Mary", "spanish": "Maria (nombre)"},
+        {"english": "married", "spanish": "casado/casada"}
+      ]
+    },
+    "expected_behavior": "Input is ambiguous - could be 'Mary' (name) or 'merry' (adjective). Agent should ask for clarification or offer both interpretations.",
+    "expected_pass": true
+  },
+  {
+    "id": "cr-practice-002",
+    "dimension": "confusion_recovery",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 3",
+    "user_input": "No. Mary.",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 3,
+      "history": [
+        {"role": "user", "content": "Que significa Merry?"},
+        {"role": "assistant", "content": "Merry means 'alegre' in Spanish - it describes being happy and cheerful."}
+      ]
+    },
+    "expected_behavior": "Student is correcting a misunderstanding. Agent should acknowledge the correction and ask for clarification about what 'Mary' refers to.",
+    "expected_pass": true
+  },
+  {
+    "id": "cr-practice-003",
+    "dimension": "confusion_recovery",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 4",
+    "user_input": "Merry Como Casabse, Merry.",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 4
+    },
+    "expected_behavior": "This is clearly garbled STT transcription. Agent should ask the student to repeat or clarify, not guess.",
+    "expected_pass": true
+  },
+  {
+    "id": "cr-practice-004",
+    "dimension": "confusion_recovery",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 4",
+    "user_input": "Tamei los sustantivos de lexion 6 i 7",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1
+    },
+    "expected_behavior": "Garbled transcription of 'Dame los sustantivos de leccion 6 y 7'. Agent should try to understand intent or ask for clarification.",
+    "expected_pass": true
+  }
+]

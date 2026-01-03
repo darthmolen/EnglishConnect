@@ -1,0 +1,60 @@
+[
+  {
+    "id": "tu-practice-001",
+    "dimension": "tool_usage",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 0",
+    "user_input": "I'm ready to practice!",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Agent must call speak() tool to deliver the response. No fallback text-only responses.",
+    "expected_pass": true
+  },
+  {
+    "id": "tu-practice-002",
+    "dimension": "tool_usage",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "My sister has long hair.",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 3,
+      "history": [
+        {"role": "assistant", "content": "Tell me about your family."},
+        {"role": "user", "content": "I have a sister."},
+        {"role": "assistant", "content": "That's great! What does your sister look like?"}
+      ]
+    },
+    "expected_behavior": "Agent responds with encouragement and follow-up using speak() tool",
+    "expected_pass": true
+  },
+  {
+    "id": "tu-practice-003",
+    "dimension": "tool_usage",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "No entiendo",
+    "context": {
+      "lesson_number": 5,
+      "exchange_count": 2
+    },
+    "expected_behavior": "Student indicates confusion. Agent must still call speak() to respond with clarification.",
+    "expected_pass": true
+  },
+  {
+    "id": "tu-practice-004",
+    "dimension": "tool_usage",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Hello teacher!",
+    "context": {
+      "lesson_number": 1,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Simple greeting at lesson 1. Agent must call speak() for response.",
+    "expected_pass": true
+  }
+]

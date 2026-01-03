@@ -1,0 +1,54 @@
+[
+  {
+    "id": "lc-help-001",
+    "dimension": "language_choice",
+    "mode": "help",
+    "source": "synthetic",
+    "user_input": "Que significa 'brother'?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Help mode with Spanish question - agent should respond primarily in Spanish to explain the vocabulary",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-help-002",
+    "dimension": "language_choice",
+    "mode": "help",
+    "source": "synthetic",
+    "user_input": "What does 'hermano' mean?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Help mode with English question - agent can respond in English or provide bilingual explanation",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-help-003",
+    "dimension": "language_choice",
+    "mode": "help",
+    "source": "synthetic",
+    "user_input": "Como se dice 'grandmother' en espanol?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1
+    },
+    "expected_behavior": "Spanish question asking for translation. Agent should respond in Spanish: 'abuela'.",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-help-004",
+    "dimension": "language_choice",
+    "mode": "help",
+    "source": "synthetic",
+    "user_input": "Explain the word 'sister' please",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "English polite request. Agent can respond in English with Spanish translation included.",
+    "expected_pass": true
+  }
+]

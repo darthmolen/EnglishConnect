@@ -1,0 +1,30 @@
+[
+  {
+    "id": "tu-help-001",
+    "dimension": "tool_usage",
+    "mode": "help",
+    "source": "documented_issue",
+    "issue_ref": "Issue 0",
+    "user_input": "Que significa married?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Agent must call speak() to deliver the explanation. Fallback text-only is a failure.",
+    "expected_pass": true
+  },
+  {
+    "id": "tu-help-002",
+    "dimension": "tool_usage",
+    "mode": "help",
+    "source": "documented_issue",
+    "issue_ref": "Issue 2",
+    "user_input": "Show me the word 'cousin'",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1
+    },
+    "expected_behavior": "Agent may use render_vocabulary AND speak(). Both tools working together is fine, but speak() must be called.",
+    "expected_pass": true
+  }
+]

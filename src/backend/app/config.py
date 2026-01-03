@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     memori_llm_url: str = "http://localhost:8004/v1"
     memori_llm_model: str = "Qwen/Qwen2.5-7B-Instruct"
 
+    # Judge LLM for evaluation (shares vLLM endpoint with Memori)
+    judge_llm_url: str = "http://localhost:8004/v1"
+    judge_llm_model: str | None = None  # Auto-detect from server if None
+
     # Voice Services (local endpoints for POC)
     stt_service_url: str = "http://localhost:8001"
     tts_mcp_url: str = "http://localhost:8002"

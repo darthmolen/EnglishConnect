@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Golden Test Case",
+  "description": "Test case for LLM-as-Judge evaluation of teaching agent",
+  "type": "object",
+  "required": ["id", "dimension", "mode", "user_input", "context", "expected_behavior"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier (format: {dimension-abbrev}-{mode}-{number})",
+      "pattern": "^[a-z]+-[a-z]+-\\d{3}$"
+    },
+    "dimension": {
+      "type": "string",
+      "enum": [
+        "language_choice",
+        "tool_usage",
+        "output_cleanliness",
+        "confusion_recovery",
+        "persona_consistency",
+        "curriculum_alignment"
+      ],
+      "description": "Which rubric dimension this tests"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["help", "practice"],
+      "description": "Agent mode (help=vocabulary page, practice=conversation)"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["documented_issue", "synthetic", "user_report"],
+      "description": "Where this test case originated"
+    },
+    "issue_ref": {
+      "type": "string",
+      "description": "Reference to issue in functional-issues.md (e.g., 'Issue 1')"
+    },
+    "user_input": {
+      "type": "string",
+      "description": "What the student says to the agent"
+    },
+    "context": {
+      "type": "object",
+      "required": ["lesson_number"],
+      "properties": {
+        "lesson_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        },
+        "exchange_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of exchanges before this one (0 = opening)"
+        },
+        "history": {
+          "type": "array",
+          "description": "Prior conversation turns",
+          "items": {
+            "type": "object",
+            "required": ["role", "content"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["user", "assistant"]
+              },
+              "content": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "focus_pattern": {
+          "type": "integer",
+          "description": "Pattern number being practiced (if applicable)"
+        },
+        "vocabulary": {
+          "type": "array",
+          "description": "Vocabulary items available in this lesson",
+          "items": {
+            "type": "object",
+            "properties": {
+              "english": { "type": "string" },
+              "spanish": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "expected_behavior": {
+      "type": "string",
+      "description": "Human description of what a well-behaved agent SHOULD do"
+    },
+    "expected_pass": {
+      "type": "boolean",
+      "description": "Whether a correctly-behaving agent should PASS this test"
+    }
+  }
+}

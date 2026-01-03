@@ -1,0 +1,29 @@
+[
+  {
+    "id": "oc-help-001",
+    "dimension": "output_cleanliness",
+    "mode": "help",
+    "source": "documented_issue",
+    "issue_ref": "Issue 2",
+    "user_input": "Que significa married?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Agent explains 'married' = 'casado'. Spoken text must NOT include markdown links like '[Escuchar Pronunciacion](https://...)' or URLs",
+    "expected_pass": true
+  },
+  {
+    "id": "oc-help-002",
+    "dimension": "output_cleanliness",
+    "mode": "help",
+    "source": "synthetic",
+    "user_input": "How do I pronounce 'grandmother'?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1
+    },
+    "expected_behavior": "Agent helps with pronunciation. Must not include audio file URLs in spoken text.",
+    "expected_pass": true
+  }
+]

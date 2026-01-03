@@ -1,0 +1,91 @@
+[
+  {
+    "id": "lc-practice-001",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 1",
+    "user_input": "I'm ready to practice!",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Agent should start the practice session in English, asking the first question about family vocabulary using lesson patterns",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-practice-002",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 1",
+    "user_input": "Estoy listo para practicar!",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Even if student speaks Spanish, practice mode should START in English to model the target language. Agent may acknowledge in Spanish but first practice question must be English.",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-practice-003",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Hola! No entiendo bien",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 2,
+      "history": [
+        {"role": "assistant", "content": "Tell me about your family. Do you have brothers or sisters?"},
+        {"role": "user", "content": "My family is... uh... tengo..."}
+      ]
+    },
+    "expected_behavior": "Student is struggling mid-conversation. Agent should provide Spanish explanation/support, then return to English practice.",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-practice-004",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Let's practice!",
+    "context": {
+      "lesson_number": 5,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Opening of practice - agent must respond in English to model target language",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-practice-005",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Quiero practicar ingles por favor",
+    "context": {
+      "lesson_number": 10,
+      "exchange_count": 0
+    },
+    "expected_behavior": "Student explicitly requests English practice in Spanish. Agent should acknowledge briefly then start practice in English.",
+    "expected_pass": true
+  },
+  {
+    "id": "lc-practice-006",
+    "dimension": "language_choice",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "I have two sisters and one brother",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 4,
+      "history": [
+        {"role": "assistant", "content": "Tell me about your family."},
+        {"role": "user", "content": "I have a big family."},
+        {"role": "assistant", "content": "That sounds wonderful! Do you have brothers or sisters?"}
+      ]
+    },
+    "expected_behavior": "Mid-practice in English - agent should continue in English, asking follow-up questions.",
+    "expected_pass": true
+  }
+]

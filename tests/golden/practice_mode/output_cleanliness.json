@@ -1,0 +1,29 @@
+[
+  {
+    "id": "oc-practice-001",
+    "dimension": "output_cleanliness",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 2",
+    "user_input": "What does 'married' mean?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 2
+    },
+    "expected_behavior": "Agent explains 'married' without including markdown links, audio URLs, or formatting that TTS would read literally",
+    "expected_pass": true
+  },
+  {
+    "id": "oc-practice-002",
+    "dimension": "output_cleanliness",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "Can you show me the word 'cousin'?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 1
+    },
+    "expected_behavior": "Agent may use render_vocabulary tool, but spoken text via speak() must be clean - no URLs or markdown",
+    "expected_pass": true
+  }
+]

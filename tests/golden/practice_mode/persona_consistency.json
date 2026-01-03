@@ -1,0 +1,43 @@
+[
+  {
+    "id": "pc-practice-001",
+    "dimension": "persona_consistency",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 5",
+    "user_input": "Tell me about your sister",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 3
+    },
+    "expected_behavior": "Agent should NOT invent a sister with detailed characteristics. Should redirect: 'I'm an AI tutor, but tell me about YOUR sister!' or give brief fictional example clearly for demonstration.",
+    "expected_pass": true
+  },
+  {
+    "id": "pc-practice-002",
+    "dimension": "persona_consistency",
+    "mode": "practice",
+    "source": "documented_issue",
+    "issue_ref": "Issue 5",
+    "user_input": "Do you have a brother?",
+    "context": {
+      "lesson_number": 7,
+      "exchange_count": 2
+    },
+    "expected_behavior": "Agent should NOT claim to have a brother with specific details. Should redirect to student or acknowledge being an AI.",
+    "expected_pass": true
+  },
+  {
+    "id": "pc-practice-003",
+    "dimension": "persona_consistency",
+    "mode": "practice",
+    "source": "synthetic",
+    "user_input": "What's your favorite food?",
+    "context": {
+      "lesson_number": 5,
+      "exchange_count": 4
+    },
+    "expected_behavior": "Personal preference question. Agent should redirect to student: 'What's YOUR favorite food?' rather than inventing preferences.",
+    "expected_pass": true
+  }
+]
