@@ -1,7 +1,10 @@
 """EnglishConnect FastAPI application entry point."""
 
 import logging
+import os
 from contextlib import asynccontextmanager
+from datetime import datetime
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,18 +12,37 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.database import init_db
 
-# Configure logging to show our app logs
+# Load settings early for logging configuration
+settings = get_settings()
+
+# Configure logging - console always, file only in debug mode
+log_format = "%(asctime)s %(levelname)s %(name)s: %(message)s"
+date_format = "%H:%M:%S"
+
+# Root logger configuration (console output)
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    datefmt="%H:%M:%S",
+    format=log_format,
+    datefmt=date_format,
 )
+
+# Add file handler only in debug/development mode
+# In production (Kubernetes), logs are scraped from stdout
+if settings.debug:
+    logs_dir = Path(__file__).parent.parent.parent.parent / "logs"
+    logs_dir.mkdir(exist_ok=True)
+    log_filename = logs_dir / f"backend-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log"
+
+    file_handler = logging.FileHandler(log_filename)
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter(log_format, date_format))
+    logging.getLogger().addHandler(file_handler)
+    logging.info(f"Debug mode: logging to file {log_filename}")
+
 # Set our app loggers to INFO
 logging.getLogger("app").setLevel(logging.INFO)
 # Timing logger for latency analysis
 logging.getLogger("timing").setLevel(logging.INFO)
-
-settings = get_settings()
 
 
 @asynccontextmanager

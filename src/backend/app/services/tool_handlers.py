@@ -267,6 +267,113 @@ def create_render_vocabulary_handler(
     return render_vocabulary_handler
 
 
+def create_render_vocabulary_list_handler(
+    db: AsyncSession,
+    lesson_number: int,
+    course_id: str = "ec1"
+) -> Callable:
+    """Create a batch render vocabulary handler.
+
+    This is optimized for requests like "dame los sustantivos de lección 6 y 7"
+    where multiple vocabulary words need to be rendered in a single call.
+
+    Args:
+        db: Database session for querying vocabulary
+        lesson_number: Current lesson number (max for search)
+        course_id: Course identifier (default: 'ec1')
+
+    Returns:
+        Async function that handles render_vocabulary_list tool calls
+    """
+    async def render_vocabulary_list_handler(
+        words: list[str] | None = None,
+        category: str | None = None,
+        lessons: list[int] | None = None
+    ) -> dict:
+        """Handle batch vocabulary rendering.
+
+        Args:
+            words: Optional list of specific words to render
+            category: Optional category filter (noun, verb, adjective, etc.)
+            lessons: Optional list of specific lesson numbers
+
+        Returns:
+            Dict with list of vocabulary cards
+        """
+        try:
+            # Build query
+            query = (
+                select(VocabularyItem, Lesson.lesson_number)
+                .join(Lesson)
+                .where(Lesson.course_id == course_id)
+            )
+
+            # Filter by lessons if specified, otherwise use current lesson range
+            if lessons:
+                query = query.where(Lesson.lesson_number.in_(lessons))
+            else:
+                query = query.where(Lesson.lesson_number <= lesson_number)
+
+            # Filter by category if specified
+            if category:
+                query = query.where(VocabularyItem.category.ilike(f"%{category}%"))
+
+            # Filter by words if specified
+            if words:
+                # Use OR for multiple words
+                from sqlalchemy import or_
+                word_filters = [VocabularyItem.english_word.ilike(f"%{w}%") for w in words]
+                query = query.where(or_(*word_filters))
+
+            # Order by lesson number, then word
+            query = query.order_by(Lesson.lesson_number, VocabularyItem.english_word)
+
+            result = await db.execute(query)
+            rows = result.all()
+
+            if not rows:
+                return {
+                    "success": False,
+                    "not_found": True,
+                    "message": "No vocabulary found matching the criteria."
+                }
+
+            # Build vocabulary cards
+            cards = []
+            for vocab_item, item_lesson_number in rows:
+                audio_url = _find_vocab_audio_url(course_id, item_lesson_number, vocab_item.english_word)
+                cards.append({
+                    "type": "vocabulary_card",
+                    "data": {
+                        "english_word": vocab_item.english_word,
+                        "spanish_translation": vocab_item.spanish_translation,
+                        "category": vocab_item.category or "word",
+                        "lesson_number": item_lesson_number,
+                        "audio_url": audio_url
+                    }
+                })
+
+            logger.info(
+                f"Vocabulary list rendered: {len(cards)} cards "
+                f"(lessons={lessons or f'1-{lesson_number}'}, category={category})"
+            )
+
+            return {
+                "success": True,
+                "count": len(cards),
+                "rich_content_list": cards
+            }
+
+        except Exception as e:
+            logger.error(f"Render vocabulary list failed: {e}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    return render_vocabulary_list_handler
+
+
 def _get_pattern_demo_audio_url(course_id: str, lesson_number: int) -> str | None:
     """Get demo audio URL for a lesson's patterns.
 

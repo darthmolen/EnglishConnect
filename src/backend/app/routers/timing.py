@@ -9,7 +9,7 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/timing", tags=["timing"])
+router = APIRouter(prefix="/api/timing", tags=["timing"])
 
 # Use the same timing logger as the rest of the backend
 timing_logger = logging.getLogger("timing")

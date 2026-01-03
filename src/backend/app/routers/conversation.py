@@ -26,6 +26,7 @@ from app.services.tool_handlers import (
     create_teaching_help_handler,
     create_record_attempt_handler,
     create_render_vocabulary_handler,
+    create_render_vocabulary_list_handler,
     create_render_pattern_handler,
 )
 from app.schemas.conversation import RichContent
@@ -102,6 +103,7 @@ async def conversation(
         "get_teaching_help": create_teaching_help_handler(db, request.lesson_number),
         "record_attempt": create_record_attempt_handler(performance_context),
         "render_vocabulary": create_render_vocabulary_handler(db, request.lesson_number),
+        "render_vocabulary_list": create_render_vocabulary_list_handler(db, request.lesson_number),
         "render_pattern": create_render_pattern_handler(db, request.lesson_number),
     }
 

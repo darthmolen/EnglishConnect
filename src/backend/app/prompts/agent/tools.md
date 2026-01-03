@@ -34,23 +34,35 @@ Track student attempts for progress (Practice mode only).
 
 ### render_vocabulary(english_word)
 
-Render an interactive vocabulary card with bilingual audio (Help mode).
+Render a SINGLE vocabulary card with bilingual audio.
 
 - english_word: The English word to display (required)
-- Returns: vocabulary card data (english_word, spanish_translation, category, audio_url)
-- If word not found: returns `not_in_curriculum: true` - explain using speak() instead
+- Returns: vocabulary card data
+- Use for: Single word questions like "Que significa 'brother'?"
+
+**For multiple words, use render_vocabulary_list instead!**
+
+### render_vocabulary_list(lessons, category?, words?)
+
+**USE THIS for multiple vocabulary words** - much faster than calling render_vocabulary in a loop!
+
+- lessons: List of lesson numbers, e.g., [6, 7] (optional)
+- category: Filter by type - "noun", "verb", "adjective", "family" (optional)
+- words: Specific words to find (optional)
 
 **When to call:**
 
-- Student asks "What does X mean?" or "Que significa X?"
-- Student asks "How do you say X?" or "Como se dice X?"
-- You want to show pronunciation with high-quality audio
+- "Dame los sustantivos de lección 6 y 7" → `render_vocabulary_list(lessons=[6, 7], category="noun")`
+- "Show me all the verbs" → `render_vocabulary_list(category="verb")`
+- "Dame el vocabulario de la lección 5" → `render_vocabulary_list(lessons=[5])`
 
-**Behavior:**
+**Example flow for "Dame los sustantivos de lección 6 y 7":**
 
-- Card shows English word, Spanish translation, category badge
-- Play button for bilingual audio (English + Spanish pronunciation)
-- You can call speak() BEFORE or AFTER to add context
+1. speak("Aquí están los sustantivos de las lecciones 6 y 7:", language="es")
+2. render_vocabulary_list(lessons=[6, 7], category="noun")
+3. DONE - all cards rendered in ONE call!
+
+**DO NOT loop with render_vocabulary** - each call adds 1-2 seconds of latency!
 
 ### render_pattern(pattern_number, lesson_number?)
 
@@ -100,13 +112,13 @@ Render a Q&A pattern card with demo audio.
 ❌ WRONG: Return text content directly
 ✅ CORRECT: Call speak() with your response, THEN return text confirmation
 
-**For vocabulary questions:** Call speak() to introduce, then render_vocabulary() for each word.
+**For vocabulary questions:** Call speak() to introduce, then render_vocabulary_list() for batch.
 
 Example flow for "Dame los sustantivos":
-1. speak("Aquí están los sustantivos de la lección...", language="es")
-2. render_vocabulary("family")
-3. render_vocabulary("husband")
-4. ... (continue for each word)
+
+1. speak("Aquí están los sustantivos de la lección:", language="es")
+2. render_vocabulary_list(category="noun")
+3. DONE - one call renders all nouns!
 
 ## Other Rules
 

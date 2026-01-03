@@ -195,6 +195,51 @@ DO NOT USE FOR:
     }
 }
 
+# Render vocabulary list tool - batch rendering for multiple words
+RENDER_VOCABULARY_LIST_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "render_vocabulary_list",
+        "description": """Render multiple vocabulary cards at once - MUCH FASTER than calling render_vocabulary many times.
+
+USE THIS WHEN:
+- Student asks for multiple words: "Dame los sustantivos de lección 6 y 7"
+- Student asks for a category: "Show me all the verbs"
+- You need to show more than 2 vocabulary words
+
+PARAMETERS:
+- lessons: List of lesson numbers to include (e.g., [6, 7])
+- category: Filter by category ("noun", "verb", "adjective", etc.) - optional
+- words: Specific words to find (optional, usually not needed with lessons/category)
+
+EXAMPLE FLOW for "Dame los sustantivos de lección 6 y 7":
+1. speak("Aquí están los sustantivos de las lecciones 6 y 7:", language="es")
+2. render_vocabulary_list(lessons=[6, 7], category="noun")
+   → Returns all nouns from lessons 6 and 7 in ONE call
+
+DO NOT loop calling render_vocabulary - use this batch tool instead!""",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "lessons": {
+                    "type": "array",
+                    "items": {"type": "integer"},
+                    "description": "List of lesson numbers to include (e.g., [6, 7])"
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Filter by category: 'noun', 'verb', 'adjective', 'family', etc."
+                },
+                "words": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Specific words to find (optional)"
+                }
+            }
+        }
+    }
+}
+
 # Render pattern card tool - displays inline Q&A pattern with demo audio
 RENDER_PATTERN_TOOL = {
     "type": "function",
@@ -239,6 +284,7 @@ UNIFIED_AGENT_TOOLS = [
     GET_TEACHING_HELP_TOOL,
     RECORD_ATTEMPT_TOOL,
     RENDER_VOCABULARY_TOOL,
+    RENDER_VOCABULARY_LIST_TOOL,
     RENDER_PATTERN_TOOL,
 ]
 
