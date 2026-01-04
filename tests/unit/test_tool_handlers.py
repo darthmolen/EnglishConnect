@@ -250,6 +250,166 @@ class TestRenderVocabularyHandler:
         assert "audio_url" in data
 
 
+class TestRenderVocabularyListHandler:
+    """Test create_render_vocabulary_list_handler batch functionality."""
+
+    @pytest.fixture
+    def mock_db(self):
+        """Create a mock async database session."""
+        db = AsyncMock()
+        return db
+
+    @pytest.fixture
+    def mock_vocab_results(self):
+        """Create mock vocabulary query results for batch."""
+        results = []
+        words = [
+            ("family", "familia", "noun", 6),
+            ("father", "padre", "noun", 6),
+            ("mother", "madre", "noun", 6),
+            ("brother", "hermano", "noun", 7),
+        ]
+        for word, translation, category, lesson in words:
+            vocab = MagicMock()
+            vocab.english_word = word
+            vocab.spanish_translation = translation
+            vocab.category = category
+            results.append((vocab, lesson))
+        return results
+
+    @pytest.mark.asyncio
+    async def test_render_vocabulary_list_by_lessons(
+        self, mock_db, mock_vocab_results
+    ):
+        """Handler should filter by lesson numbers."""
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        # Mock query to return vocab items
+        mock_db.execute.return_value = MagicMock(
+            all=MagicMock(return_value=mock_vocab_results)
+        )
+
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=10)
+
+        with patch(
+            "app.services.tool_handlers._find_vocab_audio_url",
+            return_value="/api/audio/stream/ec1/vocab/lesson-06/word.wav",
+        ):
+            result = await handler(lessons=[6, 7])
+
+        assert result["success"] is True
+        assert result["count"] == 4
+        assert "rich_content_list" in result
+        assert len(result["rich_content_list"]) == 4
+        # Verify card structure
+        for card in result["rich_content_list"]:
+            assert card["type"] == "vocabulary_card"
+            assert "english_word" in card["data"]
+            assert "spanish_translation" in card["data"]
+
+    @pytest.mark.asyncio
+    async def test_render_vocabulary_list_by_category(
+        self, mock_db, mock_vocab_results
+    ):
+        """Handler should filter by category."""
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        mock_db.execute.return_value = MagicMock(
+            all=MagicMock(return_value=mock_vocab_results)
+        )
+
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=10)
+
+        with patch(
+            "app.services.tool_handlers._find_vocab_audio_url",
+            return_value=None,
+        ):
+            result = await handler(lessons=[6, 7], category="noun")
+
+        assert result["success"] is True
+        # The handler builds a query but doesn't filter in memory
+        # So all results are returned (mock returns all)
+        assert "rich_content_list" in result
+
+    @pytest.mark.asyncio
+    async def test_render_vocabulary_list_returns_empty(self, mock_db):
+        """Handler should return not_found when no matches."""
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        mock_db.execute.return_value = MagicMock(all=MagicMock(return_value=[]))
+
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=10)
+        result = await handler(lessons=[99])
+
+        assert result["success"] is False
+        assert result["not_found"] is True
+
+    @pytest.mark.asyncio
+    async def test_render_vocabulary_list_by_words(self, mock_db):
+        """Handler should filter by specific word list."""
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        # Only return matching words
+        vocab1 = MagicMock()
+        vocab1.english_word = "family"
+        vocab1.spanish_translation = "familia"
+        vocab1.category = "noun"
+
+        vocab2 = MagicMock()
+        vocab2.english_word = "mother"
+        vocab2.spanish_translation = "madre"
+        vocab2.category = "noun"
+
+        mock_db.execute.return_value = MagicMock(
+            all=MagicMock(return_value=[(vocab1, 6), (vocab2, 6)])
+        )
+
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=10)
+
+        with patch(
+            "app.services.tool_handlers._find_vocab_audio_url",
+            return_value=None,
+        ):
+            result = await handler(words=["family", "mother"])
+
+        assert result["success"] is True
+        assert result["count"] == 2
+
+    @pytest.mark.asyncio
+    async def test_render_vocabulary_list_structure(
+        self, mock_db, mock_vocab_results
+    ):
+        """Handler should return correct rich_content_list structure."""
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        mock_db.execute.return_value = MagicMock(
+            all=MagicMock(return_value=mock_vocab_results)
+        )
+
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=10)
+
+        with patch(
+            "app.services.tool_handlers._find_vocab_audio_url",
+            return_value="/api/audio/stream/ec1/vocab/lesson-06/word.wav",
+        ):
+            result = await handler(lessons=[6, 7])
+
+        # Verify top-level structure
+        assert "success" in result
+        assert "count" in result
+        assert "rich_content_list" in result
+
+        # Verify each card has correct structure
+        for card in result["rich_content_list"]:
+            assert card["type"] == "vocabulary_card"
+            data = card["data"]
+            assert "english_word" in data
+            assert "spanish_translation" in data
+            assert "category" in data
+            assert "lesson_number" in data
+            assert "audio_url" in data
+
+
 class TestToolDefinitionParameterMatch:
     """Verify tool handler parameters match tool definitions.
 
@@ -315,3 +475,29 @@ class TestToolDefinitionParameterMatch:
 
         missing_params = tool_params - handler_params
         assert not missing_params, f"Handler missing params: {missing_params}"
+
+    def test_render_vocabulary_list_handler_accepts_tool_definition_params(self):
+        """Handler signature must accept exact params from RENDER_VOCABULARY_LIST_TOOL."""
+        from app.services.azure_openai import UNIFIED_AGENT_TOOLS
+        import inspect
+
+        render_vocab_list_tool = next(
+            (t for t in UNIFIED_AGENT_TOOLS if t["function"]["name"] == "render_vocabulary_list"),
+            None,
+        )
+        assert render_vocab_list_tool is not None, "render_vocabulary_list tool not found in UNIFIED_AGENT_TOOLS"
+
+        tool_params = set(
+            render_vocab_list_tool["function"]["parameters"]["properties"].keys()
+        )
+
+        from app.services.tool_handlers import create_render_vocabulary_list_handler
+
+        mock_db = AsyncMock()
+        handler = create_render_vocabulary_list_handler(db=mock_db, lesson_number=7)
+
+        sig = inspect.signature(handler)
+        handler_params = set(sig.parameters.keys())
+
+        missing_params = tool_params - handler_params
+        assert not missing_params, f"Handler missing params from tool definition: {missing_params}"

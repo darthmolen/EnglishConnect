@@ -153,6 +153,12 @@ async def conversation(
             if result_data.get("rich_content"):
                 rich_content_items.append(RichContent(**result_data["rich_content"]))
 
+        # Collect rich content from render_vocabulary_list calls (batch)
+        if tool_result.get("tool") == "render_vocabulary_list" and tool_result.get("success"):
+            result_data = tool_result.get("result", {})
+            for card in result_data.get("rich_content_list", []):
+                rich_content_items.append(RichContent(**card))
+
     # Backward compatibility: set audio_base64/format/language from first chunk
     audio_base64 = None
     audio_format = "wav"
