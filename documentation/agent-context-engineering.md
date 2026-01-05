@@ -300,19 +300,25 @@ python -m pytest tests/unit/test_unified_teaching_agent.py::TestFocusPattern -v
 ### Adding a New Variable
 
 1. Add placeholder to template: `{new_variable}`
+
 2. Compute value in agent:
+
    ```python
    def _get_new_variable(self) -> str:
        return "computed value"
    ```
+
 3. Pass to render:
+
    ```python
    return render_prompt(
        template,
        new_variable=self._get_new_variable(),
    )
    ```
+
 4. Test:
+
    ```python
    def test_new_variable_in_prompt(self, sample_lesson):
        agent = UnifiedTeachingAgent(lesson=sample_lesson, mode="practice")
@@ -320,9 +326,115 @@ python -m pytest tests/unit/test_unified_teaching_agent.py::TestFocusPattern -v
        assert "computed value" in prompt
    ```
 
+## LLM-as-Judge Evaluation System
+
+Beyond unit testing prompt content, we use an **LLM-as-judge evaluation system** to validate agent behavior end-to-end. This catches regressions that static prompt tests cannot detect.
+
+### Architecture
+
+```text
+tests/
+├── evaluation/           # LLM-as-judge system
+│   ├── cli.py            # CLI entry point
+│   ├── judge.py          # vLLM client for Qwen 2.5-7B
+│   ├── rubrics.py        # 6 rubric dimensions with prompts
+│   ├── runner.py         # Test execution + judging
+│   └── report.py         # Result formatting
+└── golden/               # Test cases from documented issues
+    ├── schema.json       # Test case JSON schema
+    ├── practice_mode/    # Practice mode test cases
+    └── help_mode/        # Help mode test cases
+```
+
+### Rubric Dimensions
+
+We evaluate agent behavior across 6 dimensions derived from real user issues:
+
+| Dimension              | Description                                              | Pass Criteria                                |
+| ---------------------- | -------------------------------------------------------- | -------------------------------------------- |
+| `language_choice`      | Practice starts English, help responds in student's lang | First speak() call uses correct language     |
+| `tool_usage`           | Always calls speak(), never fallback                     | speak() tool called, no auto-synthesis       |
+| `output_cleanliness`   | No markdown/URLs in spoken text                          | Text contains no `[links]` or `http://`      |
+| `confusion_recovery`   | Asks clarification when input ambiguous                  | Offers alternatives for homophones           |
+| `persona_consistency`  | Redirects personal questions to student                  | Doesn't invent personal details              |
+| `curriculum_alignment` | Vocabulary within lesson level                           | Uses only vocab from current/prior lessons   |
+
+### Test Case Structure
+
+Test cases are stored in `tests/golden/` as JSON:
+
+```json
+{
+  "id": "lc-practice-001",
+  "dimension": "language_choice",
+  "mode": "practice",
+  "source": "documented_issue",
+  "issue_ref": "Issue 1",
+  "user_input": "I'm ready to practice!",
+  "context": {
+    "lesson_number": 7,
+    "exchange_count": 0
+  },
+  "expected_behavior": "Practice mode should start in English",
+  "expected_pass": true
+}
+```
+
+### Running Evaluations
+
+```bash
+# Run all dimensions
+python -m tests.evaluation.cli --dimension all
+
+# Run specific dimension
+python -m tests.evaluation.cli --dimension language_choice --verbose
+
+# Save results to file
+python -m tests.evaluation.cli --dimension all --output results.json
+```
+
+### Evaluation Results (2026-01-05 Baseline)
+
+| Dimension            | Pass Rate  |
+| -------------------- | ---------- |
+| language_choice      | 70%        |
+| tool_usage           | 83%        |
+| output_cleanliness   | 100%       |
+| confusion_recovery   | 75%        |
+| persona_consistency  | 100%       |
+| curriculum_alignment | 50%        |
+| **Overall**          | **79.3%**  |
+
+Target pass rate: 80%
+
+### Iterative Prompt Improvement Workflow
+
+1. **Identify failing dimension** - Run evaluation, find lowest pass rate
+2. **Analyze failures** - Run with `--verbose` to see judge reasoning
+3. **Edit prompt** - Modify relevant `.md` file in `prompts/agent/`
+4. **Re-evaluate** - Run evaluation again
+5. **Commit if improved** - Only commit if pass rate increases
+
+### Bias Mitigation
+
+The evaluation system uses several techniques to reduce judge bias:
+
+- **Position swap for A/B** - When comparing prompts, swap order and check consistency
+- **Chain-of-thought** - Require judge to explain before scoring
+- **Evidence-based** - Judge must cite specific text from agent response
+
+### Key Learnings
+
+1. **Phonetic awareness for STT errors** - Agent needs explicit guidance about homophones (marry/Mary/merry)
+2. **Language rules are mode-specific** - Practice mode starts English, help mode responds in student's language
+3. **Tool usage requires positive examples** - Show correct flow, not just "don't do X"
+4. **Persona consistency needs explicit redirect** - "I'm an AI, but tell me about YOUR family"
+
 ## Related Files
 
 - [unified_teaching_agent.py](../src/backend/app/agents/unified_teaching_agent.py) - Agent implementation
 - [loader.py](../src/backend/app/prompts/loader.py) - Template loading utilities
 - [test_unified_teaching_agent.py](../tests/unit/test_unified_teaching_agent.py) - Agent tests
 - [general-agent-conversation-workflow.md](general-agent-conversation-workflow.md) - End-to-end workflow
+- [rubrics.py](../tests/evaluation/rubrics.py) - LLM-as-judge rubric definitions
+- [functional-issues.md](../planning/completed/functional-issues.md) - Original issue documentation
