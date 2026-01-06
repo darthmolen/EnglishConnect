@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.config import get_settings
 from app.database import get_db
-from app.services.lesson_service import get_lesson_detail
+from app.services.lesson_service import LessonService
 from app.services.realtime_session import RealtimeSessionManager
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,8 @@ async def create_tool_handlers(db: AsyncSession, lesson_number: int) -> dict:
     Returns:
         Dict mapping tool names to async handler functions
     """
-    lesson = await get_lesson_detail(db, lesson_number)
+    service = LessonService(db)
+    lesson = await service.get_lesson_detail("ec1", lesson_number)
 
     async def get_teaching_help(query: str) -> dict:
         """Retrieve teaching help content."""
@@ -148,7 +149,8 @@ async def realtime_conversation(
     logger.info(f"WebSocket connected: lesson={lesson_number}, mode={mode}")
 
     # Build system prompt using UnifiedTeachingAgent
-    lesson = await get_lesson_detail(db, lesson_number)
+    service = LessonService(db)
+    lesson = await service.get_lesson_detail("ec1", lesson_number)
     agent = UnifiedTeachingAgent(
         lesson=lesson,
         mode=mode,

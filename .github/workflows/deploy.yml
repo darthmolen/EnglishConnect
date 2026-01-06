@@ -146,10 +146,12 @@ jobs:
 
       - name: Deploy to Container App
         run: |
+          # Use 'latest' tag since docker/metadata-action creates short SHA tags
+          # and we always push 'latest' on the default branch
           az containerapp update \
             --name ${{ steps.get-ca.outputs.ca_name }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ steps.get-acr.outputs.acr_name }}.azurecr.io/englishconnect:${{ github.sha }}
+            --image ${{ steps.get-acr.outputs.acr_name }}.azurecr.io/englishconnect:latest
 
       - name: Get deployment URL
         run: |
