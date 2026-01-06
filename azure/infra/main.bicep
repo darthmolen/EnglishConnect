@@ -12,6 +12,9 @@ param location string = resourceGroup().location
 @description('Azure OpenAI location (must support Realtime API: eastus2, swedencentral)')
 param openaiLocation string = 'eastus2'
 
+@description('PostgreSQL location (southcentralus may be restricted)')
+param postgresLocation string = 'eastus2'
+
 // Generate unique token for resource names
 var resourceToken = toLower(uniqueString(resourceGroup().id, environmentName))
 
@@ -65,7 +68,7 @@ module postgres 'modules/postgres.bicep' = {
   name: 'postgres'
   params: {
     name: 'psql-ec-${resourceToken}'
-    location: location
+    location: postgresLocation
     tags: tags
     administratorLogin: 'ecadmin'
     managedIdentityPrincipalId: managedIdentity.properties.principalId
