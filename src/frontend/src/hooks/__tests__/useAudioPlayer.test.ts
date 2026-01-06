@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { useAudioPlayer } from '../useAudioPlayer'
 
 // Mock Audio element
@@ -9,7 +9,7 @@ let mockAudioInstance: {
   src: string
   onended: (() => void) | null
   onerror: ((e: Event) => void) | null
-}
+} | null = null
 
 class MockAudio {
   src = ''
@@ -29,7 +29,12 @@ class MockAudio {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockAudioInstance = null
   global.Audio = MockAudio as unknown as typeof Audio
+})
+
+afterEach(() => {
+  mockAudioInstance = null
 })
 
 describe('useAudioPlayer', () => {
@@ -42,35 +47,46 @@ describe('useAudioPlayer', () => {
     const { result } = renderHook(() => useAudioPlayer())
     const base64Audio = btoa('test audio')
 
-    await act(async () => {
-      await result.current.playAudio(base64Audio)
+    // Don't await playAudio - it waits for onended which we trigger manually
+    act(() => {
+      result.current.playAudio(base64Audio)
     })
 
-    expect(result.current.isPlaying).toBe(true)
+    await waitFor(() => {
+      expect(result.current.isPlaying).toBe(true)
+    })
   })
 
   it('creates audio element with data URL', async () => {
     const { result } = renderHook(() => useAudioPlayer())
     const base64Audio = btoa('test audio')
 
-    await act(async () => {
-      await result.current.playAudio(base64Audio)
+    act(() => {
+      result.current.playAudio(base64Audio)
     })
 
-    expect(mockAudioInstance.src).toContain('data:audio/wav;base64,')
+    await waitFor(() => {
+      expect(mockAudioInstance).not.toBeNull()
+      expect(mockAudioInstance!.src).toContain('data:audio/wav;base64,')
+    })
   })
 
   it('sets isPlaying to false when audio ends', async () => {
     const { result } = renderHook(() => useAudioPlayer())
     const base64Audio = btoa('test audio')
 
-    await act(async () => {
-      await result.current.playAudio(base64Audio)
+    act(() => {
+      result.current.playAudio(base64Audio)
+    })
+
+    // Wait for isPlaying to become true first
+    await waitFor(() => {
+      expect(result.current.isPlaying).toBe(true)
     })
 
     // Simulate audio ended
     act(() => {
-      if (mockAudioInstance.onended) {
+      if (mockAudioInstance?.onended) {
         mockAudioInstance.onended()
       }
     })
@@ -82,8 +98,13 @@ describe('useAudioPlayer', () => {
     const { result } = renderHook(() => useAudioPlayer())
     const base64Audio = btoa('test audio')
 
-    await act(async () => {
-      await result.current.playAudio(base64Audio)
+    act(() => {
+      result.current.playAudio(base64Audio)
+    })
+
+    // Wait for isPlaying to become true first
+    await waitFor(() => {
+      expect(result.current.isPlaying).toBe(true)
     })
 
     act(() => {
@@ -91,6 +112,6 @@ describe('useAudioPlayer', () => {
     })
 
     expect(result.current.isPlaying).toBe(false)
-    expect(mockAudioInstance.pause).toHaveBeenCalled()
+    expect(mockAudioInstance?.pause).toHaveBeenCalled()
   })
 })
