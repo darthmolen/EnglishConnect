@@ -74,9 +74,9 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-async def root():
-    """Health check endpoint."""
+@app.get("/api/status")
+async def api_status():
+    """API status endpoint (for development/debugging)."""
     return {
         "status": "ok",
         "app": settings.app_name,
@@ -114,6 +114,7 @@ app.include_router(realtime.router)  # Realtime API WebSocket (/ws/conversation)
 # The static/ directory is populated by Dockerfile.combined
 static_path = Path(__file__).parent.parent / "static"
 if static_path.exists():
+    logging.info(f"SPA mode: serving static files from {static_path}")
     # Serve static assets (JS, CSS, images)
     app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
@@ -126,3 +127,15 @@ if static_path.exists():
             return FileResponse(file_path)
         # Otherwise serve index.html for client-side routing
         return FileResponse(static_path / "index.html")
+else:
+    logging.info("API-only mode: no static files directory found")
+
+    @app.get("/")
+    async def root_dev():
+        """Development fallback - no SPA available."""
+        return {
+            "status": "ok",
+            "app": settings.app_name,
+            "env": settings.app_env,
+            "message": "SPA not built. Run 'npm run build' in frontend/",
+        }
