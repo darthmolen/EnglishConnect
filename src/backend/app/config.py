@@ -29,6 +29,14 @@ class Settings(BaseSettings):
     azure_openai_deployment: str = "gpt-4o-mini"
     azure_openai_api_version: str = "2024-10-21"
 
+    # Azure OpenAI Realtime API (STT+LLM+TTS unified)
+    azure_openai_realtime_deployment: str = "gpt-4o-mini-realtime"
+    azure_openai_realtime_api_version: str = "2025-04-01-preview"
+    use_realtime_api: bool = False  # Feature flag for cloud deployment
+
+    # Azure Managed Identity (for cloud deployment)
+    azure_client_id: str = ""  # User-assigned managed identity client ID
+
     # OAuth - Google
     google_client_id: str = ""
     google_client_secret: str = ""

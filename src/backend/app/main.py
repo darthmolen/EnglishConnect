@@ -8,6 +8,8 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.config import get_settings
 from app.database import init_db
@@ -97,7 +99,7 @@ async def health():
 
 
 # Import and include routers
-from app.routers import lessons, conversation, progress, auth, content, audio, timing
+from app.routers import lessons, conversation, progress, auth, content, audio, timing, realtime
 
 app.include_router(lessons.router)
 app.include_router(conversation.router)  # Unified conversation (/api/practice/conversation)
@@ -106,3 +108,21 @@ app.include_router(auth.router)
 app.include_router(content.router)  # Authenticated content images (/api/content/images)
 app.include_router(audio.router)  # Demo audio streaming (/api/audio)
 app.include_router(timing.router)  # Timing log aggregation (/api/timing)
+app.include_router(realtime.router)  # Realtime API WebSocket (/ws/conversation)
+
+# Static file serving for React SPA (production container)
+# The static/ directory is populated by Dockerfile.combined
+static_path = Path(__file__).parent.parent / "static"
+if static_path.exists():
+    # Serve static assets (JS, CSS, images)
+    app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve React SPA for all non-API routes."""
+        # Check if it's a static file that exists
+        file_path = static_path / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(file_path)
+        # Otherwise serve index.html for client-side routing
+        return FileResponse(static_path / "index.html")

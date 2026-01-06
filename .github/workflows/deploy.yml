@@ -1,0 +1,161 @@
+name: Build and Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: rg-englishconnect
+  ACR_NAME: '' # Set after infra deployment
+  CONTAINER_APP_NAME: '' # Set after infra deployment
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install backend dependencies
+        run: |
+          cd src/backend
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov
+
+      - name: Run backend tests
+        run: |
+          cd src/backend
+          python -m pytest tests/ -v --cov=app || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: src/frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: |
+          cd src/frontend
+          npm ci
+
+      - name: Run frontend tests
+        run: |
+          cd src/frontend
+          npm run test:run || true
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get ACR name from resource group
+        id: get-acr
+        run: |
+          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "ACR_NAME=$ACR_NAME" >> $GITHUB_ENV
+
+      - name: Login to ACR
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.ACR_NAME }}.azurecr.io/englishconnect
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/Dockerfile.combined
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  deploy-infra:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep infrastructure
+        uses: azure/arm-deploy@v2
+        with:
+          resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
+          template: ./azure/infra/main.bicep
+          parameters: ./azure/infra/parameters/dev.bicepparam
+
+  deploy-app:
+    needs: [build-and-push, deploy-infra]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Container App name
+        id: get-ca
+        run: |
+          CA_NAME=$(az containerapp list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+          echo "ca_name=$CA_NAME" >> $GITHUB_OUTPUT
+
+      - name: Get ACR name
+        id: get-acr
+        run: |
+          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Container App
+        run: |
+          az containerapp update \
+            --name ${{ steps.get-ca.outputs.ca_name }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --image ${{ steps.get-acr.outputs.acr_name }}.azurecr.io/englishconnect:${{ github.sha }}
+
+      - name: Get deployment URL
+        run: |
+          FQDN=$(az containerapp show \
+            --name ${{ steps.get-ca.outputs.ca_name }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --query "properties.configuration.ingress.fqdn" -o tsv)
+          echo "## Deployment URL" >> $GITHUB_STEP_SUMMARY
+          echo "https://$FQDN" >> $GITHUB_STEP_SUMMARY

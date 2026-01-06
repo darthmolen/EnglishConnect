@@ -24,6 +24,9 @@ agent-framework>=1.0.0b251211
 azure-ai-projects>=1.0.0b8
 azure-identity>=1.15.0
 
+# Azure OpenAI Realtime API
+openai>=1.50.0
+
 # Redis and task queue (for notifications stub)
 redis>=5.0.1
 celery>=5.3.6
