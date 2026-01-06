@@ -77,6 +77,7 @@ jobs:
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./azure/infra/main.bicep
           parameters: ./azure/infra/parameters/dev.bicepparam
+          failOnStdErr: false
 
       - name: Get ACR name from deployment
         id: get-acr
