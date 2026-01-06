@@ -42,3 +42,10 @@ research/
 # Piper TTS models (large ONNX files, download separately)
 src/services/piper/models/*.onnx
 src/services/piper/models/*.onnx.json
+
+# Large model files and installers (download separately)
+*.run
+*.deb
+src/services/tts-mcp/VibeVoice/
+src/services/stt/models/
+src/services/llm-local/models/
