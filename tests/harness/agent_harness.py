@@ -53,6 +53,9 @@ class AgentResponse:
     tool_results: list[dict] = field(default_factory=list)
     spoken_text: str | None = None
     spoken_language: str | None = None
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
 
 
 class AgentTestHarness:
@@ -94,6 +97,15 @@ class AgentTestHarness:
         self.all_tool_calls: list[dict] = []
         self.all_tool_results: list[dict] = []
         self.phase_history: list[str] = [self.phase.phase_type]
+
+        # Token usage tracking (LLM)
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
+        self.total_tokens = 0
+
+        # Audio tracking (for TTS/STT cost estimation)
+        self.total_spoken_chars = 0  # TTS output
+        self.total_input_chars = 0   # STT input (user messages)
 
     @classmethod
     async def create(
@@ -324,6 +336,15 @@ class AgentTestHarness:
         self.all_tool_calls.extend(tool_calls)
         self.all_tool_results.extend(tool_results)
 
+        # Track token usage
+        token_usage = result.get("token_usage", {})
+        prompt_tokens = token_usage.get("prompt_tokens", 0)
+        completion_tokens = token_usage.get("completion_tokens", 0)
+        exchange_tokens = token_usage.get("total_tokens", 0)
+        self.total_prompt_tokens += prompt_tokens
+        self.total_completion_tokens += completion_tokens
+        self.total_tokens += exchange_tokens
+
         # Extract spoken text from tool results
         spoken_text = None
         spoken_language = None
@@ -333,6 +354,12 @@ class AgentTestHarness:
                 if result_data.get("spoken"):
                     spoken_text = result_data.get("text")
                     spoken_language = result_data.get("language")
+
+        # Track audio for TTS/STT cost estimation
+        if spoken_text:
+            self.total_spoken_chars += len(spoken_text)
+        if message:
+            self.total_input_chars += len(message)
 
         # Use spoken text as primary response text
         response_text = spoken_text if spoken_text else result["text"]
@@ -353,6 +380,9 @@ class AgentTestHarness:
             tool_results=tool_results,
             spoken_text=spoken_text,
             spoken_language=spoken_language,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            total_tokens=exchange_tokens,
         )
 
     def get_transcript(self) -> str:
@@ -382,6 +412,57 @@ class AgentTestHarness:
         """
         return self.phase_history.copy()
 
+    def get_token_summary(self) -> dict:
+        """Get accumulated token usage and estimated cost.
+
+        Returns:
+            Dict with LLM tokens, audio estimates, and costs
+        """
+        # GPT-4o-mini pricing (LLM for agent logic)
+        # Input: $0.15 per 1M tokens, Output: $0.60 per 1M tokens
+        llm_input_cost = self.total_prompt_tokens * 0.15 / 1_000_000
+        llm_output_cost = self.total_completion_tokens * 0.60 / 1_000_000
+        llm_cost = llm_input_cost + llm_output_cost
+
+        # GPT-4o-mini-realtime pricing (TTS/STT)
+        # Audio: ~100 tokens/second, ~150 words/minute spoken
+        # Average word: ~5 chars, so ~12.5 chars/second
+        # Audio input (STT): $10/1M tokens
+        # Audio output (TTS): $20/1M tokens
+        chars_per_second = 12.5
+        tokens_per_second = 100
+
+        # Estimate audio durations
+        tts_seconds = self.total_spoken_chars / chars_per_second if self.total_spoken_chars else 0
+        stt_seconds = self.total_input_chars / chars_per_second if self.total_input_chars else 0
+
+        # Estimate audio tokens
+        tts_tokens = int(tts_seconds * tokens_per_second)
+        stt_tokens = int(stt_seconds * tokens_per_second)
+
+        # Audio costs
+        tts_cost = tts_tokens * 20.00 / 1_000_000  # Output audio
+        stt_cost = stt_tokens * 10.00 / 1_000_000  # Input audio
+        audio_cost = tts_cost + stt_cost
+
+        return {
+            "prompt_tokens": self.total_prompt_tokens,
+            "completion_tokens": self.total_completion_tokens,
+            "total_tokens": self.total_tokens,
+            "llm_cost_usd": llm_cost,
+            "tts_chars": self.total_spoken_chars,
+            "tts_seconds": round(tts_seconds, 1),
+            "tts_tokens": tts_tokens,
+            "tts_cost_usd": tts_cost,
+            "stt_chars": self.total_input_chars,
+            "stt_seconds": round(stt_seconds, 1),
+            "stt_tokens": stt_tokens,
+            "stt_cost_usd": stt_cost,
+            "audio_cost_usd": audio_cost,
+            "total_cost_usd": llm_cost + audio_cost,
+            "exchange_count": self.exchange_count,
+        }
+
     def reset(self) -> None:
         """Reset the harness to initial state."""
         self.phase_index = 0
@@ -393,3 +474,8 @@ class AgentTestHarness:
         self.phase_history = [self.phase.phase_type]
         self.exchange_count = 0
         self.performance_context = PerformanceContext()
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
+        self.total_tokens = 0
+        self.total_spoken_chars = 0
+        self.total_input_chars = 0
