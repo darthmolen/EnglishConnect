@@ -439,6 +439,11 @@ async def get_agent_response(
     tool_calls_made = []
     tool_results = []
 
+    # Token usage tracking
+    total_prompt_tokens = 0
+    total_completion_tokens = 0
+    total_tokens = 0
+
     # === LOGGING: Request details ===
     logger.info("=" * 60)
     logger.info("CONVERSATION REQUEST")
@@ -479,6 +484,12 @@ async def get_agent_response(
         # T3: LLM call complete
         tokens = response.usage.total_tokens if response.usage else 0
         log_timing_delta("T3", "llm_complete", t2_ts, iteration=iteration + 1, tokens=tokens)
+
+        # Accumulate token usage
+        if response.usage:
+            total_prompt_tokens += response.usage.prompt_tokens or 0
+            total_completion_tokens += response.usage.completion_tokens or 0
+            total_tokens += response.usage.total_tokens or 0
 
         message = response.choices[0].message
         logger.info(f"  LLM response: content={message.content[:100] if message.content else 'None'}{'...' if message.content and len(message.content) > 100 else ''}")
@@ -560,12 +571,22 @@ async def get_agent_response(
             return {
                 "text": message.content or "",
                 "tool_calls": tool_calls_made,
-                "tool_results": tool_results
+                "tool_results": tool_results,
+                "token_usage": {
+                    "prompt_tokens": total_prompt_tokens,
+                    "completion_tokens": total_completion_tokens,
+                    "total_tokens": total_tokens,
+                },
             }
 
     # If we hit max iterations, return what we have
     return {
         "text": "[Agent exceeded maximum tool iterations]",
         "tool_calls": tool_calls_made,
-        "tool_results": tool_results
+        "tool_results": tool_results,
+        "token_usage": {
+            "prompt_tokens": total_prompt_tokens,
+            "completion_tokens": total_completion_tokens,
+            "total_tokens": total_tokens,
+        },
     }
