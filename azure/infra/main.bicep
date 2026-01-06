@@ -67,7 +67,7 @@ module openai 'modules/openai.bicep' = {
 module postgres 'modules/postgres.bicep' = {
   name: 'postgres'
   params: {
-    name: 'psql-ec-${resourceToken}-v2'
+    name: 'psql-ec-${resourceToken}-v3'
     location: postgresLocation
     tags: tags
     administratorLogin: 'ecadmin'
