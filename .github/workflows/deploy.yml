@@ -55,54 +55,12 @@ jobs:
           cd src/frontend
           npm run test:run || true
 
-  build-and-push:
+  deploy-infra:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Azure Login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Get ACR name from resource group
-        id: get-acr
-        run: |
-          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
-          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
-          echo "ACR_NAME=$ACR_NAME" >> $GITHUB_ENV
-
-      - name: Login to ACR
-        run: |
-          az acr login --name ${{ env.ACR_NAME }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.ACR_NAME }}.azurecr.io/englishconnect
-          tags: |
-            type=sha,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: ./src
-          file: ./src/Dockerfile.combined
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-
-  deploy-infra:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    environment: production
+      acr-name: ${{ steps.get-acr.outputs.acr_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -120,10 +78,51 @@ jobs:
           template: ./azure/infra/main.bicep
           parameters: ./azure/infra/parameters/dev.bicepparam
 
-  deploy-app:
-    needs: [build-and-push, deploy-infra]
+      - name: Get ACR name from deployment
+        id: get-acr
+        run: |
+          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+
+  build-and-push:
+    needs: deploy-infra
     runs-on: ubuntu-latest
-    environment: production
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Login to ACR
+        run: |
+          az acr login --name ${{ needs.deploy-infra.outputs.acr-name }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ needs.deploy-infra.outputs.acr-name }}.azurecr.io/englishconnect
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/Dockerfile.combined
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  deploy-app:
+    needs: [deploy-infra, build-and-push]
+    runs-on: ubuntu-latest
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v2
