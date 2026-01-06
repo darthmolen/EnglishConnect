@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useConversationStore } from '@/stores/conversationStore'
-import type { AgentMode } from '@/types'
+import type { AgentMode, RichContent, RichContentType } from '@/types'
 
 interface RealtimeConfig {
   lessonNumber: number
@@ -52,10 +52,11 @@ function float32ToPcm16(float32: Float32Array): Int16Array {
  * Convert Int16Array to ArrayBuffer for WebSocket
  */
 function int16ToArrayBuffer(int16: Int16Array): ArrayBuffer {
+  // slice() returns ArrayBuffer | SharedArrayBuffer, cast to ArrayBuffer
   return int16.buffer.slice(
     int16.byteOffset,
     int16.byteOffset + int16.byteLength
-  )
+  ) as ArrayBuffer
 }
 
 /**
@@ -185,15 +186,26 @@ export function useRealtimeConversation(config: RealtimeConfig) {
             }
             break
 
-          case 'rich_content':
+          case 'rich_content': {
             // Handle rich content (vocabulary cards, patterns)
+            // Map tool name to RichContentType
+            const toolTypeMap: Record<string, RichContentType> = {
+              render_vocabulary: 'vocabulary_card',
+              render_pattern: 'pattern_card',
+            }
+            const contentType = toolTypeMap[data.tool] || 'vocabulary_card'
+            const richContent: RichContent[] = [{
+              type: contentType,
+              data: data.data as unknown as RichContent['data'],
+            }]
             addMessage({
               role: 'assistant',
               content: '',
               agentMode: mode,
-              richContent: data.data,
+              richContent,
             })
             break
+          }
 
           case 'speech_started':
             setIsLoading(true)
