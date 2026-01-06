@@ -50,6 +50,8 @@ resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-12-0
 }
 
 // Enable Microsoft Entra admin
+// Note: Server needs to be fully accessible before adding Entra admin.
+// Adding dependsOn ensures the server has time to start up.
 resource entraAdmin 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2023-12-01-preview' = {
   parent: postgres
   name: managedIdentityPrincipalId
@@ -58,6 +60,10 @@ resource entraAdmin 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@20
     principalName: managedIdentityName
     tenantId: tenant().tenantId
   }
+  dependsOn: [
+    database
+    firewallRule
+  ]
 }
 
 // Allow Azure services (for Container Apps)
