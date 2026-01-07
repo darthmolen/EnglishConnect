@@ -79,6 +79,7 @@ function AppContent() {
     }
   }
 
+  // Show brief loading only while checking initial auth state
   if (authLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -87,16 +88,7 @@ function AppContent() {
     )
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex h-screen items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">{t('app.title')}</h1>
-        <p className="text-muted-foreground">{t('app.signInPrompt')}</p>
-        <LoginButton />
-      </div>
-    )
-  }
-
+  // Allow browsing for everyone - only agent interactions require auth
   const lessonGoals = currentLesson
     ? completedGoals[currentLesson.lesson_number] || []
     : []
@@ -195,7 +187,7 @@ function AppContent() {
                 <Trash2 className="h-4 w-4" />
               </button>
             )}
-            <UserProfile />
+            {isAuthenticated ? <UserProfile /> : <LoginButton />}
           </div>
         </header>
 
@@ -245,7 +237,8 @@ function AppContent() {
                 isRecording={isRecording}
                 isPlaying={isPlaying}
                 onPress={toggleRecording}
-                disabled={!selectedLessonNumber || isLoading}
+                disabled={!selectedLessonNumber || isLoading || !isAuthenticated}
+                title={!isAuthenticated ? t('auth.signInToSpeak') : undefined}
               />
               <div className="relative flex-1">
                 <input
@@ -254,11 +247,13 @@ function AppContent() {
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={
-                    selectedLessonNumber
-                      ? t('conversation.placeholder')
-                      : t('conversation.selectFirst')
+                    !isAuthenticated
+                      ? t('auth.signInToChat')
+                      : selectedLessonNumber
+                        ? t('conversation.placeholder')
+                        : t('conversation.selectFirst')
                   }
-                  disabled={!selectedLessonNumber || isLoading}
+                  disabled={!selectedLessonNumber || isLoading || !isAuthenticated}
                   className={cn(
                     'w-full rounded-full border bg-background px-4 py-2 pr-10 text-sm',
                     'placeholder:text-muted-foreground',
@@ -269,7 +264,7 @@ function AppContent() {
                 <button
                   type="button"
                   onClick={handleSend}
-                  disabled={!inputText.trim() || !selectedLessonNumber || isLoading}
+                  disabled={!inputText.trim() || !selectedLessonNumber || isLoading || !isAuthenticated}
                   className={cn(
                     'absolute right-1.5 top-1/2 -translate-y-1/2',
                     'rounded-full p-1.5 text-muted-foreground transition-colors',

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.middleware.auth import CurrentUser
+from app.middleware.auth import OptionalUser
 from app.schemas.lesson import LessonSummary, LessonDetail
 from app.services.lesson_service import LessonService
 
@@ -13,14 +13,14 @@ router = APIRouter(prefix="/api/lessons", tags=["lessons"])
 
 @router.get("", response_model=list[LessonSummary])
 async def list_lessons(
-    current_user: CurrentUser,
+    current_user: OptionalUser,
     course_id: str = "ec1",
     db: AsyncSession = Depends(get_db),
 ):
-    """List all lessons for a course (requires authentication).
+    """List all lessons for a course.
 
     Args:
-        current_user: Authenticated user (injected)
+        current_user: User (authenticated or anonymous)
         course_id: Course identifier (default: ec1)
         db: Database session dependency
 
@@ -34,16 +34,16 @@ async def list_lessons(
 @router.get("/{lesson_number}", response_model=LessonDetail)
 async def get_lesson(
     lesson_number: int,
-    current_user: CurrentUser,
+    current_user: OptionalUser,
     course_id: str = "ec1",
     instruction_language: str = "es",
     db: AsyncSession = Depends(get_db),
 ):
-    """Get detailed lesson data including vocabulary and patterns (requires authentication).
+    """Get detailed lesson data including vocabulary and patterns.
 
     Args:
         lesson_number: Lesson number within the course
-        current_user: Authenticated user (injected)
+        current_user: User (authenticated or anonymous)
         course_id: Course identifier (default: ec1)
         instruction_language: Language for translations (default: es).
             Use 'en' to omit translations (English speakers don't need them).

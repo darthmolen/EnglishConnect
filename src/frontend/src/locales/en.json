@@ -11,7 +11,10 @@
   "auth": {
     "signIn": "Sign in with Microsoft",
     "signingIn": "Signing in...",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "signInToSpeak": "Sign in to speak",
+    "signInToChat": "Sign in to chat",
+    "signInToPractice": "Sign in to Practice"
   },
   "lessons": {
     "loading": "Loading lessons...",

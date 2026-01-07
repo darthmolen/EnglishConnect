@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Play, SkipForward, MessageSquare } from 'lucide-react'
+import { Play, SkipForward, MessageSquare, LogIn } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
 import { DemoPlayer } from './DemoPlayer'
 import { PatternsView } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
+import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import type { VocabularyItem, QAPattern } from '@/types'
 
@@ -27,6 +28,7 @@ export function PracticeView({
 }: PracticeViewProps) {
   const { t } = useTranslation()
   const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
+  const { isAuthenticated, login } = useAuthStore()
   const [introUrl, setIntroUrl] = useState<string | null>(null)
   const [isPlayingIntro, setIsPlayingIntro] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -169,15 +171,26 @@ export function PracticeView({
         <div className="px-4 py-3 border-b bg-muted/30">
           <button
             type="button"
-            onClick={onStartConversation}
+            onClick={isAuthenticated ? onStartConversation : login}
             className={cn(
               'w-full flex items-center justify-center gap-2 rounded-lg px-4 py-3',
-              'bg-green-600 hover:bg-green-700 text-white font-medium',
-              'transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
+              'text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+              isAuthenticated
+                ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                : 'bg-gray-500 hover:bg-gray-600 focus:ring-gray-400'
             )}
           >
-            <Play className="h-5 w-5" />
-            <span>{t('practice.startConversation')}</span>
+            {isAuthenticated ? (
+              <>
+                <Play className="h-5 w-5" />
+                <span>{t('practice.startConversation')}</span>
+              </>
+            ) : (
+              <>
+                <LogIn className="h-5 w-5" />
+                <span>{t('auth.signInToPractice')}</span>
+              </>
+            )}
           </button>
         </div>
       )}

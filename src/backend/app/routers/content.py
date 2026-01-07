@@ -1,11 +1,11 @@
-"""Content router for serving lesson assets with authentication."""
+"""Content router for serving lesson assets."""
 
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
-from app.middleware.auth import CurrentUser
+from app.middleware.auth import OptionalUser
 
 router = APIRouter(prefix="/api/content", tags=["content"])
 
@@ -21,12 +21,12 @@ IMAGES_DIR = (
 
 
 @router.get("/images/{image_name}")
-async def get_image(image_name: str, current_user: CurrentUser):
-    """Serve lesson images with authentication.
+async def get_image(image_name: str, current_user: OptionalUser):
+    """Serve lesson images.
 
     Args:
         image_name: The image filename (e.g., "_page_19_Figure_1.jpeg")
-        current_user: Authenticated user (injected by dependency)
+        current_user: User (authenticated or anonymous)
 
     Returns:
         FileResponse with the image content

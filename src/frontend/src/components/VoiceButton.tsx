@@ -7,6 +7,7 @@ interface VoiceButtonProps {
   isPlaying: boolean
   onPress: () => void
   disabled?: boolean
+  title?: string
 }
 
 export function VoiceButton({
@@ -14,6 +15,7 @@ export function VoiceButton({
   isPlaying,
   onPress,
   disabled = false,
+  title,
 }: VoiceButtonProps) {
   const { t } = useTranslation()
   const isDisabled = disabled || isPlaying
@@ -23,6 +25,7 @@ export function VoiceButton({
       type="button"
       onClick={onPress}
       disabled={isDisabled}
+      title={title}
       className={cn(
         'flex h-16 w-16 items-center justify-center rounded-full transition-all',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',

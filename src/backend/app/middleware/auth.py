@@ -1,8 +1,10 @@
 """Authentication middleware for Azure AD token validation."""
 import logging
+import uuid
 import httpx
+from dataclasses import dataclass
 from functools import lru_cache
-from typing import Annotated
+from typing import Annotated, Union
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -14,8 +16,26 @@ from app.database import get_db
 from app.models.user import User
 from app.services.user_service import UserService
 
+
+@dataclass
+class AnonymousUser:
+    """Anonymous user placeholder for unauthenticated requests.
+
+    This is a simple dataclass that mimics the User model's key attributes
+    but is not persisted to the database.
+    """
+    id: uuid.UUID
+    email: str
+    display_name: str
+    oauth_provider: str
+    oauth_id: str
+    native_language: str
+    timezone: str
+    is_anonymous: bool = True
+
 logger = logging.getLogger(__name__)
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 
 @lru_cache(maxsize=1)
@@ -99,3 +119,51 @@ async def get_current_user(
 
 # Type alias for use in route dependencies
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+# Anonymous user singleton
+ANONYMOUS_USER = AnonymousUser(
+    id=uuid.UUID("00000000-0000-0000-0000-000000000000"),
+    email="",
+    display_name="Student Learner",
+    oauth_provider="anonymous",
+    oauth_id="anonymous",
+    native_language="es",
+    timezone="America/Los_Angeles",
+    is_anonymous=True,
+)
+
+
+async def get_optional_user(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(optional_security)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> Union[User, AnonymousUser]:
+    """Return authenticated user or anonymous placeholder.
+
+    Used for routes that should be accessible to both authenticated
+    and unauthenticated users (e.g., browsing lessons).
+    """
+    if not credentials:
+        return ANONYMOUS_USER
+
+    try:
+        claims = decode_token(credentials.credentials)
+        service = UserService(db)
+        return await service.get_or_create_user(
+            oauth_provider="microsoft",
+            oauth_id=claims["oid"],
+            email=claims.get("preferred_username", claims.get("email", "")),
+            display_name=claims.get("name"),
+        )
+    except JWTError as e:
+        # Token validation failed (invalid signature, expired, malformed)
+        logger.debug("JWT validation failed: %s", e)
+        return ANONYMOUS_USER
+    except KeyError as e:
+        # Required claim missing from token
+        logger.debug("Missing required claim in token: %s", e)
+        return ANONYMOUS_USER
+
+
+# Type alias for optional authentication
+OptionalUser = Annotated[Union[User, AnonymousUser], Depends(get_optional_user)]
