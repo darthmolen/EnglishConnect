@@ -151,6 +151,10 @@ Single `UnifiedTeachingAgent` with two modes (see ADR-005):
 - Python venvs per service (not shared)
 - `.env` for API keys and config
 
+## Deployed Environment
+
+- **ACA URL**: <https://ca-ec-4fz3j4ag5rqtu.bluedesert-074435b9.southcentralus.azurecontainerapps.io>
+
 ## Architecture Decision Records
 
 When making decisions that affect the architecture, consult and update:

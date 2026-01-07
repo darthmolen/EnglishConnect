@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Play, SkipForward, MessageSquare, LogIn } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
-import { DemoPlayer } from './DemoPlayer'
 import { PatternsView } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -159,11 +158,6 @@ export function PracticeView({
       {/* Compact vocabulary bar at top */}
       {hasVocabulary && (
         <CompactVocabulary vocabulary={vocabulary} />
-      )}
-
-      {/* Demo player for pre-recorded audio examples */}
-      {lessonNumber && (
-        <DemoPlayer courseId={courseId} lessonNumber={lessonNumber} />
       )}
 
       {/* Start Conversation Button */}

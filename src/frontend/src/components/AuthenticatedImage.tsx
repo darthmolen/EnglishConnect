@@ -35,13 +35,15 @@ export function AuthenticatedImage({
 
       try {
         const token = await getAccessToken()
-        if (!token || cancelled) return
+        if (cancelled) return
 
-        const response = await fetch(src, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        // Build headers - include Authorization only if we have a token
+        const headers: Record<string, string> = {}
+        if (token) {
+          headers.Authorization = `Bearer ${token}`
+        }
+
+        const response = await fetch(src, { headers })
 
         if (!response.ok) {
           throw new Error(`Failed to fetch image: ${response.status}`)

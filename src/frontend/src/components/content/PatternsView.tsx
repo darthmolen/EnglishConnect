@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Play, Pause, LogIn } from 'lucide-react'
+import { Play, Pause, RotateCcw, SkipForward, MessageCircle, LogIn } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AuthenticatedImage } from '@/components/AuthenticatedImage'
 import { useConversationStore } from '@/stores/conversationStore'
@@ -25,10 +25,14 @@ export function PatternsView({
   lessonNumber,
 }: PatternsViewProps) {
   const { t } = useTranslation()
-  const { focusPattern, startPatternPractice } = useConversationStore()
+  const { focusPattern, startPatternPractice, setAgentMode } = useConversationStore()
   const { isAuthenticated, login } = useAuthStore()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
+  // Track current example index per pattern (1-indexed to match example_index)
+  const [currentExampleIndex, setCurrentExampleIndex] = useState<Record<number, number>>({})
+  // Track which patterns have been played at least once (for Play vs Repeat label)
+  const [playedPatterns, setPlayedPatterns] = useState<Set<number>>(new Set())
   const audioRef = useRef<HTMLAudioElement>(null)
 
   // Fetch demos for this lesson
@@ -93,63 +97,12 @@ export function PatternsView({
                 isFocused && 'bg-primary/10 border-primary border-l-4'
               )}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-stretch gap-4">
+                {/* Content column */}
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                      {t('patterns.pattern', { number: pattern.pattern_number })}
-                    </span>
-                    <div className="flex flex-col items-end gap-1">
-                      {/* Listen to pattern button - plays demo audio (free, no auth) */}
-                      {demos.some(d => d.pattern_number === pattern.pattern_number) && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const demo = demos.find(d => d.pattern_number === pattern.pattern_number)
-                            if (demo) handlePlay(demo)
-                          }}
-                          className={cn(
-                            'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-                            playingId?.startsWith(`${pattern.pattern_number}-`)
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-gray-800 hover:bg-gray-900 text-white'
-                          )}
-                        >
-                          {playingId?.startsWith(`${pattern.pattern_number}-`) ? (
-                            <Pause className="h-3 w-3" />
-                          ) : (
-                            <Play className="h-3 w-3" />
-                          )}
-                          {t('patterns.listen')}
-                        </button>
-                      )}
-                      {/* Practice button - starts agent conversation (requires auth) */}
-                      <button
-                        type="button"
-                        onClick={() => isAuthenticated ? startPatternPractice(pattern.pattern_number) : login()}
-                        className={cn(
-                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-                          !isAuthenticated
-                            ? 'bg-gray-400 hover:bg-gray-500 text-white'
-                            : isFocused
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        )}
-                        title={!isAuthenticated ? t('auth.signInToPractice') : undefined}
-                      >
-                        {isAuthenticated ? (
-                          <Play className="h-3 w-3" />
-                        ) : (
-                          <LogIn className="h-3 w-3" />
-                        )}
-                        {!isAuthenticated
-                          ? t('auth.signInToPractice')
-                          : isFocused
-                          ? t('patterns.practicing')
-                          : t('patterns.practice')}
-                      </button>
-                    </div>
-                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded inline-block">
+                    {t('patterns.pattern', { number: pattern.pattern_number })}
+                  </span>
                   <div className="space-y-2">
                     <div>
                       <p className="font-medium">
@@ -231,6 +184,130 @@ export function PatternsView({
                     </div>
                   )}
                 </div>
+                {/* Button column - spans full height */}
+                {(() => {
+                  const patternDemos = demos.filter(d => d.pattern_number === pattern.pattern_number)
+                  const hasDemos = patternDemos.length > 0
+                  const currentIdx = currentExampleIndex[pattern.pattern_number] || 1
+                  const currentDemo = patternDemos.find(d => d.example_index === currentIdx)
+                  const hasNext = currentIdx < patternDemos.length
+                  const isPlaying = playingId?.startsWith(`${pattern.pattern_number}-`)
+                  const hasPlayed = playedPatterns.has(pattern.pattern_number)
+
+                  const handleListenRepeat = () => {
+                    if (!currentDemo) return
+                    handlePlay(currentDemo)
+                    // Mark this pattern as played
+                    setPlayedPatterns(prev => new Set(prev).add(pattern.pattern_number))
+                  }
+
+                  const handleNext = () => {
+                    if (!hasDemos) return
+                    // Round-robin: wrap to first if at end
+                    const nextIdx = hasNext ? currentIdx + 1 : 1
+                    setCurrentExampleIndex(prev => ({ ...prev, [pattern.pattern_number]: nextIdx }))
+                    const nextDemo = patternDemos.find(d => d.example_index === nextIdx)
+                    if (nextDemo) handlePlay(nextDemo)
+                    // Mark as played since we're playing audio
+                    setPlayedPatterns(prev => new Set(prev).add(pattern.pattern_number))
+                  }
+
+                  const handleQuestions = () => {
+                    if (!isAuthenticated) {
+                      login()
+                      return
+                    }
+                    setAgentMode('practice')
+                  }
+
+                  return (
+                    <div className="flex flex-col justify-center gap-2 shrink-0">
+                      {/* Play / Repeat button */}
+                      <button
+                        type="button"
+                        onClick={handleListenRepeat}
+                        disabled={!hasDemos}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          !hasDemos
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : isPlaying
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-gray-800 hover:bg-gray-900 text-white'
+                        )}
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-3 w-3" />
+                        ) : hasPlayed ? (
+                          <RotateCcw className="h-3 w-3" />
+                        ) : (
+                          <Play className="h-3 w-3" />
+                        )}
+                        {hasPlayed ? t('demo.repeat') : t('patterns.listen')}
+                      </button>
+
+                      {/* Next button */}
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        disabled={!hasDemos}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          !hasDemos
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                        )}
+                      >
+                        <SkipForward className="h-3 w-3" />
+                        {t('demo.next')}
+                      </button>
+
+                      {/* Questions button - requires auth */}
+                      <button
+                        type="button"
+                        onClick={handleQuestions}
+                        disabled={!isAuthenticated}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          !isAuthenticated
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50'
+                        )}
+                        title={!isAuthenticated ? t('auth.signInToChat') : undefined}
+                      >
+                        {!isAuthenticated ? (
+                          <LogIn className="h-3 w-3" />
+                        ) : (
+                          <MessageCircle className="h-3 w-3" />
+                        )}
+                        {t('demo.questions')}
+                      </button>
+
+                      {/* Practice button - starts agent conversation (requires auth) */}
+                      <button
+                        type="button"
+                        onClick={() => isAuthenticated ? startPatternPractice(pattern.pattern_number) : login()}
+                        disabled={!isAuthenticated}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          !isAuthenticated
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : isFocused
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-green-600 hover:bg-green-700 text-white'
+                        )}
+                        title={!isAuthenticated ? t('auth.signInToPractice') : undefined}
+                      >
+                        {!isAuthenticated ? (
+                          <LogIn className="h-3 w-3" />
+                        ) : (
+                          <Play className="h-3 w-3" />
+                        )}
+                        {isFocused ? t('patterns.practicing') : t('patterns.practice')}
+                      </button>
+                    </div>
+                  )
+                })()}
               </div>
             </div>
           )
