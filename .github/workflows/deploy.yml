@@ -90,6 +90,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
+      sha-tag: ${{ steps.meta.outputs.version }}
+      acr-name: ${{ needs.deploy-infra.outputs.acr-name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -141,20 +143,14 @@ jobs:
           CA_NAME=$(az containerapp list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
           echo "ca_name=$CA_NAME" >> $GITHUB_OUTPUT
 
-      - name: Get ACR name
-        id: get-acr
-        run: |
-          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
-          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
-
       - name: Deploy to Container App
         run: |
-          # Use 'latest' tag since docker/metadata-action creates short SHA tags
-          # and we always push 'latest' on the default branch
+          # Use SHA tag to ensure Container Apps pulls the new image
+          # (using 'latest' can cause caching issues where the new image isn't pulled)
           az containerapp update \
             --name ${{ steps.get-ca.outputs.ca_name }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ steps.get-acr.outputs.acr_name }}.azurecr.io/englishconnect:latest
+            --image ${{ needs.build-and-push.outputs.acr-name }}.azurecr.io/englishconnect:${{ needs.build-and-push.outputs.sha-tag }}
 
       - name: Get deployment URL
         run: |
