@@ -120,6 +120,9 @@ jobs:
           file: ./src/Dockerfile.combined
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            VITE_AZURE_AD_CLIENT_ID=${{ secrets.AZURE_AD_CLIENT_ID }}
+            VITE_AZURE_AD_TENANT_ID=${{ secrets.AZURE_AD_TENANT_ID }}
 
   deploy-app:
     needs: [deploy-infra, build-and-push]

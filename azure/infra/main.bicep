@@ -15,6 +15,12 @@ param openaiLocation string = 'eastus2'
 @description('PostgreSQL location (some regions may be restricted)')
 param postgresLocation string = 'canadacentral'
 
+@description('Azure AD Client ID for OAuth')
+param azureAdClientId string = ''
+
+@description('Azure AD Tenant ID for OAuth')
+param azureAdTenantId string = ''
+
 // Generate unique token for resource names
 var resourceToken = toLower(uniqueString(resourceGroup().id, environmentName))
 
@@ -117,6 +123,8 @@ module containerApp 'modules/container-app.bicep' = {
     redisConnectionString: redis.outputs.connectionString
     azureOpenAIEndpoint: openai.outputs.endpoint
     azureOpenAIRealtimeDeployment: 'gpt-4o-mini-realtime'
+    azureAdClientId: azureAdClientId
+    azureAdTenantId: azureAdTenantId
   }
 }
 

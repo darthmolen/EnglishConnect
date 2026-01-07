@@ -11,6 +11,8 @@ param postgresConnectionString string
 param redisConnectionString string
 param azureOpenAIEndpoint string
 param azureOpenAIRealtimeDeployment string
+param azureAdClientId string = ''
+param azureAdTenantId string = ''
 
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: name
@@ -94,6 +96,14 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'DEBUG'
               value: 'false'
+            }
+            {
+              name: 'AZURE_AD_CLIENT_ID'
+              value: azureAdClientId
+            }
+            {
+              name: 'AZURE_AD_TENANT_ID'
+              value: azureAdTenantId
             }
           ]
           probes: [

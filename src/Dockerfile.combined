@@ -1,6 +1,12 @@
 # Stage 1: Build React frontend
 FROM node:20-alpine AS frontend-builder
 
+# Build args for Vite (baked into bundle at build time)
+ARG VITE_AZURE_AD_CLIENT_ID
+ARG VITE_AZURE_AD_TENANT_ID
+ENV VITE_AZURE_AD_CLIENT_ID=$VITE_AZURE_AD_CLIENT_ID
+ENV VITE_AZURE_AD_TENANT_ID=$VITE_AZURE_AD_TENANT_ID
+
 WORKDIR /app/frontend
 
 # Install dependencies
