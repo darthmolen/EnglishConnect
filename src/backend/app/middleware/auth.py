@@ -155,9 +155,13 @@ async def get_optional_user(
             email=claims.get("preferred_username", claims.get("email", "")),
             display_name=claims.get("name"),
         )
-    except Exception:
-        # Token invalid or expired - return anonymous user
-        logger.debug("Token validation failed, returning anonymous user")
+    except JWTError as e:
+        # Token validation failed (invalid signature, expired, malformed)
+        logger.debug("JWT validation failed: %s", e)
+        return ANONYMOUS_USER
+    except KeyError as e:
+        # Required claim missing from token
+        logger.debug("Missing required claim in token: %s", e)
         return ANONYMOUS_USER
 
 
