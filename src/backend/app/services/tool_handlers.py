@@ -16,9 +16,11 @@ from app.models.content import VocabularyItem, Lesson, QAPattern
 
 logger = logging.getLogger(__name__)
 
-# Audio content base path (repo root / content / audio)
-# From services/tool_handlers.py: up 5 levels to reach repo root
-AUDIO_BASE = Path(__file__).parent.parent.parent.parent.parent / "content" / "audio"
+# Audio content base path
+# In container: /app/content/audio
+# In development: relative to source tree (up 5 levels to reach repo root)
+_dev_audio_path = Path(__file__).parent.parent.parent.parent.parent / "content" / "audio"
+AUDIO_BASE = _dev_audio_path if _dev_audio_path.exists() else Path("/app/content/audio")
 
 
 async def speak_tool_handler(

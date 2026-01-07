@@ -402,3 +402,43 @@ Agent responds: "Did you mean 'Mary' the name we're learning, or 'merry' meaning
 - Celery + Redis for task scheduling
 - Reminder scheduling with timezone support
 - Practice streak tracking
+
+## Backlog: Audio Files to Azure Storage
+
+**Context**: Audio files (302MB) are currently bundled into Docker image. This works for POC but increases image size and deployment time.
+
+**Goal**: Move audio to Azure Blob Storage with Azure Files CSI mount for ACA.
+
+**Implementation Steps**:
+
+1. Create Azure Storage Account with File Share
+2. Upload audio content to Azure Files share
+3. Configure ACA volume mount via CSI driver:
+   ```bicep
+   volumes: [
+     {
+       name: 'audio-files'
+       storageName: 'audio-storage'
+       storageType: 'AzureFile'
+     }
+   ]
+   volumeMounts: [
+     {
+       volumeName: 'audio-files'
+       mountPath: '/app/content/audio'
+     }
+   ]
+   ```
+4. Remove audio from Docker image
+5. Update CI/CD to sync audio files to Azure Files
+
+**Benefits**:
+
+- Smaller Docker image (~100MB vs ~400MB)
+- Faster deployments
+- Audio updates without image rebuilds
+- Cost-effective blob storage pricing
+
+**ACA CSI Support**: Yes - Azure Container Apps supports Azure Files volume mounts via CSI.
+
+**Priority**: Low - Current image-bundled approach works for POC. Implement after demo if quick decision not forthcoming.

@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Play, Pause } from 'lucide-react'
+import { Play, Pause, LogIn } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AuthenticatedImage } from '@/components/AuthenticatedImage'
 import { useConversationStore } from '@/stores/conversationStore'
+import { useAuthStore } from '@/stores/authStore'
 import type { QAPattern } from '@/types'
 
 interface DemoMetadata {
@@ -25,6 +26,7 @@ export function PatternsView({
 }: PatternsViewProps) {
   const { t } = useTranslation()
   const { focusPattern, startPatternPractice } = useConversationStore()
+  const { isAuthenticated, login } = useAuthStore()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -97,19 +99,56 @@ export function PatternsView({
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
                       {t('patterns.pattern', { number: pattern.pattern_number })}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => startPatternPractice(pattern.pattern_number)}
-                      className={cn(
-                        'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-                        isFocused
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-green-600 hover:bg-green-700 text-white'
+                    <div className="flex flex-col items-end gap-1">
+                      {/* Listen to pattern button - plays demo audio (free, no auth) */}
+                      {demos.some(d => d.pattern_number === pattern.pattern_number) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const demo = demos.find(d => d.pattern_number === pattern.pattern_number)
+                            if (demo) handlePlay(demo)
+                          }}
+                          className={cn(
+                            'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                            playingId?.startsWith(`${pattern.pattern_number}-`)
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-gray-800 hover:bg-gray-900 text-white'
+                          )}
+                        >
+                          {playingId?.startsWith(`${pattern.pattern_number}-`) ? (
+                            <Pause className="h-3 w-3" />
+                          ) : (
+                            <Play className="h-3 w-3" />
+                          )}
+                          {t('patterns.listen')}
+                        </button>
                       )}
-                    >
-                      <Play className="h-3 w-3" />
-                      {isFocused ? t('patterns.practicing') : t('patterns.practice')}
-                    </button>
+                      {/* Practice button - starts agent conversation (requires auth) */}
+                      <button
+                        type="button"
+                        onClick={() => isAuthenticated ? startPatternPractice(pattern.pattern_number) : login()}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                          !isAuthenticated
+                            ? 'bg-gray-400 hover:bg-gray-500 text-white'
+                            : isFocused
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-green-600 hover:bg-green-700 text-white'
+                        )}
+                        title={!isAuthenticated ? t('auth.signInToPractice') : undefined}
+                      >
+                        {isAuthenticated ? (
+                          <Play className="h-3 w-3" />
+                        ) : (
+                          <LogIn className="h-3 w-3" />
+                        )}
+                        {!isAuthenticated
+                          ? t('auth.signInToPractice')
+                          : isFocused
+                          ? t('patterns.practicing')
+                          : t('patterns.practice')}
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <div>

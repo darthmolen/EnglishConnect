@@ -10,11 +10,10 @@ from pydantic import BaseModel
 router = APIRouter(prefix="/api/audio", tags=["audio"])
 
 # Path to audio content
-AUDIO_BASE = (
-    Path(__file__).parent.parent.parent.parent.parent
-    / "content"
-    / "audio"
-)
+# In container: /app/content/audio
+# In development: relative to source tree
+_dev_audio_path = Path(__file__).parent.parent.parent.parent.parent / "content" / "audio"
+AUDIO_BASE = _dev_audio_path if _dev_audio_path.exists() else Path("/app/content/audio")
 
 
 class DemoMetadata(BaseModel):
