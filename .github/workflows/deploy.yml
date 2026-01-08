@@ -145,12 +145,13 @@ jobs:
 
       - name: Deploy to Container App
         run: |
-          # Use SHA tag to ensure Container Apps pulls the new image
+          # Use SHA tag and revision suffix to ensure Container Apps creates a new revision
           # (using 'latest' can cause caching issues where the new image isn't pulled)
           az containerapp update \
             --name ${{ steps.get-ca.outputs.ca_name }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ needs.build-and-push.outputs.acr-name }}.azurecr.io/englishconnect:${{ needs.build-and-push.outputs.sha-tag }}
+            --image ${{ needs.build-and-push.outputs.acr-name }}.azurecr.io/englishconnect:${{ needs.build-and-push.outputs.sha-tag }} \
+            --revision-suffix ${{ needs.build-and-push.outputs.sha-tag }}
 
       - name: Get deployment URL
         run: |
