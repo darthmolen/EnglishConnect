@@ -8,6 +8,21 @@ import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import type { VocabularyItem, QAPattern } from '@/types'
 
+interface IntroClip {
+  type: 'unique' | 'instructions'
+  stream_url: string
+}
+
+interface IntroResponse {
+  lesson_number: number
+  language: string
+  page_type: string
+  mode?: 'split' | 'legacy'
+  clips?: IntroClip[]
+  stream_url?: string
+  pause_ms?: number
+}
+
 interface PracticeViewProps {
   vocabulary: VocabularyItem[]
   patterns: QAPattern[]
@@ -28,8 +43,9 @@ export function PracticeView({
   const { t } = useTranslation()
   const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
   const { isAuthenticated, login } = useAuthStore()
-  const [introUrl, setIntroUrl] = useState<string | null>(null)
+  const [introData, setIntroData] = useState<IntroResponse | null>(null)
   const [isPlayingIntro, setIsPlayingIntro] = useState(false)
+  const [currentClipIndex, setCurrentClipIndex] = useState(0)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const hasVocabulary = vocabulary.length > 0
@@ -39,34 +55,47 @@ export function PracticeView({
   const introKey = lessonNumber ? `${lessonNumber}-${instructionLanguage}` : null
   const hasIntroPlayed = introKey ? introPlayedKeys.includes(introKey) : true
 
-  // Fetch intro URL when lesson or language changes
+  // Fetch intro data when lesson or language changes
   useEffect(() => {
     if (!lessonNumber) {
-      setIntroUrl(null)
+      setIntroData(null)
       return
     }
 
     fetch(`/api/audio/intros/${courseId}?lesson_number=${lessonNumber}&language=${instructionLanguage}&page_type=practice`)
       .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.stream_url) {
-          setIntroUrl(data.stream_url)
+      .then((data: IntroResponse | null) => {
+        if (data && (data.clips || data.stream_url)) {
+          setIntroData(data)
+          setCurrentClipIndex(0)
         } else {
-          setIntroUrl(null)
+          setIntroData(null)
         }
       })
-      .catch(() => setIntroUrl(null))
+      .catch(() => setIntroData(null))
   }, [lessonNumber, courseId, instructionLanguage])
+
+  // Helper to get the current clip URL
+  const getCurrentClipUrl = (): string | null => {
+    if (!introData) return null
+    if (introData.mode === 'split' && introData.clips) {
+      return introData.clips[currentClipIndex]?.stream_url || null
+    }
+    return introData.stream_url || null
+  }
 
   // Auto-play intro when entering practice section (if not already played)
   useEffect(() => {
-    if (!introUrl || hasIntroPlayed || !lessonNumber) return
+    if (!introData || hasIntroPlayed || !lessonNumber) return
 
     const audio = audioRef.current
     if (!audio) return
 
+    const clipUrl = getCurrentClipUrl()
+    if (!clipUrl) return
+
     // Set source and play
-    audio.src = introUrl
+    audio.src = clipUrl
     audio.play()
       .then(() => {
         setIsPlayingIntro(true)
@@ -75,15 +104,30 @@ export function PracticeView({
         // User may not have interacted with page yet, skip auto-play
         setIsPlayingIntro(false)
       })
-  }, [introUrl, hasIntroPlayed, lessonNumber])
+  }, [introData, hasIntroPlayed, lessonNumber, currentClipIndex])
 
-  // Handle intro audio end
+  // Handle intro audio end (with sequential playback for split mode)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
     const handleEnded = () => {
+      // Check if we're in split mode and have more clips to play
+      if (introData?.mode === 'split' && introData.clips) {
+        const nextIndex = currentClipIndex + 1
+        if (nextIndex < introData.clips.length) {
+          // Wait for the breath pause, then play next clip
+          const pauseMs = introData.pause_ms || 300
+          setTimeout(() => {
+            setCurrentClipIndex(nextIndex)
+          }, pauseMs)
+          return
+        }
+      }
+
+      // All clips played (or legacy mode) - mark intro as complete
       setIsPlayingIntro(false)
+      setCurrentClipIndex(0)
       if (introKey) {
         markIntroPlayed(introKey)
       }
@@ -91,7 +135,7 @@ export function PracticeView({
 
     audio.addEventListener('ended', handleEnded)
     return () => audio.removeEventListener('ended', handleEnded)
-  }, [introKey, markIntroPlayed])
+  }, [introKey, markIntroPlayed, introData, currentClipIndex])
 
   const handleSkipIntro = () => {
     const audio = audioRef.current
@@ -100,6 +144,7 @@ export function PracticeView({
       audio.currentTime = 0
     }
     setIsPlayingIntro(false)
+    setCurrentClipIndex(0)
     if (introKey) {
       markIntroPlayed(introKey)
     }

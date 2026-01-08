@@ -149,7 +149,11 @@ async def get_intro(
     language: str = Query("es", description="Language for intro: 'en' or 'es'"),
     page_type: str = Query("practice", description="Page type: 'practice' or 'vocabulary'"),
 ) -> dict:
-    """Get intro audio URL for a lesson page in the specified language.
+    """Get intro audio URL(s) for a lesson page in the specified language.
+
+    Supports two modes:
+    - Split mode (default): Returns clips array with unique intro + shared instructions
+    - Legacy mode (fallback): Returns single stream_url for combined intro
 
     Args:
         course_id: Course identifier (e.g., 'ec1')
@@ -158,23 +162,45 @@ async def get_intro(
         page_type: Page type ('practice' or 'vocabulary', default 'practice')
 
     Returns:
-        Dict with stream_url if intro exists, or empty dict
+        Dict with clips array (split mode) or stream_url (legacy mode), or empty dict
     """
     # Validate inputs
     lang = language if language in ("en", "es") else "es"
     page = page_type if page_type in ("practice", "vocabulary") else "practice"
 
-    intro_path = AUDIO_BASE / course_id / "intros" / page / f"lesson-{lesson_number:02d}-{lang}.wav"
-    if not intro_path.exists():
-        return {}
+    # Check for split mode files first (unique intro + shared instructions)
+    unique_path = AUDIO_BASE / course_id / "intros" / page / "unique" / f"lesson-{lesson_number:02d}-{lang}.wav"
+    instructions_path = AUDIO_BASE / course_id / "intros" / page / f"instructions-{lang}.wav"
 
-    relative_path = intro_path.relative_to(AUDIO_BASE)
-    return {
-        "lesson_number": lesson_number,
-        "language": lang,
-        "page_type": page,
-        "stream_url": f"/api/audio/stream/{relative_path}",
-    }
+    if unique_path.exists() and instructions_path.exists():
+        # Split mode: return clips array
+        unique_relative = unique_path.relative_to(AUDIO_BASE)
+        instructions_relative = instructions_path.relative_to(AUDIO_BASE)
+        return {
+            "lesson_number": lesson_number,
+            "language": lang,
+            "page_type": page,
+            "mode": "split",
+            "clips": [
+                {"type": "unique", "stream_url": f"/api/audio/stream/{unique_relative}"},
+                {"type": "instructions", "stream_url": f"/api/audio/stream/{instructions_relative}"},
+            ],
+            "pause_ms": 300,  # Brief breath pause between clips
+        }
+
+    # Legacy mode fallback: single combined file
+    legacy_path = AUDIO_BASE / course_id / "intros" / page / f"lesson-{lesson_number:02d}-{lang}.wav"
+    if legacy_path.exists():
+        relative_path = legacy_path.relative_to(AUDIO_BASE)
+        return {
+            "lesson_number": lesson_number,
+            "language": lang,
+            "page_type": page,
+            "mode": "legacy",
+            "stream_url": f"/api/audio/stream/{relative_path}",
+        }
+
+    return {}
 
 
 @router.get("/stream/{file_path:path}")
