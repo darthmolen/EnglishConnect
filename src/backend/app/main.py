@@ -98,6 +98,18 @@ async def health():
     }
 
 
+@app.get("/api/config")
+async def api_config():
+    """Public configuration for frontend.
+
+    Returns settings the frontend needs to know about.
+    """
+    return {
+        "use_realtime_api": settings.use_realtime_api,
+        "app_env": settings.app_env,
+    }
+
+
 # Import and include routers
 from app.routers import lessons, conversation, progress, auth, content, audio, timing, realtime
 

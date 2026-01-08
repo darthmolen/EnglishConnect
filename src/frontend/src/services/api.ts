@@ -26,6 +26,38 @@ const API_BASE = '/api'
 const STT_BASE = 'http://localhost:8001'
 
 /**
+ * App configuration from backend.
+ */
+export interface AppConfig {
+  use_realtime_api: boolean
+  app_env: string
+}
+
+let cachedConfig: AppConfig | null = null
+
+/**
+ * Fetch app configuration (cached).
+ */
+export async function fetchConfig(): Promise<AppConfig> {
+  if (cachedConfig) {
+    return cachedConfig
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/config`)
+    if (!response.ok) {
+      // Default to local mode if config fails
+      return { use_realtime_api: false, app_env: 'development' }
+    }
+    cachedConfig = await response.json()
+    return cachedConfig!
+  } catch {
+    // Default to local mode on error
+    return { use_realtime_api: false, app_env: 'development' }
+  }
+}
+
+/**
  * Fetch with authentication headers.
  */
 async function fetchWithAuth(url: string, options: RequestInit = {}) {

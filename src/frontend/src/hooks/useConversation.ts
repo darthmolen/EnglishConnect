@@ -1,9 +1,45 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAudioRecorder } from './useAudioRecorder'
 import { useAudioPlayer } from './useAudioPlayer'
-import { sendMessage, transcribeAudio } from '@/services/api'
-import type { AgentResponse } from '@/types'
+import { sendMessage, transcribeAudio, fetchConfig } from '@/services/api'
+import type { AgentResponse, RichContent, RichContentType } from '@/types'
+
+/**
+ * Convert Float32Array to PCM16 Int16Array for WebSocket audio.
+ */
+function float32ToPcm16(float32: Float32Array): Int16Array {
+  const pcm16 = new Int16Array(float32.length)
+  for (let i = 0; i < float32.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32[i]))
+    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7fff
+  }
+  return pcm16
+}
+
+/**
+ * Convert ArrayBuffer to Base64 string.
+ */
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  let binary = ''
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+/**
+ * Convert Base64 string to ArrayBuffer.
+ */
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes.buffer
+}
 
 export function useConversation() {
   const {
@@ -31,10 +67,295 @@ export function useConversation() {
   } = useAudioRecorder()
   const { isPlaying, playAudio } = useAudioPlayer()
 
-  // Track whether we should auto-send after recording stops
+  // Realtime API state
+  const [useRealtimeApi, setUseRealtimeApi] = useState(false)
+  const wsRef = useRef<WebSocket | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const mediaStreamRef = useRef<MediaStream | null>(null)
+  const processorRef = useRef<ScriptProcessorNode | null>(null)
+  const playbackQueueRef = useRef<ArrayBuffer[]>([])
+  const isPlayingRef = useRef(false)
+  const transcriptBufferRef = useRef('')
+
+  // Track whether we should auto-send after recording stops (HTTP mode only)
   const shouldSendVoiceRef = useRef(false)
 
-  // Play audio chunks sequentially (for bilingual responses)
+  // Load config on mount
+  useEffect(() => {
+    fetchConfig().then((config) => {
+      console.log('App config loaded:', config)
+      setUseRealtimeApi(config.use_realtime_api)
+    })
+  }, [])
+
+  // Play audio from queue (for Realtime API responses)
+  const playNextAudio = useCallback(async () => {
+    if (isPlayingRef.current || playbackQueueRef.current.length === 0) {
+      return
+    }
+
+    isPlayingRef.current = true
+    setStoreIsPlaying(true)
+
+    const audioData = playbackQueueRef.current.shift()!
+    const audioContext =
+      audioContextRef.current ||
+      new AudioContext({ sampleRate: 24000 })
+    audioContextRef.current = audioContext
+
+    try {
+      // Convert PCM16 to Float32
+      const int16Array = new Int16Array(audioData)
+      const float32Array = new Float32Array(int16Array.length)
+      for (let i = 0; i < int16Array.length; i++) {
+        float32Array[i] = int16Array[i] / 32768.0
+      }
+
+      // Create audio buffer and play
+      const audioBuffer = audioContext.createBuffer(1, float32Array.length, 24000)
+      audioBuffer.copyToChannel(float32Array, 0)
+
+      const source = audioContext.createBufferSource()
+      source.buffer = audioBuffer
+      source.connect(audioContext.destination)
+
+      source.onended = () => {
+        isPlayingRef.current = false
+        if (playbackQueueRef.current.length > 0) {
+          playNextAudio()
+        } else {
+          setStoreIsPlaying(false)
+        }
+      }
+
+      source.start()
+    } catch (err) {
+      console.error('Audio playback error:', err)
+      isPlayingRef.current = false
+      setStoreIsPlaying(false)
+    }
+  }, [setStoreIsPlaying])
+
+  // Handle WebSocket messages (Realtime API)
+  const handleWsMessage = useCallback(
+    (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data)
+
+        switch (data.type) {
+          case 'audio':
+            // Queue audio for playback
+            playbackQueueRef.current.push(base64ToArrayBuffer(data.data))
+            playNextAudio()
+            break
+
+          case 'transcript':
+            // Accumulate transcript text
+            if (data.text) {
+              if (data.role === 'user') {
+                // User transcript - add as user message
+                addMessage({
+                  role: 'user',
+                  content: data.text,
+                  agentMode,
+                })
+              } else {
+                // Assistant transcript - accumulate
+                transcriptBufferRef.current += data.text
+              }
+            }
+            break
+
+          case 'rich_content': {
+            // Handle vocabulary/pattern cards
+            const toolTypeMap: Record<string, RichContentType> = {
+              render_vocabulary: 'vocabulary_card',
+              render_pattern: 'pattern_card',
+            }
+            const contentType = toolTypeMap[data.tool] || 'vocabulary_card'
+            const richContent: RichContent[] = [{
+              type: contentType,
+              data: data.data,
+            }]
+            addMessage({
+              role: 'assistant',
+              content: '',
+              agentMode,
+              richContent,
+            })
+            break
+          }
+
+          case 'speech_started':
+            setIsLoading(true)
+            break
+
+          case 'response_done':
+            // Flush transcript buffer as assistant message
+            if (transcriptBufferRef.current.trim()) {
+              addMessage({
+                role: 'assistant',
+                content: transcriptBufferRef.current,
+                agentMode,
+              })
+              transcriptBufferRef.current = ''
+            }
+            incrementExchangeCount()
+            setIsLoading(false)
+            break
+
+          case 'error':
+            console.error('Realtime API error:', data.message)
+            setIsLoading(false)
+            addMessage({
+              role: 'assistant',
+              content: `Error: ${data.message}`,
+              agentMode,
+            })
+            break
+        }
+      } catch (err) {
+        console.error('Failed to parse WebSocket message:', err)
+      }
+    },
+    [addMessage, agentMode, playNextAudio, setIsLoading, incrementExchangeCount]
+  )
+
+  // Connect to Realtime API WebSocket
+  const connectRealtime = useCallback(() => {
+    if (!selectedLessonNumber) return null
+
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const host = window.location.host
+    const url = `${protocol}//${host}/ws/conversation/${selectedLessonNumber}?mode=${agentMode}&instruction_language=${instructionLanguage}`
+
+    console.log('Connecting to Realtime API:', url)
+
+    const ws = new WebSocket(url)
+    wsRef.current = ws
+
+    ws.onopen = () => {
+      console.log('Realtime WebSocket connected')
+    }
+
+    ws.onmessage = handleWsMessage
+
+    ws.onclose = (event) => {
+      console.log('Realtime WebSocket closed:', event.code, event.reason)
+      wsRef.current = null
+    }
+
+    ws.onerror = (event) => {
+      console.error('Realtime WebSocket error:', event)
+    }
+
+    return ws
+  }, [selectedLessonNumber, agentMode, instructionLanguage, handleWsMessage])
+
+  // Start voice recording (Realtime API mode)
+  const startRealtimeRecording = useCallback(async () => {
+    // Connect WebSocket if not connected
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      connectRealtime()
+      // Wait for connection
+      await new Promise<void>((resolve) => {
+        const checkConnection = setInterval(() => {
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+            clearInterval(checkConnection)
+            resolve()
+          }
+        }, 100)
+        // Timeout after 5 seconds
+        setTimeout(() => {
+          clearInterval(checkConnection)
+          resolve()
+        }, 5000)
+      })
+    }
+
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error('Failed to connect to Realtime API')
+      return
+    }
+
+    try {
+      // Request microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 24000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+        },
+      })
+      mediaStreamRef.current = stream
+
+      // Create audio context for processing
+      const audioContext = new AudioContext({ sampleRate: 24000 })
+      audioContextRef.current = audioContext
+
+      const source = audioContext.createMediaStreamSource(stream)
+
+      // Use ScriptProcessorNode for audio processing
+      const processor = audioContext.createScriptProcessor(4096, 1, 1)
+      processorRef.current = processor
+
+      processor.onaudioprocess = (e) => {
+        if (wsRef.current?.readyState !== WebSocket.OPEN) {
+          return
+        }
+
+        const inputData = e.inputBuffer.getChannelData(0)
+        const pcm16 = float32ToPcm16(inputData)
+        const buffer = pcm16.buffer.slice(
+          pcm16.byteOffset,
+          pcm16.byteOffset + pcm16.byteLength
+        ) as ArrayBuffer
+        const base64 = arrayBufferToBase64(buffer)
+
+        // Send audio to WebSocket
+        wsRef.current.send(
+          JSON.stringify({
+            type: 'audio',
+            data: base64,
+          })
+        )
+      }
+
+      source.connect(processor)
+      processor.connect(audioContext.destination)
+
+      setStoreIsRecording(true)
+      console.log('Realtime recording started')
+    } catch (err) {
+      console.error('Failed to start realtime recording:', err)
+    }
+  }, [connectRealtime, setStoreIsRecording])
+
+  // Stop voice recording (Realtime API mode)
+  const stopRealtimeRecording = useCallback(() => {
+    // Stop audio processing
+    if (processorRef.current) {
+      processorRef.current.disconnect()
+      processorRef.current = null
+    }
+
+    // Stop media stream
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+      mediaStreamRef.current = null
+    }
+
+    // Commit audio buffer
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'commit' }))
+    }
+
+    setStoreIsRecording(false)
+    console.log('Realtime recording stopped')
+  }, [setStoreIsRecording])
+
+  // Play audio chunks sequentially (for HTTP responses)
   const playAudioChunks = useCallback(
     async (response: AgentResponse) => {
       // Prefer audio_chunks if available (new format)
@@ -67,7 +388,7 @@ export function useConversation() {
     [playAudio, setStoreIsPlaying]
   )
 
-  // Send voice message (transcribe audio then send)
+  // Send voice message via HTTP (transcribe audio then send)
   const sendVoiceMessage = useCallback(
     async (blob: Blob) => {
       if (!selectedLessonNumber || !blob) return
@@ -143,37 +464,53 @@ export function useConversation() {
     ]
   )
 
-  // Auto-send voice message when audioBlob becomes available after recording
+  // Auto-send voice message when audioBlob becomes available after recording (HTTP mode)
   useEffect(() => {
-    if (audioBlob && shouldSendVoiceRef.current && !isRecording) {
+    if (!useRealtimeApi && audioBlob && shouldSendVoiceRef.current && !isRecording) {
       shouldSendVoiceRef.current = false
       sendVoiceMessage(audioBlob)
     }
-  }, [audioBlob, isRecording, sendVoiceMessage])
+  }, [useRealtimeApi, audioBlob, isRecording, sendVoiceMessage])
 
-  // Toggle recording - auto-sends when stopped
+  // Toggle recording - uses Realtime API or HTTP based on config
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
       console.log('Stopping recording...')
-      shouldSendVoiceRef.current = true // Flag to auto-send when blob is ready
-      stopRecording()
-      setStoreIsRecording(false)
-      console.log('Recording stopped, will transcribe...')
+      if (useRealtimeApi) {
+        stopRealtimeRecording()
+      } else {
+        shouldSendVoiceRef.current = true // Flag to auto-send when blob is ready
+        stopRecording()
+        setStoreIsRecording(false)
+        console.log('Recording stopped, will transcribe...')
+      }
     } else {
       try {
         console.log('Starting recording...')
-        shouldSendVoiceRef.current = false
-        await startRecording()
-        setStoreIsRecording(true)
-        console.log('Recording started')
+        if (useRealtimeApi) {
+          await startRealtimeRecording()
+        } else {
+          shouldSendVoiceRef.current = false
+          await startRecording()
+          setStoreIsRecording(true)
+          console.log('Recording started')
+        }
       } catch (error) {
         console.error('Failed to start recording:', error)
         setStoreIsRecording(false)
       }
     }
-  }, [isRecording, startRecording, stopRecording, setStoreIsRecording])
+  }, [
+    isRecording,
+    useRealtimeApi,
+    startRecording,
+    stopRecording,
+    startRealtimeRecording,
+    stopRealtimeRecording,
+    setStoreIsRecording,
+  ])
 
-  // Send text message and get AI response (agent provides audio via speak tool)
+  // Send text message and get AI response (always uses HTTP)
   const sendTextMessage = useCallback(
     async (text: string) => {
       if (!selectedLessonNumber || !text.trim()) return
@@ -235,6 +572,21 @@ export function useConversation() {
       incrementExchangeCount,
     ]
   )
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close()
+      }
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
+      }
+    }
+  }, [])
 
   return {
     messages,
