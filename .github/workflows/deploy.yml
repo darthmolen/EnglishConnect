@@ -93,10 +93,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
-      sha-tag: ${{ steps.meta.outputs.version }}
+      sha-tag: ${{ steps.vars.outputs.sha_short }}
       acr-name: ${{ needs.deploy-infra.outputs.acr-name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Azure Login (OIDC)
         uses: azure/login@v2
