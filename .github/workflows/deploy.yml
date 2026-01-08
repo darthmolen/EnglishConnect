@@ -76,7 +76,10 @@ jobs:
         with:
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./azure/infra/main.bicep
-          parameters: ./azure/infra/parameters/dev.bicepparam
+          parameters: >-
+            ./azure/infra/parameters/dev.bicepparam
+            azureAdClientId=${{ secrets.AZURE_AD_CLIENT_ID }}
+            azureAdTenantId=${{ secrets.AZURE_AD_TENANT_ID }}
           failOnStdErr: false
 
       - name: Get ACR name from deployment

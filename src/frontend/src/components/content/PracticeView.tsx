@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Play, SkipForward, MessageSquare, LogIn } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
-import { PatternsView } from './PatternsView'
+import { PatternsView, type PatternAction } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
@@ -30,6 +30,7 @@ interface PracticeViewProps {
   courseId?: string
   lessonNumber?: number
   onStartConversation?: () => void
+  onPatternAction?: (action: PatternAction) => void
 }
 
 export function PracticeView({
@@ -39,6 +40,7 @@ export function PracticeView({
   courseId = 'ec1',
   lessonNumber,
   onStartConversation,
+  onPatternAction,
 }: PracticeViewProps) {
   const { t } = useTranslation()
   const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
@@ -241,6 +243,7 @@ export function PracticeView({
             patterns={patterns}
             patternImages={patternImages}
             lessonNumber={lessonNumber}
+            onPatternAction={onPatternAction}
           />
         </div>
       )}

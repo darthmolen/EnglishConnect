@@ -13,16 +13,23 @@ interface DemoMetadata {
   stream_url: string
 }
 
+export interface PatternAction {
+  type: 'questions' | 'practice'
+  patternNumber: number
+}
+
 interface PatternsViewProps {
   patterns: QAPattern[]
   patternImages: string[]
   lessonNumber?: number
+  onPatternAction?: (action: PatternAction) => void
 }
 
 export function PatternsView({
   patterns,
   patternImages,
   lessonNumber,
+  onPatternAction,
 }: PatternsViewProps) {
   const { t } = useTranslation()
   const { focusPattern, startPatternPractice, setAgentMode } = useConversationStore()
@@ -217,7 +224,8 @@ export function PatternsView({
                       login()
                       return
                     }
-                    setAgentMode('practice')
+                    setAgentMode('help')
+                    onPatternAction?.({ type: 'questions', patternNumber: pattern.pattern_number })
                   }
 
                   return (
@@ -286,7 +294,14 @@ export function PatternsView({
                       {/* Practice button - starts agent conversation (requires auth) */}
                       <button
                         type="button"
-                        onClick={() => isAuthenticated ? startPatternPractice(pattern.pattern_number) : login()}
+                        onClick={() => {
+                          if (!isAuthenticated) {
+                            login()
+                            return
+                          }
+                          startPatternPractice(pattern.pattern_number)
+                          onPatternAction?.({ type: 'practice', patternNumber: pattern.pattern_number })
+                        }}
                         disabled={!isAuthenticated}
                         className={cn(
                           'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',

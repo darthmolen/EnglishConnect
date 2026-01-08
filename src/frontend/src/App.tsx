@@ -6,6 +6,7 @@ import { useConversation } from '@/hooks/useConversation'
 import { LessonList } from '@/components/LessonList'
 import { LessonSections } from '@/components/LessonSections'
 import { ContentWindow } from '@/components/ContentWindow'
+import type { PatternAction } from '@/components/content/PatternsView'
 import { ConversationDrawer } from '@/components/ConversationDrawer'
 import { RegistryDashboard } from '@/components/RegistryDashboard'
 import { VoiceButton } from '@/components/VoiceButton'
@@ -76,6 +77,20 @@ function AppContent() {
     if (selectedLessonNumber && !isLoading) {
       // Send a message to start the conversation practice
       sendTextMessage("I'm ready to practice!")
+    }
+  }
+
+  const handlePatternAction = (action: PatternAction) => {
+    if (!selectedLessonNumber || isLoading) return
+
+    // Open the drawer
+    setIsDrawerOpen(true)
+
+    // Send appropriate message based on action type
+    if (action.type === 'questions') {
+      sendTextMessage(`I have a question about pattern ${action.patternNumber}.`)
+    } else if (action.type === 'practice') {
+      sendTextMessage(`I want to practice pattern ${action.patternNumber}.`)
     }
   }
 
@@ -210,6 +225,7 @@ function AppContent() {
                 completedGoals={lessonGoals}
                 onToggleGoal={toggleGoal}
                 onStartConversation={handleStartConversation}
+                onPatternAction={handlePatternAction}
                 className="h-full"
                 evaluationRatings={currentLesson ? evaluationRatings[currentLesson.lesson_number] || {} : {}}
                 personalGoals={personalGoals}

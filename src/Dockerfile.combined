@@ -43,6 +43,9 @@ COPY --from=frontend-builder /app/frontend/dist ./static/
 # Copy audio content for streaming
 COPY content/audio/ ./content/audio/
 
+# Copy pattern images for lessons
+COPY content/refined/ec1/books/englishconnect_1_para_los_alumnos/*.jpeg ./content/refined/ec1/books/englishconnect_1_para_los_alumnos/
+
 # Create non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser

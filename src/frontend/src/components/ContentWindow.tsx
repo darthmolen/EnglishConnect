@@ -4,6 +4,7 @@ import type { LessonDetail, LessonSection, PersonalGoal, StudyRegistryStatus, St
 import { PrincipleView } from './content/PrincipleView'
 import { GoalsView } from './content/GoalsView'
 import { PracticeView } from './content/PracticeView'
+import type { PatternAction } from './content/PatternsView'
 import { VocabularyView } from './content/VocabularyView'
 import { EvaluateView } from './content/EvaluateView'
 
@@ -13,6 +14,7 @@ interface ContentWindowProps {
   completedGoals: number[]
   onToggleGoal: (lessonNumber: number, goalIndex: number) => void
   onStartConversation?: () => void
+  onPatternAction?: (action: PatternAction) => void
   className?: string
   // Evaluation props
   evaluationRatings: Record<number, number>
@@ -30,6 +32,7 @@ export function ContentWindow({
   completedGoals,
   onToggleGoal,
   onStartConversation,
+  onPatternAction,
   className,
   evaluationRatings,
   personalGoals,
@@ -77,6 +80,7 @@ export function ContentWindow({
           patternImages={lesson.pattern_images}
           lessonNumber={lesson.lesson_number}
           onStartConversation={onStartConversation}
+          onPatternAction={onPatternAction}
         />
       )}
       {activeSection === 'vocabulary' && (
