@@ -154,6 +154,38 @@ jobs:
             --image ${{ needs.build-and-push.outputs.acr-name }}.azurecr.io/englishconnect:${{ needs.build-and-push.outputs.sha-tag }} \
             --revision-suffix ${{ needs.build-and-push.outputs.sha-tag }}
 
+      - name: Configure custom domain
+        env:
+          CUSTOM_DOMAIN: englishconnect.vozloop.com
+        run: |
+          # Get the Container Apps Environment name
+          CA_ENV=$(az containerapp env list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+
+          # Check if custom domain already configured
+          EXISTING_DOMAIN=$(az containerapp hostname list \
+            --name ${{ steps.get-ca.outputs.ca_name }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --query "[?name=='$CUSTOM_DOMAIN'].name" -o tsv)
+
+          if [ -z "$EXISTING_DOMAIN" ]; then
+            echo "Adding custom domain: $CUSTOM_DOMAIN"
+            # Add custom domain with managed certificate
+            az containerapp hostname add \
+              --name ${{ steps.get-ca.outputs.ca_name }} \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+              --hostname $CUSTOM_DOMAIN
+
+            # Bind managed certificate (Azure will provision it)
+            az containerapp hostname bind \
+              --name ${{ steps.get-ca.outputs.ca_name }} \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+              --hostname $CUSTOM_DOMAIN \
+              --environment $CA_ENV \
+              --validation-method CNAME
+          else
+            echo "Custom domain $CUSTOM_DOMAIN already configured"
+          fi
+
       - name: Get deployment URL
         run: |
           FQDN=$(az containerapp show \

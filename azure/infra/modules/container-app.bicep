@@ -37,6 +37,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
           allowedHeaders: ['*']
         }
+        // Custom domain is managed via Azure CLI in the deploy workflow
+        // to support managed certificates (which require DNS validation)
       }
       registries: [
         {
