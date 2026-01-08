@@ -86,10 +86,15 @@ function AppContent() {
     // Open the drawer
     setIsDrawerOpen(true)
 
-    // Send appropriate message based on action type
+    // Send appropriate message based on action type and language
     if (action.type === 'questions') {
-      sendTextMessage(`I have a question about pattern ${action.patternNumber}.`)
+      // Questions should be in user's instruction language
+      const message = instructionLanguage === 'es'
+        ? `Tengo una pregunta sobre el patrón ${action.patternNumber}.`
+        : `I have a question about pattern ${action.patternNumber}.`
+      sendTextMessage(message)
     } else if (action.type === 'practice') {
+      // Practice can start in English (agent will guide)
       sendTextMessage(`I want to practice pattern ${action.patternNumber}.`)
     }
   }

@@ -5,6 +5,7 @@ import logging
 from typing import Callable, Optional
 
 from openai import AsyncAzureOpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 from app.config import get_settings
 from app.utils.timing import log_timing, log_timing_delta
@@ -60,8 +61,29 @@ def set_memory_context(user_id: Optional[str] = None, process_id: str = "convers
 
 
 def get_azure_client() -> AsyncAzureOpenAI:
-    """Get configured Azure OpenAI client."""
+    """Get configured Azure OpenAI client.
+
+    Uses managed identity (DefaultAzureCredential) in Azure,
+    falls back to API key for local development.
+    """
     settings = get_settings()
+
+    # In Azure: use managed identity
+    if settings.azure_client_id:
+        logger.info("Using managed identity for Azure OpenAI")
+        credential = DefaultAzureCredential(
+            managed_identity_client_id=settings.azure_client_id
+        )
+        token_provider = get_bearer_token_provider(
+            credential, "https://cognitiveservices.azure.com/.default"
+        )
+        return AsyncAzureOpenAI(
+            azure_endpoint=settings.azure_openai_endpoint,
+            azure_ad_token_provider=token_provider,
+            api_version=settings.azure_openai_api_version,
+        )
+
+    # Local dev: use API key
     return AsyncAzureOpenAI(
         azure_endpoint=settings.azure_openai_endpoint,
         api_key=settings.azure_openai_api_key,
