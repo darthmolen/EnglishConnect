@@ -29,6 +29,9 @@ function AppContent() {
     toggleGoal,
     instructionLanguage,
     setInstructionLanguage,
+    // Agent mode control
+    setAgentMode,
+    startPatternPractice,
     // Evaluation state
     evaluationRatings,
     personalGoals,
@@ -75,7 +78,10 @@ function AppContent() {
 
   const handleStartConversation = () => {
     if (selectedLessonNumber && !isLoading) {
-      // Send a message to start the conversation practice
+      // Ensure we're in practice mode for conversation
+      setAgentMode('practice')
+      // Open drawer and send message to start practice
+      setIsDrawerOpen(true)
       sendTextMessage("I'm ready to practice!")
     }
   }
@@ -86,15 +92,18 @@ function AppContent() {
     // Open the drawer
     setIsDrawerOpen(true)
 
-    // Send appropriate message based on action type and language
+    // Set mode and send appropriate message based on action type
     if (action.type === 'questions') {
-      // Questions should be in user's instruction language
+      // Questions mode - agent should answer questions only
+      setAgentMode('help')
       const message = instructionLanguage === 'es'
         ? `Tengo una pregunta sobre el patrón ${action.patternNumber}.`
         : `I have a question about pattern ${action.patternNumber}.`
       sendTextMessage(message)
     } else if (action.type === 'practice') {
-      // Practice can start in English (agent will guide)
+      // Practice mode - agent leads conversation, uses startPatternPractice
+      // which also clears messages and sets focusPattern
+      startPatternPractice(action.patternNumber)
       sendTextMessage(`I want to practice pattern ${action.patternNumber}.`)
     }
   }
