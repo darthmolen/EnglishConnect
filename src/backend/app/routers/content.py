@@ -10,14 +10,24 @@ from app.middleware.auth import OptionalUser
 router = APIRouter(prefix="/api/content", tags=["content"])
 
 # Path to lesson content images
-IMAGES_DIR = (
-    Path(__file__).parent.parent.parent.parent.parent
-    / "content"
-    / "refined"
-    / "ec1"
-    / "books"
-    / "englishconnect_1_para_los_alumnos"
-)
+# In Docker: /app/content/refined/ec1/books/...
+# In dev: project_root/content/refined/ec1/books/...
+def _get_images_dir() -> Path:
+    """Get images directory, handling both Docker and local dev."""
+    docker_path = Path("/app/content/refined/ec1/books/englishconnect_1_para_los_alumnos")
+    if docker_path.exists():
+        return docker_path
+    # Local development - go up from routers to project root
+    return (
+        Path(__file__).parent.parent.parent.parent.parent
+        / "content"
+        / "refined"
+        / "ec1"
+        / "books"
+        / "englishconnect_1_para_los_alumnos"
+    )
+
+IMAGES_DIR = _get_images_dir()
 
 
 @router.get("/images/{image_name}")

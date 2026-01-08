@@ -75,8 +75,12 @@ async def conversation(
         raise HTTPException(status_code=404, detail="Lesson not found")
 
     # Check if Azure OpenAI is configured
+    # In Azure: uses managed identity (azure_client_id), no API key needed
+    # In local dev: uses API key
     settings = get_settings()
-    if not settings.azure_openai_endpoint or not settings.azure_openai_api_key:
+    has_managed_identity = bool(settings.azure_client_id)
+    has_api_key = bool(settings.azure_openai_api_key)
+    if not settings.azure_openai_endpoint or (not has_managed_identity and not has_api_key):
         # Fallback for development without Azure credentials
         return ConversationResponse(
             text=f"[Azure OpenAI not configured - Lesson {request.lesson_number}]",
