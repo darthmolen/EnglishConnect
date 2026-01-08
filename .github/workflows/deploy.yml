@@ -122,6 +122,7 @@ jobs:
           file: ./src/Dockerfile.combined
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          no-cache: true
           build-args: |
             VITE_AZURE_AD_CLIENT_ID=${{ secrets.AZURE_AD_CLIENT_ID }}
             VITE_AZURE_AD_TENANT_ID=${{ secrets.AZURE_AD_TENANT_ID }}
