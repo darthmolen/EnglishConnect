@@ -49,3 +49,6 @@ src/services/piper/models/*.onnx.json
 src/services/tts-mcp/VibeVoice/
 src/services/stt/models/
 src/services/llm-local/models/
+
+# Azure scripts with secrets
+azure/scripts/
