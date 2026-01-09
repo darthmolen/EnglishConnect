@@ -8,7 +8,6 @@ interface MobileVocabularyViewProps {
   currentIndex: number
   playingWord?: string | null
   onPlayWord: (index: number) => void
-  onSelectWord: (index: number) => void
 }
 
 export function MobileVocabularyView({
@@ -16,7 +15,6 @@ export function MobileVocabularyView({
   currentIndex,
   playingWord,
   onPlayWord,
-  onSelectWord,
 }: MobileVocabularyViewProps) {
   const { t } = useTranslation()
 

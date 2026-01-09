@@ -61,6 +61,7 @@ export function LessonSections({
     principle: t('sections.principle'),
     goals: t('sections.goals'),
     vocabulary: t('sections.vocabulary'),
+    patterns: t('sections.patterns', 'Patterns'),  // Mobile-only section
     practice: t('sections.practice'),
     evaluate: t('sections.evaluate'),
   }

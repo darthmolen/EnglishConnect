@@ -18,7 +18,6 @@ describe('MobileVocabularyView', () => {
   ]
 
   const mockOnPlayWord = vi.fn()
-  const mockOnSelectWord = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -30,7 +29,6 @@ describe('MobileVocabularyView', () => {
         vocabulary={mockVocabulary}
         currentIndex={0}
         onPlayWord={mockOnPlayWord}
-        onSelectWord={mockOnSelectWord}
       />
     )
 
@@ -44,7 +42,6 @@ describe('MobileVocabularyView', () => {
         vocabulary={mockVocabulary}
         currentIndex={1}
         onPlayWord={mockOnPlayWord}
-        onSelectWord={mockOnSelectWord}
       />
     )
 
@@ -59,7 +56,6 @@ describe('MobileVocabularyView', () => {
         vocabulary={mockVocabulary}
         currentIndex={0}
         onPlayWord={mockOnPlayWord}
-        onSelectWord={mockOnSelectWord}
       />
     )
 
@@ -74,7 +70,6 @@ describe('MobileVocabularyView', () => {
         vocabulary={mockVocabulary}
         currentIndex={0}
         onPlayWord={mockOnPlayWord}
-        onSelectWord={mockOnSelectWord}
       />
     )
 
@@ -90,7 +85,6 @@ describe('MobileVocabularyView', () => {
         vocabulary={[]}
         currentIndex={0}
         onPlayWord={mockOnPlayWord}
-        onSelectWord={mockOnSelectWord}
       />
     )
 

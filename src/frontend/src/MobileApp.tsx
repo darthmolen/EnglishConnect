@@ -22,8 +22,8 @@ export function MobileApp() {
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
   const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice } = useConversationStore()
-  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber)
-  const { playDemo, playingId, playPatternLoop, nextExample, isPatternPlaying, loopingPattern } = useDemoAudio(selectedLessonNumber)
+  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber ?? undefined)
+  const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern } = useDemoAudio(selectedLessonNumber ?? undefined)
   const {
     messages,
     isRecording,
@@ -264,7 +264,6 @@ export function MobileApp() {
                           playWord(word.english)
                         }
                       }}
-                      onSelectWord={setVocabIndex}
                     />
                   )}
                   {activeSection === 'patterns' && (

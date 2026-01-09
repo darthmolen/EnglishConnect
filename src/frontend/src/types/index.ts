@@ -37,7 +37,7 @@ export interface LessonDetail {
   evaluation_criteria: string[]
 }
 
-export type LessonSection = 'principle' | 'goals' | 'vocabulary' | 'practice' | 'evaluate'
+export type LessonSection = 'principle' | 'goals' | 'vocabulary' | 'patterns' | 'practice' | 'evaluate'
 
 // Personal goals with completion tracking
 export interface PersonalGoal {
