@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Trash2, MicOff, Mic } from 'lucide-react'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import { LessonList } from '@/components/LessonList'
 import { LessonSections } from '@/components/LessonSections'
 import { ContentWindow } from '@/components/ContentWindow'
@@ -17,9 +18,10 @@ import { useAuthStore } from '@/stores/authStore'
 import { useConversationStore } from '@/stores/conversationStore'
 import { LoginPage } from '@/pages/LoginPage'
 import { AdminPage } from '@/pages/AdminPage'
+import { MobileApp } from '@/MobileApp'
 import { cn } from '@/lib/utils'
 
-function AppContent() {
+function DesktopApp() {
   const { t, i18n } = useTranslation()
   const { isAuthenticated, isLoading: authLoading, initialize, localUser } = useAuthStore()
   const [currentPath, setCurrentPath] = useState(window.location.hash || '#/')
@@ -321,6 +323,11 @@ function AppContent() {
       </main>
     </div>
   )
+}
+
+function AppContent() {
+  const isMobile = useIsMobile()
+  return isMobile ? <MobileApp /> : <DesktopApp />
 }
 
 export default function App() {

@@ -175,6 +175,42 @@
     "yellow": "Esfuerzo moderado",
     "green": "Esfuerzo significativo"
   },
+  "mobile": {
+    "tabs": {
+      "lessons": "Lecciones",
+      "learn": "Aprender",
+      "me": "Yo"
+    },
+    "vocabulary": {
+      "empty": "No hay vocabulario disponible",
+      "listen": "Escuchar"
+    },
+    "practice": {
+      "empty": "No hay patrones disponibles",
+      "listen": "Escuchar",
+      "practice": "Practicar"
+    },
+    "patterns": {
+      "empty": "No hay ejemplos de patrones disponibles"
+    },
+    "principle": {
+      "noContent": "No hay contenido de principio disponible"
+    },
+    "goals": {
+      "comingSoon": "Seguimiento de metas próximamente"
+    },
+    "evaluate": {
+      "comingSoon": "Autoevaluación próximamente"
+    },
+    "me": {
+      "moreSettingsSoon": "Más configuraciones próximamente"
+    },
+    "actionBar": {
+      "play": "Reproducir",
+      "next": "Siguiente",
+      "chat": "Chat"
+    }
+  },
   "admin": {
     "title": "Gestión de Usuarios",
     "subtitle": "Administrar cuentas y aprobaciones de usuarios",

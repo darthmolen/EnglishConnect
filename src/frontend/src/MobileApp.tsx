@@ -1,0 +1,403 @@
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useLessons } from '@/hooks/useLessons'
+import { useConversation } from '@/hooks/useConversation'
+import { useVocabAudio } from '@/hooks/useVocabAudio'
+import { useDemoAudio } from '@/hooks/useDemoAudio'
+import { useConversationStore } from '@/stores/conversationStore'
+import { useAuthStore } from '@/stores/authStore'
+import { MobileTabBar, type MobileTab } from '@/components/mobile/MobileTabBar'
+import { MobileActionBar, type ContentSection } from '@/components/mobile/MobileActionBar'
+import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
+import { MobilePatternsView } from '@/components/mobile/content/MobilePatternsView'
+import { MobilePracticeView } from '@/components/mobile/content/MobilePracticeView'
+import { MobileChatOverlay } from '@/components/mobile/MobileChatOverlay'
+import { LoginPage } from '@/pages/LoginPage'
+
+export function MobileApp() {
+  const { t, i18n } = useTranslation()
+  const { isAuthenticated, isLoading: authLoading, initialize } = useAuthStore()
+  const [currentPath, setCurrentPath] = useState(window.location.hash || '#/')
+  const [activeTab, setActiveTab] = useState<MobileTab>('lessons')
+
+  const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
+  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice } = useConversationStore()
+  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber)
+  const { playDemo, playingId, playPatternLoop, nextExample, isPatternPlaying, loopingPattern } = useDemoAudio(selectedLessonNumber)
+  const {
+    messages,
+    isRecording,
+    isLoading: conversationLoading,
+    voiceMode,
+    setVoiceMode,
+    toggleRecording,
+    sendTextMessage,
+  } = useConversation()
+
+  // Track current index for vocab/practice/patterns views
+  const [vocabIndex, setVocabIndex] = useState(0)
+  const [patternIndex, setPatternIndex] = useState(0)
+  const [patternsExampleId, setPatternsExampleId] = useState<string | null>(null)
+  const [isChatOpen, setIsChatOpen] = useState(false)
+
+  // Reset indices when lesson changes
+  useEffect(() => {
+    setVocabIndex(0)
+    setPatternIndex(0)
+    setPatternsExampleId(null)
+  }, [selectedLessonNumber])
+
+  useEffect(() => {
+    initialize()
+  }, [initialize])
+
+  // Simple hash-based routing
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPath(window.location.hash || '#/')
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  // Handle login page route
+  if (currentPath === '#/login') {
+    return <LoginPage />
+  }
+
+  // Loading state
+  if (authLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg">{t('app.loading')}</div>
+      </div>
+    )
+  }
+
+  // Handle lesson selection from Lessons tab
+  const handleSelectLesson = (lessonNumber: number) => {
+    selectLesson(lessonNumber)
+    setActiveTab('learn')
+  }
+
+  // Helper: get flat list of example IDs for patterns section
+  const getExampleIds = () => {
+    const ids: string[] = []
+    for (const pattern of currentLesson?.patterns || []) {
+      if (pattern.examples) {
+        pattern.examples.forEach((ex, idx) => {
+          if (ex.q && ex.a) {
+            ids.push(`${pattern.pattern_number}-${idx + 1}`)
+          }
+        })
+      }
+    }
+    return ids
+  }
+
+  // Action bar handlers
+  const handlePlay = () => {
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
+      const word = currentLesson.vocabulary[vocabIndex]
+      if (word) {
+        playWord(word.english)
+      }
+    } else if (activeSection === 'patterns') {
+      // Play current example (or first if none selected)
+      if (patternsExampleId) {
+        const [pNum, eIdx] = patternsExampleId.split('-').map(Number)
+        playDemo(pNum, eIdx)
+      } else {
+        const ids = getExampleIds()
+        if (ids.length > 0) {
+          const [pNum, eIdx] = ids[0].split('-').map(Number)
+          setPatternsExampleId(ids[0])
+          playDemo(pNum, eIdx)
+        }
+      }
+    } else if (activeSection === 'practice' && currentLesson?.patterns) {
+      const pattern = currentLesson.patterns[patternIndex]
+      if (pattern) {
+        // Play all examples for this pattern sequentially
+        playPatternLoop(pattern.pattern_number)
+      }
+    }
+  }
+
+  const handleNext = () => {
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
+      // Move to next word and play it
+      const nextIndex = Math.min(vocabIndex + 1, currentLesson.vocabulary.length - 1)
+      setVocabIndex(nextIndex)
+      const word = currentLesson.vocabulary[nextIndex]
+      if (word) {
+        playWord(word.english)
+      }
+    } else if (activeSection === 'patterns') {
+      // Move to next example and play it
+      const ids = getExampleIds()
+      const currentIdx = patternsExampleId ? ids.indexOf(patternsExampleId) : -1
+      const nextIdx = Math.min(currentIdx + 1, ids.length - 1)
+      if (ids[nextIdx]) {
+        const [pNum, eIdx] = ids[nextIdx].split('-').map(Number)
+        setPatternsExampleId(ids[nextIdx])
+        playDemo(pNum, eIdx)
+      }
+    } else if (activeSection === 'practice' && loopingPattern) {
+      // Skip to next example in the current loop
+      nextExample()
+    } else if (activeSection === 'practice' && currentLesson?.patterns) {
+      // Not looping, move to next pattern and start playing
+      const nextIndex = Math.min(patternIndex + 1, currentLesson.patterns.length - 1)
+      setPatternIndex(nextIndex)
+      const nextPattern = currentLesson.patterns[nextIndex]
+      if (nextPattern) {
+        playPatternLoop(nextPattern.pattern_number)
+      }
+    }
+  }
+
+  const handleChat = () => {
+    setIsChatOpen(true)
+  }
+
+  // Get pinned card content for chat overlay
+  const getPinnedCard = () => {
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary?.[vocabIndex]) {
+      const word = currentLesson.vocabulary[vocabIndex]
+      return { title: 'Vocabulary', content: `${word.english} - ${word.spanish}` }
+    }
+    if (activeSection === 'practice' && currentLesson?.patterns?.[patternIndex]) {
+      const pattern = currentLesson.patterns[patternIndex]
+      return { title: `Pattern ${pattern.pattern_number}`, content: pattern.question_template }
+    }
+    return null
+  }
+
+  // Convert messages to format expected by MobileChatOverlay
+  const chatMessages = messages.map((msg, index) => ({
+    id: `msg-${index}`,
+    role: msg.role,
+    content: msg.content,
+  }))
+
+  return (
+    <div className="flex h-screen flex-col bg-background">
+      {/* Header - compact */}
+      <header className="flex items-center justify-center border-b px-3 py-2 shrink-0">
+        <h1 className="text-sm font-semibold truncate">
+          {activeTab === 'lessons' && t('app.title')}
+          {activeTab === 'learn' && currentLesson && `L${currentLesson.lesson_number}: ${currentLesson.title}`}
+          {activeTab === 'learn' && !currentLesson && t('app.selectLessonPrompt')}
+          {activeTab === 'me' && t('mobile.tabs.me', 'Me')}
+        </h1>
+      </header>
+
+      {/* Content area */}
+      <main className="flex-1 overflow-auto">
+        {activeTab === 'lessons' && (
+          <div className="p-4 space-y-2">
+            {lessons.map((lesson) => (
+              <button
+                key={lesson.lesson_number}
+                type="button"
+                onClick={() => handleSelectLesson(lesson.lesson_number)}
+                className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                  selectedLessonNumber === lesson.lesson_number
+                    ? 'bg-primary/10 border-primary'
+                    : 'bg-card hover:bg-accent/50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-sm font-bold">
+                    {lesson.lesson_number}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium truncate">{lesson.title}</div>
+                    {lesson.objective && (
+                      <div className="text-xs text-muted-foreground truncate">{lesson.objective}</div>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'learn' && (
+          <div className="flex flex-col h-full">
+            {/* Section pills */}
+            <div className="flex gap-2 p-3 overflow-x-auto border-b shrink-0">
+              {(['principle', 'goals', 'vocabulary', 'patterns', 'practice', 'evaluate'] as ContentSection[]).map((section) => (
+                <button
+                  key={section}
+                  type="button"
+                  onClick={() => setActiveSection(section)}
+                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors ${
+                    activeSection === section
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted hover:bg-muted/80'
+                  }`}
+                >
+                  {t(`sections.${section}`, section.charAt(0).toUpperCase() + section.slice(1))}
+                </button>
+              ))}
+            </div>
+
+            {/* Content area */}
+            <div className="flex-1 p-4 overflow-auto">
+              {!currentLesson ? (
+                <div className="text-center text-muted-foreground py-8">
+                  {t('app.selectLessonPrompt')}
+                </div>
+              ) : (
+                <>
+                  {activeSection === 'vocabulary' && (
+                    <MobileVocabularyView
+                      vocabulary={currentLesson.vocabulary || []}
+                      currentIndex={vocabIndex}
+                      playingWord={playingWord}
+                      onPlayWord={(index) => {
+                        setVocabIndex(index)
+                        const word = currentLesson.vocabulary?.[index]
+                        if (word) {
+                          playWord(word.english)
+                        }
+                      }}
+                      onSelectWord={setVocabIndex}
+                    />
+                  )}
+                  {activeSection === 'patterns' && (
+                    <MobilePatternsView
+                      patterns={currentLesson.patterns || []}
+                      playingId={playingId}
+                      currentExampleId={patternsExampleId}
+                      onPlayExample={(patternNumber, exampleIndex) => {
+                        const id = `${patternNumber}-${exampleIndex}`
+                        setPatternsExampleId(id)
+                        playDemo(patternNumber, exampleIndex)
+                      }}
+                    />
+                  )}
+                  {activeSection === 'practice' && (
+                    <MobilePracticeView
+                      patterns={currentLesson.patterns || []}
+                      currentIndex={patternIndex}
+                      loopingPattern={loopingPattern}
+                      onSelectPattern={setPatternIndex}
+                      onStartPractice={(patternNumber) => {
+                        startPatternPractice(patternNumber)
+                        setIsChatOpen(true)
+                        sendTextMessage(`I want to practice pattern ${patternNumber}.`)
+                      }}
+                    />
+                  )}
+                  {activeSection === 'principle' && (
+                    <div className="prose prose-sm max-w-none">
+                      <h3>{currentLesson.learning_principle_title || t('sections.principle')}</h3>
+                      <p>{currentLesson.learning_principle_content || t('mobile.principle.noContent', 'No principle content available')}</p>
+                    </div>
+                  )}
+                  {activeSection === 'goals' && (
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>{t('mobile.goals.comingSoon', 'Goals tracking coming soon')}</p>
+                    </div>
+                  )}
+                  {activeSection === 'evaluate' && (
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>{t('mobile.evaluate.comingSoon', 'Self-evaluation coming soon')}</p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'me' && (
+          <div className="p-4 space-y-4">
+            {/* Auth section */}
+            <div className="rounded-lg border bg-card p-4">
+              {isAuthenticated ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">{t('auth.signedInAs', 'Signed in')}</div>
+                    <div className="text-sm text-muted-foreground truncate">
+                      {useAuthStore.getState().account?.email || useAuthStore.getState().account?.username}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => useAuthStore.getState().logout()}
+                    className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent"
+                  >
+                    {t('auth.signOut')}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => { window.location.hash = '#/login' }}
+                  className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium"
+                >
+                  {t('auth.signInButton', 'Sign In / Sign Up')}
+                </button>
+              )}
+            </div>
+
+            {/* Language setting */}
+            <div className="rounded-lg border bg-card p-4">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">{t('app.language', 'Language')}</span>
+                <select
+                  value={instructionLanguage}
+                  onChange={(e) => {
+                    const newLang = e.target.value as 'en' | 'es'
+                    setInstructionLanguage(newLang)
+                    i18n.changeLanguage(newLang)
+                  }}
+                  className="rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Placeholder for future settings */}
+            <div className="text-center text-muted-foreground py-4 text-sm">
+              {t('mobile.me.moreSettingsSoon', 'More settings coming soon')}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Action bar (only show on Learn tab) */}
+      {activeTab === 'learn' && (
+        <MobileActionBar
+          section={activeSection as ContentSection}
+          onPlay={handlePlay}
+          onNext={handleNext}
+          onChat={handleChat}
+          disabled={!currentLesson || !isAuthenticated}
+        />
+      )}
+
+      {/* Bottom tab bar */}
+      <MobileTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Chat overlay */}
+      <MobileChatOverlay
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        messages={chatMessages}
+        pinnedCard={getPinnedCard()}
+        isRecording={isRecording}
+        voiceMode={voiceMode}
+        onToggleRecording={toggleRecording}
+        onToggleVoiceMode={() => setVoiceMode(voiceMode === 'push-to-talk' ? 'active' : 'push-to-talk')}
+        isLoading={conversationLoading}
+      />
+    </div>
+  )
+}

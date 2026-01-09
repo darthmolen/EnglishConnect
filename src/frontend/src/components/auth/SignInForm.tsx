@@ -27,6 +27,8 @@ export function SignInForm({ onSignUpClick, onForgotPasswordClick }: SignInFormP
 
     try {
       await loginLocal({ email, password })
+      // Redirect to home on successful login
+      window.location.hash = '#/'
     } catch {
       // Error is already set in the store
     }
