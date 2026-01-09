@@ -14,6 +14,14 @@ param azureOpenAIRealtimeDeployment string
 param azureAdClientId string = ''
 param azureAdTenantId string = ''
 
+// Key Vault integration for secrets
+@description('Key Vault URI for secret references (e.g., https://kv-name.vault.azure.net/)')
+param keyVaultUri string = ''
+
+// Build Key Vault secret URLs
+var jwtSecretUrl = keyVaultUri != '' ? '${keyVaultUri}secrets/jwt-secret-key' : ''
+var initialAdminEmailUrl = keyVaultUri != '' ? '${keyVaultUri}secrets/initial-admin-email' : ''
+
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: name
   location: location
@@ -46,7 +54,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           identity: managedIdentityId
         }
       ]
-      secrets: [
+      secrets: concat([
         {
           name: 'database-url'
           value: postgresConnectionString
@@ -55,7 +63,18 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           name: 'redis-url'
           value: 'redis://${redisConnectionString}'
         }
-      ]
+      ], jwtSecretUrl != '' ? [
+        {
+          name: 'jwt-secret-key'
+          keyVaultUrl: jwtSecretUrl
+          identity: managedIdentityId
+        }
+        {
+          name: 'initial-admin-email'
+          keyVaultUrl: initialAdminEmailUrl
+          identity: managedIdentityId
+        }
+      ] : [])
     }
     template: {
       containers: [
@@ -66,7 +85,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             cpu: json('0.5')
             memory: '1Gi'
           }
-          env: [
+          env: concat([
             {
               name: 'DATABASE_URL'
               secretRef: 'database-url'
@@ -107,7 +126,16 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               name: 'AZURE_AD_TENANT_ID'
               value: azureAdTenantId
             }
-          ]
+          ], jwtSecretUrl != '' ? [
+            {
+              name: 'JWT_SECRET_KEY'
+              secretRef: 'jwt-secret-key'
+            }
+            {
+              name: 'INITIAL_ADMIN_EMAIL'
+              secretRef: 'initial-admin-email'
+            }
+          ] : [])
           probes: [
             {
               type: 'Liveness'
