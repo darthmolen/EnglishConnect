@@ -52,6 +52,24 @@ class Settings(BaseSettings):
     # OpenAI API (for Memori memory extraction)
     openai_api_key: str = ""
 
+    # JWT Authentication
+    auth_mode: str = "both"  # "local", "azure_ad", or "both"
+    jwt_secret_key: str = "change-me-in-production-use-secrets-manager"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 1440  # 24 hours
+    jwt_refresh_token_expire_days: int = 30
+
+    # Password policy
+    password_min_length: int = 8
+
+    # Email service (Azure Communication Services)
+    azure_communication_connection_string: str = ""
+    email_sender_address: str = "noreply@englishconnect.org"
+    password_reset_expire_minutes: int = 60
+
+    # Initial admin (for setup)
+    initial_admin_email: str = ""
+
     # Local LLM for Memori (vLLM with OpenAI-compatible API)
     use_local_memori_llm: bool = False
     memori_llm_url: str = "http://localhost:8004/v1"

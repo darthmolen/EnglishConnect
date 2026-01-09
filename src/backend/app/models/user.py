@@ -23,8 +23,25 @@ class User(Base):
     # Runtime attribute (not persisted) - True for anonymous placeholder user
     is_anonymous: bool = False
     display_name: Mapped[str | None] = mapped_column(String(100))
+    first_name: Mapped[str | None] = mapped_column(String(100))
+    last_name: Mapped[str | None] = mapped_column(String(100))
+
+    # Authentication fields
+    password_hash: Mapped[str | None] = mapped_column(String(255))
+    auth_provider: Mapped[str] = mapped_column(String(20), default="local")  # 'local', 'azure_ad'
+
+    # Approval workflow
+    is_approved: Mapped[bool] = mapped_column(Boolean, default=False)
+    approval_status: Mapped[str] = mapped_column(String(20), default="pending")  # 'pending', 'approved', 'rejected'
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime)
+    approved_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+
+    # Legacy OAuth fields (kept for Azure AD)
     oauth_provider: Mapped[str | None] = mapped_column(String(50))  # 'google', 'microsoft'
     oauth_id: Mapped[str | None] = mapped_column(String(255))
+
     native_language: Mapped[str] = mapped_column(String(10), default="es")
     timezone: Mapped[str] = mapped_column(String(50), default="America/Los_Angeles")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
@@ -36,6 +53,11 @@ class User(Base):
     settings: Mapped["UserSettings"] = relationship(back_populates="user", uselist=False)
     progress: Mapped[list["UserProgress"]] = relationship(back_populates="user")
     sessions: Mapped[list["PracticeSession"]] = relationship(back_populates="user")
+    roles: Mapped[list["UserRole"]] = relationship(
+        back_populates="user", foreign_keys="UserRole.user_id"
+    )
+    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
+    password_reset_tokens: Mapped[list["PasswordResetToken"]] = relationship(back_populates="user")
 
 
 class UserSettings(Base):
@@ -58,3 +80,4 @@ class UserSettings(Base):
 
 # Import for type hints (avoid circular imports)
 from app.models.progress import UserProgress, PracticeSession  # noqa: E402
+from app.models.auth import UserRole, RefreshToken, PasswordResetToken  # noqa: E402

@@ -7,6 +7,7 @@ These tests require:
 
 import asyncio
 import pytest
+from fastapi.testclient import TestClient
 
 
 def check_postgres_available():
@@ -33,3 +34,16 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "integration" in str(item.fspath):
                 item.add_marker(skip_marker)
+
+
+@pytest.fixture(scope="module")
+def auth_client():
+    """Create synchronous test client for auth endpoints.
+
+    Uses FastAPI's TestClient which handles async internally.
+    Module-scoped to reuse connection across tests in the same file.
+    """
+    from app.main import app
+
+    with TestClient(app) as client:
+        yield client

@@ -14,6 +14,7 @@ authlib>=1.3.0
 httpx>=0.26.0
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0,<5.0.0  # bcrypt 5.0+ has breaking changes with passlib
 msal>=1.28.0
 
 # Conversation Memory (Memori v3)
@@ -23,6 +24,9 @@ memori>=3.1.0
 agent-framework>=1.0.0b251211
 azure-ai-projects>=1.0.0b8
 azure-identity>=1.15.0
+
+# Azure Communication Services (for email)
+azure-communication-email>=1.0.0
 
 # Azure OpenAI Realtime API
 openai>=1.50.0
@@ -34,6 +38,7 @@ celery>=5.3.6
 # Validation and utilities
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
+email-validator>=2.0.0
 python-dotenv>=1.0.0
 
 # MCP client (for connecting to content/tts MCP servers)

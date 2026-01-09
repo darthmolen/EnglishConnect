@@ -1,4 +1,4 @@
-"""Authentication middleware for Azure AD token validation."""
+"""Authentication middleware for local JWT and Azure AD token validation."""
 import logging
 import uuid
 import httpx
@@ -9,12 +9,15 @@ from typing import Annotated, Union
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_db
 from app.models.user import User
+from app.models.auth import Role, UserRole
 from app.services.user_service import UserService
+from app.services.auth_service import AuthService
 
 
 @dataclass
@@ -87,17 +90,49 @@ def decode_token(token: str) -> dict:
     return payload
 
 
-async def verify_token(token: str) -> dict:
-    """Verify token and return claims."""
+def decode_local_jwt(token: str) -> dict | None:
+    """Try to decode a local JWT token.
+
+    Returns the payload if valid, None if not a local JWT.
+    """
+    settings = get_settings()
+
     try:
-        return decode_token(token)
-    except Exception as e:
-        logger.warning(f"Token validation failed: {type(e).__name__}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        auth_service = AuthService()
+        payload = auth_service.decode_access_token(token)
+        return payload
+    except JWTError:
+        return None
+
+
+async def verify_token(token: str) -> tuple[dict, str]:
+    """Verify token and return claims with provider type.
+
+    Returns: (claims_dict, provider) where provider is "local" or "azure_ad"
+    """
+    settings = get_settings()
+
+    # Try local JWT first (if auth_mode allows)
+    if settings.auth_mode in ["local", "both"]:
+        local_claims = decode_local_jwt(token)
+        if local_claims:
+            return local_claims, "local"
+
+    # Try Azure AD (if auth_mode allows)
+    if settings.auth_mode in ["azure_ad", "both"]:
+        try:
+            azure_claims = decode_token(token)
+            return azure_claims, "azure_ad"
+        except Exception as e:
+            logger.debug(f"Azure AD token validation failed: {type(e).__name__}")
+
+    # Neither worked
+    logger.warning("Token validation failed for all providers")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or expired token",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 
 async def get_current_user(
@@ -105,16 +140,31 @@ async def get_current_user(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> User:
     """Dependency to get current authenticated user."""
-    claims = await verify_token(credentials.credentials)
+    claims, provider = await verify_token(credentials.credentials)
 
-    service = UserService(db)
-    user = await service.get_or_create_user(
-        oauth_provider="microsoft",
-        oauth_id=claims["oid"],
-        email=claims.get("preferred_username", claims.get("email", "")),
-        display_name=claims.get("name"),
-    )
-    return user
+    if provider == "local":
+        # Local JWT: sub is user_id
+        user_id = uuid.UUID(claims["sub"])
+        stmt = select(User).where(User.id == user_id)
+        result = await db.execute(stmt)
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found",
+            )
+        return user
+    else:
+        # Azure AD
+        service = UserService(db)
+        user = await service.get_or_create_user(
+            oauth_provider="microsoft",
+            oauth_id=claims["oid"],
+            email=claims.get("preferred_username", claims.get("email", "")),
+            display_name=claims.get("name"),
+        )
+        return user
 
 
 # Type alias for use in route dependencies
@@ -167,3 +217,34 @@ async def get_optional_user(
 
 # Type alias for optional authentication
 OptionalUser = Annotated[Union[User, AnonymousUser], Depends(get_optional_user)]
+
+
+async def get_user_roles(user: User, db: AsyncSession) -> list[str]:
+    """Get list of role names for a user."""
+    stmt = (
+        select(Role.name)
+        .join(UserRole, UserRole.role_id == Role.id)
+        .where(UserRole.user_id == user.id)
+    )
+    result = await db.execute(stmt)
+    return [r[0] for r in result.all()]
+
+
+async def require_admin(
+    current_user: CurrentUser,
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> User:
+    """Dependency that requires the current user to have admin role."""
+    roles = await get_user_roles(current_user, db)
+
+    if "admin" not in roles:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin role required",
+        )
+
+    return current_user
+
+
+# Type alias for admin-only routes
+AdminUser = Annotated[User, Depends(require_admin)]
