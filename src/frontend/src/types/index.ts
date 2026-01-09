@@ -61,6 +61,9 @@ export type StudyRegistryItem =
 // Unified agent modes (replaces old multi-agent: 'conversation' | 'lesson' | 'demo')
 export type AgentMode = 'help' | 'practice'
 
+// Voice interaction modes
+export type VoiceMode = 'push-to-talk' | 'active'
+
 export type InstructionLanguage = 'es' | 'en'
 
 export interface ChatMessage {

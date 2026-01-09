@@ -90,9 +90,9 @@ export function PatternsView({
   }
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-2 space-y-3">
       {/* Pattern cards */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {patterns.map((pattern) => {
           const isFocused = focusPattern === pattern.pattern_number
 
@@ -100,7 +100,7 @@ export function PatternsView({
             <div
               key={pattern.pattern_number}
               className={cn(
-                'rounded-lg border p-4 transition-colors',
+                'rounded-lg border p-3 transition-colors',
                 isFocused && 'bg-primary/10 border-primary border-l-4'
               )}
             >

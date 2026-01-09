@@ -30,7 +30,9 @@ class Settings(BaseSettings):
     azure_openai_api_version: str = "2024-10-21"
 
     # Azure OpenAI Realtime API (STT+LLM+TTS unified)
-    azure_openai_realtime_deployment: str = "gpt-4o-mini-realtime"
+    azure_openai_realtime_endpoint: str = ""  # Separate endpoint for realtime (if different)
+    azure_openai_realtime_api_key: str = ""  # Separate API key for realtime (if different)
+    azure_openai_realtime_deployment: str = "gpt-4o-mini-realtime-preview"
     azure_openai_realtime_api_version: str = "2025-04-01-preview"
     use_realtime_api: bool = False  # Feature flag for cloud deployment
 

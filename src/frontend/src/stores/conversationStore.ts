@@ -13,6 +13,7 @@ import type {
   PersonalGoal,
   StudyRegistryStatus,
   StudyRegistryItem,
+  VoiceMode,
 } from '@/types'
 
 interface ConversationState {
@@ -39,6 +40,7 @@ interface ConversationState {
   // Voice state
   isRecording: boolean
   isPlaying: boolean
+  voiceMode: VoiceMode
 
   // Intro playback tracking (not persisted - fresh each session)
   // Keys are "lessonNumber-language" (e.g., "5-es", "5-en")
@@ -75,6 +77,7 @@ interface ConversationState {
   setIsLoading: (isLoading: boolean) => void
   setIsRecording: (isRecording: boolean) => void
   setIsPlaying: (isPlaying: boolean) => void
+  setVoiceMode: (mode: VoiceMode) => void
   updatePhaseInfo: (
     phase: LessonPhase | null,
     state: PhaseState | null,
@@ -111,6 +114,7 @@ export const useConversationStore = create<ConversationState>()(
       isLoading: false,
       isRecording: false,
       isPlaying: false,
+      voiceMode: 'push-to-talk' as VoiceMode,
 
       // Intro playback tracking (not persisted)
       introPlayedKeys: [],
@@ -206,6 +210,8 @@ export const useConversationStore = create<ConversationState>()(
       setIsRecording: (isRecording) => set({ isRecording }),
 
       setIsPlaying: (isPlaying) => set({ isPlaying }),
+
+      setVoiceMode: (mode) => set({ voiceMode: mode }),
 
       updatePhaseInfo: (phase, state, progress) =>
         set({

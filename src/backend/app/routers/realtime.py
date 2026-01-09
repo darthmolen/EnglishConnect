@@ -94,8 +94,13 @@ async def create_tool_handlers(db: AsyncSession, lesson_number: int) -> dict:
             }
         return {"english": english_word, "spanish": "", "has_audio": False}
 
-    async def render_pattern(pattern_number: int) -> dict:
-        """Get pattern data for UI rendering."""
+    async def render_pattern(pattern_number: int, lesson_number: int | None = None) -> dict:
+        """Get pattern data for UI rendering.
+
+        Args:
+            pattern_number: Pattern number to render
+            lesson_number: Optional lesson number (ignored - lesson captured in closure)
+        """
         pattern = next(
             (p for p in lesson.patterns if p.pattern_number == pattern_number),
             None
@@ -128,6 +133,7 @@ async def realtime_conversation(
 
     Protocol:
     - Client sends: {"type": "audio", "data": "<base64 PCM16 audio>"}
+    - Client sends: {"type": "text", "text": "..."} - Send text message
     - Client sends: {"type": "commit"} - Trigger processing
     - Client sends: {"type": "cancel"} - Cancel current response
     - Server sends: {"type": "audio", "data": "<base64 PCM16 audio>"}
@@ -184,6 +190,12 @@ async def realtime_conversation(
                         # Decode base64 audio and send to Realtime API
                         audio_data = base64.b64decode(message.get("data", ""))
                         await session.send_audio(audio_data)
+
+                    elif msg_type == "text":
+                        # Send text message to Realtime API
+                        text = message.get("text", "")
+                        if text:
+                            await session.send_text(text)
 
                     elif msg_type == "commit":
                         # Client explicitly commits audio buffer

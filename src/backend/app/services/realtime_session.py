@@ -18,6 +18,46 @@ from app.services.realtime_tools import get_tool_definitions
 logger = logging.getLogger(__name__)
 
 
+def format_text_input(text: str) -> dict:
+    """Format text for Realtime API conversation.item.create.
+
+    Args:
+        text: The text message to send
+
+    Returns:
+        Dict with conversation.item.create structure for text input
+    """
+    return {
+        "type": "conversation.item.create",
+        "item": {
+            "type": "message",
+            "role": "user",
+            "content": [{"type": "input_text", "text": text}]
+        }
+    }
+
+
+def get_turn_detection_config(voice_mode: str) -> dict | None:
+    """Get VAD configuration based on voice mode.
+
+    Args:
+        voice_mode: Either "push-to-talk" or "active"
+
+    Returns:
+        VAD config dict for active mode, None for push-to-talk
+    """
+    if voice_mode == "push-to-talk":
+        return None  # Client controls start/stop
+
+    # Active mode or unknown - use server VAD with adjusted sensitivity
+    return {
+        "type": "server_vad",
+        "threshold": 0.6,  # Less sensitive than default 0.5
+        "silence_duration_ms": 800,  # Wait longer than default 500
+        "prefix_padding_ms": 500,  # Capture more than default 300
+    }
+
+
 class RealtimeSessionManager:
     """Manages a real-time audio session with Azure OpenAI Realtime API.
 
@@ -56,9 +96,12 @@ class RealtimeSessionManager:
         """Get access token for Azure OpenAI using managed identity or API key."""
         settings = get_settings()
 
+        # Prefer realtime-specific API key, fall back to regular
+        api_key = settings.azure_openai_realtime_api_key or settings.azure_openai_api_key
+
         # If API key is set, return it directly (for local development)
-        if settings.azure_openai_api_key:
-            return settings.azure_openai_api_key
+        if api_key:
+            return api_key
 
         # Use managed identity for cloud deployment
         if self._credential is None:
@@ -80,14 +123,18 @@ class RealtimeSessionManager:
         """Build the WebSocket URL for Realtime API."""
         settings = get_settings()
 
+        # Prefer realtime-specific endpoint, fall back to regular
+        endpoint = settings.azure_openai_realtime_endpoint or settings.azure_openai_endpoint
+        endpoint = endpoint.rstrip("/")
+
         # Convert https endpoint to wss
-        endpoint = settings.azure_openai_endpoint.rstrip("/")
         if endpoint.startswith("https://"):
             endpoint = "wss://" + endpoint[8:]
 
         deployment = settings.azure_openai_realtime_deployment
         api_version = settings.azure_openai_realtime_api_version
 
+        logger.info(f"Using Realtime deployment: {deployment}, API version: {api_version}")
         return f"{endpoint}/openai/realtime?api-version={api_version}&deployment={deployment}"
 
     async def connect(self) -> None:
@@ -98,12 +145,14 @@ class RealtimeSessionManager:
         settings = get_settings()
         headers = {}
 
-        if settings.azure_openai_api_key:
+        # Check if using API key (realtime-specific or regular)
+        api_key = settings.azure_openai_realtime_api_key or settings.azure_openai_api_key
+        if api_key:
             headers["api-key"] = token
         else:
             headers["Authorization"] = f"Bearer {token}"
 
-        logger.info(f"Connecting to Realtime API: {url[:50]}...")
+        logger.info(f"Connecting to Realtime API: {url}")
 
         self.ws = await websockets.connect(url, additional_headers=headers)
         self._connected = True
@@ -127,9 +176,9 @@ class RealtimeSessionManager:
                 },
                 "turn_detection": {
                     "type": "server_vad",
-                    "threshold": 0.5,
-                    "prefix_padding_ms": 300,
-                    "silence_duration_ms": 500,
+                    "threshold": 0.6,  # Less sensitive to avoid false starts
+                    "prefix_padding_ms": 500,  # Capture more at speech start
+                    "silence_duration_ms": 1200,  # Wait longer for language learners
                     "create_response": True
                 },
                 "tools": get_tool_definitions(),
@@ -153,6 +202,22 @@ class RealtimeSessionManager:
             "audio": base64.b64encode(audio_data).decode("utf-8")
         }
         await self.ws.send(json.dumps(event))
+
+    async def send_text(self, text: str) -> None:
+        """Send text message to Realtime API and trigger response.
+
+        Args:
+            text: The text message to send
+        """
+        if not self._connected or not self.ws:
+            raise RuntimeError("Not connected to Realtime API")
+
+        # Format and send the text message
+        message = format_text_input(text)
+        await self.ws.send(json.dumps(message))
+
+        # Trigger response generation
+        await self.ws.send(json.dumps({"type": "response.create"}))
 
     async def commit_audio(self) -> None:
         """Commit the audio buffer to trigger processing."""

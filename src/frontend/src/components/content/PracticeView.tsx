@@ -187,15 +187,15 @@ export function PracticeView({
         </div>
       )}
 
-      {/* Summary banner */}
-      <div className="mx-4 mt-4 mb-2 rounded-lg border bg-green-50 dark:bg-green-950/30 p-4">
-        <div className="flex items-start gap-3">
-          <MessageSquare className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+      {/* Summary banner - compact */}
+      <div className="mx-3 mt-2 mb-1 rounded-lg border bg-green-50 dark:bg-green-950/30 px-3 py-2">
+        <div className="flex items-start gap-2">
+          <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-green-900 dark:text-green-100 mb-1">
+            <h3 className="font-semibold text-sm text-green-900 dark:text-green-100">
               {t('practice.summaryTitle')}
             </h3>
-            <p className="text-sm text-green-800 dark:text-green-200">
+            <p className="text-xs text-green-800 dark:text-green-200">
               {t('practice.summary')}
             </p>
           </div>
@@ -207,9 +207,9 @@ export function PracticeView({
         <CompactVocabulary vocabulary={vocabulary} />
       )}
 
-      {/* Start Conversation Button */}
+      {/* Start Conversation Button - compact */}
       {onStartConversation && (
-        <div className="px-4 py-3 border-b bg-muted/30">
+        <div className="px-3 py-2 border-b bg-muted/30">
           <button
             type="button"
             onClick={isAuthenticated ? onStartConversation : login}

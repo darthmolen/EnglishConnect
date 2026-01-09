@@ -1,6 +1,6 @@
-import { useState, useEffect, type KeyboardEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Send, Trash2 } from 'lucide-react'
+import { Trash2, MicOff, Mic } from 'lucide-react'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
 import { LessonList } from '@/components/LessonList'
@@ -50,31 +50,18 @@ function AppContent() {
     isRecording,
     isPlaying,
     isLoading,
+    voiceMode,
+    setVoiceMode,
     toggleRecording,
     sendTextMessage,
     clearMessages,
   } = useConversation()
 
-  const [inputText, setInputText] = useState('')
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
     checkAuth()
   }, [checkAuth])
-
-  const handleSend = () => {
-    if (inputText.trim() && selectedLessonNumber) {
-      sendTextMessage(inputText)
-      setInputText('')
-    }
-  }
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
 
   const handleStartConversation = () => {
     if (selectedLessonNumber && !isLoading) {
@@ -259,10 +246,37 @@ function AppContent() {
           )}
         </div>
 
-        {/* Input bar - hidden when registry page is selected */}
+        {/* Voice controls bar - hidden when registry page is selected */}
         {!isRegistryPageSelected && (
           <footer className="border-t p-3 shrink-0">
-            <div className="mx-auto flex max-w-2xl items-center gap-2">
+            <div className="mx-auto flex max-w-2xl items-center justify-center gap-4">
+              {/* Voice mode toggle */}
+              <button
+                type="button"
+                onClick={() => setVoiceMode(voiceMode === 'push-to-talk' ? 'active' : 'push-to-talk')}
+                disabled={!selectedLessonNumber || !isAuthenticated}
+                className={cn(
+                  'flex items-center gap-2 rounded-full px-3 py-2 text-sm transition-colors',
+                  'border bg-background',
+                  'hover:bg-accent hover:text-accent-foreground',
+                  'disabled:cursor-not-allowed disabled:opacity-50'
+                )}
+                title={voiceMode === 'push-to-talk' ? t('voice.switchToActive') : t('voice.switchToPTT')}
+              >
+                {voiceMode === 'push-to-talk' ? (
+                  <>
+                    <MicOff className="h-4 w-4" />
+                    <span>{t('voice.pushToTalk')}</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="h-4 w-4" />
+                    <span>{t('voice.active')}</span>
+                  </>
+                )}
+              </button>
+
+              {/* Main microphone button */}
               <VoiceButton
                 isRecording={isRecording}
                 isPlaying={isPlaying}
@@ -270,41 +284,6 @@ function AppContent() {
                 disabled={!selectedLessonNumber || isLoading || !isAuthenticated}
                 title={!isAuthenticated ? t('auth.signInToSpeak') : undefined}
               />
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={
-                    !isAuthenticated
-                      ? t('auth.signInToChat')
-                      : selectedLessonNumber
-                        ? t('conversation.placeholder')
-                        : t('conversation.selectFirst')
-                  }
-                  disabled={!selectedLessonNumber || isLoading || !isAuthenticated}
-                  className={cn(
-                    'w-full rounded-full border bg-background px-4 py-2 pr-10 text-sm',
-                    'placeholder:text-muted-foreground',
-                    'focus:outline-none focus:ring-2 focus:ring-ring',
-                    'disabled:cursor-not-allowed disabled:opacity-50'
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={handleSend}
-                  disabled={!inputText.trim() || !selectedLessonNumber || isLoading || !isAuthenticated}
-                  className={cn(
-                    'absolute right-1.5 top-1/2 -translate-y-1/2',
-                    'rounded-full p-1.5 text-muted-foreground transition-colors',
-                    'hover:bg-accent hover:text-accent-foreground',
-                    'disabled:cursor-not-allowed disabled:opacity-50'
-                  )}
-                >
-                  <Send className="h-4 w-4" />
-                </button>
-              </div>
             </div>
           </footer>
         )}

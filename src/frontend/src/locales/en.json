@@ -49,7 +49,11 @@
   },
   "voice": {
     "startRecording": "Start recording",
-    "stopRecording": "Stop recording"
+    "stopRecording": "Stop recording",
+    "pushToTalk": "Push to Talk",
+    "active": "Active",
+    "switchToActive": "Switch to Active mode (auto-detect speech)",
+    "switchToPTT": "Switch to Push-to-Talk mode"
   },
   "goals": {
     "empty": "No learning goals available for this lesson",

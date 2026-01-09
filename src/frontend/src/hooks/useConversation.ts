@@ -50,11 +50,13 @@ export function useConversation() {
     exchangeCount,
     instructionLanguage,
     focusPattern,
+    voiceMode,
     addMessage,
     clearMessages,
     setIsLoading,
     setIsRecording: setStoreIsRecording,
     setIsPlaying: setStoreIsPlaying,
+    setVoiceMode,
     updatePhaseInfo,
     incrementExchangeCount,
   } = useConversationStore()
@@ -355,6 +357,51 @@ export function useConversation() {
     console.log('Realtime recording stopped')
   }, [setStoreIsRecording])
 
+  // Send text message via WebSocket (Realtime API mode)
+  const sendRealtimeText = useCallback(
+    async (text: string) => {
+      if (!selectedLessonNumber || !text.trim()) return
+
+      // Connect WebSocket if not connected
+      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+        connectRealtime()
+        // Wait for connection
+        await new Promise<void>((resolve) => {
+          const checkConnection = setInterval(() => {
+            if (wsRef.current?.readyState === WebSocket.OPEN) {
+              clearInterval(checkConnection)
+              resolve()
+            }
+          }, 100)
+          // Timeout after 5 seconds
+          setTimeout(() => {
+            clearInterval(checkConnection)
+            resolve()
+          }, 5000)
+        })
+      }
+
+      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+        console.error('Failed to connect to Realtime API')
+        addMessage({
+          role: 'assistant',
+          content: 'Failed to connect to voice service. Please try again.',
+          agentMode,
+        })
+        return
+      }
+
+      // Add user message to UI
+      addMessage({ role: 'user', content: text, agentMode })
+      setIsLoading(true)
+
+      // Send text via WebSocket
+      wsRef.current.send(JSON.stringify({ type: 'text', text }))
+      console.log('Sent text via WebSocket:', text)
+    },
+    [selectedLessonNumber, agentMode, connectRealtime, addMessage, setIsLoading]
+  )
+
   // Play audio chunks sequentially (for HTTP responses)
   const playAudioChunks = useCallback(
     async (response: AgentResponse) => {
@@ -510,12 +557,18 @@ export function useConversation() {
     setStoreIsRecording,
   ])
 
-  // Send text message and get AI response (always uses HTTP)
+  // Send text message - routes through WebSocket (Realtime) or HTTP based on config
   const sendTextMessage = useCallback(
     async (text: string) => {
       if (!selectedLessonNumber || !text.trim()) return
 
-      // Add user message
+      // Route through WebSocket if Realtime API is enabled
+      if (useRealtimeApi) {
+        await sendRealtimeText(text)
+        return
+      }
+
+      // HTTP fallback
       addMessage({ role: 'user', content: text, agentMode })
       setIsLoading(true)
 
@@ -565,6 +618,8 @@ export function useConversation() {
       exchangeCount,
       instructionLanguage,
       focusPattern,
+      useRealtimeApi,
+      sendRealtimeText,
       addMessage,
       setIsLoading,
       playAudioChunks,
@@ -594,6 +649,8 @@ export function useConversation() {
     isPlaying,
     isLoading,
     audioBlob,
+    voiceMode,
+    setVoiceMode,
     toggleRecording,
     sendTextMessage,
     sendVoiceMessage,

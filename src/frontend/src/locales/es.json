@@ -49,7 +49,11 @@
   },
   "voice": {
     "startRecording": "Iniciar grabación",
-    "stopRecording": "Detener grabación"
+    "stopRecording": "Detener grabación",
+    "pushToTalk": "Pulsar para Hablar",
+    "active": "Activo",
+    "switchToActive": "Cambiar a modo Activo (detectar voz automáticamente)",
+    "switchToPTT": "Cambiar a modo Pulsar para Hablar"
   },
   "goals": {
     "empty": "No hay metas de aprendizaje disponibles para esta lección",
