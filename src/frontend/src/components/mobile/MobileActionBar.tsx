@@ -23,21 +23,21 @@ export function MobileActionBar({ section, onPlay, onNext, onChat, disabled = fa
   const buttons = [
     {
       id: 'play',
-      label: t('mobile.actions.play', 'Play'),
+      label: t('mobile.actionBar.play', 'Play'),
       icon: <Play className="h-5 w-5" />,
       onClick: onPlay,
       enabled: playEnabled,
     },
     {
       id: 'next',
-      label: t('mobile.actions.next', 'Next'),
+      label: t('mobile.actionBar.next', 'Next'),
       icon: <SkipForward className="h-5 w-5" />,
       onClick: onNext,
       enabled: nextEnabled,
     },
     {
       id: 'chat',
-      label: t('mobile.actions.chat', 'Chat'),
+      label: t('mobile.actionBar.chat', 'Chat'),
       icon: <MessageCircle className="h-5 w-5" />,
       onClick: onChat,
       enabled: chatEnabled,
