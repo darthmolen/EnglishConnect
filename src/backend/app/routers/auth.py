@@ -73,6 +73,13 @@ async def signup(request: SignupRequest, db: AsyncSession = Depends(get_db)):
         parts = [p for p in [request.first_name, request.last_name] if p]
         display_name = " ".join(parts)
 
+    # Check if this is the bootstrap admin (first admin setup)
+    settings = get_settings()
+    is_bootstrap_admin = (
+        settings.initial_admin_email
+        and request.email.lower() == settings.initial_admin_email.lower()
+    )
+
     user = User(
         email=request.email,
         password_hash=password_hash,
@@ -81,23 +88,32 @@ async def signup(request: SignupRequest, db: AsyncSession = Depends(get_db)):
         display_name=display_name,
         native_language=request.native_language,
         auth_provider="local",
-        is_approved=False,
-        approval_status="pending",
+        is_approved=is_bootstrap_admin,  # Auto-approve if bootstrap admin
+        approval_status="approved" if is_bootstrap_admin else "pending",
     )
 
     db.add(user)
     await db.commit()
     await db.refresh(user)
 
-    # Assign default student role
-    stmt = select(Role).where(Role.name == "student")
-    result = await db.execute(stmt)
-    student_role = result.scalar_one_or_none()
+    # Determine roles to assign
+    roles_to_assign = ["student"]
+    if is_bootstrap_admin:
+        roles_to_assign.append("admin")
 
-    if student_role:
-        user_role = UserRole(user_id=user.id, role_id=student_role.id)
-        db.add(user_role)
-        await db.commit()
+    # Assign roles
+    assigned_roles = []
+    for role_name in roles_to_assign:
+        stmt = select(Role).where(Role.name == role_name)
+        result = await db.execute(stmt)
+        role = result.scalar_one_or_none()
+
+        if role:
+            user_role = UserRole(user_id=user.id, role_id=role.id)
+            db.add(user_role)
+            assigned_roles.append(role_name)
+
+    await db.commit()
 
     return UserResponse(
         id=str(user.id),
@@ -108,7 +124,7 @@ async def signup(request: SignupRequest, db: AsyncSession = Depends(get_db)):
         auth_provider=user.auth_provider,
         is_approved=user.is_approved,
         approval_status=user.approval_status,
-        roles=["student"],
+        roles=assigned_roles,
     )
 
 

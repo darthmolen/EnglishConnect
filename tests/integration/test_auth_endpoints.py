@@ -326,6 +326,102 @@ class TestRefreshToken:
         assert response.status_code == 401
 
 
+class TestBootstrapAdmin:
+    """Tests for bootstrap admin functionality."""
+
+    def test_signup_bootstrap_admin_auto_approved_with_admin_role(self, auth_client, monkeypatch):
+        """Signup with initial_admin_email should auto-approve with admin role."""
+        bootstrap_email = unique_email("bootstrap-admin")
+
+        # Set the initial_admin_email setting via environment variable
+        monkeypatch.setenv("INITIAL_ADMIN_EMAIL", bootstrap_email)
+
+        # Clear the lru_cache to force settings reload
+        from app.config import get_settings
+        get_settings.cache_clear()
+
+        try:
+            response = auth_client.post(
+                "/api/auth/signup",
+                json={
+                    "email": bootstrap_email,
+                    "password": "securepass123",
+                    "confirm_password": "securepass123",
+                    "first_name": "Bootstrap",
+                    "last_name": "Admin",
+                },
+            )
+
+            assert response.status_code == 201
+            data = response.json()
+            assert data["email"] == bootstrap_email
+            assert data["is_approved"] is True
+            assert data["approval_status"] == "approved"
+            assert "admin" in data["roles"]
+            assert "student" in data["roles"]
+        finally:
+            # Reset the settings cache
+            get_settings.cache_clear()
+
+    def test_signup_non_bootstrap_email_remains_pending(self, auth_client, monkeypatch):
+        """Signup with email not matching initial_admin_email should remain pending."""
+        bootstrap_email = "bootstrap-admin@test.example.com"
+        regular_email = unique_email("regular")
+
+        # Set a different email as bootstrap admin
+        monkeypatch.setenv("INITIAL_ADMIN_EMAIL", bootstrap_email)
+
+        from app.config import get_settings
+        get_settings.cache_clear()
+
+        try:
+            response = auth_client.post(
+                "/api/auth/signup",
+                json={
+                    "email": regular_email,
+                    "password": "securepass123",
+                    "confirm_password": "securepass123",
+                },
+            )
+
+            assert response.status_code == 201
+            data = response.json()
+            assert data["email"] == regular_email
+            assert data["is_approved"] is False
+            assert data["approval_status"] == "pending"
+            assert "admin" not in data["roles"]
+        finally:
+            get_settings.cache_clear()
+
+    def test_bootstrap_admin_email_case_insensitive(self, auth_client, monkeypatch):
+        """Bootstrap admin email matching should be case-insensitive."""
+        bootstrap_email = unique_email("UPPERCASE-admin")
+
+        # Set the initial_admin_email in lowercase
+        monkeypatch.setenv("INITIAL_ADMIN_EMAIL", bootstrap_email.lower())
+
+        from app.config import get_settings
+        get_settings.cache_clear()
+
+        try:
+            # Sign up with mixed case email
+            response = auth_client.post(
+                "/api/auth/signup",
+                json={
+                    "email": bootstrap_email.upper(),  # Different case
+                    "password": "securepass123",
+                    "confirm_password": "securepass123",
+                },
+            )
+
+            assert response.status_code == 201
+            data = response.json()
+            assert data["is_approved"] is True
+            assert "admin" in data["roles"]
+        finally:
+            get_settings.cache_clear()
+
+
 class TestPasswordReset:
     """Tests for password reset endpoints."""
 
