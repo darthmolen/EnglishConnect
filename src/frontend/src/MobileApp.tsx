@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLessons } from '@/hooks/useLessons'
+import { useConversation } from '@/hooks/useConversation'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { MobileTabBar, type MobileTab } from '@/components/mobile/MobileTabBar'
 import { MobileActionBar, type ContentSection } from '@/components/mobile/MobileActionBar'
 import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
 import { MobilePracticeView } from '@/components/mobile/content/MobilePracticeView'
+import { MobileChatOverlay } from '@/components/mobile/MobileChatOverlay'
 import { LoginPage } from '@/pages/LoginPage'
 
 export function MobileApp() {
@@ -16,11 +18,21 @@ export function MobileApp() {
   const [activeTab, setActiveTab] = useState<MobileTab>('lessons')
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
-  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage } = useConversationStore()
+  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice } = useConversationStore()
+  const {
+    messages,
+    isRecording,
+    isLoading: conversationLoading,
+    voiceMode,
+    setVoiceMode,
+    toggleRecording,
+    sendTextMessage,
+  } = useConversation()
 
   // Track current index for vocab/practice views
   const [vocabIndex, setVocabIndex] = useState(0)
   const [patternIndex, setPatternIndex] = useState(0)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Reset indices when lesson changes
   useEffect(() => {
@@ -84,9 +96,28 @@ export function MobileApp() {
   }
 
   const handleChat = () => {
-    // TODO: Open chat overlay with appropriate mode
-    console.log('Chat:', activeSection)
+    setIsChatOpen(true)
   }
+
+  // Get pinned card content for chat overlay
+  const getPinnedCard = () => {
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary?.[vocabIndex]) {
+      const word = currentLesson.vocabulary[vocabIndex]
+      return { title: 'Vocabulary', content: `${word.english} - ${word.spanish}` }
+    }
+    if (activeSection === 'practice' && currentLesson?.patterns?.[patternIndex]) {
+      const pattern = currentLesson.patterns[patternIndex]
+      return { title: `Pattern ${pattern.pattern_number}`, content: pattern.question_template }
+    }
+    return null
+  }
+
+  // Convert messages to format expected by MobileChatOverlay
+  const chatMessages = messages.map((msg, index) => ({
+    id: `msg-${index}`,
+    role: msg.role,
+    content: msg.content,
+  }))
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -182,8 +213,9 @@ export function MobileApp() {
                       }}
                       onSelectPattern={setPatternIndex}
                       onStartPractice={(patternNumber) => {
-                        // TODO: Open chat overlay in practice mode
-                        console.log('Start practice for pattern:', patternNumber)
+                        startPatternPractice(patternNumber)
+                        setIsChatOpen(true)
+                        sendTextMessage(`I want to practice pattern ${patternNumber}.`)
                       }}
                     />
                   )}
@@ -280,6 +312,19 @@ export function MobileApp() {
 
       {/* Bottom tab bar */}
       <MobileTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Chat overlay */}
+      <MobileChatOverlay
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        messages={chatMessages}
+        pinnedCard={getPinnedCard()}
+        isRecording={isRecording}
+        voiceMode={voiceMode}
+        onToggleRecording={toggleRecording}
+        onToggleVoiceMode={() => setVoiceMode(voiceMode === 'push-to-talk' ? 'active' : 'push-to-talk')}
+        isLoading={conversationLoading}
+      />
     </div>
   )
 }
