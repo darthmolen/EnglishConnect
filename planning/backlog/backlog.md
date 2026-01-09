@@ -442,3 +442,49 @@ Agent responds: "Did you mean 'Mary' the name we're learning, or 'merry' meaning
 **ACA CSI Support**: Yes - Azure Container Apps supports Azure Files volume mounts via CSI.
 
 **Priority**: Low - Current image-bundled approach works for POC. Implement after demo if quick decision not forthcoming.
+
+## Backlog: Mobile Chat Overlay Enhancements
+
+**Context**: Phase 5 mobile layout added the MobileChatOverlay shell, but full chat functionality is not yet implemented.
+
+**Current State**:
+
+- Chat overlay slides up with pinned context card
+- Mic button and PTT toggle exist in UI
+- Messages display in chat format
+- Basic connection to conversation store
+
+**Remaining Work**:
+
+1. **Voice Recording Integration**
+   - Connect mic button to useConversation's toggleRecording
+   - Implement push-to-talk vs active listening modes
+   - Visual recording indicator (animated mic)
+   - Handle recording permissions on mobile browsers
+
+2. **Agent Response Display**
+   - Stream agent responses to chat
+   - Show loading state during LLM processing
+   - Display TTS playback indicator
+   - Handle multi-part responses (Spanish + English)
+
+3. **Conversation Flow**
+   - Context-aware chat opening (vocabulary help vs practice mode)
+   - Pass pinned card context to agent
+   - Conversation reset when switching lessons/sections
+   - End conversation button
+
+4. **Mobile-Specific UX**
+   - Scroll to latest message
+   - Keyboard handling for text input fallback
+   - Haptic feedback on recording start/stop (if available)
+   - Handle app backgrounding during recording
+
+5. **Testing**
+   - Integration tests for voice flow
+   - E2E tests with mobile viewport
+   - Test on actual Android Chrome
+
+**Dependencies**: useConversation hook, WebSocket connection, STT/TTS services
+
+**Priority**: High - Core learning experience depends on voice practice

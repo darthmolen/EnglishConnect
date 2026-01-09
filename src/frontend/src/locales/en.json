@@ -175,6 +175,42 @@
     "yellow": "Progressing",
     "green": "Outstanding"
   },
+  "mobile": {
+    "tabs": {
+      "lessons": "Lessons",
+      "learn": "Learn",
+      "me": "Me"
+    },
+    "vocabulary": {
+      "empty": "No vocabulary available",
+      "listen": "Listen"
+    },
+    "practice": {
+      "empty": "No patterns available",
+      "listen": "Listen",
+      "practice": "Practice"
+    },
+    "patterns": {
+      "empty": "No pattern examples available"
+    },
+    "principle": {
+      "noContent": "No principle content available"
+    },
+    "goals": {
+      "comingSoon": "Goals tracking coming soon"
+    },
+    "evaluate": {
+      "comingSoon": "Self-evaluation coming soon"
+    },
+    "me": {
+      "moreSettingsSoon": "More settings coming soon"
+    },
+    "actionBar": {
+      "play": "Play",
+      "next": "Next",
+      "chat": "Chat"
+    }
+  },
   "admin": {
     "title": "User Management",
     "subtitle": "Manage user accounts and approvals",

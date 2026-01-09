@@ -2,7 +2,7 @@ import { Play, SkipForward, MessageCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
-export type ContentSection = 'principle' | 'goals' | 'vocabulary' | 'practice' | 'evaluate'
+export type ContentSection = 'principle' | 'goals' | 'vocabulary' | 'patterns' | 'practice' | 'evaluate'
 
 interface MobileActionBarProps {
   section: ContentSection
@@ -16,8 +16,8 @@ export function MobileActionBar({ section, onPlay, onNext, onChat, disabled = fa
   const { t } = useTranslation()
 
   // Determine which buttons are enabled based on section
-  const playEnabled = !disabled && ['vocabulary', 'practice', 'principle'].includes(section)
-  const nextEnabled = !disabled && ['vocabulary', 'practice'].includes(section)
+  const playEnabled = !disabled && ['vocabulary', 'patterns', 'practice', 'principle'].includes(section)
+  const nextEnabled = !disabled && ['vocabulary', 'patterns', 'practice'].includes(section)
   const chatEnabled = !disabled && ['vocabulary', 'practice'].includes(section)
 
   const buttons = [

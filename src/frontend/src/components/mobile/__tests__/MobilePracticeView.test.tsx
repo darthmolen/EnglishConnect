@@ -30,7 +30,6 @@ describe('MobilePracticeView', () => {
     },
   ]
 
-  const mockOnPlayPattern = vi.fn()
   const mockOnSelectPattern = vi.fn()
   const mockOnStartPractice = vi.fn()
 
@@ -43,7 +42,6 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={0}
-        onPlayPattern={mockOnPlayPattern}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
@@ -58,30 +56,30 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={1}
-        onPlayPattern={mockOnPlayPattern}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
     )
 
-    const patternCard = screen.getByText('Where are you from?').closest('button')
+    // The card is a div with role="button"
+    const patternCard = screen.getByText('Where are you from?').closest('[role="button"]')
     expect(patternCard).toHaveClass('ring-2')
   })
 
-  it('calls onPlayPattern when play button is clicked', () => {
+  it('calls onStartPractice when practice button is clicked', () => {
     render(
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={0}
-        onPlayPattern={mockOnPlayPattern}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
     )
 
-    const playButtons = screen.getAllByRole('button', { name: /play/i })
-    fireEvent.click(playButtons[0])
-    expect(mockOnPlayPattern).toHaveBeenCalledWith(0)
+    // Find the first practice button by its text
+    const practiceButton = screen.getAllByText('Practice')[0]
+    fireEvent.click(practiceButton)
+    expect(mockOnStartPractice).toHaveBeenCalledWith(1) // pattern_number 1
   })
 
   it('shows empty state when no patterns', () => {
@@ -89,12 +87,27 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={[]}
         currentIndex={0}
-        onPlayPattern={mockOnPlayPattern}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
     )
 
     expect(screen.getByText(/no patterns/i)).toBeInTheDocument()
+  })
+
+  it('shows looping indicator when pattern is being played', () => {
+    render(
+      <MobilePracticeView
+        patterns={mockPatterns}
+        currentIndex={0}
+        loopingPattern={1}
+        onSelectPattern={mockOnSelectPattern}
+        onStartPractice={mockOnStartPractice}
+      />
+    )
+
+    // The looping pattern card should have animate-pulse class
+    const firstPatternCard = screen.getByText('What is your name?').closest('[role="button"]')
+    expect(firstPatternCard).toHaveClass('animate-pulse')
   })
 })

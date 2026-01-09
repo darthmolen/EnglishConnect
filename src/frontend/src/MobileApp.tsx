@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
+import { useVocabAudio } from '@/hooks/useVocabAudio'
+import { useDemoAudio } from '@/hooks/useDemoAudio'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { MobileTabBar, type MobileTab } from '@/components/mobile/MobileTabBar'
 import { MobileActionBar, type ContentSection } from '@/components/mobile/MobileActionBar'
 import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
+import { MobilePatternsView } from '@/components/mobile/content/MobilePatternsView'
 import { MobilePracticeView } from '@/components/mobile/content/MobilePracticeView'
 import { MobileChatOverlay } from '@/components/mobile/MobileChatOverlay'
 import { LoginPage } from '@/pages/LoginPage'
@@ -19,6 +22,8 @@ export function MobileApp() {
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
   const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice } = useConversationStore()
+  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber)
+  const { playDemo, playingId, playPatternLoop, nextExample, isPatternPlaying, loopingPattern } = useDemoAudio(selectedLessonNumber)
   const {
     messages,
     isRecording,
@@ -29,15 +34,17 @@ export function MobileApp() {
     sendTextMessage,
   } = useConversation()
 
-  // Track current index for vocab/practice views
+  // Track current index for vocab/practice/patterns views
   const [vocabIndex, setVocabIndex] = useState(0)
   const [patternIndex, setPatternIndex] = useState(0)
+  const [patternsExampleId, setPatternsExampleId] = useState<string | null>(null)
   const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Reset indices when lesson changes
   useEffect(() => {
     setVocabIndex(0)
     setPatternIndex(0)
+    setPatternsExampleId(null)
   }, [selectedLessonNumber])
 
   useEffect(() => {
@@ -73,25 +80,80 @@ export function MobileApp() {
     setActiveTab('learn')
   }
 
+  // Helper: get flat list of example IDs for patterns section
+  const getExampleIds = () => {
+    const ids: string[] = []
+    for (const pattern of currentLesson?.patterns || []) {
+      if (pattern.examples) {
+        pattern.examples.forEach((ex, idx) => {
+          if (ex.q && ex.a) {
+            ids.push(`${pattern.pattern_number}-${idx + 1}`)
+          }
+        })
+      }
+    }
+    return ids
+  }
+
   // Action bar handlers
   const handlePlay = () => {
-    // TODO: Implement TTS playback based on section context
     if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
       const word = currentLesson.vocabulary[vocabIndex]
-      console.log('Play vocab:', word?.english)
-      // TODO: Call TTS API
+      if (word) {
+        playWord(word.english)
+      }
+    } else if (activeSection === 'patterns') {
+      // Play current example (or first if none selected)
+      if (patternsExampleId) {
+        const [pNum, eIdx] = patternsExampleId.split('-').map(Number)
+        playDemo(pNum, eIdx)
+      } else {
+        const ids = getExampleIds()
+        if (ids.length > 0) {
+          const [pNum, eIdx] = ids[0].split('-').map(Number)
+          setPatternsExampleId(ids[0])
+          playDemo(pNum, eIdx)
+        }
+      }
     } else if (activeSection === 'practice' && currentLesson?.patterns) {
       const pattern = currentLesson.patterns[patternIndex]
-      console.log('Play pattern:', pattern?.pattern_number)
-      // TODO: Call TTS API
+      if (pattern) {
+        // Play all examples for this pattern sequentially
+        playPatternLoop(pattern.pattern_number)
+      }
     }
   }
 
   const handleNext = () => {
     if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
-      setVocabIndex((i) => Math.min(i + 1, currentLesson.vocabulary.length - 1))
+      // Move to next word and play it
+      const nextIndex = Math.min(vocabIndex + 1, currentLesson.vocabulary.length - 1)
+      setVocabIndex(nextIndex)
+      const word = currentLesson.vocabulary[nextIndex]
+      if (word) {
+        playWord(word.english)
+      }
+    } else if (activeSection === 'patterns') {
+      // Move to next example and play it
+      const ids = getExampleIds()
+      const currentIdx = patternsExampleId ? ids.indexOf(patternsExampleId) : -1
+      const nextIdx = Math.min(currentIdx + 1, ids.length - 1)
+      if (ids[nextIdx]) {
+        const [pNum, eIdx] = ids[nextIdx].split('-').map(Number)
+        setPatternsExampleId(ids[nextIdx])
+        playDemo(pNum, eIdx)
+      }
+    } else if (activeSection === 'practice' && loopingPattern) {
+      // Skip to next example in the current loop
+      nextExample()
     } else if (activeSection === 'practice' && currentLesson?.patterns) {
-      setPatternIndex((i) => Math.min(i + 1, currentLesson.patterns.length - 1))
+      // Not looping, move to next pattern and start playing
+      const nextIndex = Math.min(patternIndex + 1, currentLesson.patterns.length - 1)
+      setPatternIndex(nextIndex)
+      const nextPattern = currentLesson.patterns[nextIndex]
+      if (nextPattern) {
+        playPatternLoop(nextPattern.pattern_number)
+      }
     }
   }
 
@@ -166,7 +228,7 @@ export function MobileApp() {
           <div className="flex flex-col h-full">
             {/* Section pills */}
             <div className="flex gap-2 p-3 overflow-x-auto border-b shrink-0">
-              {(['principle', 'goals', 'vocabulary', 'practice', 'evaluate'] as ContentSection[]).map((section) => (
+              {(['principle', 'goals', 'vocabulary', 'patterns', 'practice', 'evaluate'] as ContentSection[]).map((section) => (
                 <button
                   key={section}
                   type="button"
@@ -194,23 +256,34 @@ export function MobileApp() {
                     <MobileVocabularyView
                       vocabulary={currentLesson.vocabulary || []}
                       currentIndex={vocabIndex}
+                      playingWord={playingWord}
                       onPlayWord={(index) => {
                         setVocabIndex(index)
-                        // TODO: Play TTS
-                        console.log('Play word at index:', index)
+                        const word = currentLesson.vocabulary?.[index]
+                        if (word) {
+                          playWord(word.english)
+                        }
                       }}
                       onSelectWord={setVocabIndex}
+                    />
+                  )}
+                  {activeSection === 'patterns' && (
+                    <MobilePatternsView
+                      patterns={currentLesson.patterns || []}
+                      playingId={playingId}
+                      currentExampleId={patternsExampleId}
+                      onPlayExample={(patternNumber, exampleIndex) => {
+                        const id = `${patternNumber}-${exampleIndex}`
+                        setPatternsExampleId(id)
+                        playDemo(patternNumber, exampleIndex)
+                      }}
                     />
                   )}
                   {activeSection === 'practice' && (
                     <MobilePracticeView
                       patterns={currentLesson.patterns || []}
                       currentIndex={patternIndex}
-                      onPlayPattern={(index) => {
-                        setPatternIndex(index)
-                        // TODO: Play TTS
-                        console.log('Play pattern at index:', index)
-                      }}
+                      loopingPattern={loopingPattern}
                       onSelectPattern={setPatternIndex}
                       onStartPractice={(patternNumber) => {
                         startPatternPractice(patternNumber)

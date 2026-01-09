@@ -68,7 +68,7 @@ describe('MobileVocabularyView', () => {
     expect(mockOnPlayWord).toHaveBeenCalledWith(0)
   })
 
-  it('calls onSelectWord when card is tapped', () => {
+  it('calls onPlayWord when card is tapped (selects and plays)', () => {
     render(
       <MobileVocabularyView
         vocabulary={mockVocabulary}
@@ -80,7 +80,8 @@ describe('MobileVocabularyView', () => {
 
     const bookCard = screen.getByText('book').closest('button')
     fireEvent.click(bookCard!)
-    expect(mockOnSelectWord).toHaveBeenCalledWith(2)
+    // Card click now calls onPlayWord (which handles both select and play)
+    expect(mockOnPlayWord).toHaveBeenCalledWith(2)
   })
 
   it('shows empty state when no vocabulary', () => {
