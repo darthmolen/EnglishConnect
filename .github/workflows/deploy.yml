@@ -9,6 +9,8 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP: rg-englishconnect
+  KEY_VAULT_NAME: kv-aif-voz-preprod-001
+  KEY_VAULT_RESOURCE_GROUP: rg-aif-vozloop-preprod-001
   ACR_NAME: '' # Set after infra deployment
   CONTAINER_APP_NAME: '' # Set after infra deployment
 
@@ -61,6 +63,8 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     outputs:
       acr-name: ${{ steps.get-acr.outputs.acr_name }}
+      azure-ad-client-id: ${{ steps.get-secrets.outputs.azure_ad_client_id }}
+      azure-ad-tenant-id: ${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -71,6 +75,34 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Get secrets from Key Vault
+        id: get-secrets
+        run: |
+          # Fetch secrets from Key Vault for deployment
+          AZURE_AD_CLIENT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-client-id \
+            --query value -o tsv 2>/dev/null || echo "")
+          AZURE_AD_TENANT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-tenant-id \
+            --query value -o tsv 2>/dev/null || echo "")
+
+          # Use Key Vault values if available, otherwise fall back to GitHub secrets
+          if [ -n "$AZURE_AD_CLIENT_ID" ]; then
+            echo "azure_ad_client_id=$AZURE_AD_CLIENT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_CLIENT_ID"
+          else
+            echo "azure_ad_client_id=${{ secrets.AZURE_AD_CLIENT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -n "$AZURE_AD_TENANT_ID" ]; then
+            echo "azure_ad_tenant_id=$AZURE_AD_TENANT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_TENANT_ID"
+          else
+            echo "azure_ad_tenant_id=${{ secrets.AZURE_AD_TENANT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy Bicep infrastructure
         uses: azure/arm-deploy@v2
         with:
@@ -78,9 +110,48 @@ jobs:
           template: ./azure/infra/main.bicep
           parameters: >-
             ./azure/infra/parameters/dev.bicepparam
-            azureAdClientId=${{ secrets.AZURE_AD_CLIENT_ID }}
-            azureAdTenantId=${{ secrets.AZURE_AD_TENANT_ID }}
+            azureAdClientId=${{ steps.get-secrets.outputs.azure_ad_client_id }}
+            azureAdTenantId=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
+            keyVaultName=${{ env.KEY_VAULT_NAME }}
           failOnStdErr: false
+
+      - name: Grant managed identity Key Vault access
+        run: |
+          # Get the managed identity principal ID
+          PRINCIPAL_ID=$(az deployment group show \
+            -g ${{ env.AZURE_RESOURCE_GROUP }} \
+            -n container-app \
+            --query properties.outputs.managedIdentityPrincipalId.value -o tsv 2>/dev/null || \
+            az identity list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].principalId" -o tsv)
+
+          if [ -n "$PRINCIPAL_ID" ]; then
+            echo "Granting Key Vault Secrets User role to managed identity..."
+            # Get Key Vault resource ID
+            KV_ID=$(az keyvault show \
+              --name ${{ env.KEY_VAULT_NAME }} \
+              --resource-group ${{ env.KEY_VAULT_RESOURCE_GROUP }} \
+              --query id -o tsv)
+
+            # Check if role assignment already exists
+            EXISTING=$(az role assignment list \
+              --assignee $PRINCIPAL_ID \
+              --role "Key Vault Secrets User" \
+              --scope $KV_ID \
+              --query "[0].id" -o tsv 2>/dev/null || echo "")
+
+            if [ -z "$EXISTING" ]; then
+              az role assignment create \
+                --assignee-object-id $PRINCIPAL_ID \
+                --assignee-principal-type ServicePrincipal \
+                --role "Key Vault Secrets User" \
+                --scope $KV_ID
+              echo "Role assignment created"
+            else
+              echo "Role assignment already exists"
+            fi
+          else
+            echo "Warning: Could not find managed identity principal ID"
+          fi
 
       - name: Get ACR name from deployment
         id: get-acr
@@ -131,8 +202,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           no-cache: true
           build-args: |
-            VITE_AZURE_AD_CLIENT_ID=${{ secrets.AZURE_AD_CLIENT_ID }}
-            VITE_AZURE_AD_TENANT_ID=${{ secrets.AZURE_AD_TENANT_ID }}
+            VITE_AZURE_AD_CLIENT_ID=${{ needs.deploy-infra.outputs.azure-ad-client-id }}
+            VITE_AZURE_AD_TENANT_ID=${{ needs.deploy-infra.outputs.azure-ad-tenant-id }}
 
   deploy-app:
     needs: [deploy-infra, build-and-push]

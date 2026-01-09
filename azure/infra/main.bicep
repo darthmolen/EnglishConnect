@@ -21,8 +21,14 @@ param azureAdClientId string = ''
 @description('Azure AD Tenant ID for OAuth')
 param azureAdTenantId string = ''
 
+@description('Key Vault name for secrets (external, in different resource group)')
+param keyVaultName string = ''
+
 // Generate unique token for resource names
 var resourceToken = toLower(uniqueString(resourceGroup().id, environmentName))
+
+// Key Vault URI (constructed if keyVaultName is provided)
+var keyVaultUri = keyVaultName != '' ? 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/' : ''
 
 var tags = {
   'azd-env-name': environmentName
@@ -125,6 +131,7 @@ module containerApp 'modules/container-app.bicep' = {
     azureOpenAIRealtimeDeployment: 'gpt-4o-mini-realtime'
     azureAdClientId: azureAdClientId
     azureAdTenantId: azureAdTenantId
+    keyVaultUri: keyVaultUri
   }
 }
 
@@ -133,3 +140,4 @@ output containerAppUrl string = containerApp.outputs.fqdn
 output containerRegistryLoginServer string = containerRegistry.outputs.loginServer
 output openaiEndpoint string = openai.outputs.endpoint
 output managedIdentityClientId string = managedIdentity.properties.clientId
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
