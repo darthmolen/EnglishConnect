@@ -1,70 +1,301 @@
 // src/frontend/src/stores/authStore.ts
-import { create } from "zustand";
-import type { AccountInfo } from "@azure/msal-browser";
-import { msalInstance } from "../auth/AuthProvider";
-import { loginRequest } from "../auth/msalConfig";
+/**
+ * Unified auth store supporting both local JWT and Azure AD authentication.
+ */
+import { create } from 'zustand'
+import type { AccountInfo } from '@azure/msal-browser'
+import {
+  getAccessToken as getStoredAccessToken,
+  getRefreshToken,
+  getStoredUser,
+  storeTokens,
+  storeUser,
+  clearAuth,
+  isAccessTokenExpired,
+  type LocalUser,
+} from '@/auth/localAuth'
+import {
+  fetchAuthConfig,
+  authLogin,
+  authLogout,
+  authRefreshToken,
+  fetchCurrentUser,
+  type AuthConfig,
+  type LoginRequest,
+} from '@/services/api'
+
+// Auth provider type
+type AuthProvider = 'local' | 'azure_ad' | null
 
 interface AuthState {
-  account: AccountInfo | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-  getAccessToken: () => Promise<string | null>;
-  checkAuth: () => void;
+  // Common state
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
+  authConfig: AuthConfig | null
+
+  // Provider-specific state
+  authProvider: AuthProvider
+  localUser: LocalUser | null
+  msalAccount: AccountInfo | null
+
+  // Actions
+  initialize: () => Promise<void>
+  loginLocal: (credentials: LoginRequest) => Promise<void>
+  loginAzureAd: () => Promise<void>
+  logout: () => Promise<void>
+  getAccessToken: () => Promise<string | null>
+  checkAuth: () => void
+  setError: (error: string | null) => void
+
+  // For checking if Azure AD is available
+  isAzureAdEnabled: () => boolean
+  isLocalAuthEnabled: () => boolean
+}
+
+// MSAL instance (lazy loaded to avoid initialization issues)
+let msalInstance: any = null
+let loginRequest: any = null
+
+async function getMsalInstance() {
+  if (!msalInstance) {
+    const { msalInstance: instance } = await import('@/auth/AuthProvider')
+    const { loginRequest: req } = await import('@/auth/msalConfig')
+    msalInstance = instance
+    loginRequest = req
+  }
+  return { msalInstance, loginRequest }
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-  account: null,
   isAuthenticated: false,
   isLoading: true,
   error: null,
+  authConfig: null,
+  authProvider: null,
+  localUser: null,
+  msalAccount: null,
 
-  checkAuth: () => {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-      msalInstance.setActiveAccount(accounts[0]);
-      set({ account: accounts[0], isAuthenticated: true, isLoading: false });
-    } else {
-      set({ account: null, isAuthenticated: false, isLoading: false });
+  initialize: async () => {
+    set({ isLoading: true, error: null })
+
+    try {
+      // Fetch auth config from backend
+      const config = await fetchAuthConfig()
+      set({ authConfig: config })
+
+      // Check for existing local auth session
+      if (config.auth_mode === 'local' || config.auth_mode === 'both') {
+        const storedUser = getStoredUser()
+        const hasToken = getStoredAccessToken()
+
+        if (storedUser && hasToken) {
+          // Try to refresh if expired
+          if (isAccessTokenExpired()) {
+            const refreshTokenStr = getRefreshToken()
+            if (refreshTokenStr) {
+              try {
+                const tokens = await authRefreshToken(refreshTokenStr)
+                storeTokens(tokens)
+                const user = await fetchCurrentUser(tokens.access_token)
+                storeUser(user)
+                set({
+                  isAuthenticated: true,
+                  authProvider: 'local',
+                  localUser: user,
+                  isLoading: false,
+                })
+                return
+              } catch {
+                // Refresh failed, clear auth
+                clearAuth()
+              }
+            }
+          } else {
+            // Token still valid
+            set({
+              isAuthenticated: true,
+              authProvider: 'local',
+              localUser: storedUser,
+              isLoading: false,
+            })
+            return
+          }
+        }
+      }
+
+      // Check for existing Azure AD session
+      if (config.auth_mode === 'azure_ad' || config.auth_mode === 'both') {
+        try {
+          const { msalInstance: msal } = await getMsalInstance()
+          const accounts = msal.getAllAccounts()
+          if (accounts.length > 0) {
+            msal.setActiveAccount(accounts[0])
+            set({
+              isAuthenticated: true,
+              authProvider: 'azure_ad',
+              msalAccount: accounts[0],
+              isLoading: false,
+            })
+            return
+          }
+        } catch {
+          // MSAL not available or failed
+        }
+      }
+
+      // No existing session
+      set({ isAuthenticated: false, isLoading: false })
+    } catch (error) {
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      })
     }
   },
 
-  login: async () => {
-    set({ isLoading: true, error: null });
+  loginLocal: async (credentials: LoginRequest) => {
+    set({ isLoading: true, error: null })
+
     try {
-      await msalInstance.loginRedirect(loginRequest);
+      const tokens = await authLogin(credentials)
+      storeTokens(tokens)
+
+      const user = await fetchCurrentUser(tokens.access_token)
+      storeUser(user)
+
+      set({
+        isAuthenticated: true,
+        authProvider: 'local',
+        localUser: user,
+        isLoading: false,
+      })
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      })
+      throw error
+    }
+  },
+
+  loginAzureAd: async () => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { msalInstance: msal, loginRequest: req } = await getMsalInstance()
+      await msal.loginRedirect(req)
+    } catch (error) {
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      })
     }
   },
 
   logout: async () => {
-    set({ isLoading: true });
+    const { authProvider } = get()
+    set({ isLoading: true })
+
     try {
-      await msalInstance.logoutRedirect();
+      if (authProvider === 'local') {
+        // Revoke refresh token on server
+        const accessToken = getStoredAccessToken()
+        const refreshToken = getRefreshToken()
+        if (accessToken && refreshToken) {
+          await authLogout(accessToken, refreshToken)
+        }
+        clearAuth()
+      } else if (authProvider === 'azure_ad') {
+        const { msalInstance: msal } = await getMsalInstance()
+        await msal.logoutRedirect()
+      }
+
+      set({
+        isAuthenticated: false,
+        authProvider: null,
+        localUser: null,
+        msalAccount: null,
+        isLoading: false,
+      })
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      })
     }
   },
 
   getAccessToken: async () => {
-    const account = msalInstance.getActiveAccount();
-    if (!account) return null;
+    const { authProvider } = get()
 
-    try {
-      const response = await msalInstance.acquireTokenSilent({
-        ...loginRequest,
-        account,
-      });
-      // Use ID token instead of access token - ID tokens are designed for app validation
-      // Access tokens for Microsoft Graph are opaque and cannot be validated by third parties
-      return response.idToken;
-    } catch (error) {
-      // Token expired, need to re-authenticate
-      await get().login();
-      return null;
+    if (authProvider === 'local') {
+      // Check if token needs refresh
+      if (isAccessTokenExpired()) {
+        const refreshTokenStr = getRefreshToken()
+        if (refreshTokenStr) {
+          try {
+            const tokens = await authRefreshToken(refreshTokenStr)
+            storeTokens(tokens)
+            return tokens.access_token
+          } catch {
+            // Refresh failed, user needs to re-login
+            set({
+              isAuthenticated: false,
+              authProvider: null,
+              localUser: null,
+            })
+            clearAuth()
+            return null
+          }
+        }
+        return null
+      }
+      return getStoredAccessToken()
+    } else if (authProvider === 'azure_ad') {
+      try {
+        const { msalInstance: msal, loginRequest: req } = await getMsalInstance()
+        const account = msal.getActiveAccount()
+        if (!account) return null
+
+        const response = await msal.acquireTokenSilent({
+          ...req,
+          account,
+        })
+        // Use ID token for Azure AD (access tokens for Graph can't be verified)
+        return response.idToken
+      } catch {
+        // Token expired, need to re-authenticate
+        await get().loginAzureAd()
+        return null
+      }
+    }
+
+    return null
+  },
+
+  checkAuth: () => {
+    // Legacy method for compatibility - just triggers initialize if not done
+    const { authConfig } = get()
+    if (!authConfig) {
+      get().initialize()
     }
   },
-}));
+
+  setError: (error: string | null) => {
+    set({ error })
+  },
+
+  isAzureAdEnabled: () => {
+    const { authConfig } = get()
+    return authConfig?.auth_mode === 'azure_ad' || authConfig?.auth_mode === 'both'
+  },
+
+  isLocalAuthEnabled: () => {
+    const { authConfig } = get()
+    return authConfig?.auth_mode === 'local' || authConfig?.auth_mode === 'both'
+  },
+}))
+
+// Re-export for backwards compatibility
+export type { LocalUser } from '@/auth/localAuth'

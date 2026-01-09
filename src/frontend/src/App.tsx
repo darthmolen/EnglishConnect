@@ -15,11 +15,14 @@ import { UserProfile } from '@/components/UserProfile'
 import { AuthProvider } from '@/auth/AuthProvider'
 import { useAuthStore } from '@/stores/authStore'
 import { useConversationStore } from '@/stores/conversationStore'
+import { LoginPage } from '@/pages/LoginPage'
+import { AdminPage } from '@/pages/AdminPage'
 import { cn } from '@/lib/utils'
 
 function AppContent() {
   const { t, i18n } = useTranslation()
-  const { isAuthenticated, isLoading: authLoading, checkAuth } = useAuthStore()
+  const { isAuthenticated, isLoading: authLoading, initialize, localUser } = useAuthStore()
+  const [currentPath, setCurrentPath] = useState(window.location.hash || '#/')
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
   const {
@@ -60,8 +63,17 @@ function AppContent() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+    initialize()
+  }, [initialize])
+
+  // Simple hash-based routing
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPath(window.location.hash || '#/')
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   const handleStartConversation = () => {
     if (selectedLessonNumber && !isLoading) {
@@ -102,6 +114,25 @@ function AppContent() {
         <div className="text-lg">{t('app.loading')}</div>
       </div>
     )
+  }
+
+  // Handle login page route
+  if (currentPath === '#/login') {
+    return <LoginPage />
+  }
+
+  // Handle admin page route (check if user has admin role)
+  if (currentPath === '#/admin') {
+    const isAdmin = localUser?.roles?.includes('admin')
+    if (!isAuthenticated) {
+      window.location.hash = '#/login'
+      return null
+    }
+    if (!isAdmin) {
+      window.location.hash = '#/'
+      return null
+    }
+    return <AdminPage />
   }
 
   // Allow browsing for everyone - only agent interactions require auth
