@@ -10,18 +10,23 @@ vi.mock('react-i18next', () => ({
 }))
 
 describe('MobilePracticeView', () => {
+  // Using actual QAPattern type from types/index.ts
   const mockPatterns = [
     {
-      id: 1,
       pattern_number: 1,
       question_template: 'What is your name?',
+      question_translation: '¿Cómo te llamas?',
       answer_template: 'My name is _____.',
+      answer_translation: 'Me llamo _____.',
+      examples: null,
     },
     {
-      id: 2,
       pattern_number: 2,
       question_template: 'Where are you from?',
+      question_translation: '¿De dónde eres?',
       answer_template: 'I am from _____.',
+      answer_translation: 'Soy de _____.',
+      examples: null,
     },
   ]
 

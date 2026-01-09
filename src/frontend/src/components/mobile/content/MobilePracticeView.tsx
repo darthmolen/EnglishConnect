@@ -1,16 +1,10 @@
 import { Play, MessageCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-
-interface Pattern {
-  id: number
-  pattern_number: number
-  question_template: string
-  answer_template: string
-}
+import type { QAPattern } from '@/types'
 
 interface MobilePracticeViewProps {
-  patterns: Pattern[]
+  patterns: QAPattern[]
   currentIndex: number
   onPlayPattern: (index: number) => void
   onSelectPattern: (index: number) => void
@@ -38,7 +32,7 @@ export function MobilePracticeView({
     <div className="space-y-4 p-1">
       {patterns.map((pattern, index) => (
         <button
-          key={pattern.id}
+          key={pattern.pattern_number}
           type="button"
           onClick={() => onSelectPattern(index)}
           className={cn(

@@ -5,6 +5,8 @@ import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { MobileTabBar, type MobileTab } from '@/components/mobile/MobileTabBar'
 import { MobileActionBar, type ContentSection } from '@/components/mobile/MobileActionBar'
+import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
+import { MobilePracticeView } from '@/components/mobile/content/MobilePracticeView'
 import { LoginPage } from '@/pages/LoginPage'
 
 export function MobileApp() {
@@ -15,6 +17,16 @@ export function MobileApp() {
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
   const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage } = useConversationStore()
+
+  // Track current index for vocab/practice views
+  const [vocabIndex, setVocabIndex] = useState(0)
+  const [patternIndex, setPatternIndex] = useState(0)
+
+  // Reset indices when lesson changes
+  useEffect(() => {
+    setVocabIndex(0)
+    setPatternIndex(0)
+  }, [selectedLessonNumber])
 
   useEffect(() => {
     initialize()
@@ -51,13 +63,24 @@ export function MobileApp() {
 
   // Action bar handlers
   const handlePlay = () => {
-    // TODO: Implement play based on section context
-    console.log('Play:', activeSection)
+    // TODO: Implement TTS playback based on section context
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
+      const word = currentLesson.vocabulary[vocabIndex]
+      console.log('Play vocab:', word?.english)
+      // TODO: Call TTS API
+    } else if (activeSection === 'practice' && currentLesson?.patterns) {
+      const pattern = currentLesson.patterns[patternIndex]
+      console.log('Play pattern:', pattern?.pattern_number)
+      // TODO: Call TTS API
+    }
   }
 
   const handleNext = () => {
-    // TODO: Implement next based on section context
-    console.log('Next:', activeSection)
+    if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
+      setVocabIndex((i) => Math.min(i + 1, currentLesson.vocabulary.length - 1))
+    } else if (activeSection === 'practice' && currentLesson?.patterns) {
+      setPatternIndex((i) => Math.min(i + 1, currentLesson.patterns.length - 1))
+    }
   }
 
   const handleChat = () => {
@@ -128,17 +151,59 @@ export function MobileApp() {
               ))}
             </div>
 
-            {/* Content placeholder */}
+            {/* Content area */}
             <div className="flex-1 p-4 overflow-auto">
               {!currentLesson ? (
                 <div className="text-center text-muted-foreground py-8">
                   {t('app.selectLessonPrompt')}
                 </div>
               ) : (
-                <div className="text-center text-muted-foreground py-8">
-                  {/* TODO: Mobile content views will go here */}
-                  <p>{activeSection} content for Lesson {currentLesson.lesson_number}</p>
-                </div>
+                <>
+                  {activeSection === 'vocabulary' && (
+                    <MobileVocabularyView
+                      vocabulary={currentLesson.vocabulary || []}
+                      currentIndex={vocabIndex}
+                      onPlayWord={(index) => {
+                        setVocabIndex(index)
+                        // TODO: Play TTS
+                        console.log('Play word at index:', index)
+                      }}
+                      onSelectWord={setVocabIndex}
+                    />
+                  )}
+                  {activeSection === 'practice' && (
+                    <MobilePracticeView
+                      patterns={currentLesson.patterns || []}
+                      currentIndex={patternIndex}
+                      onPlayPattern={(index) => {
+                        setPatternIndex(index)
+                        // TODO: Play TTS
+                        console.log('Play pattern at index:', index)
+                      }}
+                      onSelectPattern={setPatternIndex}
+                      onStartPractice={(patternNumber) => {
+                        // TODO: Open chat overlay in practice mode
+                        console.log('Start practice for pattern:', patternNumber)
+                      }}
+                    />
+                  )}
+                  {activeSection === 'principle' && (
+                    <div className="prose prose-sm max-w-none">
+                      <h3>{currentLesson.learning_principle_title || t('sections.principle')}</h3>
+                      <p>{currentLesson.learning_principle_content || t('mobile.principle.noContent', 'No principle content available')}</p>
+                    </div>
+                  )}
+                  {activeSection === 'goals' && (
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>{t('mobile.goals.comingSoon', 'Goals tracking coming soon')}</p>
+                    </div>
+                  )}
+                  {activeSection === 'evaluate' && (
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>{t('mobile.evaluate.comingSoon', 'Self-evaluation coming soon')}</p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

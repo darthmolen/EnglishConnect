@@ -1,13 +1,7 @@
 import { Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-
-interface VocabularyItem {
-  id: number
-  word: string
-  translation: string
-  category?: string
-}
+import type { VocabularyItem } from '@/types'
 
 interface MobileVocabularyViewProps {
   vocabulary: VocabularyItem[]
@@ -36,7 +30,7 @@ export function MobileVocabularyView({
     <div className="space-y-3 p-1">
       {vocabulary.map((item, index) => (
         <button
-          key={item.id}
+          key={`${item.english}-${index}`}
           type="button"
           onClick={() => onSelectWord(index)}
           className={cn(
@@ -50,15 +44,15 @@ export function MobileVocabularyView({
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-lg font-medium">{item.word}</div>
-              <div className="text-sm text-muted-foreground">{item.translation}</div>
+              <div className="text-lg font-medium">{item.english}</div>
+              <div className="text-sm text-muted-foreground">{item.spanish}</div>
               {item.category && (
                 <div className="text-xs text-muted-foreground/70 mt-1">{item.category}</div>
               )}
             </div>
             <button
               type="button"
-              aria-label={`Play ${item.word}`}
+              aria-label={`Play ${item.english}`}
               onClick={(e) => {
                 e.stopPropagation()
                 onPlayWord(index)

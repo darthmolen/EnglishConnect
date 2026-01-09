@@ -10,10 +10,11 @@ vi.mock('react-i18next', () => ({
 }))
 
 describe('MobileVocabularyView', () => {
+  // Using actual VocabularyItem type from types/index.ts
   const mockVocabulary = [
-    { id: 1, word: 'hello', translation: 'hola', category: 'greetings' },
-    { id: 2, word: 'goodbye', translation: 'adiós', category: 'greetings' },
-    { id: 3, word: 'book', translation: 'libro', category: 'objects' },
+    { english: 'hello', spanish: 'hola', category: 'greetings' },
+    { english: 'goodbye', spanish: 'adiós', category: 'greetings' },
+    { english: 'book', spanish: 'libro', category: 'objects' },
   ]
 
   const mockOnPlayWord = vi.fn()
