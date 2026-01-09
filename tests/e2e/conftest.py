@@ -12,6 +12,8 @@ Usage:
 import socket
 
 import pytest
+import pytest_asyncio
+from playwright.async_api import async_playwright
 
 # Default URLs
 FRONTEND_URL = "http://localhost:5173"  # Vite default
@@ -69,3 +71,21 @@ def frontend_url():
 def backend_url():
     """Provide backend URL."""
     return BACKEND_URL
+
+
+@pytest_asyncio.fixture(scope="function")
+async def browser():
+    """Provide a Playwright browser instance."""
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        yield browser
+        await browser.close()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def page(browser):
+    """Provide a fresh browser page for each test."""
+    context = await browser.new_context()
+    page = await context.new_page()
+    yield page
+    await context.close()
