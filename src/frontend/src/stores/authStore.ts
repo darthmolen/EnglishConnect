@@ -27,6 +27,13 @@ import {
 // Auth provider type
 type AuthProvider = 'local' | 'azure_ad' | null
 
+// Unified account type for backwards compatibility
+interface UnifiedAccount {
+  name: string | null
+  username: string
+  email?: string
+}
+
 interface AuthState {
   // Common state
   isAuthenticated: boolean
@@ -39,8 +46,12 @@ interface AuthState {
   localUser: LocalUser | null
   msalAccount: AccountInfo | null
 
+  // Backwards-compatible computed properties
+  account: UnifiedAccount | null
+
   // Actions
   initialize: () => Promise<void>
+  login: () => void  // Navigate to login page
   loginLocal: (credentials: LoginRequest) => Promise<void>
   loginAzureAd: () => Promise<void>
   logout: () => Promise<void>
@@ -75,6 +86,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   authProvider: null,
   localUser: null,
   msalAccount: null,
+
+  // Backwards-compatible computed account property
+  get account(): UnifiedAccount | null {
+    const { localUser, msalAccount, authProvider } = get()
+    if (authProvider === 'local' && localUser) {
+      return {
+        name: localUser.firstName
+          ? `${localUser.firstName}${localUser.lastName ? ' ' + localUser.lastName : ''}`
+          : null,
+        username: localUser.email,
+        email: localUser.email,
+      }
+    }
+    if (authProvider === 'azure_ad' && msalAccount) {
+      return {
+        name: msalAccount.name ?? null,
+        username: msalAccount.username,
+        email: msalAccount.username,
+      }
+    }
+    return null
+  },
+
+  // Navigate to login page (for backwards compatibility)
+  login: () => {
+    window.location.href = '/login'
+  },
 
   initialize: async () => {
     set({ isLoading: true, error: null })
