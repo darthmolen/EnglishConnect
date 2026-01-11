@@ -256,6 +256,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Name parts of my body.
+• _es: Nombrar partes de mi cuerpo.
 
 ![](../_page_179_Picture_28.jpeg)
 
@@ -264,6 +265,7 @@ I can:
 ![](../_page_179_Picture_30.jpeg)
 
 • Say what part of my body hurts.
+• _es: Decir qué parte de mi cuerpo me duele.
 
 ![](../_page_179_Picture_32.jpeg)
 
@@ -272,6 +274,7 @@ I can:
 ![](../_page_179_Picture_34.jpeg)
 
 • Say why my body hurts.
+• _es: Decir por qué me duele el cuerpo.
 
 ![](../_page_179_Picture_36.jpeg)
 

@@ -286,6 +286,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Name foods for breakfast, lunch, and dinner.
+• _es: Nombrar comidas para el desayuno, almuerzo y cena.
 
 ![](../_page_130_Picture_7.jpeg)
 
@@ -294,6 +295,7 @@ I can:
 ![](../_page_130_Picture_9.jpeg)
 
 • Talk about why I like or dislike certain foods.
+• _es: Hablar sobre por qué me gustan o no me gustan ciertas comidas.
 
 ![](../_page_130_Picture_11.jpeg)
 
@@ -302,6 +304,7 @@ I can:
 ![](../_page_130_Picture_13.jpeg)
 
 • Ask why others like or dislike certain foods.
+• _es: Preguntar por qué a otros les gustan o no les gustan ciertas comidas.
 
 ![](../_page_130_Picture_15.jpeg)
 

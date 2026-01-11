@@ -179,6 +179,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say my birthday and anniversary.
+• _es: Decir mi cumpleaños y aniversario.
 
 ![](../_page_34_Picture_7.jpeg)
 
@@ -187,6 +188,7 @@ I can:
 ![](../_page_34_Picture_9.jpeg)
 
 • Ask for and say someone's birthday and anniversary.
+• _es: Preguntar y decir el cumpleaños y aniversario de alguien.
 
 ![](../_page_34_Picture_11.jpeg)
 

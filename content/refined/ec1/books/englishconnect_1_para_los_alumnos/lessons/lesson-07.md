@@ -239,6 +239,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe myself and my family.
+• _es: Describirme a mí mismo y a mi familia.
 
 ![](../_page_64_Picture_18.jpeg)
 
@@ -247,6 +248,7 @@ I can:
 ![](../_page_64_Picture_20.jpeg)
 
 • Ask about someone's family.
+• _es: Preguntar sobre la familia de alguien.
 
 ![](../_page_64_Picture_22.jpeg)
 
@@ -255,6 +257,7 @@ I can:
 ![](../_page_64_Picture_24.jpeg)
 
 • Describe someone's family.
+• _es: Describir la familia de alguien.
 
 ![](../_page_64_Picture_26.jpeg)
 

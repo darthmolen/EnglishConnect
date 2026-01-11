@@ -287,6 +287,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask and answer questions about how much something costs.
+• _es: Preguntar y responder sobre cuánto cuesta algo.
 
 ![](../_page_154_Picture_7.jpeg)
 
@@ -295,6 +296,7 @@ I can:
 ![](../_page_154_Picture_9.jpeg)
 
 • Say why I want to buy something.
+• _es: Decir por qué quiero comprar algo.
 
 ![](../_page_154_Picture_11.jpeg)
 
@@ -303,6 +305,7 @@ I can:
 ![](../_page_154_Picture_13.jpeg)
 
 • Say why I don't want to buy something.
+• _es: Decir por qué no quiero comprar algo.
 
 ![](../_page_154_Picture_15.jpeg)
 

@@ -122,6 +122,7 @@ class EvaluationCriterion(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     lesson_id: Mapped[int] = mapped_column(Integer, ForeignKey("lessons.id"))
     criterion: Mapped[str] = mapped_column(Text, nullable=False)
+    criterion_es: Mapped[str | None] = mapped_column(Text, nullable=True)  # Spanish translation
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
 
     # Relationships

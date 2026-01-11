@@ -243,6 +243,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about where I live.
+• _es: Hablar sobre dónde vivo.
 
 ![](../_page_159_Picture_21.jpeg)
 
@@ -251,6 +252,7 @@ I can:
 ![](../_page_159_Picture_23.jpeg)
 
 • Ask and talk about where others live.
+• _es: Preguntar y hablar sobre dónde viven otros.
 
 ![](../_page_159_Picture_25.jpeg)
 
@@ -259,6 +261,7 @@ I can:
 ![](../_page_159_Picture_27.jpeg)
 
 • Say where rooms are in a house or an apartment.
+• _es: Decir dónde están las habitaciones en una casa o apartamento.
 
 ![](../_page_159_Picture_29.jpeg)
 

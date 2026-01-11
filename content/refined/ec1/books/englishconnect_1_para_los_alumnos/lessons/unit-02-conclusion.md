@@ -15,6 +15,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Describe myself and my family.
+• _es: Describirme a mí mismo y a mi familia.
 
 ![](../_page_77_Picture_10.jpeg)
 
@@ -23,6 +24,7 @@ I can:
 ![](../_page_77_Picture_12.jpeg)
 
 • Identify common items.
+• _es: Identificar objetos comunes.
 
 ![](../_page_77_Picture_14.jpeg)
 
@@ -31,6 +33,7 @@ I can:
 ![](../_page_77_Picture_16.jpeg)
 
 • Talk about clothing and colors.
+• _es: Hablar sobre ropa y colores.
 
 ![](../_page_77_Picture_18.jpeg)
 
@@ -39,6 +42,7 @@ I can:
 ![](../_page_77_Picture_20.jpeg)
 
 • Express likes and dislikes.
+• _es: Expresar gustos y disgustos.
 
 ![](../_page_77_Picture_22.jpeg)
 

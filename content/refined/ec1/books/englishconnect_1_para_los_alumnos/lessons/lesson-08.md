@@ -232,6 +232,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say what something is.
+• _es: Decir qué es algo.
 
 ![](../_page_69_Picture_22.jpeg)
 
@@ -240,6 +241,7 @@ I can:
 ![](../_page_69_Picture_24.jpeg)
 
 • Use *this*, *that*, *these*, and *those*.
+• _es: Usar *this*, *that*, *these* y *those*.
 
 ![](../_page_69_Picture_26.jpeg)
 
@@ -248,6 +250,7 @@ I can:
 ![](../_page_69_Picture_28.jpeg)
 
 • Ask if something belongs to someone.
+• _es: Preguntar si algo le pertenece a alguien.
 
 ![](../_page_69_Picture_30.jpeg)
 

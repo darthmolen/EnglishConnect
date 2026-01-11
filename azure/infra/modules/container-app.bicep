@@ -7,8 +7,6 @@ param containerAppsEnvironmentId string
 param containerRegistryName string
 param managedIdentityId string
 param managedIdentityClientId string
-param postgresConnectionString string
-param redisConnectionString string
 param azureOpenAIEndpoint string
 param azureOpenAIRealtimeDeployment string
 param azureAdClientId string = ''
@@ -18,9 +16,20 @@ param azureAdTenantId string = ''
 @description('Key Vault URI for secret references (e.g., https://kv-name.vault.azure.net/)')
 param keyVaultUri string = ''
 
+// Legacy direct secret values (used only when keyVaultUri is empty)
+@secure()
+param postgresConnectionString string = ''
+@secure()
+param redisConnectionString string = ''
+
+// Determine if using Key Vault for secrets
+var useKeyVault = keyVaultUri != ''
+
 // Build Key Vault secret URLs
-var jwtSecretUrl = keyVaultUri != '' ? '${keyVaultUri}secrets/jwt-secret-key' : ''
-var initialAdminEmailUrl = keyVaultUri != '' ? '${keyVaultUri}secrets/initial-admin-email' : ''
+var databaseUrlKvRef = useKeyVault ? '${keyVaultUri}secrets/database-url' : ''
+var redisUrlKvRef = useKeyVault ? '${keyVaultUri}secrets/redis-url' : ''
+var jwtSecretUrl = useKeyVault ? '${keyVaultUri}secrets/jwt-secret-key' : ''
+var initialAdminEmailUrl = useKeyVault ? '${keyVaultUri}secrets/initial-admin-email' : ''
 
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: name
@@ -54,16 +63,18 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           identity: managedIdentityId
         }
       ]
-      secrets: concat([
+      // When using Key Vault, all secrets come from KV. Otherwise, use direct values.
+      secrets: useKeyVault ? [
         {
           name: 'database-url'
-          value: postgresConnectionString
+          keyVaultUrl: databaseUrlKvRef
+          identity: managedIdentityId
         }
         {
           name: 'redis-url'
-          value: 'redis://${redisConnectionString}'
+          keyVaultUrl: redisUrlKvRef
+          identity: managedIdentityId
         }
-      ], jwtSecretUrl != '' ? [
         {
           name: 'jwt-secret-key'
           keyVaultUrl: jwtSecretUrl
@@ -74,7 +85,16 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           keyVaultUrl: initialAdminEmailUrl
           identity: managedIdentityId
         }
-      ] : [])
+      ] : [
+        {
+          name: 'database-url'
+          value: postgresConnectionString
+        }
+        {
+          name: 'redis-url'
+          value: 'redis://${redisConnectionString}'
+        }
+      ]
     }
     template: {
       containers: [
@@ -126,7 +146,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               name: 'AZURE_AD_TENANT_ID'
               value: azureAdTenantId
             }
-          ], jwtSecretUrl != '' ? [
+          ], useKeyVault ? [
             {
               name: 'JWT_SECRET_KEY'
               secretRef: 'jwt-secret-key'

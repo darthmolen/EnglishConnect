@@ -469,18 +469,21 @@ async def get_agent_response(
     # === LOGGING: Request details ===
     logger.info("=" * 60)
     logger.info("CONVERSATION REQUEST")
-    logger.info(f"  User message: {user_message}")
-    logger.info(f"  History: {len(history)} messages")
-    for i, h in enumerate(history):
-        logger.info(f"    [{i}] {h['role']}: {h['content'][:80]}{'...' if len(h['content']) > 80 else ''}")
-    logger.info(f"  System prompt: {len(system_prompt)} chars")
     logger.info("=" * 60)
-    logger.info("FULL SYSTEM PROMPT:")
+    logger.info(f"USER INPUT: {user_message}")
+    logger.info("=" * 60)
+    logger.info(f"CONVERSATION HISTORY ({len(history)} messages):")
+    for i, h in enumerate(history):
+        # Show full history messages for debugging
+        role_label = "USER" if h['role'] == 'user' else "AGENT"
+        logger.info(f"  [{i}] {role_label}: {h['content']}")
+    if not history:
+        logger.info("  (empty history)")
+    logger.info("=" * 60)
+    logger.info(f"SYSTEM PROMPT ({len(system_prompt)} chars):")
     logger.info("=" * 60)
     logger.info(system_prompt)
     logger.info("=" * 60)
-    logger.info("END SYSTEM PROMPT")
-    logger.info("-" * 60)
 
     # Tool calling loop
     max_iterations = 5  # Prevent infinite loops
@@ -585,9 +588,12 @@ async def get_agent_response(
             # No tool calls - we have the final response
             logger.info("=" * 60)
             logger.info("CONVERSATION COMPLETE")
-            logger.info(f"  Final text: {message.content[:150] if message.content else 'None'}{'...' if message.content and len(message.content) > 150 else ''}")
-            logger.info(f"  Tool calls made: {len(tool_calls_made)}")
-            logger.info(f"  Tool results: {len(tool_results)}")
+            logger.info("=" * 60)
+            logger.info(f"AGENT RESPONSE: {message.content or '(empty)'}")
+            logger.info("=" * 60)
+            logger.info(f"Summary: {len(tool_calls_made)} tool calls, {len(tool_results)} results")
+            for i, tc in enumerate(tool_calls_made):
+                logger.info(f"  Tool [{i}]: {tc['name']} args={tc['arguments']}")
             logger.info("=" * 60)
 
             return {

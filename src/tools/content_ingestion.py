@@ -381,8 +381,11 @@ class LessonParser:
             return scores.index(max_score)
         return 0
 
-    def _extract_criteria(self) -> list[str]:
-        """Extract evaluation criteria ('I can:' statements)."""
+    def _extract_criteria(self) -> list[dict]:
+        """Extract evaluation criteria ('I can:' statements) with Spanish translations.
+
+        Returns list of dicts with 'criterion' (English) and 'criterion_es' (Spanish).
+        """
         criteria = []
 
         # Find the Evaluate Your Progress section
@@ -394,12 +397,31 @@ class LessonParser:
 
         if eval_section:
             section_text = eval_section.group(1)
-            # Find bullet points starting with "Say", "Ask", etc.
-            for match in re.finditer(r"[•\*]\s*(.+?)(?:\n|$)", section_text):
-                criterion = match.group(1).strip()
-                # Skip image refs, short entries, and asterisk-only entries from headers
-                if criterion and not criterion.startswith("!") and len(criterion) > 2:
-                    criteria.append(criterion)
+            # Find bullet points, collecting English and optional Spanish translation
+            # Format: • English criterion
+            #         • _es: Spanish translation (optional)
+            lines = section_text.split('\n')
+            current_criterion = None
+
+            for line in lines:
+                line = line.strip()
+                # Check for Spanish translation line
+                if line.startswith('• _es:') or line.startswith('* _es:'):
+                    if current_criterion:
+                        current_criterion['criterion_es'] = line[6:].strip()
+                # Check for English criterion line
+                elif line.startswith('•') or line.startswith('*'):
+                    text = line[1:].strip()
+                    # Skip image refs, short entries, and asterisk-only entries
+                    if text and not text.startswith('!') and not text.startswith('_es:') and len(text) > 2:
+                        # Save previous criterion if exists
+                        if current_criterion:
+                            criteria.append(current_criterion)
+                        current_criterion = {'criterion': text, 'criterion_es': None}
+
+            # Don't forget the last criterion
+            if current_criterion:
+                criteria.append(current_criterion)
 
         return criteria
 
@@ -578,10 +600,11 @@ async def ingest_course(
                         example_count += 1
 
         # Add evaluation criteria
-        for i, criterion in enumerate(lesson_data["evaluation_criteria"]):
+        for i, crit_data in enumerate(lesson_data["evaluation_criteria"]):
             eval_criterion = EvaluationCriterion(
                 lesson_id=lesson.id,
-                criterion=criterion,
+                criterion=crit_data["criterion"],
+                criterion_es=crit_data.get("criterion_es"),
                 sort_order=i,
             )
             session.add(eval_criterion)

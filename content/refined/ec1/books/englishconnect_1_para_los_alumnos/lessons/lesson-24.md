@@ -335,6 +335,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe how I feel when sick.
+• _es: Describir cómo me siento cuando estoy enfermo.
 
 ![](../_page_187_Picture_19.jpeg)
 
@@ -343,6 +344,7 @@ I can:
 ![](../_page_187_Picture_21.jpeg)
 
 • Describe how others feel when sick.
+• _es: Describir cómo se sienten otros cuando están enfermos.
 
 ![](../_page_187_Picture_23.jpeg)
 

@@ -275,6 +275,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say what I do in my daily routine.
+• _es: Decir qué hago en mi rutina diaria.
 
 ![](../_page_87_Picture_20.jpeg)
 
@@ -283,6 +284,7 @@ I can:
 ![](../_page_87_Picture_22.jpeg)
 
 • Say what someone does in their routine.
+• _es: Decir qué hace alguien en su rutina.
 
 ![](../_page_87_Picture_24.jpeg)
 
@@ -291,6 +293,7 @@ I can:
 ![](../_page_87_Picture_26.jpeg)
 
 • Ask what someone does in their routine.
+• _es: Preguntar qué hace alguien en su rutina.
 
 ![](../_page_87_Picture_28.jpeg)
 

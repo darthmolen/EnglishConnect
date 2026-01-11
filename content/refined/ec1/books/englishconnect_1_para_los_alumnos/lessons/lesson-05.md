@@ -271,6 +271,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say why I like something.
+• _es: Decir por qué me gusta algo.
 
 ![](../_page_47_Picture_13.jpeg)
 
@@ -279,6 +280,7 @@ I can:
 ![](../_page_47_Picture_15.jpeg)
 
 • Say why I don't like something.
+• _es: Decir por qué no me gusta algo.
 
 ![](../_page_47_Picture_17.jpeg)
 

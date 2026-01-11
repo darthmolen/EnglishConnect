@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PersonalGoal, StudyRegistryStatus, StudyRegistryItem } from '@/types'
+import type { PersonalGoal, StudyRegistryStatus, StudyRegistryItem, EvaluationCriterion } from '@/types'
 
 const EMOJI_RATINGS = ['😢', '😕', '😐', '🙂', '😊', '🤩']
 
@@ -15,7 +15,7 @@ const STUDY_REGISTRY_ITEMS: StudyRegistryItem[] = [
 
 interface EvaluateViewProps {
   lessonNumber: number
-  criteria: string[]
+  criteria: EvaluationCriterion[]
   evaluationRatings: Record<number, number>
   personalGoals: PersonalGoal[]
   studyRegistry: Partial<Record<StudyRegistryItem, StudyRegistryStatus>>
@@ -70,9 +70,14 @@ export function EvaluateView({
           </p>
         ) : (
           <div className="space-y-3">
-            {criteria.map((criterion, index) => (
+            {criteria.map((item, index) => (
               <div key={index} className="space-y-2 p-3 rounded-lg bg-muted/30">
-                <p className="text-sm">{criterion}</p>
+                <div>
+                  <p className="text-sm">{item.criterion}</p>
+                  {item.criterion_es && (
+                    <p className="text-sm text-muted-foreground italic">({item.criterion_es})</p>
+                  )}
+                </div>
                 <div className="flex gap-1">
                   {EMOJI_RATINGS.map((emoji, rating) => (
                     <button

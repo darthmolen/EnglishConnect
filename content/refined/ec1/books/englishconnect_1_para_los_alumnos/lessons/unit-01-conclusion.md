@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Introduce myself and others.
+• _es: Presentarme a mí mismo y a otros.
 
 ![](../_page_48_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](../_page_48_Picture_11.jpeg)
 
 • Ask about personal information.
+• _es: Preguntar sobre información personal.
 
 ![](../_page_48_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](../_page_48_Picture_15.jpeg)
 
 • Describe my hobbies and interests.
+• _es: Describir mis pasatiempos e intereses.
 
 ![](../_page_48_Picture_17.jpeg)
 

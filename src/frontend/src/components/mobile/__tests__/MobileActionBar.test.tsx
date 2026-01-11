@@ -75,7 +75,7 @@ describe('MobileActionBar', () => {
     expect(mockOnChat).toHaveBeenCalledTimes(1)
   })
 
-  it('disables Next and Chat on Principle section', () => {
+  it('disables all buttons on Principle section', () => {
     render(
       <MobileActionBar
         section="principle"
@@ -85,10 +85,26 @@ describe('MobileActionBar', () => {
       />
     )
 
-    // Play enabled for TTS reading of principle
-    expect(screen.getByRole('button', { name: /play/i })).not.toBeDisabled()
-    // Next and Chat disabled
+    // Principle section is for reading content - no audio playback
+    expect(screen.getByRole('button', { name: /play/i })).toBeDisabled()
     expect(screen.getByRole('button', { name: /next/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /chat/i })).toBeDisabled()
+  })
+
+  it('disables chat button when chatDisabled is true', () => {
+    render(
+      <MobileActionBar
+        section="vocabulary"
+        onPlay={mockOnPlay}
+        onNext={mockOnNext}
+        onChat={mockOnChat}
+        chatDisabled={true}
+      />
+    )
+
+    // Play and Next should work, Chat should be disabled (not authenticated)
+    expect(screen.getByRole('button', { name: /play/i })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: /next/i })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: /chat/i })).toBeDisabled()
   })
 

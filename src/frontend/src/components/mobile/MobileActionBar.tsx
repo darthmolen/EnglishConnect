@@ -2,7 +2,7 @@ import { Play, SkipForward, MessageCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
-export type ContentSection = 'principle' | 'goals' | 'vocabulary' | 'patterns' | 'practice' | 'evaluate'
+export type ContentSection = 'principle' | 'vocabulary' | 'patterns' | 'examples' | 'practice' | 'evaluate'
 
 interface MobileActionBarProps {
   section: ContentSection
@@ -10,15 +10,18 @@ interface MobileActionBarProps {
   onNext: () => void
   onChat: () => void
   disabled?: boolean
+  chatDisabled?: boolean
 }
 
-export function MobileActionBar({ section, onPlay, onNext, onChat, disabled = false }: MobileActionBarProps) {
+export function MobileActionBar({ section, onPlay, onNext, onChat, disabled = false, chatDisabled = false }: MobileActionBarProps) {
   const { t } = useTranslation()
 
   // Determine which buttons are enabled based on section
-  const playEnabled = !disabled && ['vocabulary', 'patterns', 'practice', 'principle'].includes(section)
-  const nextEnabled = !disabled && ['vocabulary', 'patterns', 'practice'].includes(section)
-  const chatEnabled = !disabled && ['vocabulary', 'practice'].includes(section)
+  // patterns = new pattern overview with play buttons, examples = flat example cards
+  const playEnabled = !disabled && ['vocabulary', 'patterns', 'examples', 'practice'].includes(section)
+  const nextEnabled = !disabled && ['vocabulary', 'patterns', 'examples', 'practice'].includes(section)
+  // Chat requires authentication (chatDisabled) AND is only available on certain sections
+  const chatEnabled = !disabled && !chatDisabled && ['vocabulary', 'practice'].includes(section)
 
   const buttons = [
     {

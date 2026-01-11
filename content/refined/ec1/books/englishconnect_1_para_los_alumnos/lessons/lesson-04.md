@@ -245,6 +245,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say what I like to do.
+• _es: Decir qué me gusta hacer.
 
 ![](../_page_40_Picture_7.jpeg)
 
@@ -253,6 +254,7 @@ I can:
 ![](../_page_40_Picture_9.jpeg)
 
 • Say what I don't like to do.
+• _es: Decir qué no me gusta hacer.
 
 ![](../_page_40_Picture_11.jpeg)
 
@@ -261,6 +263,7 @@ I can:
 ![](../_page_40_Picture_13.jpeg)
 
 • Ask what someone likes to do.
+• _es: Preguntar qué le gusta hacer a alguien.
 
 ![](../_page_40_Picture_15.jpeg)
 

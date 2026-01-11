@@ -271,6 +271,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Greet someone and ask how they are.
+• _es: Saludar a alguien y preguntar cómo está.
 
 ![](../_page_27_Picture_27.jpeg)
 
@@ -279,6 +280,7 @@ I can:
 ![](../_page_27_Picture_29.jpeg)
 
 • Introduce myself and say where I'm from.
+• _es: Presentarme y decir de dónde soy.
 
 ![](../_page_27_Picture_31.jpeg)
 
@@ -287,6 +289,7 @@ I can:
 ![](../_page_27_Picture_33.jpeg)
 
 • Ask people's names and where they are from.
+• _es: Preguntar los nombres de las personas y de dónde son.
 
 ![](../_page_27_Picture_35.jpeg)
 

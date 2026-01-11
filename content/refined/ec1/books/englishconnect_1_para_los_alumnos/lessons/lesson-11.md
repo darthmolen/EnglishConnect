@@ -266,6 +266,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say what I am doing now.
+• _es: Decir qué estoy haciendo ahora.
 
 ![](../_page_94_Picture_13.jpeg)
 
@@ -274,6 +275,7 @@ I can:
 ![](../_page_94_Picture_15.jpeg)
 
 • Talk about what others are doing now.
+• _es: Hablar sobre qué están haciendo otros ahora.
 
 ![](../_page_94_Picture_17.jpeg)
 
@@ -282,6 +284,7 @@ I can:
 ![](../_page_94_Picture_19.jpeg)
 
 • Describe daily routines.
+• _es: Describir rutinas diarias.
 
 ![](../_page_94_Picture_21.jpeg)
 

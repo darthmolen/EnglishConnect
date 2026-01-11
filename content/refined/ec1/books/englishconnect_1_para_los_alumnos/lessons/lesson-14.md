@@ -256,6 +256,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say where I work.
+• _es: Decir dónde trabajo.
 
 ![](../_page_115_Picture_23.jpeg)
 
@@ -264,6 +265,7 @@ I can:
 ![](../_page_115_Picture_25.jpeg)
 
 • Say what my job is.
+• _es: Decir cuál es mi trabajo.
 
 ![](../_page_115_Picture_27.jpeg)
 
@@ -272,6 +274,7 @@ I can:
 ![](../_page_115_Picture_29.jpeg)
 
 • Ask and say where someone works.
+• _es: Preguntar y decir dónde trabaja alguien.
 
 ![](../_page_115_Picture_31.jpeg)
 
@@ -280,6 +283,7 @@ I can:
 ![](../_page_115_Picture_33.jpeg)
 
 • Ask and say what someone's job is.
+• _es: Preguntar y decir cuál es el trabajo de alguien.
 
 ![](../_page_115_Picture_35.jpeg)
 

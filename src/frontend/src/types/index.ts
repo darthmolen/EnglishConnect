@@ -23,6 +23,11 @@ export interface QAPattern {
   examples: Record<string, string | null>[] | null  // Has q, a, optionally q_translation, a_translation
 }
 
+export interface EvaluationCriterion {
+  criterion: string  // English
+  criterion_es: string | null  // Spanish translation
+}
+
 export interface LessonDetail {
   lesson_number: number
   title: string
@@ -34,10 +39,10 @@ export interface LessonDetail {
   pattern_images: string[]
   vocabulary: VocabularyItem[]
   patterns: QAPattern[]
-  evaluation_criteria: string[]
+  evaluation_criteria: EvaluationCriterion[]
 }
 
-export type LessonSection = 'principle' | 'goals' | 'vocabulary' | 'patterns' | 'practice' | 'evaluate'
+export type LessonSection = 'principle' | 'goals' | 'vocabulary' | 'patterns' | 'examples' | 'practice' | 'evaluate'
 
 // Personal goals with completion tracking
 export interface PersonalGoal {

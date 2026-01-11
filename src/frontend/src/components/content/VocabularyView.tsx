@@ -94,9 +94,9 @@ export function VocabularyView({
     return introData.stream_url || null
   }
 
-  // Auto-play intro when entering vocabulary section (if not already played)
-  useEffect(() => {
-    if (!introData || hasIntroPlayed || !lessonNumber) return
+  // Manual play intro function (no longer auto-plays)
+  const handlePlayIntro = () => {
+    if (!introData || isPlayingIntro) return
 
     const audio = introAudioRef.current
     if (!audio) return
@@ -111,10 +111,27 @@ export function VocabularyView({
         setIsPlayingIntro(true)
       })
       .catch(() => {
-        // User may not have interacted with page yet, skip auto-play
+        // User interaction required but failed
         setIsPlayingIntro(false)
       })
-  }, [introData, hasIntroPlayed, lessonNumber, currentClipIndex])
+  }
+
+  // Auto-advance to next clip when current clip index changes (for split mode)
+  useEffect(() => {
+    if (!isPlayingIntro || currentClipIndex === 0) return
+
+    const audio = introAudioRef.current
+    if (!audio) return
+
+    const clipUrl = getCurrentClipUrl()
+    if (!clipUrl) return
+
+    audio.src = clipUrl
+    audio.play().catch(() => {
+      setIsPlayingIntro(false)
+      setCurrentClipIndex(0)
+    })
+  }, [currentClipIndex])
 
   // Handle intro audio end (with sequential playback for split mode)
   useEffect(() => {
@@ -256,10 +273,31 @@ export function VocabularyView({
       )}
 
       <div className="p-4 flex-1 overflow-y-auto">
-      {/* Summary banner */}
+      {/* Summary banner with play button */}
       <div className="mb-4 rounded-lg border bg-blue-50 dark:bg-blue-950/30 p-4">
         <div className="flex items-start gap-3">
-          <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+          {introData && !hasIntroPlayed ? (
+            <button
+              type="button"
+              onClick={handlePlayIntro}
+              disabled={isPlayingIntro}
+              className={cn(
+                'flex items-center justify-center rounded-full p-1.5 transition-colors flex-shrink-0 mt-0.5',
+                isPlayingIntro
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white'
+              )}
+              aria-label={isPlayingIntro ? 'Playing intro' : 'Play intro'}
+            >
+              {isPlayingIntro ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4 ml-0.5" />
+              )}
+            </button>
+          ) : (
+            <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+          )}
           <div>
             <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
               {t('vocabulary.summaryTitle')}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Play, SkipForward, MessageSquare, LogIn } from 'lucide-react'
+import { Play, Pause, SkipForward, MessageSquare, LogIn } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
 import { PatternsView, type PatternAction } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
@@ -86,9 +86,9 @@ export function PracticeView({
     return introData.stream_url || null
   }
 
-  // Auto-play intro when entering practice section (if not already played)
-  useEffect(() => {
-    if (!introData || hasIntroPlayed || !lessonNumber) return
+  // Manual play intro function (no longer auto-plays)
+  const handlePlayIntro = () => {
+    if (!introData || isPlayingIntro) return
 
     const audio = audioRef.current
     if (!audio) return
@@ -103,10 +103,27 @@ export function PracticeView({
         setIsPlayingIntro(true)
       })
       .catch(() => {
-        // User may not have interacted with page yet, skip auto-play
+        // User interaction required but failed
         setIsPlayingIntro(false)
       })
-  }, [introData, hasIntroPlayed, lessonNumber, currentClipIndex])
+  }
+
+  // Auto-advance to next clip when current clip index changes (for split mode)
+  useEffect(() => {
+    if (!isPlayingIntro || currentClipIndex === 0) return
+
+    const audio = audioRef.current
+    if (!audio) return
+
+    const clipUrl = getCurrentClipUrl()
+    if (!clipUrl) return
+
+    audio.src = clipUrl
+    audio.play().catch(() => {
+      setIsPlayingIntro(false)
+      setCurrentClipIndex(0)
+    })
+  }, [currentClipIndex])
 
   // Handle intro audio end (with sequential playback for split mode)
   useEffect(() => {
@@ -187,15 +204,36 @@ export function PracticeView({
         </div>
       )}
 
-      {/* Summary banner - compact */}
-      <div className="mx-3 mt-2 mb-1 rounded-lg border bg-green-50 dark:bg-green-950/30 px-3 py-2">
+      {/* Summary banner - compact with play button */}
+      <div className="mx-3 mt-2 mb-1 rounded-lg border bg-blue-50 dark:bg-blue-950/30 px-3 py-2">
         <div className="flex items-start gap-2">
-          <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+          {introData && !hasIntroPlayed ? (
+            <button
+              type="button"
+              onClick={handlePlayIntro}
+              disabled={isPlayingIntro}
+              className={cn(
+                'flex items-center justify-center rounded-full p-1 transition-colors flex-shrink-0 mt-0.5',
+                isPlayingIntro
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white'
+              )}
+              aria-label={isPlayingIntro ? 'Playing intro' : 'Play intro'}
+            >
+              {isPlayingIntro ? (
+                <Pause className="h-3 w-3" />
+              ) : (
+                <Play className="h-3 w-3 ml-0.5" />
+              )}
+            </button>
+          ) : (
+            <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+          )}
           <div>
-            <h3 className="font-semibold text-sm text-green-900 dark:text-green-100">
+            <h3 className="font-semibold text-sm text-blue-900 dark:text-blue-100">
               {t('practice.summaryTitle')}
             </h3>
-            <p className="text-xs text-green-800 dark:text-green-200">
+            <p className="text-xs text-blue-800 dark:text-blue-200">
               {t('practice.summary')}
             </p>
           </div>

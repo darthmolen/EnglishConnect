@@ -11,6 +11,9 @@ import { MobileActionBar, type ContentSection } from '@/components/mobile/Mobile
 import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
 import { MobilePatternsView } from '@/components/mobile/content/MobilePatternsView'
 import { MobilePracticeView } from '@/components/mobile/content/MobilePracticeView'
+import { MobilePrincipleView } from '@/components/mobile/content/MobilePrincipleView'
+import { MobilePatternsOverview } from '@/components/mobile/content/MobilePatternsOverview'
+import { MobileEvaluateView } from '@/components/mobile/content/MobileEvaluateView'
 import { MobileChatOverlay } from '@/components/mobile/MobileChatOverlay'
 import { LoginPage } from '@/pages/LoginPage'
 
@@ -38,6 +41,7 @@ export function MobileApp() {
   const [vocabIndex, setVocabIndex] = useState(0)
   const [patternIndex, setPatternIndex] = useState(0)
   const [patternsExampleId, setPatternsExampleId] = useState<string | null>(null)
+  const [playingPatternNumber, setPlayingPatternNumber] = useState<number | null>(null)
   const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Reset indices when lesson changes
@@ -45,6 +49,7 @@ export function MobileApp() {
     setVocabIndex(0)
     setPatternIndex(0)
     setPatternsExampleId(null)
+    setPlayingPatternNumber(null)
   }, [selectedLessonNumber])
 
   useEffect(() => {
@@ -95,6 +100,14 @@ export function MobileApp() {
     return ids
   }
 
+  // Handle pattern overview play (plays first example for that pattern)
+  const handlePlayPatternOverview = (patternNumber: number) => {
+    setPlayingPatternNumber(patternNumber)
+    playDemo(patternNumber, 1)
+    // Clear playing state when done (approximate based on typical audio length)
+    setTimeout(() => setPlayingPatternNumber(null), 5000)
+  }
+
   // Action bar handlers
   const handlePlay = () => {
     if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
@@ -102,8 +115,14 @@ export function MobileApp() {
       if (word) {
         playWord(word.english)
       }
-    } else if (activeSection === 'patterns') {
-      // Play current example (or first if none selected)
+    } else if (activeSection === 'patterns' && currentLesson?.patterns) {
+      // New patterns section: play first example of first pattern
+      const firstPattern = currentLesson.patterns[0]
+      if (firstPattern) {
+        handlePlayPatternOverview(firstPattern.pattern_number)
+      }
+    } else if (activeSection === 'examples') {
+      // Examples section (formerly patterns): play current example
       if (patternsExampleId) {
         const [pNum, eIdx] = patternsExampleId.split('-').map(Number)
         playDemo(pNum, eIdx)
@@ -133,8 +152,16 @@ export function MobileApp() {
       if (word) {
         playWord(word.english)
       }
-    } else if (activeSection === 'patterns') {
-      // Move to next example and play it
+    } else if (activeSection === 'patterns' && currentLesson?.patterns) {
+      // New patterns section: move to next pattern and play
+      const patterns = currentLesson.patterns
+      const currentPatternIdx = patterns.findIndex(p => p.pattern_number === playingPatternNumber)
+      const nextIdx = currentPatternIdx < 0 ? 0 : Math.min(currentPatternIdx + 1, patterns.length - 1)
+      if (patterns[nextIdx]) {
+        handlePlayPatternOverview(patterns[nextIdx].pattern_number)
+      }
+    } else if (activeSection === 'examples') {
+      // Examples section (formerly patterns): move to next example and play it
       const ids = getExampleIds()
       const currentIdx = patternsExampleId ? ids.indexOf(patternsExampleId) : -1
       const nextIdx = Math.min(currentIdx + 1, ids.length - 1)
@@ -226,9 +253,9 @@ export function MobileApp() {
 
         {activeTab === 'learn' && (
           <div className="flex flex-col h-full">
-            {/* Section pills */}
+            {/* Section pills - Sequential learning flow */}
             <div className="flex gap-2 p-3 overflow-x-auto border-b shrink-0">
-              {(['principle', 'goals', 'vocabulary', 'patterns', 'practice', 'evaluate'] as ContentSection[]).map((section) => (
+              {(['principle', 'vocabulary', 'patterns', 'examples', 'practice', 'evaluate'] as ContentSection[]).map((section) => (
                 <button
                   key={section}
                   type="button"
@@ -252,6 +279,16 @@ export function MobileApp() {
                 </div>
               ) : (
                 <>
+                  {activeSection === 'principle' && (
+                    <MobilePrincipleView
+                      lessonNumber={currentLesson.lesson_number}
+                      principleTitle={currentLesson.learning_principle_title}
+                      principleContent={currentLesson.learning_principle_content}
+                      principleFull={currentLesson.learning_principle_full}
+                      ponderQuestions={currentLesson.ponder_questions || []}
+                      evaluationCriteria={currentLesson.evaluation_criteria || []}
+                    />
+                  )}
                   {activeSection === 'vocabulary' && (
                     <MobileVocabularyView
                       vocabulary={currentLesson.vocabulary || []}
@@ -267,6 +304,13 @@ export function MobileApp() {
                     />
                   )}
                   {activeSection === 'patterns' && (
+                    <MobilePatternsOverview
+                      patterns={currentLesson.patterns || []}
+                      playingPattern={playingPatternNumber}
+                      onPlayPattern={handlePlayPatternOverview}
+                    />
+                  )}
+                  {activeSection === 'examples' && (
                     <MobilePatternsView
                       patterns={currentLesson.patterns || []}
                       playingId={playingId}
@@ -291,21 +335,10 @@ export function MobileApp() {
                       }}
                     />
                   )}
-                  {activeSection === 'principle' && (
-                    <div className="prose prose-sm max-w-none">
-                      <h3>{currentLesson.learning_principle_title || t('sections.principle')}</h3>
-                      <p>{currentLesson.learning_principle_content || t('mobile.principle.noContent', 'No principle content available')}</p>
-                    </div>
-                  )}
-                  {activeSection === 'goals' && (
-                    <div className="text-center text-muted-foreground py-8">
-                      <p>{t('mobile.goals.comingSoon', 'Goals tracking coming soon')}</p>
-                    </div>
-                  )}
                   {activeSection === 'evaluate' && (
-                    <div className="text-center text-muted-foreground py-8">
-                      <p>{t('mobile.evaluate.comingSoon', 'Self-evaluation coming soon')}</p>
-                    </div>
+                    <MobileEvaluateView
+                      evaluationCriteria={currentLesson.evaluation_criteria || []}
+                    />
                   )}
                 </>
               )}
@@ -378,7 +411,8 @@ export function MobileApp() {
           onPlay={handlePlay}
           onNext={handleNext}
           onChat={handleChat}
-          disabled={!currentLesson || !isAuthenticated}
+          disabled={!currentLesson}
+          chatDisabled={!isAuthenticated}
         />
       )}
 

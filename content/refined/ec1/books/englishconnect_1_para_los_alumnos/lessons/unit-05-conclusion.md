@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Explain how to make different foods.
+• _es: Explicar cómo hacer diferentes comidas.
 
 ![](../_page_166_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](../_page_166_Picture_11.jpeg)
 
 • Talk about buying or selling something.
+• _es: Hablar sobre comprar o vender algo.
 
 ![](../_page_166_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](../_page_166_Picture_15.jpeg)
 
 • Describe where I live.
+• _es: Describir dónde vivo.
 
 ![](../_page_166_Picture_17.jpeg)
 

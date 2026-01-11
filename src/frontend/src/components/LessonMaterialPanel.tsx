@@ -219,14 +219,19 @@ export function LessonMaterialPanel({
         {/* Evaluation Criteria */}
         {lesson.evaluation_criteria.length > 0 && (
           <CollapsibleSection title={t('sections.goals')} defaultOpen={false}>
-            <ul className="space-y-1">
-              {lesson.evaluation_criteria.map((criterion, index) => (
+            <ul className="space-y-2">
+              {lesson.evaluation_criteria.map((item, index) => (
                 <li
                   key={index}
-                  className="flex items-start gap-2 text-sm text-muted-foreground"
+                  className="flex items-start gap-2 text-sm"
                 >
-                  <span className="text-primary">•</span>
-                  {criterion}
+                  <span className="text-primary mt-0.5">•</span>
+                  <div>
+                    <div className="text-muted-foreground">{item.criterion}</div>
+                    {item.criterion_es && (
+                      <div className="text-muted-foreground/70 italic">({item.criterion_es})</div>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

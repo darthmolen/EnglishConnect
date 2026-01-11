@@ -151,5 +151,8 @@ class LessonService:
                 )
                 for p in patterns_result.scalars()
             ],
-            evaluation_criteria=[c.criterion for c in criteria_result.scalars()],
+            evaluation_criteria=[
+                {"criterion": c.criterion, "criterion_es": c.criterion_es}
+                for c in criteria_result.scalars()
+            ],
         )

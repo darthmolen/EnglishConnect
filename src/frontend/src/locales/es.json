@@ -65,11 +65,12 @@
     "selectLessonHint": "Elige una lección de la izquierda para ver su contenido"
   },
   "sections": {
-    "principle": "Principio de Aprendizaje",
+    "principle": "Principio",
     "goals": "Metas de Aprendizaje",
     "vocabulary": "Vocabulario",
-    "practice": "Práctica",
     "patterns": "Patrones",
+    "examples": "Ejemplos",
+    "practice": "Práctica",
     "evaluate": "Evaluar"
   },
   "conversation": {
@@ -194,13 +195,20 @@
       "empty": "No hay ejemplos de patrones disponibles"
     },
     "principle": {
-      "noContent": "No hay contenido de principio disponible"
+      "noContent": "No hay contenido de principio disponible",
+      "ponderTitle": "Reflexiona",
+      "ponderTitleAlt": "(Reflect)",
+      "metasTitle": "Metas de Lección {{number}}",
+      "metasTitleAlt": "(Goals for Lesson {{number}})"
     },
     "goals": {
       "comingSoon": "Seguimiento de metas próximamente"
     },
     "evaluate": {
-      "comingSoon": "Autoevaluación próximamente"
+      "empty": "No hay criterios de evaluación disponibles",
+      "selfAssessment": "Autoevaluación",
+      "instructions": "Marca cada habilidad en la que te sientas seguro.",
+      "completed": "completados"
     },
     "me": {
       "moreSettingsSoon": "Más configuraciones próximamente"

@@ -244,6 +244,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say my name and others' names.
+• _es: Decir mi nombre y los nombres de otros.
 
 ![](../_page_21_Picture_26.jpeg)
 
@@ -252,6 +253,7 @@ I can:
 ![](../_page_21_Picture_28.jpeg)
 
 • Say hello and goodbye.
+• _es: Decir hola y adiós.
 
 ![](../_page_21_Picture_30.jpeg)
 
@@ -260,6 +262,7 @@ I can:
 ![](../_page_21_Picture_32.jpeg)
 
 • Understand how EnglishConnect can help me learn English.
+• _es: Entender cómo EnglishConnect puede ayudarme a aprender inglés.
 
 ![](../_page_21_Picture_34.jpeg)
 

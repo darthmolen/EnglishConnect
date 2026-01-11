@@ -80,21 +80,21 @@ setup_venvs() {
         src/services/content-mcp/.venv/bin/pip install -r src/services/content-mcp/requirements.txt
     fi
 
-    # STT venv (needs CUDA)
-    if [ ! -d "src/services/stt/.venv" ]; then
-        log_info "Creating STT virtual environment..."
-        python3 -m venv src/services/stt/.venv
-        src/services/stt/.venv/bin/pip install --upgrade pip
-        src/services/stt/.venv/bin/pip install -r src/services/stt/requirements.txt
-    fi
+    # STT venv (needs CUDA) - DISABLED: Using Azure Realtime API instead
+    # if [ ! -d "src/services/stt/.venv" ]; then
+    #     log_info "Creating STT virtual environment..."
+    #     python3 -m venv src/services/stt/.venv
+    #     src/services/stt/.venv/bin/pip install --upgrade pip
+    #     src/services/stt/.venv/bin/pip install -r src/services/stt/requirements.txt
+    # fi
 
-    # TTS MCP venv (needs CUDA)
-    if [ ! -d "src/services/tts-mcp/.venv" ]; then
-        log_info "Creating TTS MCP virtual environment..."
-        python3 -m venv src/services/tts-mcp/.venv
-        src/services/tts-mcp/.venv/bin/pip install --upgrade pip
-        src/services/tts-mcp/.venv/bin/pip install -r src/services/tts-mcp/requirements.txt
-    fi
+    # TTS MCP venv (needs CUDA) - DISABLED: Using Azure Realtime API instead
+    # if [ ! -d "src/services/tts-mcp/.venv" ]; then
+    #     log_info "Creating TTS MCP virtual environment..."
+    #     python3 -m venv src/services/tts-mcp/.venv
+    #     src/services/tts-mcp/.venv/bin/pip install --upgrade pip
+    #     src/services/tts-mcp/.venv/bin/pip install -r src/services/tts-mcp/requirements.txt
+    # fi
 }
 
 # Ingest content if database is empty
@@ -128,16 +128,16 @@ start_services() {
     echo $! > ../../../.pids/content-mcp.pid
     cd ../../..
 
-    # Start STT Service (uses local GPU for faster-whisper)
-    log_info "Starting STT Service on port 8001..."
-    cd src/services/stt
-    export WHISPER_MODEL_SIZE=medium
-    export WHISPER_DEVICE=cuda
-    export WHISPER_COMPUTE_TYPE=float16
-    export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
-    .venv/bin/uvicorn server:app --host 0.0.0.0 --port 8001 &
-    echo $! > ../../../.pids/stt.pid
-    cd ../../..
+    # Start STT Service (uses local GPU for faster-whisper) - DISABLED: Using Azure Realtime API instead
+    # log_info "Starting STT Service on port 8001..."
+    # cd src/services/stt
+    # export WHISPER_MODEL_SIZE=medium
+    # export WHISPER_DEVICE=cuda
+    # export WHISPER_COMPUTE_TYPE=float16
+    # export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
+    # .venv/bin/uvicorn server:app --host 0.0.0.0 --port 8001 &
+    # echo $! > ../../../.pids/stt.pid
+    # cd ../../..
 
     log_info ""
     log_info "Services started!"
@@ -146,12 +146,14 @@ start_services() {
     log_info "  - PostgreSQL:      localhost:5432"
     log_info "  - Redis:           localhost:6379"
     log_info "  - Content MCP:     localhost:8003"
-    log_info "  - STT:             localhost:8001 (medium model, float16)"
+    log_info ""
+    log_info "Voice handled by Azure Realtime API (USE_REALTIME_API=true)"
     log_info ""
     log_info "Start manually in VSCode debugger:"
     log_info "  - Backend API:     localhost:8000"
-    log_info "  - TTS MCP:         localhost:8002"
     log_info "  - LLM (vLLM):      localhost:8004 (run ./start.sh llm)"
+    log_info ""
+    log_info "Local STT/TTS disabled - uncomment in start.sh if needed"
     log_info ""
     log_info "To stop: ./stop.sh"
 }

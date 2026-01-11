@@ -262,6 +262,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Use family words.
+• _es: Usar palabras de familia.
 
 ![](../_page_57_Picture_20.jpeg)
 
@@ -270,6 +271,7 @@ I can:
 ![](../_page_57_Picture_22.jpeg)
 
 • Say how many people are in my family.
+• _es: Decir cuántas personas hay en mi familia.
 
 ![](../_page_57_Picture_24.jpeg)
 

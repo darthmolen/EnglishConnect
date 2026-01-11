@@ -244,6 +244,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe the location of places I visit.
+• _es: Describir la ubicación de lugares que visito.
 
 ![](../_page_173_Picture_15.jpeg)
 
@@ -252,6 +253,7 @@ I can:
 ![](../_page_173_Picture_17.jpeg)
 
 • Ask for and give directions.
+• _es: Pedir y dar direcciones.
 
 ![](../_page_173_Picture_19.jpeg)
 

@@ -300,6 +300,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say the time and date.
+• _es: Decir la hora y la fecha.
 
 ![](../_page_99_Picture_31.jpeg)
 
@@ -308,6 +309,7 @@ I can:
 ![](../_page_99_Picture_33.jpeg)
 
 • Ask for the time and date.
+• _es: Preguntar la hora y la fecha.
 
 ![](../_page_99_Picture_35.jpeg)
 

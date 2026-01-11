@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Describe my daily routine.
+• _es: Describir mi rutina diaria.
 
 ![](../_page_107_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](../_page_107_Picture_11.jpeg)
 
 • Describe what I am doing.
+• _es: Describir qué estoy haciendo.
 
 ![](../_page_107_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](../_page_107_Picture_15.jpeg)
 
 • Use days and times to talk about my day.
+• _es: Usar días y horas para hablar de mi día.
 
 ![](../_page_107_Picture_17.jpeg)
 
@@ -37,6 +40,7 @@ I can:
 ![](../_page_107_Picture_19.jpeg)
 
 • Describe the weather.
+• _es: Describir el clima.
 
 ![](../_page_107_Picture_21.jpeg)
 

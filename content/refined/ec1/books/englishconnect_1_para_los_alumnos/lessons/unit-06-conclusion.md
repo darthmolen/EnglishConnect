@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Ask for and give directions.
+• _es: Pedir y dar direcciones.
 
 ![](../_page_194_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](../_page_194_Picture_11.jpeg)
 
 • Describe how I feel.
+• _es: Describir cómo me siento.
 
 ![](../_page_194_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](../_page_194_Picture_15.jpeg)
 
 • Talk about illnesses.
+• _es: Hablar sobre enfermedades.
 
 ![](../_page_194_Picture_17.jpeg)
 

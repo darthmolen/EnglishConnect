@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Talk about my job.
+• _es: Hablar sobre mi trabajo.
 
 ![](../_page_137_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](../_page_137_Picture_11.jpeg)
 
 • Describe foods I like and dislike.
+• _es: Describir comidas que me gustan y no me gustan.
 
 ![](../_page_137_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](../_page_137_Picture_15.jpeg)
 
 • Explain why I like or dislike foods.
+• _es: Explicar por qué me gustan o no me gustan las comidas.
 
 ![](../_page_137_Picture_17.jpeg)
 
@@ -37,6 +40,7 @@ I can:
 ![](../_page_137_Picture_19.jpeg)
 
 • Order food and take someone's order.
+• _es: Ordenar comida y tomar el pedido de alguien.
 
 ![](../_page_137_Picture_21.jpeg)
 
@@ -45,6 +49,7 @@ I can:
 ![](../_page_137_Picture_23.jpeg)
 
 • Apply principles of learning by study and by faith.
+• _es: Aplicar principios de aprendizaje mediante el estudio y la fe.
 
 ![](../_page_137_Picture_25.jpeg)
 

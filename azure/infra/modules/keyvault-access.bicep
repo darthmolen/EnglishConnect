@@ -1,5 +1,5 @@
-// Grant managed identity access to an existing Key Vault in another resource group
-// This module creates a role assignment for Key Vault Secrets User
+// Grant managed identity access to an existing Key Vault
+// Deploy this module scoped to the Key Vault's resource group
 
 @description('Principal ID of the managed identity to grant access')
 param principalId string
@@ -7,16 +7,9 @@ param principalId string
 @description('Key Vault name')
 param keyVaultName string
 
-@description('Key Vault resource group')
-param keyVaultResourceGroup string
-
-@description('Key Vault subscription ID (defaults to current)')
-param keyVaultSubscriptionId string = subscription().subscriptionId
-
-// Reference the existing Key Vault
+// Reference the existing Key Vault (in the same resource group as deployment scope)
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
-  scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroup)
 }
 
 // Key Vault Secrets User role definition ID

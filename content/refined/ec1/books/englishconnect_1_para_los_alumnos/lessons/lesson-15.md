@@ -250,6 +250,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe my job.
+• _es: Describir mi trabajo.
 
 ![](../_page_121_Picture_26.jpeg)
 
@@ -258,6 +259,7 @@ I can:
 ![](../_page_121_Picture_28.jpeg)
 
 • Ask about someone's job.
+• _es: Preguntar sobre el trabajo de alguien.
 
 ![](../_page_121_Picture_30.jpeg)
 
@@ -266,6 +268,7 @@ I can:
 ![](../_page_121_Picture_32.jpeg)
 
 • Describe other people's jobs.
+• _es: Describir los trabajos de otras personas.
 
 ![](../_page_121_Picture_34.jpeg)
 

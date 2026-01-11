@@ -255,6 +255,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe the weather.
+• _es: Describir el clima.
 
 ![](../_page_106_Picture_26.jpeg)
 
@@ -263,6 +264,7 @@ I can:
 ![](../_page_106_Picture_28.jpeg)
 
 • Make predictions about the weather.
+• _es: Hacer predicciones sobre el clima.
 
 ![](../_page_106_Picture_30.jpeg)
 

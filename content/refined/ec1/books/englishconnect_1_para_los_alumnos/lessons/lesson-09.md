@@ -266,6 +266,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about clothing and colors.
+• _es: Hablar sobre ropa y colores.
 
 ![](../_page_76_Picture_7.jpeg)
 
@@ -274,6 +275,7 @@ I can:
 ![](../_page_76_Picture_9.jpeg)
 
 • Say what I and others are wearing.
+• _es: Decir qué llevo puesto yo y otros.
 
 ![](../_page_76_Picture_11.jpeg)
 

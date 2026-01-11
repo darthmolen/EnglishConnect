@@ -252,6 +252,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Order food.
+• _es: Ordenar comida.
 
 ![](../_page_136_Picture_22.jpeg)
 
@@ -260,6 +261,7 @@ I can:
 ![](../_page_136_Picture_24.jpeg)
 
 • Take someone's order.
+• _es: Tomar el pedido de alguien.
 
 ![](../_page_136_Picture_26.jpeg)
 
@@ -268,6 +270,7 @@ I can:
 ![](../_page_136_Picture_28.jpeg)
 
 • Say what I want in, on, or with my food.
+• _es: Decir qué quiero en, sobre o con mi comida.
 
 ![](../_page_136_Picture_30.jpeg)
 

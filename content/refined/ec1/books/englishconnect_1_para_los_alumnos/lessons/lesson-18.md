@@ -266,6 +266,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Say what ingredients are in foods.
+• _es: Decir qué ingredientes tienen las comidas.
 
 ![](../_page_145_Picture_26.jpeg)
 
@@ -274,6 +275,7 @@ I can:
 ![](../_page_145_Picture_28.jpeg)
 
 • Describe how to make foods I like.
+• _es: Describir cómo hacer comidas que me gustan.
 
 ![](../_page_145_Picture_30.jpeg)
 
@@ -282,6 +284,7 @@ I can:
 ![](../_page_145_Picture_32.jpeg)
 
 • Ask others how to make foods they like.
+• _es: Preguntar a otros cómo hacer comidas que les gustan.
 
 ![](../_page_145_Picture_34.jpeg)
 

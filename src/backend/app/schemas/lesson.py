@@ -34,6 +34,13 @@ class QAPatternSchema(BaseModel):
     examples: list[dict] | None = None  # Each dict has q, a, optionally q_translation, a_translation
 
 
+class EvaluationCriterionSchema(BaseModel):
+    """Learning objective / 'I can' statement with translation."""
+
+    criterion: str  # English
+    criterion_es: str | None = None  # Spanish translation
+
+
 class LessonDetail(BaseModel):
     """Full lesson details including vocabulary and patterns."""
 
@@ -47,4 +54,4 @@ class LessonDetail(BaseModel):
     pattern_images: list[str] = []
     vocabulary: list[VocabularyItemSchema] = []
     patterns: list[QAPatternSchema] = []
-    evaluation_criteria: list[str] = []
+    evaluation_criteria: list[EvaluationCriterionSchema] = []

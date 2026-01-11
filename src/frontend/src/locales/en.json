@@ -68,8 +68,9 @@
     "principle": "Learning Principle",
     "goals": "Learning Goals",
     "vocabulary": "Vocabulary",
-    "practice": "Practice",
     "patterns": "Patterns",
+    "examples": "Examples",
+    "practice": "Practice",
     "evaluate": "Evaluate"
   },
   "conversation": {
@@ -194,13 +195,20 @@
       "empty": "No pattern examples available"
     },
     "principle": {
-      "noContent": "No principle content available"
+      "noContent": "No principle content available",
+      "ponderTitle": "Reflect",
+      "ponderTitleAlt": "(Reflexiona)",
+      "metasTitle": "Goals for Lesson {{number}}",
+      "metasTitleAlt": "(Metas de Lección {{number}})"
     },
     "goals": {
       "comingSoon": "Goals tracking coming soon"
     },
     "evaluate": {
-      "comingSoon": "Self-evaluation coming soon"
+      "empty": "No evaluation criteria available",
+      "selfAssessment": "Self-Assessment",
+      "instructions": "Check off each skill you feel confident with.",
+      "completed": "completed"
     },
     "me": {
       "moreSettingsSoon": "More settings coming soon"

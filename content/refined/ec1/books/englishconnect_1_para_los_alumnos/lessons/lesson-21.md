@@ -262,6 +262,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Describe a bedroom and a bathroom.
+• _es: Describir una habitación y un baño.
 
 ![](../_page_165_Picture_30.jpeg)
 
@@ -270,6 +271,7 @@ I can:
 ![](../_page_165_Picture_32.jpeg)
 
 • Describe where things are in a bedroom and a bathroom.
+• _es: Describir dónde están las cosas en una habitación y un baño.
 
 ![](../_page_165_Picture_34.jpeg)
 

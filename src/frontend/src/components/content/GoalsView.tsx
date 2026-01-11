@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
+import type { EvaluationCriterion } from '@/types'
 
 interface GoalsViewProps {
   lessonNumber: number
-  criteria: string[]
+  criteria: EvaluationCriterion[]
   completedGoals: number[]
   onToggleGoal: (lessonNumber: number, goalIndex: number) => void
 }
@@ -53,13 +54,13 @@ export function GoalsView({
           {t('goals.iCan')}
         </h4>
         <ul className="space-y-1">
-          {criteria.map((goal, index) => {
+          {criteria.map((item, index) => {
             const isCompleted = completedGoals.includes(index)
             return (
               <li key={index}>
                 <label
                   className={cn(
-                    'flex items-center gap-3 rounded-lg p-3 cursor-pointer transition-colors',
+                    'flex items-start gap-3 rounded-lg p-3 cursor-pointer transition-colors',
                     'hover:bg-accent/50',
                     isCompleted && 'bg-green-50 dark:bg-green-950/20'
                   )}
@@ -67,16 +68,23 @@ export function GoalsView({
                   <Checkbox
                     checked={isCompleted}
                     onCheckedChange={() => onToggleGoal(lessonNumber, index)}
-                    className="shrink-0"
+                    className="shrink-0 mt-0.5"
                   />
-                  <span
-                    className={cn(
-                      'text-sm',
-                      isCompleted && 'text-green-700 dark:text-green-400'
+                  <div>
+                    <span
+                      className={cn(
+                        'text-sm',
+                        isCompleted && 'text-green-700 dark:text-green-400'
+                      )}
+                    >
+                      {item.criterion}
+                    </span>
+                    {item.criterion_es && (
+                      <div className="text-sm text-muted-foreground italic">
+                        ({item.criterion_es})
+                      </div>
                     )}
-                  >
-                    {goal}
-                  </span>
+                  </div>
                 </label>
               </li>
             )
