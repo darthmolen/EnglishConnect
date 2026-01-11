@@ -488,3 +488,50 @@ Agent responds: "Did you mean 'Mary' the name we're learning, or 'merry' meaning
 **Dependencies**: useConversation hook, WebSocket connection, STT/TTS services
 
 **Priority**: High - Core learning experience depends on voice practice
+
+## Backlog: Migrate from Bicep to Terraform
+
+**Context**: Current Azure infrastructure is defined in Bicep (`azure/infra/`). While Bicep deploys successfully, it has significant limitations:
+
+**Problems with Bicep**:
+
+- Poor idempotency for role assignments (fails on re-run if assignment exists)
+- Limited cross-resource-group deployment support
+- Verbose error messages that obscure actual issues
+- Less mature tooling compared to Terraform
+- No built-in state management
+- Difficult to debug deployment failures
+
+**Benefits of Terraform**:
+
+- Battle-tested idempotency (plan/apply model)
+- Clear state file showing current infrastructure
+- Rich provider ecosystem (azurerm, azuread, github)
+- Better error messages and debugging
+- `terraform plan` shows exact changes before apply
+- Import existing resources without recreation
+- Mature community modules for common patterns
+
+**Migration Scope**:
+
+- Container Registry
+- Container App + Environment
+- PostgreSQL Flexible Server
+- Redis Cache
+- Log Analytics Workspace
+- Managed Identity + Role Assignments
+- Key Vault integration (cross-RG)
+- Azure OpenAI
+
+**Implementation Steps**:
+
+1. Set up Terraform state backend (Azure Storage Account)
+2. Write Terraform configs for each resource
+3. Import existing resources into Terraform state
+4. Validate with `terraform plan`
+5. Update GitHub Actions workflow
+6. Delete Bicep files
+
+**Dependencies**: None - can be done independently
+
+**Priority**: Medium - Current Bicep works but causes CI/CD pain on every infra change

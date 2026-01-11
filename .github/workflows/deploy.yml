@@ -3,6 +3,8 @@ name: Build and Deploy to Azure Container Apps
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'azure/**'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -10,9 +12,6 @@ on:
 env:
   AZURE_RESOURCE_GROUP: rg-englishconnect
   KEY_VAULT_NAME: kv-aif-voz-preprod-001
-  KEY_VAULT_RESOURCE_GROUP: rg-aif-vozloop-preprod-001
-  ACR_NAME: '' # Set after infra deployment
-  CONTAINER_APP_NAME: '' # Set after infra deployment
 
 permissions:
   id-token: write # Required for OIDC
@@ -57,115 +56,14 @@ jobs:
           cd src/frontend
           npm run test:run || true
 
-  deploy-infra:
+  build-and-push:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     outputs:
-      acr-name: ${{ steps.get-acr.outputs.acr_name }}
-      azure-ad-client-id: ${{ steps.get-secrets.outputs.azure_ad_client_id }}
-      azure-ad-tenant-id: ${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Azure Login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Get secrets from Key Vault
-        id: get-secrets
-        run: |
-          # Fetch secrets from Key Vault for deployment
-          AZURE_AD_CLIENT_ID=$(az keyvault secret show \
-            --vault-name ${{ env.KEY_VAULT_NAME }} \
-            --name azure-ad-client-id \
-            --query value -o tsv 2>/dev/null || echo "")
-          AZURE_AD_TENANT_ID=$(az keyvault secret show \
-            --vault-name ${{ env.KEY_VAULT_NAME }} \
-            --name azure-ad-tenant-id \
-            --query value -o tsv 2>/dev/null || echo "")
-
-          # Use Key Vault values if available, otherwise fall back to GitHub secrets
-          if [ -n "$AZURE_AD_CLIENT_ID" ]; then
-            echo "azure_ad_client_id=$AZURE_AD_CLIENT_ID" >> $GITHUB_OUTPUT
-            echo "::add-mask::$AZURE_AD_CLIENT_ID"
-          else
-            echo "azure_ad_client_id=${{ secrets.AZURE_AD_CLIENT_ID }}" >> $GITHUB_OUTPUT
-          fi
-
-          if [ -n "$AZURE_AD_TENANT_ID" ]; then
-            echo "azure_ad_tenant_id=$AZURE_AD_TENANT_ID" >> $GITHUB_OUTPUT
-            echo "::add-mask::$AZURE_AD_TENANT_ID"
-          else
-            echo "azure_ad_tenant_id=${{ secrets.AZURE_AD_TENANT_ID }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Deploy Bicep infrastructure
-        uses: azure/arm-deploy@v2
-        with:
-          resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
-          template: ./azure/infra/main.bicep
-          parameters: >-
-            ./azure/infra/parameters/dev.bicepparam
-            azureAdClientId=${{ steps.get-secrets.outputs.azure_ad_client_id }}
-            azureAdTenantId=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
-            keyVaultName=${{ env.KEY_VAULT_NAME }}
-          failOnStdErr: false
-
-      - name: Grant managed identity Key Vault access
-        run: |
-          # Get the managed identity principal ID
-          PRINCIPAL_ID=$(az deployment group show \
-            -g ${{ env.AZURE_RESOURCE_GROUP }} \
-            -n container-app \
-            --query properties.outputs.managedIdentityPrincipalId.value -o tsv 2>/dev/null || \
-            az identity list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].principalId" -o tsv)
-
-          if [ -n "$PRINCIPAL_ID" ]; then
-            echo "Granting Key Vault Secrets User role to managed identity..."
-            # Get Key Vault resource ID
-            KV_ID=$(az keyvault show \
-              --name ${{ env.KEY_VAULT_NAME }} \
-              --resource-group ${{ env.KEY_VAULT_RESOURCE_GROUP }} \
-              --query id -o tsv)
-
-            # Check if role assignment already exists
-            EXISTING=$(az role assignment list \
-              --assignee $PRINCIPAL_ID \
-              --role "Key Vault Secrets User" \
-              --scope $KV_ID \
-              --query "[0].id" -o tsv 2>/dev/null || echo "")
-
-            if [ -z "$EXISTING" ]; then
-              az role assignment create \
-                --assignee-object-id $PRINCIPAL_ID \
-                --assignee-principal-type ServicePrincipal \
-                --role "Key Vault Secrets User" \
-                --scope $KV_ID
-              echo "Role assignment created"
-            else
-              echo "Role assignment already exists"
-            fi
-          else
-            echo "Warning: Could not find managed identity principal ID"
-          fi
-
-      - name: Get ACR name from deployment
-        id: get-acr
-        run: |
-          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
-          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
-
-  build-and-push:
-    needs: deploy-infra
-    runs-on: ubuntu-latest
-    outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       sha-tag: ${{ steps.vars.outputs.sha_short }}
-      acr-name: ${{ needs.deploy-infra.outputs.acr-name }}
+      acr-name: ${{ steps.get-acr.outputs.acr_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -180,15 +78,47 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Get ACR name
+        id: get-acr
+        run: |
+          ACR_NAME=$(az acr list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].name" -o tsv)
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+
+      - name: Get secrets from Key Vault
+        id: get-secrets
+        run: |
+          AZURE_AD_CLIENT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-client-id \
+            --query value -o tsv 2>/dev/null || echo "")
+          AZURE_AD_TENANT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-tenant-id \
+            --query value -o tsv 2>/dev/null || echo "")
+
+          if [ -n "$AZURE_AD_CLIENT_ID" ]; then
+            echo "azure_ad_client_id=$AZURE_AD_CLIENT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_CLIENT_ID"
+          else
+            echo "azure_ad_client_id=${{ secrets.AZURE_AD_CLIENT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -n "$AZURE_AD_TENANT_ID" ]; then
+            echo "azure_ad_tenant_id=$AZURE_AD_TENANT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_TENANT_ID"
+          else
+            echo "azure_ad_tenant_id=${{ secrets.AZURE_AD_TENANT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Login to ACR
         run: |
-          az acr login --name ${{ needs.deploy-infra.outputs.acr-name }}
+          az acr login --name ${{ steps.get-acr.outputs.acr_name }}
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ needs.deploy-infra.outputs.acr-name }}.azurecr.io/englishconnect
+          images: ${{ steps.get-acr.outputs.acr_name }}.azurecr.io/englishconnect
           tags: |
             type=sha,prefix=
             type=raw,value=latest,enable={{is_default_branch}}
@@ -202,11 +132,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           no-cache: true
           build-args: |
-            VITE_AZURE_AD_CLIENT_ID=${{ needs.deploy-infra.outputs.azure-ad-client-id }}
-            VITE_AZURE_AD_TENANT_ID=${{ needs.deploy-infra.outputs.azure-ad-tenant-id }}
+            VITE_AZURE_AD_CLIENT_ID=${{ steps.get-secrets.outputs.azure_ad_client_id }}
+            VITE_AZURE_AD_TENANT_ID=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
 
   deploy-app:
-    needs: [deploy-infra, build-and-push]
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login (OIDC)

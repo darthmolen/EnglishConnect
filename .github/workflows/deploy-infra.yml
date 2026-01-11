@@ -1,0 +1,103 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'azure/**'
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: rg-englishconnect
+  KEY_VAULT_NAME: kv-aif-voz-preprod-001
+  KEY_VAULT_RESOURCE_GROUP: rg-aif-vozloop-preprod-001
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get secrets from Key Vault
+        id: get-secrets
+        run: |
+          AZURE_AD_CLIENT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-client-id \
+            --query value -o tsv 2>/dev/null || echo "")
+          AZURE_AD_TENANT_ID=$(az keyvault secret show \
+            --vault-name ${{ env.KEY_VAULT_NAME }} \
+            --name azure-ad-tenant-id \
+            --query value -o tsv 2>/dev/null || echo "")
+
+          if [ -n "$AZURE_AD_CLIENT_ID" ]; then
+            echo "azure_ad_client_id=$AZURE_AD_CLIENT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_CLIENT_ID"
+          else
+            echo "azure_ad_client_id=${{ secrets.AZURE_AD_CLIENT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -n "$AZURE_AD_TENANT_ID" ]; then
+            echo "azure_ad_tenant_id=$AZURE_AD_TENANT_ID" >> $GITHUB_OUTPUT
+            echo "::add-mask::$AZURE_AD_TENANT_ID"
+          else
+            echo "azure_ad_tenant_id=${{ secrets.AZURE_AD_TENANT_ID }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy Bicep infrastructure
+        uses: azure/arm-deploy@v2
+        with:
+          resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
+          template: ./azure/infra/main.bicep
+          parameters: >-
+            ./azure/infra/parameters/dev.bicepparam
+            azureAdClientId=${{ steps.get-secrets.outputs.azure_ad_client_id }}
+            azureAdTenantId=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
+            keyVaultName=${{ env.KEY_VAULT_NAME }}
+          failOnStdErr: false
+
+      - name: Grant managed identity Key Vault access
+        run: |
+          PRINCIPAL_ID=$(az deployment group show \
+            -g ${{ env.AZURE_RESOURCE_GROUP }} \
+            -n container-app \
+            --query properties.outputs.managedIdentityPrincipalId.value -o tsv 2>/dev/null || \
+            az identity list -g ${{ env.AZURE_RESOURCE_GROUP }} --query "[0].principalId" -o tsv)
+
+          if [ -n "$PRINCIPAL_ID" ]; then
+            echo "Granting Key Vault Secrets User role to managed identity..."
+            KV_ID=$(az keyvault show \
+              --name ${{ env.KEY_VAULT_NAME }} \
+              --resource-group ${{ env.KEY_VAULT_RESOURCE_GROUP }} \
+              --query id -o tsv)
+
+            EXISTING=$(az role assignment list \
+              --assignee $PRINCIPAL_ID \
+              --role "Key Vault Secrets User" \
+              --scope $KV_ID \
+              --query "[0].id" -o tsv 2>/dev/null || echo "")
+
+            if [ -z "$EXISTING" ]; then
+              az role assignment create \
+                --assignee-object-id $PRINCIPAL_ID \
+                --assignee-principal-type ServicePrincipal \
+                --role "Key Vault Secrets User" \
+                --scope $KV_ID
+              echo "Role assignment created"
+            else
+              echo "Role assignment already exists"
+            fi
+          else
+            echo "Warning: Could not find managed identity principal ID"
+          fi
