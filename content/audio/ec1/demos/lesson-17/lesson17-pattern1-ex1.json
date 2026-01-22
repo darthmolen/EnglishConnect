@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Can I take your order?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, I'd like to order beans, rice, and a drink, please."
+    }
+  ],
+  "created_at": "2026-01-22T21:43:57.016892+00:00",
+  "duration_seconds": 6.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

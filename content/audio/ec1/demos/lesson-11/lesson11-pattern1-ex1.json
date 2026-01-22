@@ -1,0 +1,21 @@
+{
+  "lesson_number": 11,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What are you doing now?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I am relaxing."
+    }
+  ],
+  "created_at": "2026-01-22T21:43:23.964512+00:00",
+  "duration_seconds": 3.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

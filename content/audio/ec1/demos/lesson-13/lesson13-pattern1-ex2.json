@@ -1,0 +1,21 @@
+{
+  "lesson_number": 13,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What's the weather in Toronto?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "It's snowing in Toronto."
+    }
+  ],
+  "created_at": "2026-01-22T21:43:44.591192+00:00",
+  "duration_seconds": 4.9,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

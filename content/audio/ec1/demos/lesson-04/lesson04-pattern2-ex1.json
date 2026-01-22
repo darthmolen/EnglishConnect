@@ -1,0 +1,21 @@
+{
+  "lesson_number": 4,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Do you like to travel?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, I like to travel."
+    }
+  ],
+  "created_at": "2026-01-22T21:42:53.985871+00:00",
+  "duration_seconds": 4.5,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

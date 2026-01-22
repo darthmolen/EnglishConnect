@@ -1,0 +1,21 @@
+{
+  "lesson_number": 4,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What does he like to do?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "He likes to dance."
+    }
+  ],
+  "created_at": "2026-01-22T21:42:52.422217+00:00",
+  "duration_seconds": 4.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

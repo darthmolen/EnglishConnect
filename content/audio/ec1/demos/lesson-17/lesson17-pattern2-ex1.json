@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What do you want in your soup?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I want noodles in my soup."
+    }
+  ],
+  "created_at": "2026-01-22T21:44:00.569762+00:00",
+  "duration_seconds": 4.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

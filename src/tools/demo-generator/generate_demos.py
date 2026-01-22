@@ -23,7 +23,6 @@ import asyncio
 import base64
 import io
 import json
-import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -193,7 +192,8 @@ async def fetch_lesson_dialogues(session: AsyncSession, lesson_number: int) -> l
                 "example_index": i + 1,
                 "dialogue": [
                     {"speaker": TEACHER_VOICE, "text": q},
-                    {"speaker": STUDENT_VOICE, "text": a},
+                    # Add "..." to answer to prevent TTS truncation at end
+                    {"speaker": STUDENT_VOICE, "text": a + "..."},
                 ],
             }
             dialogues.append(dialogue)
@@ -213,9 +213,8 @@ async def save_demo(
     output_dir = OUTPUT_BASE / f"lesson-{lesson_number:02d}"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    demo_id = str(uuid.uuid4())[:8]
-    audio_filename = f"pattern-{pattern_number}-ex{example_index}-{demo_id}.wav"
-    meta_filename = f"pattern-{pattern_number}-ex{example_index}-{demo_id}.json"
+    audio_filename = f"lesson{lesson_number:02d}-pattern{pattern_number}-ex{example_index}.wav"
+    meta_filename = f"lesson{lesson_number:02d}-pattern{pattern_number}-ex{example_index}.json"
 
     audio_path = output_dir / audio_filename
     meta_path = output_dir / meta_filename

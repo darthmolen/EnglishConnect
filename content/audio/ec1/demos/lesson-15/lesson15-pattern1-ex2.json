@@ -1,0 +1,21 @@
+{
+  "lesson_number": 15,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What does he do for work?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "He sells computers."
+    }
+  ],
+  "created_at": "2026-01-22T21:38:42.077153+00:00",
+  "duration_seconds": 3.97,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What would you like to order?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I'd like soup and a salad, please."
+    }
+  ],
+  "created_at": "2026-01-22T21:43:58.914536+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}
