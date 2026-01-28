@@ -93,6 +93,8 @@
     "startRecording": "Iniciar grabación",
     "stopRecording": "Detener grabación",
     "pushToTalk": "Pulsar para Hablar",
+    "holdToTalk": "Mantén presionado para hablar",
+    "recording": "Grabando... suelta para enviar",
     "active": "Activo",
     "switchToActive": "Cambiar a modo Activo (detectar voz automáticamente)",
     "switchToPTT": "Cambiar a modo Pulsar para Hablar"

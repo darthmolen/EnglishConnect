@@ -8,6 +8,7 @@ import * as api from '@/services/api'
 vi.mock('@/services/api', () => ({
   sendMessage: vi.fn(),
   transcribeAudio: vi.fn(),
+  fetchConfig: vi.fn().mockResolvedValue({ use_realtime_api: false }),
 }))
 
 // Mock useAudioRecorder
@@ -28,6 +29,32 @@ vi.mock('../useAudioPlayer', () => ({
     stopAudio: vi.fn(),
   }),
 }))
+
+describe('useConversation recording state', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    useConversationStore.setState({
+      messages: [],
+      selectedLessonNumber: 1,
+      isLoading: false,
+      isRecording: false,
+    })
+  })
+
+  it('should return isRecording true when store isRecording is true (realtime path)', () => {
+    // Simulates realtime recording: useAudioRecorder.isRecording is false (mocked),
+    // but the store's isRecording is true (set by startRealtimeRecording)
+    useConversationStore.setState({ isRecording: true })
+    const { result } = renderHook(() => useConversation())
+    expect(result.current.isRecording).toBe(true)
+  })
+
+  it('should return isRecording false when neither source is recording', () => {
+    useConversationStore.setState({ isRecording: false })
+    const { result } = renderHook(() => useConversation())
+    expect(result.current.isRecording).toBe(false)
+  })
+})
 
 describe('useConversation error handling', () => {
   beforeEach(() => {

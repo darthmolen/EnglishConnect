@@ -93,6 +93,8 @@
     "startRecording": "Start recording",
     "stopRecording": "Stop recording",
     "pushToTalk": "Push to Talk",
+    "holdToTalk": "Hold to talk",
+    "recording": "Recording... release to send",
     "active": "Active",
     "switchToActive": "Switch to Active mode (auto-detect speech)",
     "switchToPTT": "Switch to Push-to-Talk mode"

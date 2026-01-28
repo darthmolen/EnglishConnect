@@ -30,10 +30,12 @@ export function MobileApp() {
   const {
     messages,
     isRecording,
+    isPlaying,
     isLoading: conversationLoading,
     voiceMode,
     setVoiceMode,
-    toggleRecording,
+    startRecording,
+    stopRecording,
     sendTextMessage,
   } = useConversation()
 
@@ -426,8 +428,10 @@ export function MobileApp() {
         messages={chatMessages}
         pinnedCard={getPinnedCard()}
         isRecording={isRecording}
+        isPlaying={isPlaying}
         voiceMode={voiceMode}
-        onToggleRecording={toggleRecording}
+        onStartRecording={startRecording}
+        onStopRecording={stopRecording}
         onToggleVoiceMode={() => setVoiceMode(voiceMode === 'push-to-talk' ? 'active' : 'push-to-talk')}
         isLoading={conversationLoading}
       />

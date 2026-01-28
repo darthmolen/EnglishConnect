@@ -174,13 +174,7 @@ class RealtimeSessionManager:
                 "input_audio_transcription": {
                     "model": "whisper-1"
                 },
-                "turn_detection": {
-                    "type": "server_vad",
-                    "threshold": 0.6,  # Less sensitive to avoid false starts
-                    "prefix_padding_ms": 500,  # Capture more at speech start
-                    "silence_duration_ms": 1200,  # Wait longer for language learners
-                    "create_response": True
-                },
+                "turn_detection": None,  # PTT mode - client controls start/stop via commit
                 "tools": get_tool_definitions(),
                 "tool_choice": "auto"
             }
@@ -220,12 +214,15 @@ class RealtimeSessionManager:
         await self.ws.send(json.dumps({"type": "response.create"}))
 
     async def commit_audio(self) -> None:
-        """Commit the audio buffer to trigger processing."""
+        """Commit the audio buffer and trigger response generation."""
         if not self._connected or not self.ws:
             return
 
         event = {"type": "input_audio_buffer.commit"}
         await self.ws.send(json.dumps(event))
+
+        # With turn_detection=None (PTT mode), must explicitly request a response
+        await self.ws.send(json.dumps({"type": "response.create"}))
 
     async def cancel_response(self) -> None:
         """Cancel the current response (for interruption handling)."""

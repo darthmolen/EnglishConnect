@@ -1,6 +1,7 @@
 import { X, Mic, MicOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import { VoiceButton } from '@/components/VoiceButton'
 
 interface Message {
   id: string
@@ -19,8 +20,10 @@ interface MobileChatOverlayProps {
   messages: Message[]
   pinnedCard: PinnedCard | null
   isRecording: boolean
+  isPlaying: boolean
   voiceMode: 'push-to-talk' | 'active'
-  onToggleRecording: () => void
+  onStartRecording: () => void
+  onStopRecording: () => void
   onToggleVoiceMode: () => void
   isLoading?: boolean
 }
@@ -31,8 +34,10 @@ export function MobileChatOverlay({
   messages,
   pinnedCard,
   isRecording,
+  isPlaying,
   voiceMode,
-  onToggleRecording,
+  onStartRecording,
+  onStopRecording,
   onToggleVoiceMode,
   isLoading = false,
 }: MobileChatOverlayProps) {
@@ -123,22 +128,13 @@ export function MobileChatOverlay({
             )}
           </button>
 
-          {/* Main mic button */}
-          <button
-            type="button"
-            aria-label="Microphone"
-            onClick={onToggleRecording}
-            className={cn(
-              'flex items-center justify-center',
-              'h-16 w-16 rounded-full',
-              'transition-all duration-200',
-              isRecording
-                ? 'bg-destructive text-destructive-foreground scale-110'
-                : 'bg-primary text-primary-foreground hover:bg-primary/90'
-            )}
-          >
-            <Mic className="h-7 w-7" />
-          </button>
+          {/* Main mic button — PTT: hold to talk, release to send */}
+          <VoiceButton
+            isRecording={isRecording}
+            isPlaying={isPlaying}
+            onStartRecording={onStartRecording}
+            onStopRecording={onStopRecording}
+          />
 
           {/* Spacer to balance layout */}
           <div className="w-[72px]" />

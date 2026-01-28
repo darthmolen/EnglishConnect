@@ -51,6 +51,7 @@ export function useConversation() {
     instructionLanguage,
     focusPattern,
     voiceMode,
+    isRecording: storeIsRecording,
     addMessage,
     clearMessages,
     setIsLoading,
@@ -62,11 +63,14 @@ export function useConversation() {
   } = useConversationStore()
 
   const {
-    isRecording,
+    isRecording: audioRecorderIsRecording,
     audioBlob,
     startRecording,
     stopRecording,
   } = useAudioRecorder()
+
+  // Unified recording state: true if either audio recorder or realtime (store) is recording
+  const isRecording = audioRecorderIsRecording || storeIsRecording
   const { isPlaying, playAudio } = useAudioPlayer()
 
   // Realtime API state
@@ -519,43 +523,49 @@ export function useConversation() {
     }
   }, [useRealtimeApi, audioBlob, isRecording, sendVoiceMessage])
 
-  // Toggle recording - uses Realtime API or HTTP based on config
+  // Start recording - uses Realtime API or HTTP based on config (for PTT)
+  const handleStartRecording = useCallback(async () => {
+    if (isRecording) return // Already recording
+
+    try {
+      console.log('Starting recording...')
+      if (useRealtimeApi) {
+        await startRealtimeRecording()
+      } else {
+        shouldSendVoiceRef.current = false
+        await startRecording()
+        setStoreIsRecording(true)
+        console.log('Recording started')
+      }
+    } catch (error) {
+      console.error('Failed to start recording:', error)
+      setStoreIsRecording(false)
+    }
+  }, [isRecording, useRealtimeApi, startRecording, startRealtimeRecording, setStoreIsRecording])
+
+  // Stop recording - uses Realtime API or HTTP based on config (for PTT)
+  const handleStopRecording = useCallback(() => {
+    if (!isRecording) return // Not recording
+
+    console.log('Stopping recording...')
+    if (useRealtimeApi) {
+      stopRealtimeRecording()
+    } else {
+      shouldSendVoiceRef.current = true // Flag to auto-send when blob is ready
+      stopRecording()
+      setStoreIsRecording(false)
+      console.log('Recording stopped, will transcribe...')
+    }
+  }, [isRecording, useRealtimeApi, stopRecording, stopRealtimeRecording, setStoreIsRecording])
+
+  // Toggle recording - kept for backward compatibility
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
-      console.log('Stopping recording...')
-      if (useRealtimeApi) {
-        stopRealtimeRecording()
-      } else {
-        shouldSendVoiceRef.current = true // Flag to auto-send when blob is ready
-        stopRecording()
-        setStoreIsRecording(false)
-        console.log('Recording stopped, will transcribe...')
-      }
+      handleStopRecording()
     } else {
-      try {
-        console.log('Starting recording...')
-        if (useRealtimeApi) {
-          await startRealtimeRecording()
-        } else {
-          shouldSendVoiceRef.current = false
-          await startRecording()
-          setStoreIsRecording(true)
-          console.log('Recording started')
-        }
-      } catch (error) {
-        console.error('Failed to start recording:', error)
-        setStoreIsRecording(false)
-      }
+      await handleStartRecording()
     }
-  }, [
-    isRecording,
-    useRealtimeApi,
-    startRecording,
-    stopRecording,
-    startRealtimeRecording,
-    stopRealtimeRecording,
-    setStoreIsRecording,
-  ])
+  }, [isRecording, handleStartRecording, handleStopRecording])
 
   // Send text message - routes through WebSocket (Realtime) or HTTP based on config
   const sendTextMessage = useCallback(
@@ -652,6 +662,8 @@ export function useConversation() {
     voiceMode,
     setVoiceMode,
     toggleRecording,
+    startRecording: handleStartRecording,
+    stopRecording: handleStopRecording,
     sendTextMessage,
     sendVoiceMessage,
     clearMessages,

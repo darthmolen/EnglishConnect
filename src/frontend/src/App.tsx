@@ -57,7 +57,8 @@ function DesktopApp() {
     isLoading,
     voiceMode,
     setVoiceMode,
-    toggleRecording,
+    startRecording,
+    stopRecording,
     sendTextMessage,
     clearMessages,
   } = useConversation()
@@ -309,11 +310,12 @@ function DesktopApp() {
                 )}
               </button>
 
-              {/* Main microphone button */}
+              {/* Main microphone button - PTT: hold to talk, release to send */}
               <VoiceButton
                 isRecording={isRecording}
                 isPlaying={isPlaying}
-                onPress={toggleRecording}
+                onStartRecording={startRecording}
+                onStopRecording={stopRecording}
                 disabled={!selectedLessonNumber || isLoading || !isAuthenticated}
                 title={!isAuthenticated ? t('auth.signInToSpeak') : undefined}
               />
