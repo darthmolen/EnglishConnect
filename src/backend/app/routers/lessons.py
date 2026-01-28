@@ -33,6 +33,28 @@ async def list_lessons(
     return await service.list_lessons(course_id)
 
 
+# NOTE: Static routes must come before dynamic routes like /{lesson_number}
+@router.get("/helping-phrases", response_model=list[HelpingPhraseSchema])
+async def get_helping_phrases(
+    language: str = Query("es", description="Language code (es, en)"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Get helping phrases for a language.
+
+    These phrases allow students to request assistance during practice
+    in their native language (e.g., "No entiendo" in Spanish).
+
+    Args:
+        language: Language code (default: es)
+        db: Database session dependency
+
+    Returns:
+        List of HelpingPhraseSchema objects
+    """
+    service = HelpingPhraseService(db)
+    return await service.get_phrases_for_language(language)
+
+
 @router.get("/{lesson_number}", response_model=LessonDetail)
 async def get_lesson(
     lesson_number: int,
@@ -64,24 +86,3 @@ async def get_lesson(
         raise HTTPException(status_code=404, detail="Lesson not found")
 
     return detail
-
-
-@router.get("/helping-phrases", response_model=list[HelpingPhraseSchema])
-async def get_helping_phrases(
-    language: str = Query("es", description="Language code (es, en)"),
-    db: AsyncSession = Depends(get_db),
-):
-    """Get helping phrases for a language.
-
-    These phrases allow students to request assistance during practice
-    in their native language (e.g., "No entiendo" in Spanish).
-
-    Args:
-        language: Language code (default: es)
-        db: Database session dependency
-
-    Returns:
-        List of HelpingPhraseSchema objects
-    """
-    service = HelpingPhraseService(db)
-    return await service.get_phrases_for_language(language)
