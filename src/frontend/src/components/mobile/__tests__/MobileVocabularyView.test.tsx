@@ -46,7 +46,7 @@ describe('MobileVocabularyView', () => {
     )
 
     // The second card (goodbye) should be highlighted
-    const goodbyeCard = screen.getByText('goodbye').closest('button')
+    const goodbyeCard = screen.getByText('goodbye').closest('[role="button"]')
     expect(goodbyeCard).toHaveClass('ring-2')
   })
 
@@ -73,7 +73,7 @@ describe('MobileVocabularyView', () => {
       />
     )
 
-    const bookCard = screen.getByText('book').closest('button')
+    const bookCard = screen.getByText('book').closest('[role="button"]')
     fireEvent.click(bookCard!)
     // Card click now calls onPlayWord (which handles both select and play)
     expect(mockOnPlayWord).toHaveBeenCalledWith(2)

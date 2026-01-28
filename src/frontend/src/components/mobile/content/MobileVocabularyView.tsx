@@ -31,12 +31,19 @@ export function MobileVocabularyView({
       {vocabulary.map((item, index) => {
         const isPlaying = playingWord === item.english
         return (
-          <button
+          <div
             key={`${item.english}-${index}`}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => onPlayWord(index)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onPlayWord(index)
+              }
+            }}
             className={cn(
-              'w-full text-left p-4 rounded-xl border transition-all',
+              'w-full text-left p-4 rounded-xl border transition-all cursor-pointer',
               'min-h-[72px]', // Touch-friendly
               'active:scale-[0.98]',
               index === currentIndex
@@ -75,7 +82,7 @@ export function MobileVocabularyView({
                 )}
               </button>
             </div>
-          </button>
+          </div>
         )
       })}
     </div>
