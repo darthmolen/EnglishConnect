@@ -253,6 +253,12 @@ class RealtimeSessionManager:
                 event = json.loads(message)
                 event_type = event.get("type", "")
 
+                # Log ALL events for debugging (except high-frequency audio deltas)
+                if event_type not in ["response.audio.delta", "response.audio_transcript.delta"]:
+                    print(f"[REALTIME EVENT] {event_type}")
+                    if event_type in ["error", "response.done", "session.created", "session.updated"]:
+                        print(f"  -> {json.dumps(event, indent=2)[:500]}")
+
                 # Audio delta - forward to client
                 if event_type == "response.audio.delta":
                     audio_bytes = base64.b64decode(event.get("delta", ""))
@@ -282,13 +288,23 @@ class RealtimeSessionManager:
 
                 # VAD events
                 elif event_type == "input_audio_buffer.speech_started":
+                    print("[REALTIME] VAD: Speech started (user speaking)")
                     yield {"type": "speech_started"}
 
                 elif event_type == "input_audio_buffer.speech_stopped":
+                    print("[REALTIME] VAD: Speech stopped")
                     yield {"type": "speech_stopped"}
+
+                # Response cancelled (interruption)
+                elif event_type == "response.cancelled":
+                    print("[REALTIME] RESPONSE CANCELLED - agent was interrupted!")
+                    # Don't yield this as response_done
 
                 # Response complete
                 elif event_type == "response.done":
+                    # Check if response was actually complete or cancelled
+                    status = event.get("response", {}).get("status", "unknown")
+                    print(f"[REALTIME] Response done with status: {status}")
                     yield {"type": "response_done"}
 
                 # Error

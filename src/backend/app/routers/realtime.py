@@ -215,14 +215,17 @@ async def realtime_conversation(
                         # Send text message to Realtime API
                         text = message.get("text", "")
                         if text:
+                            print(f"[CLIENT -> REALTIME] Text message: {text[:100]}")
                             await session.send_text(text)
 
                     elif msg_type == "commit":
                         # Client explicitly commits audio buffer
+                        print("[CLIENT -> REALTIME] Audio buffer COMMIT (PTT release)")
                         await session.commit_audio()
 
                     elif msg_type == "cancel":
                         # Client wants to cancel current response
+                        print("[CLIENT -> REALTIME] CANCEL request - interrupting agent!")
                         await session.cancel_response()
 
             except WebSocketDisconnect:
