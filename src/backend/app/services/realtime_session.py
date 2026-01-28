@@ -303,15 +303,56 @@ class RealtimeSessionManager:
                 # Response complete
                 elif event_type == "response.done":
                     # Check if response was actually complete or cancelled
-                    status = event.get("response", {}).get("status", "unknown")
+                    response_data = event.get("response", {})
+                    status = response_data.get("status", "unknown")
+                    status_details = response_data.get("status_details", {})
+                    reason = status_details.get("reason", "")
+
                     print(f"[REALTIME] Response done with status: {status}")
+                    if status_details:
+                        print(f"[REALTIME] Status details: {status_details}")
+
+                    # Handle incomplete responses (content filter, etc.)
+                    if status == "incomplete":
+                        if reason == "content_filter":
+                            print("[REALTIME] WARNING: Response blocked by content filter!")
+                            # Notify client about the filter
+                            yield {
+                                "type": "content_filtered",
+                                "message": "Response was filtered. Retrying..."
+                            }
+                            # Retry by requesting a new response
+                            if self.ws:
+                                print("[REALTIME] Retrying response after content filter...")
+                                await self.ws.send(json.dumps({"type": "response.create"}))
+                            # Don't yield response_done - wait for retry
+                            continue
+                        else:
+                            print(f"[REALTIME] Response incomplete for reason: {reason}")
+                            yield {
+                                "type": "response_incomplete",
+                                "reason": reason,
+                                "message": f"Response was incomplete: {reason}"
+                            }
+
                     yield {"type": "response_done"}
 
                 # Error
                 elif event_type == "error":
-                    error_msg = event.get("error", {}).get("message", "Unknown error")
-                    logger.error(f"Realtime API error: {error_msg}")
-                    yield {"type": "error", "message": error_msg}
+                    error_data = event.get("error", {})
+                    error_type = error_data.get("type", "unknown")
+                    error_msg = error_data.get("message", "Unknown error")
+
+                    # Handle empty audio buffer gracefully (user pressed PTT but didn't speak)
+                    if error_type == "input_audio_buffer_commit_empty":
+                        print("[REALTIME] Empty audio buffer - user pressed PTT but didn't speak")
+                        yield {
+                            "type": "empty_audio",
+                            "message": "No audio detected. Try speaking into the microphone."
+                        }
+                    else:
+                        logger.error(f"Realtime API error: {error_type} - {error_msg}")
+                        yield {"type": "error", "message": error_msg}
 
         except websockets.exceptions.ConnectionClosed as e:
             logger.warning(f"WebSocket connection closed: {e}")

@@ -219,6 +219,34 @@ export function useConversation() {
               agentMode,
             })
             break
+
+          case 'content_filtered':
+            // Response was blocked by content filter, retrying
+            console.warn('Content filter triggered, retrying...', data.message)
+            // Keep loading state - waiting for retry
+            break
+
+          case 'response_incomplete':
+            // Response was incomplete for non-filter reasons
+            console.warn('Response incomplete:', data.reason, data.message)
+            setIsLoading(false)
+            if (transcriptBufferRef.current.trim()) {
+              // Flush partial transcript
+              addMessage({
+                role: 'assistant',
+                content: transcriptBufferRef.current + ' [incomplete]',
+                agentMode,
+              })
+              transcriptBufferRef.current = ''
+            }
+            break
+
+          case 'empty_audio':
+            // User pressed PTT but didn't speak
+            console.log('Empty audio buffer:', data.message)
+            setIsLoading(false)
+            // Don't add a message, just reset state
+            break
         }
       } catch (err) {
         console.error('Failed to parse WebSocket message:', err)
