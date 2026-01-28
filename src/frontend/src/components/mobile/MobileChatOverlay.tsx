@@ -52,11 +52,11 @@ export function MobileChatOverlay({
         <h2 className="font-semibold">{t('mobile.chat.title', 'Practice')}</h2>
         <button
           type="button"
-          aria-label="Close"
           onClick={onClose}
-          className="p-2 rounded-full hover:bg-accent transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm text-destructive hover:bg-destructive/10 transition-colors"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
+          <span>{t('mobile.chat.endSession', 'End Session')}</span>
         </button>
       </header>
 

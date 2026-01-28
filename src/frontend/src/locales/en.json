@@ -81,7 +81,8 @@
     "selectFirst": "Select a lesson first",
     "clearTitle": "Clear conversation",
     "emptyState": "Select a lesson and start practicing!",
-    "thinking": "Thinking..."
+    "thinking": "Thinking...",
+    "endSession": "End Session"
   },
   "agents": {
     "helper": "Helper",
@@ -185,6 +186,10 @@
       "lessons": "Lessons",
       "learn": "Learn",
       "me": "Me"
+    },
+    "chat": {
+      "title": "Practice",
+      "endSession": "End Session"
     },
     "vocabulary": {
       "empty": "No vocabulary available",

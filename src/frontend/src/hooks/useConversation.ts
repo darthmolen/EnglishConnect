@@ -638,20 +638,51 @@ export function useConversation() {
     ]
   )
 
+  // Disconnect WebSocket and cleanup resources
+  const disconnect = useCallback(() => {
+    console.log('Disconnecting realtime session...')
+
+    // Stop any ongoing recording
+    if (processorRef.current) {
+      processorRef.current.disconnect()
+      processorRef.current = null
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+      mediaStreamRef.current = null
+    }
+
+    // Close WebSocket
+    if (wsRef.current) {
+      wsRef.current.close()
+      wsRef.current = null
+    }
+
+    // Close audio context
+    if (audioContextRef.current) {
+      audioContextRef.current.close()
+      audioContextRef.current = null
+    }
+
+    // Clear playback queue
+    playbackQueueRef.current = []
+    isPlayingRef.current = false
+    transcriptBufferRef.current = ''
+
+    // Reset store state
+    setStoreIsRecording(false)
+    setStoreIsPlaying(false)
+    setIsLoading(false)
+
+    console.log('Realtime session disconnected')
+  }, [setStoreIsRecording, setStoreIsPlaying, setIsLoading])
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close()
-      }
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop())
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close()
-      }
+      disconnect()
     }
-  }, [])
+  }, [disconnect])
 
   return {
     messages,
@@ -667,5 +698,6 @@ export function useConversation() {
     sendTextMessage,
     sendVoiceMessage,
     clearMessages,
+    disconnect,
   }
 }

@@ -37,6 +37,7 @@ export function MobileApp() {
     startRecording,
     stopRecording,
     sendTextMessage,
+    disconnect,
   } = useConversation()
 
   // Track current index for vocab/practice/patterns views
@@ -424,7 +425,10 @@ export function MobileApp() {
       {/* Chat overlay */}
       <MobileChatOverlay
         isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
+        onClose={() => {
+          disconnect()
+          setIsChatOpen(false)
+        }}
         messages={chatMessages}
         pinnedCard={getPinnedCard()}
         isRecording={isRecording}

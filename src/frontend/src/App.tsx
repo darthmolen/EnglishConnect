@@ -61,6 +61,7 @@ function DesktopApp() {
     stopRecording,
     sendTextMessage,
     clearMessages,
+    disconnect,
   } = useConversation()
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -273,6 +274,10 @@ function DesktopApp() {
               <ConversationDrawer
                 isOpen={isDrawerOpen}
                 onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+                onEndSession={() => {
+                  disconnect()
+                  setIsDrawerOpen(false)
+                }}
                 messages={messages}
                 isLoading={isLoading}
               />

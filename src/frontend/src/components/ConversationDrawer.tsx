@@ -7,6 +7,7 @@ import type { ChatMessage } from '@/types'
 interface ConversationDrawerProps {
   isOpen: boolean
   onToggle: () => void
+  onEndSession: () => void
   messages: ChatMessage[]
   isLoading: boolean
 }
@@ -14,6 +15,7 @@ interface ConversationDrawerProps {
 export function ConversationDrawer({
   isOpen,
   onToggle,
+  onEndSession,
   messages,
   isLoading,
 }: ConversationDrawerProps) {
@@ -60,14 +62,15 @@ export function ConversationDrawer({
           <h3 className="font-semibold text-sm">{t('conversation.title')}</h3>
           <button
             type="button"
-            onClick={onToggle}
+            onClick={onEndSession}
             className={cn(
-              'rounded-md p-1 text-muted-foreground',
-              'hover:bg-accent hover:text-accent-foreground',
+              'flex items-center gap-1 px-2 py-1 rounded-md text-xs',
+              'text-destructive hover:bg-destructive/10',
               'focus:outline-none focus:ring-2 focus:ring-ring'
             )}
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3" />
+            <span>{t('conversation.endSession', 'End Session')}</span>
           </button>
         </div>
 
