@@ -17,6 +17,7 @@ from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.config import get_settings
 from app.database import get_db
 from app.services.lesson_service import LessonService
+from app.services.helping_phrase_service import HelpingPhraseService
 from app.services.realtime_session import RealtimeSessionManager
 
 logger = logging.getLogger(__name__)
@@ -157,10 +158,18 @@ async def realtime_conversation(
     # Build system prompt using UnifiedTeachingAgent
     service = LessonService(db)
     lesson = await service.get_lesson_detail("ec1", lesson_number)
+
+    # Load helping phrases for the instruction language (practice mode)
+    helping_phrases = []
+    if mode == "practice":
+        phrase_service = HelpingPhraseService(db)
+        helping_phrases = await phrase_service.get_phrases_for_language(instruction_language)
+
     agent = UnifiedTeachingAgent(
         lesson=lesson,
         mode=mode,
-        instruction_language=instruction_language
+        instruction_language=instruction_language,
+        helping_phrases=helping_phrases,
     )
     system_prompt = agent.build_system_prompt()
 
@@ -210,6 +219,10 @@ async def realtime_conversation(
 
         async def send_to_client():
             """Process Realtime API events and send to client."""
+            # Accumulate assistant transcript deltas for logging
+            assistant_transcript = []
+            exchange_count = 0
+
             async for event in session.process_events():
                 if event["type"] == "audio":
                     # Encode audio as base64 for WebSocket
@@ -217,6 +230,30 @@ async def realtime_conversation(
                         "type": "audio",
                         "data": base64.b64encode(event["data"]).decode("utf-8")
                     })
+
+                elif event["type"] == "transcript":
+                    # Log user transcripts immediately
+                    if event.get("role") == "user":
+                        print("\n" + "=" * 60)
+                        print(f"REALTIME [{mode.upper()}] Exchange #{exchange_count}")
+                        print("=" * 60)
+                        print(f"USER: {event.get('text', '')}")
+                        print("-" * 60)
+                    else:
+                        # Accumulate assistant transcript deltas
+                        assistant_transcript.append(event.get("text", ""))
+                    await websocket.send_json(event)
+
+                elif event["type"] == "response_done":
+                    # Log accumulated assistant transcript
+                    if assistant_transcript:
+                        full_text = "".join(assistant_transcript)
+                        print(f"AGENT: {full_text}")
+                        print("=" * 60 + "\n")
+                        assistant_transcript.clear()
+                        exchange_count += 1
+                    await websocket.send_json(event)
+
                 else:
                     # Forward other events directly
                     await websocket.send_json(event)
