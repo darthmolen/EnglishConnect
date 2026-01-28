@@ -208,6 +208,29 @@ async def conversation(
         f"audio={'yes' if audio_base64 else 'no'} ({audio_size} chars), lang={language}"
     )
 
+    # === CONVERSATION LOG (for debugging) ===
+    print("\n" + "=" * 60)
+    print(f"CONVERSATION [{request.mode.upper()}] Exchange #{request.exchange_count}")
+    print("=" * 60)
+    print(f"USER: {request.message if request.message else '(session start)'}")
+    print("-" * 60)
+
+    # Show all speak() calls with their languages
+    if audio_chunks:
+        for chunk in audio_chunks:
+            lang_label = "🇪🇸 ES" if chunk.language == "es" else "🇺🇸 EN"
+            print(f"AGENT [{lang_label}]: {chunk.text}")
+    else:
+        print(f"AGENT: {response_text}")
+
+    # Show tool calls summary
+    tool_calls = agent_result.get("tool_results", [])
+    if tool_calls:
+        tools_used = [t.get("tool") for t in tool_calls if t.get("tool") != "speak"]
+        if tools_used:
+            print(f"TOOLS: {', '.join(tools_used)}")
+    print("=" * 60 + "\n")
+
     # Record exchange for evaluation (non-blocking)
     try:
         session_service = SessionService(db)
