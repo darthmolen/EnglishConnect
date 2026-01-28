@@ -122,7 +122,9 @@
     "skip": "Saltar",
     "startConversation": "Comenzar la Conversación",
     "summary": "Primero, escucha las conversaciones de demostración para escuchar cómo suenan los patrones. Luego haz clic en 'Comenzar la Conversación' para practicar con tu compañero de conversación. ¡Ellos te harán preguntas primero, y luego te invitarán a hacerles preguntas a ellos!",
-    "summaryTitle": "Práctica de Conversación"
+    "summaryTitle": "Práctica de Conversación",
+    "helpPhrases": "¿Necesitas Ayuda? Puedes decir:",
+    "helpPhrasesHint": "Di estas frases cuando quieras durante la práctica"
   },
   "patterns": {
     "empty": "No hay patrones disponibles para esta lección",

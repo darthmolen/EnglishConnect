@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from app.agents.unified_teaching_agent import UnifiedTeachingAgent
+from app.schemas.helping_phrase import HelpingPhraseSchema
 from app.schemas.lesson import LessonDetail, VocabularyItemSchema, QAPatternSchema
 from app.schemas.lesson_session import PhaseStateSchema
 from app.services.azure_openai import get_agent_response, UNIFIED_AGENT_TOOLS
@@ -72,6 +73,8 @@ class AgentTestHarness:
         self,
         lesson: LessonDetail,
         agent_mode: Literal["help", "practice"] = "practice",
+        instruction_language: str = "es",
+        helping_phrases: list[HelpingPhraseSchema] | None = None,
     ):
         """Initialize the harness with lesson data.
 
@@ -80,9 +83,13 @@ class AgentTestHarness:
         Args:
             lesson: LessonDetail with vocabulary and patterns
             agent_mode: "help" for vocabulary page, "practice" for practice page
+            instruction_language: Language for instructions ('es' or 'en')
+            helping_phrases: Optional list of helping phrases for the instruction language
         """
         self.lesson = lesson
         self.agent_mode = agent_mode
+        self.instruction_language = instruction_language
+        self.helping_phrases = helping_phrases or []
         self.exchange_count = 0
         self.performance_context = PerformanceContext()
 
@@ -113,6 +120,7 @@ class AgentTestHarness:
         lesson_number: int,
         agent_mode: Literal["help", "practice"] = "practice",
         course_id: str = "ec1",
+        instruction_language: str = "es",
     ) -> "AgentTestHarness":
         """Create harness with lesson loaded from database.
 
@@ -120,6 +128,7 @@ class AgentTestHarness:
             lesson_number: Lesson number to load
             agent_mode: "help" for vocabulary page, "practice" for practice page
             course_id: Course ID (default "ec1")
+            instruction_language: Language for instructions ('es' or 'en')
 
         Returns:
             Initialized AgentTestHarness
@@ -129,6 +138,7 @@ class AgentTestHarness:
         """
         from app.database import async_session_maker
         from app.services.lesson_service import LessonService
+        from app.services.helping_phrase_service import HelpingPhraseService
 
         async with async_session_maker() as session:
             service = LessonService(session)
@@ -137,7 +147,16 @@ class AgentTestHarness:
             if not lesson:
                 raise ValueError(f"Lesson {lesson_number} not found in course {course_id}")
 
-            return cls(lesson=lesson, agent_mode=agent_mode)
+            # Load helping phrases for the instruction language
+            phrase_service = HelpingPhraseService(session)
+            helping_phrases = await phrase_service.get_phrases_for_language(instruction_language)
+
+            return cls(
+                lesson=lesson,
+                agent_mode=agent_mode,
+                instruction_language=instruction_language,
+                helping_phrases=helping_phrases,
+            )
 
     @classmethod
     def create_with_mock_lesson(
@@ -194,8 +213,9 @@ class AgentTestHarness:
             lesson=self.lesson,
             mode=self.agent_mode,
             exchange_count=self.exchange_count,
-            instruction_language="es",
+            instruction_language=self.instruction_language,
             performance_context=self.performance_context,
+            helping_phrases=self.helping_phrases,
         )
         return agent.build_system_prompt()
 

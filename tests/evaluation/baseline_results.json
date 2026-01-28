@@ -1,0 +1,134 @@
+{
+  "metadata": {
+    "lesson_number": 16,
+    "timestamp": "2026-01-28T09:30:01.859495",
+    "description": "Baseline agent behavior before bilingual enhancement"
+  },
+  "scenarios": {
+    "session_start": {
+      "input": "",
+      "output": "\u00a1Hola! Bienvenido a nuestra pr\u00e1ctica de conversaci\u00f3n sobre comida. \u00bfQu\u00e9 comes para el desayuno?",
+      "spoken_text": "\u00a1Hola! Bienvenido a nuestra pr\u00e1ctica de conversaci\u00f3n sobre comida. \u00bfQu\u00e9 comes para el desayuno?",
+      "spoken_language": "es",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "\u00a1Hola! Bienvenido a nuestra pr\u00e1ctica de conversaci\u00f3n sobre comida. \u00bfQu\u00e9 comes para el desayuno?",
+            "language": "es"
+          }
+        }
+      ],
+      "tokens": 7857
+    },
+    "normal_response": {
+      "input": "I like to eat pizza",
+      "output": "Great! Pizza is delicious. What do you eat for breakfast?",
+      "spoken_text": "Great! Pizza is delicious. What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "record_attempt",
+          "args": {
+            "item_type": "pattern",
+            "correct": true
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Great! Pizza is delicious. What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 7947
+    },
+    "error_response": {
+      "input": "Me gusta comer pizza",
+      "output": "\u00a1Qu\u00e9 bien! La pizza es deliciosa. \u00bfQu\u00e9 comida comes para el desayuno?",
+      "spoken_text": "\u00a1Qu\u00e9 bien! La pizza es deliciosa. \u00bfQu\u00e9 comida comes para el desayuno?",
+      "spoken_language": "es",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "\u00a1Qu\u00e9 bien! La pizza es deliciosa. \u00bfQu\u00e9 comida comes para el desayuno?",
+            "language": "es",
+            "voice": "speaker_b"
+          }
+        }
+      ],
+      "tokens": 7859
+    },
+    "help_request_spanish": {
+      "input": "No entiendo",
+      "output": "Hello! How can I help you today?",
+      "spoken_text": "Hello! How can I help you today?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "\u00a1Hola! \u00bfC\u00f3mo puedo ayudarte hoy?",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Hello! How can I help you today?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 7957
+    },
+    "help_request_english": {
+      "input": "I don't understand",
+      "output": "I don't understand. Can you tell me what part you don't understand?",
+      "spoken_text": "I don't understand. Can you tell me what part you don't understand?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "No entiendo. \u00bfPuedes decirme qu\u00e9 parte no entiendes?",
+            "language": "es",
+            "voice": "speaker_b"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "I don't understand. Can you tell me what part you don't understand?",
+            "language": "en",
+            "voice": "speaker_b"
+          }
+        }
+      ],
+      "tokens": 7998
+    },
+    "pattern_flip": {
+      "input": "What do you eat for breakfast?",
+      "output": "I eat eggs and bread for breakfast. What do you eat for breakfast?",
+      "spoken_text": "I eat eggs and bread for breakfast. What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "I eat eggs and bread for breakfast. What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 7843
+    }
+  },
+  "summary": {
+    "total_scenarios": 6,
+    "successful": 6,
+    "failed": 0
+  }
+}

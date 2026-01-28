@@ -13,6 +13,7 @@ import type {
   AgentMode,
   AgentResponse,
   InstructionLanguage,
+  HelpingPhrase,
 } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
 import {
@@ -294,6 +295,30 @@ export async function fetchLessonDetail(
     throw new Error(`Lesson ${lessonNumber} not found`)
   }
   return response.json()
+}
+
+/**
+ * Fetch helping phrases for a language.
+ *
+ * These phrases allow students to request assistance during practice
+ * in their native language (e.g., "No entiendo" in Spanish).
+ *
+ * @param language - Language code (es, en)
+ */
+export async function fetchHelpingPhrases(
+  language: InstructionLanguage = 'es'
+): Promise<HelpingPhrase[]> {
+  try {
+    const response = await fetch(
+      `${API_BASE}/lessons/helping-phrases?language=${language}`
+    )
+    if (!response.ok) {
+      return []
+    }
+    return response.json()
+  } catch {
+    return []
+  }
 }
 
 /**

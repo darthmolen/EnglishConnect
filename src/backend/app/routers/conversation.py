@@ -31,6 +31,7 @@ from app.services.tool_handlers import (
 )
 from app.schemas.conversation import RichContent
 from app.services.session_service import SessionService
+from app.services.helping_phrase_service import HelpingPhraseService
 from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.models.performance import PerformanceContext
 from app.config import get_settings
@@ -90,6 +91,14 @@ async def conversation(
     # Create performance context for tracking struggles
     performance_context = PerformanceContext()
 
+    # Load helping phrases for the instruction language (practice mode only)
+    helping_phrases = []
+    if request.mode == "practice":
+        phrase_service = HelpingPhraseService(db)
+        helping_phrases = await phrase_service.get_phrases_for_language(
+            request.instruction_language
+        )
+
     # Build system prompt using UnifiedTeachingAgent
     agent = UnifiedTeachingAgent(
         lesson=lesson,
@@ -98,6 +107,7 @@ async def conversation(
         instruction_language=request.instruction_language,
         performance_context=performance_context,
         focus_pattern=request.focus_pattern,
+        helping_phrases=helping_phrases,
     )
     system_prompt = agent.build_system_prompt()
 

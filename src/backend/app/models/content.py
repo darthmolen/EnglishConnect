@@ -148,3 +148,23 @@ class ExampleSentence(Base):
     # Relationships
     lesson: Mapped["Lesson"] = relationship()
     pattern: Mapped["QAPattern"] = relationship()
+
+
+class HelpingPhrase(Base):
+    """Helping phrases for learners to request assistance during practice.
+
+    These phrases allow students to ask for help in their native language
+    (e.g., "No entiendo" in Spanish) and trigger the help recovery flow
+    where the agent explains in the student's language then restarts practice.
+    """
+
+    __tablename__ = "helping_phrases"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    language_code: Mapped[str] = mapped_column(String(10), nullable=False)  # 'es', 'en', 'fr'
+    phrase_key: Mapped[str] = mapped_column(String(50), nullable=False)  # 'repeat', 'dont_understand'
+    phrase_text: Mapped[str] = mapped_column(String(200), nullable=False)  # "Repite, por favor"
+    english_meaning: Mapped[str] = mapped_column(String(200), nullable=False)  # "Please repeat"
+    usage_context: Mapped[str | None] = mapped_column(Text)  # When to use this phrase
+    display_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

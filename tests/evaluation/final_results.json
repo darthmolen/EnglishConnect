@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "lesson_number": 16,
+    "timestamp": "2026-01-28T09:45:53.152719",
+    "description": "Final agent behavior after bilingual enhancement"
+  },
+  "scenarios": {
+    "session_start": {
+      "input": "",
+      "output": "What do you eat for breakfast?",
+      "spoken_text": "What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "\u00a1Hola! Bienvenido a nuestra pr\u00e1ctica de conversaci\u00f3n sobre comida. Hoy vamos a aprender a hablar sobre lo que comemos y por qu\u00e9 nos gusta. \u00bfListo para empezar?",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Today we will practice conversation about food. We will learn how to talk about what we eat and why we like it. Are you ready to start?",
+            "language": "en"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Vamos a practicar el patr\u00f3n: '\u00bfQu\u00e9 comes para desayuno?' y responder 'Comer [comida] para desayuno.' Si necesitas ayuda, puedes decir 'No entiendo' o 'Repite, por favor'. \u00a1Ahora vamos a practicar en ingl\u00e9s!",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 24135
+    },
+    "normal_response": {
+      "input": "I like to eat pizza",
+      "output": "That's great! Pizza is delicious. What do you eat for breakfast?",
+      "spoken_text": "That's great! Pizza is delicious. What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "record_attempt",
+          "args": {
+            "item_type": "pattern",
+            "correct": true
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "That's great! Pizza is delicious. What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 9260
+    },
+    "error_response": {
+      "input": "Me gusta comer pizza",
+      "output": "What do you eat for lunch?",
+      "spoken_text": "What do you eat for lunch?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "\u00a1Qu\u00e9 bueno! La pizza es deliciosa. Ahora, vamos a practicar en ingl\u00e9s. \u00bfQu\u00e9 comes para el almuerzo?",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "What do you eat for lunch?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 9317
+    },
+    "help_request_spanish": {
+      "input": "No entiendo",
+      "output": "What do you eat for breakfast?",
+      "spoken_text": "What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Claro. El patr\u00f3n es: 'What do you eat for breakfast?' y respondes 'I eat [comida] for breakfast.' Por ejemplo: 'I eat eggs for breakfast.' Vamos a intentar otra vez.",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 13977
+    },
+    "help_request_english": {
+      "input": "I don't understand",
+      "output": "What do you eat for breakfast?",
+      "spoken_text": "What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "Claro. El patr\u00f3n es: 'What do you eat for breakfast?' y respondes 'I eat [comida] for breakfast.' Por ejemplo: 'I eat eggs for breakfast.' Vamos a intentar otra vez.",
+            "language": "es"
+          }
+        },
+        {
+          "tool": "speak",
+          "args": {
+            "text": "What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 9353
+    },
+    "pattern_flip": {
+      "input": "What do you eat for breakfast?",
+      "output": "What do you eat for breakfast?",
+      "spoken_text": "What do you eat for breakfast?",
+      "spoken_language": "en",
+      "tool_calls": [
+        {
+          "tool": "speak",
+          "args": {
+            "text": "What do you eat for breakfast?",
+            "language": "en"
+          }
+        }
+      ],
+      "tokens": 9121
+    }
+  },
+  "summary": {
+    "total_scenarios": 6,
+    "successful": 6,
+    "failed": 0
+  }
+}
