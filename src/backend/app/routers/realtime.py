@@ -173,6 +173,17 @@ async def realtime_conversation(
     )
     system_prompt = agent.build_system_prompt()
 
+    # Log system prompt for debugging
+    print("\n" + "=" * 80)
+    print("REALTIME SESSION STARTING")
+    print("=" * 80)
+    print(f"Lesson: {lesson_number}, Mode: {mode}, Language: {instruction_language}")
+    print("-" * 80)
+    print("SYSTEM PROMPT:")
+    print("-" * 80)
+    print(system_prompt)
+    print("=" * 80 + "\n")
+
     # Create tool handlers
     tool_handlers = await create_tool_handlers(db, lesson_number)
 
