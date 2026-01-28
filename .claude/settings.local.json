@@ -53,7 +53,10 @@
       "Bash(curl:*)",
       "Bash(python3:*)",
       "Bash(npm test:*)",
-      "Bash(.venv-test/bin/python -m pytest:*)"
+      "Bash(.venv-test/bin/python -m pytest:*)",
+      "Bash(npm run test:*)",
+      "Skill(writing-skills)",
+      "Skill(writing-skills:*)"
     ],
     "deny": [],
     "ask": []

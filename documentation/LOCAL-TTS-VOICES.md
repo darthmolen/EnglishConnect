@@ -126,6 +126,10 @@ curl -X POST http://localhost:8002/synthesize \
 
 ## Demo Audio Generation
 
+### List Voices
+
+`cd src/tools/demo-generator && source ../../backend/.venv/bin/activatepython regenerate_example.py --list-voices`
+
 ### Generate for a Lesson
 
 ```bash
