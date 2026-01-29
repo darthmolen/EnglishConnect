@@ -173,16 +173,15 @@ async def realtime_conversation(
     )
     system_prompt = agent.build_system_prompt()
 
-    # Log system prompt for debugging
-    print("\n" + "=" * 80)
-    print("REALTIME SESSION STARTING")
-    print("=" * 80)
-    print(f"Lesson: {lesson_number}, Mode: {mode}, Language: {instruction_language}")
-    print("-" * 80)
-    print("SYSTEM PROMPT:")
-    print("-" * 80)
-    print(system_prompt)
-    print("=" * 80 + "\n")
+    # Log session start with truncated system prompt preview
+    max_preview_len = 200
+    preview = system_prompt[:max_preview_len]
+    if len(system_prompt) > max_preview_len:
+        preview += "... [truncated]"
+    logger.debug(
+        "Realtime session starting - lesson=%s mode=%s lang=%s prompt_preview=%s",
+        lesson_number, mode, instruction_language, preview
+    )
 
     # Create tool handlers
     tool_handlers = await create_tool_handlers(db, lesson_number)
@@ -215,17 +214,17 @@ async def realtime_conversation(
                         # Send text message to Realtime API
                         text = message.get("text", "")
                         if text:
-                            print(f"[CLIENT -> REALTIME] Text message: {text[:100]}")
+                            logger.debug("Text message: %s", text[:100])
                             await session.send_text(text)
 
                     elif msg_type == "commit":
                         # Client explicitly commits audio buffer
-                        print("[CLIENT -> REALTIME] Audio buffer COMMIT (PTT release)")
+                        logger.debug("Audio buffer commit (PTT release)")
                         await session.commit_audio()
 
                     elif msg_type == "cancel":
                         # Client wants to cancel current response
-                        print("[CLIENT -> REALTIME] CANCEL request - interrupting agent!")
+                        logger.debug("Cancel request - interrupting agent")
                         await session.cancel_response()
 
             except WebSocketDisconnect:
@@ -246,24 +245,22 @@ async def realtime_conversation(
                     })
 
                 elif event["type"] == "transcript":
-                    # Log user transcripts immediately
+                    # Log user transcripts at debug level
                     if event.get("role") == "user":
-                        print("\n" + "=" * 60)
-                        print(f"REALTIME [{mode.upper()}] Exchange #{exchange_count}")
-                        print("=" * 60)
-                        print(f"USER: {event.get('text', '')}")
-                        print("-" * 60)
+                        logger.debug(
+                            "Exchange #%d USER: %s",
+                            exchange_count, event.get("text", "")
+                        )
                     else:
                         # Accumulate assistant transcript deltas
                         assistant_transcript.append(event.get("text", ""))
                     await websocket.send_json(event)
 
                 elif event["type"] == "response_done":
-                    # Log accumulated assistant transcript
+                    # Log accumulated assistant transcript at debug level
                     if assistant_transcript:
                         full_text = "".join(assistant_transcript)
-                        print(f"AGENT: {full_text}")
-                        print("=" * 60 + "\n")
+                        logger.debug("Exchange #%d AGENT: %s", exchange_count, full_text)
                         assistant_transcript.clear()
                         exchange_count += 1
                     await websocket.send_json(event)

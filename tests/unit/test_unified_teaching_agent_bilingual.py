@@ -1,7 +1,6 @@
 """Unit tests for bilingual features in UnifiedTeachingAgent."""
 
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from app.schemas.helping_phrase import HelpingPhraseSchema
 
 

@@ -248,16 +248,20 @@ class RealtimeSessionManager:
         if not self._connected or not self.ws:
             return
 
+        # Retry counters for error recovery
+        content_filter_retries = 0
+        max_content_filter_retries = 3
+
         try:
             async for message in self.ws:
                 event = json.loads(message)
                 event_type = event.get("type", "")
 
-                # Log ALL events for debugging (except high-frequency audio deltas)
+                # Log events at debug level (except high-frequency audio deltas)
                 if event_type not in ["response.audio.delta", "response.audio_transcript.delta"]:
-                    print(f"[REALTIME EVENT] {event_type}")
+                    logger.debug(f"Realtime event: {event_type}")
                     if event_type in ["error", "response.done", "session.created", "session.updated"]:
-                        print(f"  -> {json.dumps(event, indent=2)[:500]}")
+                        logger.debug(f"Event details: {json.dumps(event)[:500]}")
 
                 # Audio delta - forward to client
                 if event_type == "response.audio.delta":
@@ -288,16 +292,16 @@ class RealtimeSessionManager:
 
                 # VAD events
                 elif event_type == "input_audio_buffer.speech_started":
-                    print("[REALTIME] VAD: Speech started (user speaking)")
+                    logger.debug("VAD: Speech started")
                     yield {"type": "speech_started"}
 
                 elif event_type == "input_audio_buffer.speech_stopped":
-                    print("[REALTIME] VAD: Speech stopped")
+                    logger.debug("VAD: Speech stopped")
                     yield {"type": "speech_stopped"}
 
                 # Response cancelled (interruption)
                 elif event_type == "response.cancelled":
-                    print("[REALTIME] RESPONSE CANCELLED - agent was interrupted!")
+                    logger.debug("Response cancelled - agent was interrupted")
                     # Don't yield this as response_done
 
                 # Response complete
@@ -308,27 +312,36 @@ class RealtimeSessionManager:
                     status_details = response_data.get("status_details") or {}
                     reason = status_details.get("reason", "") if status_details else ""
 
-                    print(f"[REALTIME] Response done with status: {status}")
+                    logger.debug(f"Response done with status: {status}")
                     if status_details:
-                        print(f"[REALTIME] Status details: {status_details}")
+                        logger.debug(f"Status details: {status_details}")
 
                     # Handle incomplete responses (content filter, etc.)
                     if status == "incomplete":
                         if reason == "content_filter":
-                            print("[REALTIME] WARNING: Response blocked by content filter!")
-                            # Notify client about the filter
-                            yield {
-                                "type": "content_filtered",
-                                "message": "Response was filtered. Retrying..."
-                            }
-                            # Retry by requesting a new response
-                            if self.ws:
-                                print("[REALTIME] Retrying response after content filter...")
-                                await self.ws.send(json.dumps({"type": "response.create"}))
-                            # Don't yield response_done - wait for retry
-                            continue
+                            content_filter_retries += 1
+                            logger.warning(f"Response blocked by content filter (attempt {content_filter_retries}/{max_content_filter_retries})")
+
+                            if content_filter_retries >= max_content_filter_retries:
+                                logger.error("Max content filter retries exceeded")
+                                yield {
+                                    "type": "error",
+                                    "message": "Unable to generate response due to content filtering. Please try rephrasing."
+                                }
+                            else:
+                                # Notify client about the filter
+                                yield {
+                                    "type": "content_filtered",
+                                    "message": "Response was filtered. Retrying..."
+                                }
+                                # Retry by requesting a new response
+                                if self.ws:
+                                    logger.debug("Retrying response after content filter")
+                                    await self.ws.send(json.dumps({"type": "response.create"}))
+                                # Don't yield response_done - wait for retry
+                                continue
                         else:
-                            print(f"[REALTIME] Response incomplete for reason: {reason}")
+                            logger.debug(f"Response incomplete for reason: {reason}")
                             yield {
                                 "type": "response_incomplete",
                                 "reason": reason,
@@ -347,7 +360,7 @@ class RealtimeSessionManager:
                     # Handle empty audio buffer gracefully (user pressed PTT but didn't speak)
                     # The error has type="invalid_request_error" and code="input_audio_buffer_commit_empty"
                     if error_code == "input_audio_buffer_commit_empty":
-                        print("[REALTIME] Empty audio buffer - user pressed PTT but didn't speak")
+                        logger.debug("Empty audio buffer - user pressed PTT but didn't speak")
                         yield {
                             "type": "empty_audio",
                             "message": "No audio detected. Try speaking into the microphone."

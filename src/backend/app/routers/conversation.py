@@ -208,28 +208,25 @@ async def conversation(
         f"audio={'yes' if audio_base64 else 'no'} ({audio_size} chars), lang={language}"
     )
 
-    # === CONVERSATION LOG (for debugging) ===
-    print("\n" + "=" * 60)
-    print(f"CONVERSATION [{request.mode.upper()}] Exchange #{request.exchange_count}")
-    print("=" * 60)
-    print(f"USER: {request.message if request.message else '(session start)'}")
-    print("-" * 60)
-
-    # Show all speak() calls with their languages
+    # Log conversation details at debug level
+    user_text = request.message if request.message else "(session start)"
     if audio_chunks:
-        for chunk in audio_chunks:
-            lang_label = "🇪🇸 ES" if chunk.language == "es" else "🇺🇸 EN"
-            print(f"AGENT [{lang_label}]: {chunk.text}")
+        agent_parts = [f"[{'ES' if c.language == 'es' else 'EN'}] {c.text}" for c in audio_chunks]
+        agent_text = " | ".join(agent_parts)
     else:
-        print(f"AGENT: {response_text}")
+        agent_text = response_text
 
-    # Show tool calls summary
     tool_calls = agent_result.get("tool_results", [])
-    if tool_calls:
-        tools_used = [t.get("tool") for t in tool_calls if t.get("tool") != "speak"]
-        if tools_used:
-            print(f"TOOLS: {', '.join(tools_used)}")
-    print("=" * 60 + "\n")
+    tools_used = [t.get("tool") for t in tool_calls if t.get("tool") != "speak"]
+
+    logger.debug(
+        "Exchange #%d [%s] USER: %s | AGENT: %s%s",
+        request.exchange_count,
+        request.mode.upper(),
+        user_text[:100],
+        agent_text[:200],
+        f" | TOOLS: {', '.join(tools_used)}" if tools_used else ""
+    )
 
     # Record exchange for evaluation (non-blocking)
     try:

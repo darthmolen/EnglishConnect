@@ -1,7 +1,7 @@
 """Add helping phrases table for bilingual practice support.
 
 Revision ID: 005_add_helping_phrases
-Revises: 004_add_jwt_auth
+Revises: ef47914574a5
 Create Date: 2026-01-28
 
 Helping phrases allow students to request assistance during practice
