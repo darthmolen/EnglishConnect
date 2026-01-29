@@ -341,17 +341,19 @@ class RealtimeSessionManager:
                 elif event_type == "error":
                     error_data = event.get("error", {})
                     error_type = error_data.get("type", "unknown")
+                    error_code = error_data.get("code", "")
                     error_msg = error_data.get("message", "Unknown error")
 
                     # Handle empty audio buffer gracefully (user pressed PTT but didn't speak)
-                    if error_type == "input_audio_buffer_commit_empty":
+                    # The error has type="invalid_request_error" and code="input_audio_buffer_commit_empty"
+                    if error_code == "input_audio_buffer_commit_empty":
                         print("[REALTIME] Empty audio buffer - user pressed PTT but didn't speak")
                         yield {
                             "type": "empty_audio",
                             "message": "No audio detected. Try speaking into the microphone."
                         }
                     else:
-                        logger.error(f"Realtime API error: {error_type} - {error_msg}")
+                        logger.error(f"Realtime API error: {error_type}/{error_code} - {error_msg}")
                         yield {"type": "error", "message": error_msg}
 
         except websockets.exceptions.ConnectionClosed as e:
