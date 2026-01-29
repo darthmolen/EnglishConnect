@@ -2,6 +2,8 @@ import { X, Mic, MicOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { VoiceButton } from '@/components/VoiceButton'
+import { HelpingPhrasesBubble } from '@/components/HelpingPhrasesBubble'
+import type { HelpingPhrase, InstructionLanguage } from '@/types'
 
 interface Message {
   id: string
@@ -26,6 +28,8 @@ interface MobileChatOverlayProps {
   onStopRecording: () => void
   onToggleVoiceMode: () => void
   isLoading?: boolean
+  helpingPhrases?: HelpingPhrase[]
+  instructionLanguage?: InstructionLanguage
 }
 
 export function MobileChatOverlay({
@@ -40,6 +44,8 @@ export function MobileChatOverlay({
   onStopRecording,
   onToggleVoiceMode,
   isLoading = false,
+  helpingPhrases = [],
+  instructionLanguage = 'es',
 }: MobileChatOverlayProps) {
   const { t } = useTranslation()
 
@@ -70,6 +76,13 @@ export function MobileChatOverlay({
 
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
+        {/* Helping phrases bubble at the top */}
+        {helpingPhrases.length > 0 && (
+          <HelpingPhrasesBubble
+            phrases={helpingPhrases}
+            instructionLanguage={instructionLanguage}
+          />
+        )}
         {messages.map((message) => (
           <div
             key={message.id}

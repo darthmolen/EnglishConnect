@@ -2,13 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Play, Pause, SkipForward, MessageSquare, LogIn } from 'lucide-react'
 import { CompactVocabulary } from './CompactVocabulary'
-import { HelpingPhrasesPanel } from './HelpingPhrasesPanel'
 import { PatternsView, type PatternAction } from './PatternsView'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
-import { fetchHelpingPhrases } from '@/services/api'
 import { cn } from '@/lib/utils'
-import type { VocabularyItem, QAPattern, HelpingPhrase } from '@/types'
+import type { VocabularyItem, QAPattern } from '@/types'
 
 interface IntroClip {
   type: 'unique' | 'instructions'
@@ -50,7 +48,6 @@ export function PracticeView({
   const [introData, setIntroData] = useState<IntroResponse | null>(null)
   const [isPlayingIntro, setIsPlayingIntro] = useState(false)
   const [currentClipIndex, setCurrentClipIndex] = useState(0)
-  const [helpingPhrases, setHelpingPhrases] = useState<HelpingPhrase[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const hasVocabulary = vocabulary.length > 0
@@ -79,13 +76,6 @@ export function PracticeView({
       })
       .catch(() => setIntroData(null))
   }, [lessonNumber, courseId, instructionLanguage])
-
-  // Fetch helping phrases when instruction language changes
-  useEffect(() => {
-    fetchHelpingPhrases(instructionLanguage)
-      .then(setHelpingPhrases)
-      .catch(() => setHelpingPhrases([]))
-  }, [instructionLanguage])
 
   // Helper to get the current clip URL
   const getCurrentClipUrl = (): string | null => {
@@ -253,15 +243,6 @@ export function PracticeView({
       {/* Compact vocabulary bar at top */}
       {hasVocabulary && (
         <CompactVocabulary vocabulary={vocabulary} />
-      )}
-
-      {/* Helping phrases panel */}
-      {helpingPhrases.length > 0 && (
-        <HelpingPhrasesPanel
-          phrases={helpingPhrases}
-          instructionLanguage={instructionLanguage}
-          className="mx-3 mt-2"
-        />
       )}
 
       {/* Start Conversation Button - compact */}

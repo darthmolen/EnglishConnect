@@ -6,6 +6,7 @@ import { useVocabAudio } from '@/hooks/useVocabAudio'
 import { useDemoAudio } from '@/hooks/useDemoAudio'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
+import { fetchHelpingPhrases } from '@/services/api'
 import { MobileTabBar, type MobileTab } from '@/components/mobile/MobileTabBar'
 import { MobileActionBar, type ContentSection } from '@/components/mobile/MobileActionBar'
 import { MobileVocabularyView } from '@/components/mobile/content/MobileVocabularyView'
@@ -24,7 +25,7 @@ export function MobileApp() {
   const [activeTab, setActiveTab] = useState<MobileTab>('lessons')
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
-  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice } = useConversationStore()
+  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice, helpingPhrases, setHelpingPhrases } = useConversationStore()
   const { playWord, playingWord } = useVocabAudio(selectedLessonNumber ?? undefined)
   const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern } = useDemoAudio(selectedLessonNumber ?? undefined)
   const {
@@ -58,6 +59,13 @@ export function MobileApp() {
   useEffect(() => {
     initialize()
   }, [initialize])
+
+  // Fetch helping phrases when instruction language changes
+  useEffect(() => {
+    fetchHelpingPhrases(instructionLanguage)
+      .then(setHelpingPhrases)
+      .catch(() => setHelpingPhrases([]))
+  }, [instructionLanguage, setHelpingPhrases])
 
   // Simple hash-based routing
   useEffect(() => {
@@ -438,6 +446,8 @@ export function MobileApp() {
         onStopRecording={stopRecording}
         onToggleVoiceMode={() => setVoiceMode(voiceMode === 'push-to-talk' ? 'active' : 'push-to-talk')}
         isLoading={conversationLoading}
+        helpingPhrases={helpingPhrases}
+        instructionLanguage={instructionLanguage}
       />
     </div>
   )

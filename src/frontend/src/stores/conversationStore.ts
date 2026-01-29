@@ -14,6 +14,7 @@ import type {
   StudyRegistryStatus,
   StudyRegistryItem,
   VoiceMode,
+  HelpingPhrase,
 } from '@/types'
 
 interface ConversationState {
@@ -58,6 +59,9 @@ interface ConversationState {
   // Instruction language for agent explanations (persisted)
   instructionLanguage: InstructionLanguage
 
+  // Helping phrases for practice mode
+  helpingPhrases: HelpingPhrase[]
+
   // Evaluation state (persisted)
   evaluationRatings: Record<number, Record<number, number>>  // lessonNumber -> criterionIndex -> rating (0-5)
   personalGoals: PersonalGoal[]  // Global goals with completion status
@@ -86,6 +90,7 @@ interface ConversationState {
   clearPhaseInfo: () => void
   setAgentMode: (mode: AgentMode) => void
   setInstructionLanguage: (language: InstructionLanguage) => void
+  setHelpingPhrases: (phrases: HelpingPhrase[]) => void
   markIntroPlayed: (key: string) => void
   incrementExchangeCount: () => void
   resetExchangeCount: () => void
@@ -135,6 +140,9 @@ export const useConversationStore = create<ConversationState>()(
 
       // Instruction language - default to Spanish
       instructionLanguage: 'es' as InstructionLanguage,
+
+      // Helping phrases (fetched based on instruction language)
+      helpingPhrases: [],
 
       // Evaluation state (persisted)
       evaluationRatings: {},
@@ -230,6 +238,8 @@ export const useConversationStore = create<ConversationState>()(
       setAgentMode: (mode) => set({ agentMode: mode }),
 
       setInstructionLanguage: (language) => set({ instructionLanguage: language }),
+
+      setHelpingPhrases: (phrases) => set({ helpingPhrases: phrases }),
 
       markIntroPlayed: (key) =>
         set((state) => ({

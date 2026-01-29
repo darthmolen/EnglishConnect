@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ConversationView } from './ConversationView'
-import type { ChatMessage } from '@/types'
+import type { ChatMessage, HelpingPhrase, InstructionLanguage } from '@/types'
 
 interface ConversationDrawerProps {
   isOpen: boolean
@@ -10,6 +10,8 @@ interface ConversationDrawerProps {
   onEndSession: () => void
   messages: ChatMessage[]
   isLoading: boolean
+  helpingPhrases?: HelpingPhrase[]
+  instructionLanguage?: InstructionLanguage
 }
 
 export function ConversationDrawer({
@@ -18,6 +20,8 @@ export function ConversationDrawer({
   onEndSession,
   messages,
   isLoading,
+  helpingPhrases = [],
+  instructionLanguage = 'es',
 }: ConversationDrawerProps) {
   const { t } = useTranslation()
 
@@ -76,7 +80,12 @@ export function ConversationDrawer({
 
         {/* Drawer content */}
         <div className="flex-1 overflow-hidden">
-          <ConversationView messages={messages} isLoading={isLoading} />
+          <ConversationView
+            messages={messages}
+            isLoading={isLoading}
+            helpingPhrases={helpingPhrases}
+            instructionLanguage={instructionLanguage}
+          />
         </div>
       </div>
 
