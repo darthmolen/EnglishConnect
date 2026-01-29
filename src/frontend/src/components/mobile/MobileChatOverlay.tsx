@@ -1,7 +1,10 @@
+import { useRef, useEffect } from 'react'
 import { X, Mic, MicOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { VoiceButton } from '@/components/VoiceButton'
+import { HelpingPhrasesBubble } from '@/components/HelpingPhrasesBubble'
+import type { HelpingPhrase, InstructionLanguage } from '@/types'
 
 interface Message {
   id: string
@@ -26,6 +29,8 @@ interface MobileChatOverlayProps {
   onStopRecording: () => void
   onToggleVoiceMode: () => void
   isLoading?: boolean
+  helpingPhrases?: HelpingPhrase[]
+  instructionLanguage?: InstructionLanguage
 }
 
 export function MobileChatOverlay({
@@ -40,8 +45,18 @@ export function MobileChatOverlay({
   onStopRecording,
   onToggleVoiceMode,
   isLoading = false,
+  helpingPhrases = [],
+  instructionLanguage = 'es',
 }: MobileChatOverlayProps) {
   const { t } = useTranslation()
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [messages])
 
   if (!isOpen) return null
 
@@ -52,11 +67,11 @@ export function MobileChatOverlay({
         <h2 className="font-semibold">{t('mobile.chat.title', 'Practice')}</h2>
         <button
           type="button"
-          aria-label="Close"
           onClick={onClose}
-          className="p-2 rounded-full hover:bg-accent transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm text-destructive hover:bg-destructive/10 transition-colors"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
+          <span>{t('mobile.chat.endSession', 'End Session')}</span>
         </button>
       </header>
 
@@ -69,7 +84,14 @@ export function MobileChatOverlay({
       )}
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3">
+        {/* Helping phrases bubble at the top */}
+        {helpingPhrases.length > 0 && (
+          <HelpingPhrasesBubble
+            phrases={helpingPhrases}
+            instructionLanguage={instructionLanguage}
+          />
+        )}
         {messages.map((message) => (
           <div
             key={message.id}

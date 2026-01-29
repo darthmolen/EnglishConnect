@@ -28,6 +28,13 @@ export interface EvaluationCriterion {
   criterion_es: string | null  // Spanish translation
 }
 
+export interface HelpingPhrase {
+  phrase_key: string  // 'repeat', 'dont_understand', 'slower', 'example'
+  phrase_text: string  // Native language phrase (e.g., "Repite, por favor")
+  english_meaning: string  // English translation (e.g., "Please repeat")
+  usage_context?: string  // When to use this phrase
+}
+
 export interface LessonDetail {
   lesson_number: number
   title: string

@@ -17,6 +17,7 @@ from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.config import get_settings
 from app.database import get_db
 from app.services.lesson_service import LessonService
+from app.services.helping_phrase_service import HelpingPhraseService
 from app.services.realtime_session import RealtimeSessionManager
 
 logger = logging.getLogger(__name__)
@@ -157,12 +158,30 @@ async def realtime_conversation(
     # Build system prompt using UnifiedTeachingAgent
     service = LessonService(db)
     lesson = await service.get_lesson_detail("ec1", lesson_number)
+
+    # Load helping phrases for the instruction language (practice mode)
+    helping_phrases = []
+    if mode == "practice":
+        phrase_service = HelpingPhraseService(db)
+        helping_phrases = await phrase_service.get_phrases_for_language(instruction_language)
+
     agent = UnifiedTeachingAgent(
         lesson=lesson,
         mode=mode,
-        instruction_language=instruction_language
+        instruction_language=instruction_language,
+        helping_phrases=helping_phrases,
     )
     system_prompt = agent.build_system_prompt()
+
+    # Log session start with truncated system prompt preview
+    max_preview_len = 200
+    preview = system_prompt[:max_preview_len]
+    if len(system_prompt) > max_preview_len:
+        preview += "... [truncated]"
+    logger.debug(
+        "Realtime session starting - lesson=%s mode=%s lang=%s prompt_preview=%s",
+        lesson_number, mode, instruction_language, preview
+    )
 
     # Create tool handlers
     tool_handlers = await create_tool_handlers(db, lesson_number)
@@ -195,14 +214,17 @@ async def realtime_conversation(
                         # Send text message to Realtime API
                         text = message.get("text", "")
                         if text:
+                            logger.debug("Text message: %s", text[:100])
                             await session.send_text(text)
 
                     elif msg_type == "commit":
                         # Client explicitly commits audio buffer
+                        logger.debug("Audio buffer commit (PTT release)")
                         await session.commit_audio()
 
                     elif msg_type == "cancel":
                         # Client wants to cancel current response
+                        logger.debug("Cancel request - interrupting agent")
                         await session.cancel_response()
 
             except WebSocketDisconnect:
@@ -210,6 +232,10 @@ async def realtime_conversation(
 
         async def send_to_client():
             """Process Realtime API events and send to client."""
+            # Accumulate assistant transcript deltas for logging
+            assistant_transcript = []
+            exchange_count = 0
+
             async for event in session.process_events():
                 if event["type"] == "audio":
                     # Encode audio as base64 for WebSocket
@@ -217,6 +243,28 @@ async def realtime_conversation(
                         "type": "audio",
                         "data": base64.b64encode(event["data"]).decode("utf-8")
                     })
+
+                elif event["type"] == "transcript":
+                    # Log user transcripts at debug level
+                    if event.get("role") == "user":
+                        logger.debug(
+                            "Exchange #%d USER: %s",
+                            exchange_count, event.get("text", "")
+                        )
+                    else:
+                        # Accumulate assistant transcript deltas
+                        assistant_transcript.append(event.get("text", ""))
+                    await websocket.send_json(event)
+
+                elif event["type"] == "response_done":
+                    # Log accumulated assistant transcript at debug level
+                    if assistant_transcript:
+                        full_text = "".join(assistant_transcript)
+                        logger.debug("Exchange #%d AGENT: %s", exchange_count, full_text)
+                        assistant_transcript.clear()
+                        exchange_count += 1
+                    await websocket.send_json(event)
+
                 else:
                     # Forward other events directly
                     await websocket.send_json(event)

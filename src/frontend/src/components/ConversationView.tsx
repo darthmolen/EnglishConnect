@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MessageBubble } from './MessageBubble'
-import type { ChatMessage, AgentMode } from '@/types'
+import { HelpingPhrasesBubble } from './HelpingPhrasesBubble'
+import type { ChatMessage, AgentMode, HelpingPhrase, InstructionLanguage } from '@/types'
 
 interface ConversationViewProps {
   messages: ChatMessage[]
   isLoading?: boolean
+  helpingPhrases?: HelpingPhrase[]
+  instructionLanguage?: InstructionLanguage
 }
 
 // Agent mode separator component
@@ -55,6 +58,8 @@ function shouldShowSeparator(
 export function ConversationView({
   messages,
   isLoading = false,
+  helpingPhrases = [],
+  instructionLanguage = 'es',
 }: ConversationViewProps) {
   const { t } = useTranslation()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -66,7 +71,8 @@ export function ConversationView({
     }
   }, [messages])
 
-  if (messages.length === 0 && !isLoading) {
+  // Show empty state only if no messages AND no helping phrases
+  if (messages.length === 0 && !isLoading && helpingPhrases.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
         <p>{t('conversation.emptyState')}</p>
@@ -79,6 +85,13 @@ export function ConversationView({
       ref={scrollRef}
       className="flex h-full flex-col gap-4 overflow-y-auto p-4"
     >
+      {/* Helping phrases bubble at the top */}
+      {helpingPhrases.length > 0 && (
+        <HelpingPhrasesBubble
+          phrases={helpingPhrases}
+          instructionLanguage={instructionLanguage}
+        />
+      )}
       {messages.map((message, index) => {
         const separatorMode = shouldShowSeparator(message, index, messages)
         return (

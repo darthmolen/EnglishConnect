@@ -31,6 +31,7 @@ from app.services.tool_handlers import (
 )
 from app.schemas.conversation import RichContent
 from app.services.session_service import SessionService
+from app.services.helping_phrase_service import HelpingPhraseService
 from app.agents.unified_teaching_agent import UnifiedTeachingAgent
 from app.models.performance import PerformanceContext
 from app.config import get_settings
@@ -90,6 +91,14 @@ async def conversation(
     # Create performance context for tracking struggles
     performance_context = PerformanceContext()
 
+    # Load helping phrases for the instruction language (practice mode only)
+    helping_phrases = []
+    if request.mode == "practice":
+        phrase_service = HelpingPhraseService(db)
+        helping_phrases = await phrase_service.get_phrases_for_language(
+            request.instruction_language
+        )
+
     # Build system prompt using UnifiedTeachingAgent
     agent = UnifiedTeachingAgent(
         lesson=lesson,
@@ -98,6 +107,7 @@ async def conversation(
         instruction_language=request.instruction_language,
         performance_context=performance_context,
         focus_pattern=request.focus_pattern,
+        helping_phrases=helping_phrases,
     )
     system_prompt = agent.build_system_prompt()
 
@@ -196,6 +206,26 @@ async def conversation(
     logger.info(
         f"Response: mode={request.mode}, text_len={len(response_text)}, "
         f"audio={'yes' if audio_base64 else 'no'} ({audio_size} chars), lang={language}"
+    )
+
+    # Log conversation details at debug level
+    user_text = request.message if request.message else "(session start)"
+    if audio_chunks:
+        agent_parts = [f"[{'ES' if c.language == 'es' else 'EN'}] {c.text}" for c in audio_chunks]
+        agent_text = " | ".join(agent_parts)
+    else:
+        agent_text = response_text
+
+    tool_calls = agent_result.get("tool_results", [])
+    tools_used = [t.get("tool") for t in tool_calls if t.get("tool") != "speak"]
+
+    logger.debug(
+        "Exchange #%d [%s] USER: %s | AGENT: %s%s",
+        request.exchange_count,
+        request.mode.upper(),
+        user_text[:100],
+        agent_text[:200],
+        f" | TOOLS: {', '.join(tools_used)}" if tools_used else ""
     )
 
     # Record exchange for evaluation (non-blocking)

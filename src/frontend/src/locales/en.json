@@ -81,7 +81,8 @@
     "selectFirst": "Select a lesson first",
     "clearTitle": "Clear conversation",
     "emptyState": "Select a lesson and start practicing!",
-    "thinking": "Thinking..."
+    "thinking": "Thinking...",
+    "endSession": "End Session"
   },
   "agents": {
     "helper": "Helper",
@@ -122,7 +123,9 @@
     "skip": "Skip",
     "startConversation": "Start the Conversation",
     "summary": "First, listen to the demo conversations to hear how the patterns sound. Then click 'Start Conversation' to practice with your conversation partner. They will ask you questions first, then invite you to ask them questions too!",
-    "summaryTitle": "Practice Conversation"
+    "summaryTitle": "Practice Conversation",
+    "helpPhrases": "Need Help? You can say:",
+    "helpPhrasesHint": "Say these phrases anytime during practice"
   },
   "patterns": {
     "empty": "No patterns available for this lesson",
@@ -183,6 +186,10 @@
       "lessons": "Lessons",
       "learn": "Learn",
       "me": "Me"
+    },
+    "chat": {
+      "title": "Practice",
+      "endSession": "End Session"
     },
     "vocabulary": {
       "empty": "No vocabulary available",

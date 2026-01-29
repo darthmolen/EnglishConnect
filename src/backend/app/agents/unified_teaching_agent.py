@@ -11,6 +11,7 @@ from typing import Literal, Optional
 
 from app.models.performance import PerformanceContext
 from app.prompts import load_prompt, render_prompt
+from app.schemas.helping_phrase import HelpingPhraseSchema
 from app.schemas.lesson import LessonDetail
 
 
@@ -33,6 +34,7 @@ class UnifiedTeachingAgent:
         instruction_language: str = "es",
         performance_context: Optional[PerformanceContext] = None,
         focus_pattern: Optional[int] = None,
+        helping_phrases: Optional[list[HelpingPhraseSchema]] = None,
     ):
         """Initialize the unified teaching agent.
 
@@ -43,6 +45,7 @@ class UnifiedTeachingAgent:
             instruction_language: Language for explanations ('es' or 'en', default 'es')
             performance_context: Optional tracking of student struggle signals
             focus_pattern: Optional pattern number to focus practice on
+            helping_phrases: Optional list of helping phrases for the instruction language
         """
         self.lesson = lesson
         self.mode = mode
@@ -50,6 +53,7 @@ class UnifiedTeachingAgent:
         self.instruction_language = instruction_language
         self.performance_context = performance_context or PerformanceContext()
         self.focus_pattern = focus_pattern
+        self.helping_phrases = helping_phrases or []
 
     def build_system_prompt(self) -> str:
         """Build mode-specific system prompt for the LLM.
@@ -127,6 +131,11 @@ class UnifiedTeachingAgent:
         # Focus pattern instruction
         focus_instruction = self._get_focus_instruction()
 
+        # Helping phrases formatting
+        helping_phrases_list = self._format_helping_phrases_list()
+        helping_phrases_formatted = self._format_helping_phrases_for_intro()
+        pattern_introduction = self._format_pattern_introduction()
+
         template = load_prompt("agent/mode_practice.md")
         return render_prompt(
             template,
@@ -139,6 +148,9 @@ class UnifiedTeachingAgent:
             instruction_language=instruction_lang_text,
             flip_instruction=flip_instruction,
             focus_instruction=focus_instruction,
+            helping_phrases_list=helping_phrases_list,
+            helping_phrases_formatted=helping_phrases_formatted,
+            pattern_introduction=pattern_introduction,
         )
 
     def _get_focus_instruction(self) -> str:
@@ -193,3 +205,51 @@ Start the conversation using THIS pattern. After practicing it a few times, you 
             return "Time to flip! Prompt the student to ask YOU a question now."
         else:
             return "Natural conversation - mix asking and answering. The student may ask you questions."
+
+    def _format_helping_phrases_list(self) -> str:
+        """Format helping phrases as a simple list for recognition."""
+        if not self.helping_phrases:
+            return "No helping phrases available."
+
+        lines = []
+        for p in self.helping_phrases:
+            lines.append(f'- "{p.phrase_text}" = {p.english_meaning}')
+        return "\n".join(lines)
+
+    def _format_helping_phrases_for_intro(self) -> str:
+        """Format helping phrases for the session introduction."""
+        if not self.helping_phrases:
+            return "No helping phrases available."
+
+        # Just list the phrase texts for the intro
+        phrases = [f'"{p.phrase_text}"' for p in self.helping_phrases[:3]]  # Limit to 3 for brevity
+        if self.instruction_language == "es":
+            return f"   Puedes decir: {', '.join(phrases)}"
+        else:
+            return f"   You can say: {', '.join(phrases)}"
+
+    def _format_pattern_introduction(self) -> str:
+        """Format pattern introduction for session start."""
+        if not self.lesson.patterns:
+            return "   No patterns to practice."
+
+        # Get the first pattern (or focus pattern if set)
+        pattern = self.lesson.patterns[0]
+        if self.focus_pattern:
+            for p in self.lesson.patterns:
+                if p.pattern_number == self.focus_pattern:
+                    pattern = p
+                    break
+
+        # Format based on instruction language
+        if self.instruction_language == "es":
+            q_template = pattern.question_translation or pattern.question_template
+            a_template = pattern.answer_translation or pattern.answer_template
+            return f"""   Show the pattern in Spanish:
+   - Pregunta: "{q_template}"
+   - Respuesta: "{a_template}"
+   - Then show English: Q: "{pattern.question_template}" → A: "{pattern.answer_template}" """
+        else:
+            return f"""   Show the pattern in English:
+   - Question: "{pattern.question_template}"
+   - Answer: "{pattern.answer_template}" """

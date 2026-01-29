@@ -2,20 +2,26 @@ import { useTranslation } from 'react-i18next'
 import { MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ConversationView } from './ConversationView'
-import type { ChatMessage } from '@/types'
+import type { ChatMessage, HelpingPhrase, InstructionLanguage } from '@/types'
 
 interface ConversationDrawerProps {
   isOpen: boolean
   onToggle: () => void
+  onEndSession: () => void
   messages: ChatMessage[]
   isLoading: boolean
+  helpingPhrases?: HelpingPhrase[]
+  instructionLanguage?: InstructionLanguage
 }
 
 export function ConversationDrawer({
   isOpen,
   onToggle,
+  onEndSession,
   messages,
   isLoading,
+  helpingPhrases = [],
+  instructionLanguage = 'es',
 }: ConversationDrawerProps) {
   const { t } = useTranslation()
 
@@ -60,20 +66,26 @@ export function ConversationDrawer({
           <h3 className="font-semibold text-sm">{t('conversation.title')}</h3>
           <button
             type="button"
-            onClick={onToggle}
+            onClick={onEndSession}
             className={cn(
-              'rounded-md p-1 text-muted-foreground',
-              'hover:bg-accent hover:text-accent-foreground',
+              'flex items-center gap-1 px-2 py-1 rounded-md text-xs',
+              'text-destructive hover:bg-destructive/10',
               'focus:outline-none focus:ring-2 focus:ring-ring'
             )}
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3" />
+            <span>{t('conversation.endSession', 'End Session')}</span>
           </button>
         </div>
 
         {/* Drawer content */}
         <div className="flex-1 overflow-hidden">
-          <ConversationView messages={messages} isLoading={isLoading} />
+          <ConversationView
+            messages={messages}
+            isLoading={isLoading}
+            helpingPhrases={helpingPhrases}
+            instructionLanguage={instructionLanguage}
+          />
         </div>
       </div>
 

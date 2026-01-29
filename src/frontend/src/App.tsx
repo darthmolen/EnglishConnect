@@ -16,6 +16,7 @@ import { UserProfile } from '@/components/UserProfile'
 import { AuthProvider } from '@/auth/AuthProvider'
 import { useAuthStore } from '@/stores/authStore'
 import { useConversationStore } from '@/stores/conversationStore'
+import { fetchHelpingPhrases } from '@/services/api'
 import { LoginPage } from '@/pages/LoginPage'
 import { AdminPage } from '@/pages/AdminPage'
 import { MobileApp } from '@/MobileApp'
@@ -49,6 +50,9 @@ function DesktopApp() {
     removePersonalGoal,
     setStudyRegistryStatus,
     selectRegistryPage,
+    // Helping phrases
+    helpingPhrases,
+    setHelpingPhrases,
   } = useConversationStore()
   const {
     messages,
@@ -61,6 +65,7 @@ function DesktopApp() {
     stopRecording,
     sendTextMessage,
     clearMessages,
+    disconnect,
   } = useConversation()
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -68,6 +73,13 @@ function DesktopApp() {
   useEffect(() => {
     initialize()
   }, [initialize])
+
+  // Fetch helping phrases when instruction language changes
+  useEffect(() => {
+    fetchHelpingPhrases(instructionLanguage)
+      .then(setHelpingPhrases)
+      .catch(() => setHelpingPhrases([]))
+  }, [instructionLanguage, setHelpingPhrases])
 
   // Simple hash-based routing
   useEffect(() => {
@@ -273,8 +285,14 @@ function DesktopApp() {
               <ConversationDrawer
                 isOpen={isDrawerOpen}
                 onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+                onEndSession={() => {
+                  disconnect()
+                  setIsDrawerOpen(false)
+                }}
                 messages={messages}
                 isLoading={isLoading}
+                helpingPhrases={helpingPhrases}
+                instructionLanguage={instructionLanguage}
               />
             </>
           )}
