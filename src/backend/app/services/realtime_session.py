@@ -305,8 +305,8 @@ class RealtimeSessionManager:
                     # Check if response was actually complete or cancelled
                     response_data = event.get("response", {})
                     status = response_data.get("status", "unknown")
-                    status_details = response_data.get("status_details", {})
-                    reason = status_details.get("reason", "")
+                    status_details = response_data.get("status_details") or {}
+                    reason = status_details.get("reason", "") if status_details else ""
 
                     print(f"[REALTIME] Response done with status: {status}")
                     if status_details:
