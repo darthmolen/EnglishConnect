@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { X, Mic, MicOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
@@ -48,6 +49,14 @@ export function MobileChatOverlay({
   instructionLanguage = 'es',
 }: MobileChatOverlayProps) {
   const { t } = useTranslation()
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [messages])
 
   if (!isOpen) return null
 
@@ -75,7 +84,7 @@ export function MobileChatOverlay({
       )}
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3">
         {/* Helping phrases bubble at the top */}
         {helpingPhrases.length > 0 && (
           <HelpingPhrasesBubble
