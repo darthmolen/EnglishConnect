@@ -1,0 +1,21 @@
+{
+  "lesson_number": 10,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "When do you go shopping?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I always go shopping every week...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:42.486924+00:00",
+  "duration_seconds": 4.37,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

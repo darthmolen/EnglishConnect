@@ -1,0 +1,25 @@
+{
+  "lesson_number": 15,
+  "english_word": "good/better",
+  "spanish_translation": "bueno/mejor",
+  "category": null,
+  "english_parts": [
+    "good",
+    "better"
+  ],
+  "spanish_parts": [
+    "bueno",
+    "mejor"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:52:15.575963+00:00",
+  "duration_seconds": 3.82,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

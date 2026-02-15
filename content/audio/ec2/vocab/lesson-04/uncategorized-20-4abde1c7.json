@@ -1,0 +1,23 @@
+{
+  "lesson_number": 4,
+  "english_word": "green",
+  "spanish_translation": "verde",
+  "category": null,
+  "english_parts": [
+    "green"
+  ],
+  "spanish_parts": [
+    "verde"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:47:36.170763+00:00",
+  "duration_seconds": 1.68,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

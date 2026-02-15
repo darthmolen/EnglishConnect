@@ -1,0 +1,21 @@
+{
+  "lesson_number": 11,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What did he do during the weekend?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "He played soccer during the weekend...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:51.592847+00:00",
+  "duration_seconds": 5.3,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

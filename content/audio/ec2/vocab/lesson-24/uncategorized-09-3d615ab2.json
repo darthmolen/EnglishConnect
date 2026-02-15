@@ -1,0 +1,23 @@
+{
+  "lesson_number": 24,
+  "english_word": "become a teacher",
+  "spanish_translation": "llegar a ser maestro",
+  "category": null,
+  "english_parts": [
+    "become a teacher"
+  ],
+  "spanish_parts": [
+    "llegar a ser maestro"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:55:31.924585+00:00",
+  "duration_seconds": 2.91,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

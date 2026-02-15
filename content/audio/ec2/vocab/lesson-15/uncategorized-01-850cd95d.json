@@ -1,0 +1,23 @@
+{
+  "lesson_number": 15,
+  "english_word": "than",
+  "spanish_translation": "que",
+  "category": null,
+  "english_parts": [
+    "than"
+  ],
+  "spanish_parts": [
+    "que"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:51:58.240706+00:00",
+  "duration_seconds": 1.75,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

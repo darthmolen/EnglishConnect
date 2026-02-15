@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 1,
+  "example_index": 3,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What will they do in a few days?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They will go to a parade...."
+    }
+  ],
+  "created_at": "2026-02-15T22:48:55.345222+00:00",
+  "duration_seconds": 6.63,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

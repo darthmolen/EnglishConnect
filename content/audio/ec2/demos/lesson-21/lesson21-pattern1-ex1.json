@@ -1,0 +1,21 @@
+{
+  "lesson_number": 21,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What happened to your ankle?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I broke my ankle...."
+    }
+  ],
+  "created_at": "2026-02-15T22:49:21.589231+00:00",
+  "duration_seconds": 4.37,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,21 @@
+{
+  "lesson_number": 11,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "When was the last time he ate dessert?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "He ate dessert yesterday...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:56.548798+00:00",
+  "duration_seconds": 5.83,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

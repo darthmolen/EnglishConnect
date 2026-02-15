@@ -1,0 +1,25 @@
+{
+  "lesson_number": 11,
+  "english_word": "go/went to work",
+  "spanish_translation": "ir/ido a trabajar",
+  "category": null,
+  "english_parts": [
+    "go",
+    "went to work"
+  ],
+  "spanish_parts": [
+    "ir",
+    "ido a trabajar"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:05.074383+00:00",
+  "duration_seconds": 4.27,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,21 @@
+{
+  "lesson_number": 7,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Will you please clean this room?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "No, I can't clean this room because I need to do the laundry...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:08.038551+00:00",
+  "duration_seconds": 6.63,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

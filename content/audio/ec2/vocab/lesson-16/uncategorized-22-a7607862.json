@@ -1,0 +1,23 @@
+{
+  "lesson_number": 16,
+  "english_word": "in front of",
+  "spanish_translation": "delante de",
+  "category": null,
+  "english_parts": [
+    "in front of"
+  ],
+  "spanish_parts": [
+    "delante de"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:52:53.067793+00:00",
+  "duration_seconds": 2.68,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

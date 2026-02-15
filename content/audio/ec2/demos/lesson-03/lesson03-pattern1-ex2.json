@@ -1,0 +1,21 @@
+{
+  "lesson_number": 3,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What doesn't she like doing?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "She doesn't like swimming...."
+    }
+  ],
+  "created_at": "2026-02-15T22:46:36.943312+00:00",
+  "duration_seconds": 4.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why did they go to the store?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They went to the store because they needed bread...."
+    }
+  ],
+  "created_at": "2026-02-15T22:48:02.131724+00:00",
+  "duration_seconds": 5.7,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

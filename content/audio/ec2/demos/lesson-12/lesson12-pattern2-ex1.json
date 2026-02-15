@@ -1,0 +1,21 @@
+{
+  "lesson_number": 12,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why did you leave the party last night?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I left the party because I felt sick...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:59.351531+00:00",
+  "duration_seconds": 6.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

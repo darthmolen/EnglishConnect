@@ -1,0 +1,24 @@
+{
+  "lesson_number": 10,
+  "english_word": "every",
+  "spanish_translation": "cada/todos",
+  "category": null,
+  "english_parts": [
+    "every"
+  ],
+  "spanish_parts": [
+    "cada",
+    "todos"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:49:32.245291+00:00",
+  "duration_seconds": 2.88,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

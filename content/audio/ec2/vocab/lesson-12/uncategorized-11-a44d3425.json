@@ -1,0 +1,25 @@
+{
+  "lesson_number": 12,
+  "english_word": "call/called my friend",
+  "spanish_translation": "llamar/llamado a mi amigo",
+  "category": null,
+  "english_parts": [
+    "call",
+    "called my friend"
+  ],
+  "spanish_parts": [
+    "llamar",
+    "llamado a mi amigo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:38.476172+00:00",
+  "duration_seconds": 5.09,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

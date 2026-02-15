@@ -1,0 +1,23 @@
+{
+  "lesson_number": 6,
+  "english_word": "dropped my phone",
+  "spanish_translation": "se me cay\u00f3 el tel\u00e9fono",
+  "category": null,
+  "english_parts": [
+    "dropped my phone"
+  ],
+  "spanish_parts": [
+    "se me cay\u00f3 el tel\u00e9fono"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:48:08.702846+00:00",
+  "duration_seconds": 3.21,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

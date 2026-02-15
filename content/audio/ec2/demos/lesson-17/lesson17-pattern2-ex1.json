@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What will happen at the party?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "There will be games and good food...."
+    }
+  ],
+  "created_at": "2026-02-15T22:48:57.477483+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

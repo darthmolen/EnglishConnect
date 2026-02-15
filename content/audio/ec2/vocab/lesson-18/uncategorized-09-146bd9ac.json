@@ -1,0 +1,23 @@
+{
+  "lesson_number": 18,
+  "english_word": "give gifts",
+  "spanish_translation": "dar regalos",
+  "category": null,
+  "english_parts": [
+    "give gifts"
+  ],
+  "spanish_parts": [
+    "dar regalos"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:53:24.788793+00:00",
+  "duration_seconds": 2.46,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

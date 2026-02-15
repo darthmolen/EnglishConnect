@@ -1,0 +1,21 @@
+{
+  "lesson_number": 7,
+  "pattern_number": 1,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Would you please do the dishes?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, I will do the dishes...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:08.489308+00:00",
+  "duration_seconds": 4.5,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

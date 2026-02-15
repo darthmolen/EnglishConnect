@@ -1,0 +1,21 @@
+{
+  "lesson_number": 4,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "How many cousins do you have?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I have fifteen cousins...."
+    }
+  ],
+  "created_at": "2026-02-15T22:46:43.403051+00:00",
+  "duration_seconds": 4.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

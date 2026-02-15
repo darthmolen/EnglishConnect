@@ -1,0 +1,23 @@
+{
+  "lesson_number": 6,
+  "english_word": "watched a scary movie",
+  "spanish_translation": "vi una pel\u00edcula de miedo",
+  "category": null,
+  "english_parts": [
+    "watched a scary movie"
+  ],
+  "spanish_parts": [
+    "vi una pel\u00edcula de miedo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:48:14.476836+00:00",
+  "duration_seconds": 3.59,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

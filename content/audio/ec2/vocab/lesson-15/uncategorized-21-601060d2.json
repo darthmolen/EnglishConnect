@@ -1,0 +1,23 @@
+{
+  "lesson_number": 15,
+  "english_word": "high-tech",
+  "spanish_translation": "de alta tecnolog\u00eda",
+  "category": null,
+  "english_parts": [
+    "high-tech"
+  ],
+  "spanish_parts": [
+    "de alta tecnolog\u00eda"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:52:31.511393+00:00",
+  "duration_seconds": 2.73,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

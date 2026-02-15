@@ -1,0 +1,25 @@
+{
+  "lesson_number": 20,
+  "english_word": "feel/feeling",
+  "spanish_translation": "sentir/sintiendo",
+  "category": null,
+  "english_parts": [
+    "feel",
+    "feeling"
+  ],
+  "spanish_parts": [
+    "sentir",
+    "sintiendo"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:54:00.456236+00:00",
+  "duration_seconds": 4.49,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

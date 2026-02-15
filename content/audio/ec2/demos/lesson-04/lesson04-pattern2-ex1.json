@@ -1,0 +1,21 @@
+{
+  "lesson_number": 4,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Tell me about your cousin."
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "She is twenty-four years old, tall, and athletic. She has blonde hair and green eyes...."
+    }
+  ],
+  "created_at": "2026-02-15T22:46:51.718220+00:00",
+  "duration_seconds": 8.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

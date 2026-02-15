@@ -1,0 +1,23 @@
+{
+  "lesson_number": 3,
+  "english_word": "relaxing",
+  "spanish_translation": "relajante",
+  "category": null,
+  "english_parts": [
+    "relaxing"
+  ],
+  "spanish_parts": [
+    "relajante"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:47:11.937714+00:00",
+  "duration_seconds": 2.4,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

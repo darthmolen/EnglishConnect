@@ -1,0 +1,21 @@
+{
+  "lesson_number": 7,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "I need you to take Lisa to school."
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "OK, I can take Lisa to school...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:12.366435+00:00",
+  "duration_seconds": 5.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

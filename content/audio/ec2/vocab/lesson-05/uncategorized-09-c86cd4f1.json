@@ -1,0 +1,23 @@
+{
+  "lesson_number": 5,
+  "english_word": "generous",
+  "spanish_translation": "generoso",
+  "category": null,
+  "english_parts": [
+    "generous"
+  ],
+  "spanish_parts": [
+    "generoso"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:47:45.873419+00:00",
+  "duration_seconds": 2.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

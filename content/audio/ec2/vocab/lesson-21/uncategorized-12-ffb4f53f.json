@@ -1,0 +1,25 @@
+{
+  "lesson_number": 21,
+  "english_word": "wrist/wrists",
+  "spanish_translation": "mu\u00f1eca/mu\u00f1ecas",
+  "category": null,
+  "english_parts": [
+    "wrist",
+    "wrists"
+  ],
+  "spanish_parts": [
+    "mu\u00f1eca",
+    "mu\u00f1ecas"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:54:34.358607+00:00",
+  "duration_seconds": 4.51,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

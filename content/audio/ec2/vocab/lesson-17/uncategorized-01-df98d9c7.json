@@ -1,0 +1,23 @@
+{
+  "lesson_number": 17,
+  "english_word": "What will you do?",
+  "spanish_translation": "\u00bfQu\u00e9 har\u00e1s?",
+  "category": null,
+  "english_parts": [
+    "What will you do?"
+  ],
+  "spanish_parts": [
+    "\u00bfQu\u00e9 har\u00e1s?"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:52:56.329587+00:00",
+  "duration_seconds": 2.56,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

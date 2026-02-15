@@ -1,0 +1,23 @@
+{
+  "lesson_number": 19,
+  "english_word": "boat",
+  "spanish_translation": "barco",
+  "category": null,
+  "english_parts": [
+    "boat"
+  ],
+  "spanish_parts": [
+    "barco"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:53:47.263473+00:00",
+  "duration_seconds": 1.69,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

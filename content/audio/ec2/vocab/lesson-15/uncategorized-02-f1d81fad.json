@@ -1,0 +1,23 @@
+{
+  "lesson_number": 15,
+  "english_word": "which",
+  "spanish_translation": "que, el cual",
+  "category": null,
+  "english_parts": [
+    "which"
+  ],
+  "spanish_parts": [
+    "que, el cual"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:51:59.261586+00:00",
+  "duration_seconds": 2.15,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

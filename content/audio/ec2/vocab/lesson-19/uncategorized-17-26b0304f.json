@@ -1,0 +1,23 @@
+{
+  "lesson_number": 19,
+  "english_word": "relax",
+  "spanish_translation": "relajarse",
+  "category": null,
+  "english_parts": [
+    "relax"
+  ],
+  "spanish_parts": [
+    "relajarse"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:53:54.065436+00:00",
+  "duration_seconds": 2.25,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

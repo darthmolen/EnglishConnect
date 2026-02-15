@@ -1,0 +1,23 @@
+{
+  "lesson_number": 3,
+  "english_word": "wonderful",
+  "spanish_translation": "maravilloso",
+  "category": null,
+  "english_parts": [
+    "wonderful"
+  ],
+  "spanish_parts": [
+    "maravilloso"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:47:14.170407+00:00",
+  "duration_seconds": 2.55,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

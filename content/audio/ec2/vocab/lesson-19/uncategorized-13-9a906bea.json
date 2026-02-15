@@ -1,0 +1,23 @@
+{
+  "lesson_number": 19,
+  "english_word": "train",
+  "spanish_translation": "tren",
+  "category": null,
+  "english_parts": [
+    "train"
+  ],
+  "spanish_parts": [
+    "tren"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:53:51.248082+00:00",
+  "duration_seconds": 1.82,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,25 @@
+{
+  "lesson_number": 13,
+  "english_word": "finish/finished high school",
+  "spanish_translation": "terminar/terminado la escuela secundaria",
+  "category": null,
+  "english_parts": [
+    "finish",
+    "finished high school"
+  ],
+  "spanish_parts": [
+    "terminar",
+    "terminado la escuela secundaria"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:51:07.924358+00:00",
+  "duration_seconds": 5.68,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

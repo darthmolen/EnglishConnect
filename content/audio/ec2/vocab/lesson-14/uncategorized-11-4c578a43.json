@@ -1,0 +1,23 @@
+{
+  "lesson_number": 14,
+  "english_word": "loaf",
+  "spanish_translation": "hogaza",
+  "category": null,
+  "english_parts": [
+    "loaf"
+  ],
+  "spanish_parts": [
+    "hogaza"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:51:46.181102+00:00",
+  "duration_seconds": 1.9,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

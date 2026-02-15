@@ -1,0 +1,21 @@
+{
+  "lesson_number": 11,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What did you do yesterday?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I went to work yesterday...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:49.130610+00:00",
+  "duration_seconds": 4.9,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

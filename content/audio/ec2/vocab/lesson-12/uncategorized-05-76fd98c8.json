@@ -1,0 +1,23 @@
+{
+  "lesson_number": 12,
+  "english_word": "yesterday morning",
+  "spanish_translation": "ayer por la ma\u00f1ana",
+  "category": null,
+  "english_parts": [
+    "yesterday morning"
+  ],
+  "spanish_parts": [
+    "ayer por la ma\u00f1ana"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:30.409828+00:00",
+  "duration_seconds": 2.99,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

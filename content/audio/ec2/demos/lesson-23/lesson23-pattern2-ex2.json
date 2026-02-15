@@ -1,0 +1,21 @@
+{
+  "lesson_number": 23,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "What did they do at the wedding dinner?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They got together with friends...."
+    }
+  ],
+  "created_at": "2026-02-15T22:49:42.648376+00:00",
+  "duration_seconds": 5.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

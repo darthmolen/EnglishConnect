@@ -1,0 +1,23 @@
+{
+  "lesson_number": 18,
+  "english_word": "Easter",
+  "spanish_translation": "Pascua de Resurrecci\u00f3n",
+  "category": null,
+  "english_parts": [
+    "Easter"
+  ],
+  "spanish_parts": [
+    "Pascua de Resurrecci\u00f3n"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:53:19.839690+00:00",
+  "duration_seconds": 2.55,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

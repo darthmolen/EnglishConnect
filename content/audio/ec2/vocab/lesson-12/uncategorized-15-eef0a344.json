@@ -1,0 +1,25 @@
+{
+  "lesson_number": 12,
+  "english_word": "shop/shopped",
+  "spanish_translation": "comprar/comprado",
+  "category": null,
+  "english_parts": [
+    "shop",
+    "shopped"
+  ],
+  "spanish_parts": [
+    "comprar",
+    "comprado"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:46.759805+00:00",
+  "duration_seconds": 4.06,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

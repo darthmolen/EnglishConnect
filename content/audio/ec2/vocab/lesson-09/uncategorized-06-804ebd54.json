@@ -1,0 +1,25 @@
+{
+  "lesson_number": 9,
+  "english_word": "teenager/teenagers",
+  "spanish_translation": "adolescente/adolescentes",
+  "category": null,
+  "english_parts": [
+    "teenager",
+    "teenagers"
+  ],
+  "spanish_parts": [
+    "adolescente",
+    "adolescentes"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:49:14.401274+00:00",
+  "duration_seconds": 5.47,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

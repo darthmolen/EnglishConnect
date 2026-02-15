@@ -1,0 +1,24 @@
+{
+  "lesson_number": 22,
+  "english_word": "It's going to be \u2026",
+  "spanish_translation": "Va a ser/estar\u2026",
+  "category": null,
+  "english_parts": [
+    "It's going to be \u2026"
+  ],
+  "spanish_parts": [
+    "Va a ser",
+    "estar\u2026"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:54:51.245809+00:00",
+  "duration_seconds": 3.31,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

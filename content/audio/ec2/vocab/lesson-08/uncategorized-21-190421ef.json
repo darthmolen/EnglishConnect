@@ -1,0 +1,23 @@
+{
+  "lesson_number": 8,
+  "english_word": "street",
+  "spanish_translation": "calle",
+  "category": null,
+  "english_parts": [
+    "street"
+  ],
+  "spanish_parts": [
+    "calle"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:49:01.798682+00:00",
+  "duration_seconds": 1.78,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,23 @@
+{
+  "lesson_number": 9,
+  "english_word": "mean",
+  "spanish_translation": "malo, cruel",
+  "category": null,
+  "english_parts": [
+    "mean"
+  ],
+  "spanish_parts": [
+    "malo, cruel"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:49:28.581585+00:00",
+  "duration_seconds": 2.39,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

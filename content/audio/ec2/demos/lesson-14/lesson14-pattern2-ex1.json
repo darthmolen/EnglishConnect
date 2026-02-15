@@ -1,0 +1,21 @@
+{
+  "lesson_number": 14,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "How much are these tomatoes?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "They're two dollars a pound...."
+    }
+  ],
+  "created_at": "2026-02-15T22:48:20.313017+00:00",
+  "duration_seconds": 4.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

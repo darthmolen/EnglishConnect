@@ -1,0 +1,24 @@
+{
+  "lesson_number": 11,
+  "english_word": "do/did",
+  "spanish_translation": "verbo auxiliar \"do\" en",
+  "category": null,
+  "english_parts": [
+    "do",
+    "did"
+  ],
+  "spanish_parts": [
+    "verbo auxiliar \"do\" en"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:49:56.198066+00:00",
+  "duration_seconds": 4.06,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

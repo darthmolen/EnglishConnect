@@ -1,0 +1,25 @@
+{
+  "lesson_number": 11,
+  "english_word": "read/read a newspaper",
+  "spanish_translation": "leer/le\u00eddo un peri\u00f3dico",
+  "category": null,
+  "english_parts": [
+    "read",
+    "read a newspaper"
+  ],
+  "spanish_parts": [
+    "leer",
+    "le\u00eddo un peri\u00f3dico"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:11.113172+00:00",
+  "duration_seconds": 5.28,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

@@ -1,0 +1,23 @@
+{
+  "lesson_number": 11,
+  "english_word": "during the weekend",
+  "spanish_translation": "durante el fin de semana",
+  "category": null,
+  "english_parts": [
+    "during the weekend"
+  ],
+  "spanish_parts": [
+    "durante el fin de semana"
+  ],
+  "format": "bilingual",
+  "voices": {
+    "en": "en_US-lessac-medium",
+    "es": "es_ES-davefx-medium"
+  },
+  "intra_pause": 0.5,
+  "inter_pause": 0.8,
+  "created_at": "2026-02-15T22:50:23.406642+00:00",
+  "duration_seconds": 3.17,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

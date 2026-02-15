@@ -1,0 +1,21 @@
+{
+  "lesson_number": 9,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Did you have a bike?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, I had a bike, but I wanted a moped...."
+    }
+  ],
+  "created_at": "2026-02-15T22:47:30.668982+00:00",
+  "duration_seconds": 4.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}
