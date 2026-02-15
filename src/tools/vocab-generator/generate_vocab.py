@@ -2,7 +2,7 @@
 """Vocabulary audio generator for EnglishConnect.
 
 Reads vocabulary items from database, generates bilingual pronunciation audio
-using Piper TTS, and saves to content/audio/ec1/vocab/.
+using Piper TTS, and saves to content/audio/<course>/vocab/.
 
 Usage:
     # Ensure Piper venv is activated:
@@ -10,6 +10,9 @@ Usage:
 
     # Generate vocab audio for one lesson
     python generate_vocab.py --lesson 5
+
+    # Generate for a specific course
+    python generate_vocab.py --lesson 5 --course ec2
 
     # Generate vocab audio for all lessons
     python generate_vocab.py --all
@@ -43,7 +46,9 @@ from service import PiperService
 
 
 # Configuration
-OUTPUT_BASE = Path(__file__).parent.parent.parent.parent / "content" / "audio" / "ec1" / "vocab"
+def get_output_base(course_id: str) -> Path:
+    return Path(__file__).parent.parent.parent.parent / "content" / "audio" / course_id / "vocab"
+
 DATABASE_URL = "postgresql+asyncpg://englishconnect:devpassword@localhost:5432/englishconnect"
 INTRA_PAUSE = 0.5  # Pause between singular/plural forms
 INTER_PAUSE = 0.8  # Pause between English and Spanish
@@ -85,7 +90,7 @@ def calculate_duration(audio_bytes: bytes) -> float:
 
 
 async def fetch_lesson_vocabulary(
-    session: AsyncSession, lesson_number: int
+    session: AsyncSession, lesson_number: int, course_id: str = "ec1"
 ) -> tuple[Lesson | None, list[VocabularyItem]]:
     """Fetch vocabulary items for a lesson.
 
@@ -94,7 +99,7 @@ async def fetch_lesson_vocabulary(
     """
     # Get lesson
     stmt = select(Lesson).where(
-        Lesson.course_id == "ec1", Lesson.lesson_number == lesson_number
+        Lesson.course_id == course_id, Lesson.lesson_number == lesson_number
     )
     result = await session.execute(stmt)
     lesson = result.scalar_one_or_none()
@@ -134,6 +139,7 @@ def generate_vocab_audio(
     vocab: VocabularyItem,
     index: int,
     dry_run: bool = False,
+    output_base: Path | None = None,
 ) -> Path | None:
     """Generate bilingual audio for a single vocabulary item.
 
@@ -169,7 +175,7 @@ def generate_vocab_audio(
         duration = calculate_duration(audio_bytes)
 
         # Prepare output paths
-        output_dir = OUTPUT_BASE / f"lesson-{lesson_number:02d}"
+        output_dir = output_base / f"lesson-{lesson_number:02d}"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         base_filename = generate_filename(vocab.category, index)
@@ -212,6 +218,8 @@ async def generate_vocab_for_lesson(
     piper: PiperService,
     lesson_number: int,
     dry_run: bool = False,
+    course_id: str = "ec1",
+    output_base: Path | None = None,
 ) -> list[Path]:
     """Generate vocabulary audio for a lesson.
 
@@ -220,11 +228,13 @@ async def generate_vocab_for_lesson(
         piper: PiperService instance
         lesson_number: Lesson number
         dry_run: If True, preview without generating
+        course_id: Course ID to query
+        output_base: Base output directory for audio files
 
     Returns:
         List of generated audio file paths
     """
-    lesson, vocab_items = await fetch_lesson_vocabulary(session, lesson_number)
+    lesson, vocab_items = await fetch_lesson_vocabulary(session, lesson_number, course_id)
 
     if not lesson:
         print(f"Lesson {lesson_number} not found")
@@ -250,7 +260,7 @@ async def generate_vocab_for_lesson(
         category_indices[category] = category_indices.get(category, 0) + 1
         index = category_indices[category]
 
-        path = generate_vocab_audio(piper, lesson_number, vocab, index, dry_run)
+        path = generate_vocab_audio(piper, lesson_number, vocab, index, dry_run, output_base)
         if path:
             generated.append(path)
 
@@ -262,12 +272,15 @@ async def main():
     parser.add_argument("--lesson", type=int, help="Lesson number to generate for")
     parser.add_argument("--all", action="store_true", help="Generate for all lessons")
     parser.add_argument("--dry-run", action="store_true", help="Preview without generating")
+    parser.add_argument("--course", default="ec1", help="Course ID (default: ec1)")
     parser.add_argument(
         "--database-url",
         default=DATABASE_URL,
         help="Database URL",
     )
     args = parser.parse_args()
+
+    output_base = get_output_base(args.course)
 
     if not args.lesson and not args.all:
         parser.error("Either --lesson or --all is required")
@@ -295,7 +308,7 @@ async def main():
     else:
         print("DRY RUN - Piper voice check skipped")
 
-    print(f"Output: {OUTPUT_BASE}/")
+    print(f"Output: {output_base}/")
     print()
 
     # Create engine and session
@@ -307,7 +320,7 @@ async def main():
             # Get all lesson numbers
             stmt = (
                 select(Lesson.lesson_number)
-                .where(Lesson.course_id == "ec1")
+                .where(Lesson.course_id == args.course)
                 .order_by(Lesson.lesson_number)
             )
             result = await session.execute(stmt)
@@ -321,14 +334,14 @@ async def main():
                 print(f"Lesson {lesson_num}")
                 print(f"{'=' * 60}")
                 generated = await generate_vocab_for_lesson(
-                    session, piper, lesson_num, args.dry_run
+                    session, piper, lesson_num, args.dry_run, args.course, output_base
                 )
                 total_generated.extend(generated)
 
             print(f"\n\nTotal generated: {len(total_generated)} audio files")
         else:
             generated = await generate_vocab_for_lesson(
-                session, piper, args.lesson, args.dry_run
+                session, piper, args.lesson, args.dry_run, args.course, output_base
             )
             if not args.dry_run:
                 print(f"\nGenerated: {len(generated)} audio files")

@@ -32,13 +32,13 @@ def find_section_boundaries(content: str) -> dict:
     """Find the start positions of key sections in the markdown."""
     boundaries = {}
 
-    # Find Memorize Vocabulary section
-    vocab_match = re.search(r"^##\s*\*{0,2}Memorize Vocabulary\*{0,2}", content, re.MULTILINE | re.IGNORECASE)
+    # Find Memorize Vocabulary section (## to #### header levels)
+    vocab_match = re.search(r"^#{1,4}\s*\*{0,2}Memorize Vocabulary\*{0,2}", content, re.MULTILINE | re.IGNORECASE)
     if vocab_match:
         boundaries["vocab_start"] = vocab_match.start()
 
     # Find Practice Pattern 1 section (end of vocabulary area)
-    pattern1_match = re.search(r"^##\s*\*{0,2}Practice Pattern 1\*{0,2}", content, re.MULTILINE | re.IGNORECASE)
+    pattern1_match = re.search(r"^#{1,4}\s*\*{0,2}Practice Pattern 1\*{0,2}", content, re.MULTILINE | re.IGNORECASE)
     if pattern1_match:
         boundaries["pattern1_start"] = pattern1_match.start()
 
@@ -53,12 +53,9 @@ def normalize_lesson(content: str, lesson_num: int) -> tuple[str, list[str]]:
     """
     changes = []
 
-    # Skip special lessons
-    if lesson_num == 1:
-        changes.append("Skipping lesson 1 (introductory lesson with different structure)")
-        return content, changes
-    if lesson_num == 25:
-        changes.append("Skipping lesson 25 (review lesson with different structure)")
+    # Skip lessons without standard vocabulary+pattern structure
+    if "Memorize Vocabulary" not in content and "Practice Pattern" not in content:
+        changes.append("Skipping (no Memorize Vocabulary or Practice Pattern sections)")
         return content, changes
 
     boundaries = find_section_boundaries(content)

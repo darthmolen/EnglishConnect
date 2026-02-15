@@ -81,22 +81,22 @@ class LessonParser:
         """Extract full learning principle text including all paragraphs.
 
         Captures text from principle section headers (like "## **Eres un hijo de Dios**")
-        until the next major section (## **Ponder** or ## **Memorize**).
+        until the next major section (Ponder or Memorize).
 
         Lesson 1 has a separate section header for the principle.
         Lessons 2+ have content directly after the italic summary.
         """
         # First try: Lesson 1 style - separate section header like "## **Eres un hijo de Dios**"
         match = re.search(
-            r"## \*\*(?:Eres|You Are|El|La|Los|Las|Ser|Tener|Hacer|Escuchar|Hablar|Actuar|Orar|Confiar).+?\*\*\n\n(.+?)(?=## \*\*Ponder|## \*\*Memorize)",
+            r"#{2,4} \*\*(?:Eres|You Are|El|La|Los|Las|Ser|Tener|Hacer|Escuchar|Hablar|Actuar|Orar|Confiar).+?\*\*\n\n(.+?)(?=#{2,4} \*\*Ponder|#{2,4} \*\*Memorize)",
             self.content,
             re.DOTALL,
         )
 
-        # Fallback: Lessons 2+ style - content after italic summary, before ## **Ponder**
+        # Fallback: Lessons 2+ style - content after italic summary, before Ponder
         if not match:
             match = re.search(
-                r"Study the Principle of Learning:.+?\n\n\*.+?\*\n\n(.+?)(?=## \*\*Ponder)",
+                r"Study the Principle of Learning:.+?\n\n\*.+?\*\n\n(.+?)(?=#{2,4} \*\*Ponder|#{2,4}\s+\*\*Ponder)",
                 self.content,
                 re.DOTALL,
             )
@@ -110,12 +110,12 @@ class LessonParser:
         return None
 
     def _extract_ponder_questions(self) -> list[str]:
-        """Extract ponder/reflection questions from ## **Ponder** section."""
+        """Extract ponder/reflection questions from Ponder section (any header level)."""
         questions = []
 
-        # Find the Ponder section
+        # Find the Ponder section (## to #### header levels)
         ponder_section = re.search(
-            r"## \*\*Ponder\*\*(.+?)(?=## |\Z)",
+            r"#{2,4}\s*\*{0,2}Ponder\*{0,2}(.+?)(?=#{2,4}\s|\Z)",
             self.content,
             re.DOTALL,
         )
@@ -137,12 +137,49 @@ class LessonParser:
         """
         images = []
 
-        # Find all image references with Figure in the filename
-        for match in re.finditer(r"!\[.*?\]\(\.\./(_page_\d+_Figure_\d+\.jpeg)\)", self.content):
+        # Find all image references with Figure in the filename (../ prefix optional)
+        for match in re.finditer(r"!\[.*?\]\((?:\.\./)?(_page_\d+_Figure_\d+\.jpeg)\)", self.content):
             image_path = match.group(1)
             images.append(image_path)
 
         return images
+
+    @staticmethod
+    def _expand_br_cells(text: str) -> str:
+        """Preprocess markdown tables to expand <br>-concatenated cells.
+
+        Marker sometimes squashes multi-row tables into single rows with <br> separators:
+        | word1<br>trans1<br>word2<br>trans2 | word3 | trans3 |
+        This expands them into proper table rows.
+        Also cleans individual <br> in cells (e.g. "send an email<br>message" → "send an email message").
+        """
+        lines = text.split('\n')
+        expanded = []
+        for line in lines:
+            # Check if this is a table row with a <br>-heavy cell (>4 <br> tags = likely concatenated pairs)
+            if line.startswith('|') and '<br>' in line and line.count('<br>') > 4:
+                cells = [c.strip() for c in line.split('|') if c.strip()]
+                if cells:
+                    # Find the cell with many <br> tags
+                    br_cell_idx = max(range(len(cells)), key=lambda i: cells[i].count('<br>'))
+                    br_cell = cells[br_cell_idx]
+                    parts = [p.strip() for p in br_cell.split('<br>') if p.strip()]
+
+                    # Extract en/es pairs from the <br> cell
+                    for i in range(0, len(parts) - 1, 2):
+                        expanded.append(f"| {parts[i]} | {parts[i + 1]} |")
+
+                    # Also add the remaining normal cells as a separate row
+                    other_cells = [c for j, c in enumerate(cells) if j != br_cell_idx]
+                    if len(other_cells) >= 2:
+                        expanded.append(f"| {other_cells[0]} | {other_cells[1]} |")
+                    continue
+
+            # Clean minor <br> in individual cells (e.g., line breaks within a phrase)
+            if '<br>' in line and line.startswith('|'):
+                line = line.replace('<br>', ' ')
+            expanded.append(line)
+        return '\n'.join(expanded)
 
     def _extract_vocabulary(self) -> list[dict]:
         """Extract vocabulary tables from markdown."""
@@ -153,13 +190,14 @@ class LessonParser:
 
         # Find the Memorize Vocabulary section - capture until Practice Pattern 1
         vocab_section = re.search(
-            r"## \*\*Memorize Vocabulary\*\*(.+?)(?=## \*\*Practice Pattern|\Z)",
+            r"#{1,4}\s*\*{0,2}Memorize Vocabulary\*{0,2}(.+?)(?=#{1,4}\s*\*{0,2}Practice Pattern|\Z)",
             self.content,
             re.DOTALL,
         )
 
         if vocab_section:
-            section_text = vocab_section.group(1)
+            # Preprocess to expand <br>-concatenated cells (Marker artifact)
+            section_text = self._expand_br_cells(vocab_section.group(1))
 
             # Extract table rows
             for match in re.finditer(table_pattern, section_text):
@@ -215,8 +253,8 @@ class LessonParser:
         best_pos = -1
 
         for cat_name, cat_value in self.CATEGORY_PATTERNS:
-            # Look for ### **Category** pattern
-            pattern = rf"###\s*\*\*{cat_name}"
+            # Look for ### or #### **Category** pattern
+            pattern = rf"#{2,4}\s*\*\*{cat_name}"
             for match in re.finditer(pattern, context, re.IGNORECASE):
                 cat_pos = match.start()
                 # Category must appear before word and be closer than any previous match
@@ -247,9 +285,9 @@ class LessonParser:
         """
         patterns = []
 
-        # Find all pattern header positions
+        # Find all pattern header positions (any header level ##-####)
         pattern_headers = list(re.finditer(
-            r"## \*\*Practice Pattern (\d+)\*\*",
+            r"#{1,4}\s*\*{0,2}Practice Pattern (\d+)\*{0,2}",
             self.content,
         ))
 
@@ -265,7 +303,7 @@ class LessonParser:
                 # Look for headers like "Use the Patterns", "Additional Activities", etc.
                 remaining = self.content[section_start:]
                 next_major = re.search(
-                    r"\n## (?!\*{0,2}Examples|\*{0,2}Questions|\*{0,2}Answers)",
+                    r"\n#{1,2} (?!\*{0,2}Examples|\*{0,2}Questions|\*{0,2}Answers)",
                     remaining,
                 )
                 section_end = section_start + next_major.start() if next_major else len(self.content)

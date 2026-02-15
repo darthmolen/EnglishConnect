@@ -42,12 +42,18 @@ def chunk_by_lesson(md_path: Path, output_dir: Path):
             break
 
     # Filter out vocabulary index entries (usually very short sections at the end)
-    # by checking if matches are reasonably spaced apart
+    # by checking if matches are reasonably spaced apart.
+    # Exception: always keep LESSON matches after UNIT matches (unit intros
+    # are short and the first lesson in each unit follows immediately).
     if matches:
         filtered = [matches[0]]
         for m in matches[1:]:
-            # Only keep if at least 500 chars from previous match
-            if m.start() - filtered[-1].start() > 500:
+            prev_type = filtered[-1].group(2).strip().upper()
+            curr_type = m.group(2).strip().upper()
+            is_lesson_after_unit = prev_type.startswith("UNIT") and curr_type.startswith("LESSON")
+            # Only keep if at least 500 chars from previous match,
+            # or if it's a LESSON right after a UNIT header
+            if m.start() - filtered[-1].start() > 500 or is_lesson_after_unit:
                 filtered.append(m)
         matches = filtered
 

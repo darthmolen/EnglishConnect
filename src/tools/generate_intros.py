@@ -47,7 +47,8 @@ PIPER_SERVICE: PiperService | None = None  # Lazy init
 _db_url = os.getenv("DATABASE_URL", "postgresql://englishconnect:devpassword@localhost:5432/englishconnect")
 # Normalize the URL for psycopg2
 DATABASE_URL = _db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("postgresql://", "postgresql+psycopg2://")
-OUTPUT_BASE = Path("content/audio/ec1/intros")
+DEFAULT_COURSE_ID = "ec1"
+OUTPUT_BASE = Path(f"content/audio/{DEFAULT_COURSE_ID}/intros")
 
 # Voice for intros (warm, friendly)
 INTRO_VOICE = "speaker_b"
@@ -263,7 +264,7 @@ async def generate_intro_legacy(
     return False
 
 
-def get_lessons() -> list[tuple[int, str]]:
+def get_lessons(course_id: str = DEFAULT_COURSE_ID) -> list[tuple[int, str]]:
     """Get all lessons from the database."""
     # Use sync engine for simplicity in a script
     engine = create_engine(DATABASE_URL)
@@ -272,13 +273,13 @@ def get_lessons() -> list[tuple[int, str]]:
     with Session() as session:
         result = session.execute(
             select(Lesson.lesson_number, Lesson.title)
-            .where(Lesson.course_id == "ec1")
+            .where(Lesson.course_id == course_id)
             .order_by(Lesson.lesson_number)
         )
         return [(row.lesson_number, row.title) for row in result.fetchall()]
 
 
-async def main_split(language: str = "both", page_type: str = "both"):
+async def main_split(language: str = "both", page_type: str = "both", course_id: str = DEFAULT_COURSE_ID):
     """Generate split intros for all lessons (default mode).
 
     This mode generates:
@@ -302,7 +303,7 @@ async def main_split(language: str = "both", page_type: str = "both"):
 
     # Get lessons from database
     try:
-        lessons = get_lessons()
+        lessons = get_lessons(course_id)
         print(f"Found {len(lessons)} lessons in database")
     except Exception as e:
         print(f"Error connecting to database: {e}")
@@ -351,7 +352,7 @@ async def main_split(language: str = "both", page_type: str = "both"):
             print(f"Total size: {result.stdout.strip().split()[0]}")
 
 
-async def main_legacy(language: str = "both", page_type: str = "both"):
+async def main_legacy(language: str = "both", page_type: str = "both", course_id: str = DEFAULT_COURSE_ID):
     """Generate combined intros for all lessons (legacy mode).
 
     Args:
@@ -371,7 +372,7 @@ async def main_legacy(language: str = "both", page_type: str = "both"):
 
     # Get lessons from database
     try:
-        lessons = get_lessons()
+        lessons = get_lessons(course_id)
         print(f"Found {len(lessons)} lessons in database")
     except Exception as e:
         print(f"Error connecting to database: {e}")
@@ -403,9 +404,9 @@ async def main_legacy(language: str = "both", page_type: str = "both"):
 
 
 # Keep old main for backward compatibility
-async def main(language: str = "both", page_type: str = "both"):
+async def main(language: str = "both", page_type: str = "both", course_id: str = DEFAULT_COURSE_ID):
     """Generate intros for all lessons (defaults to split mode)."""
-    await main_split(language, page_type)
+    await main_split(language, page_type, course_id)
 
 
 if __name__ == "__main__":
@@ -424,13 +425,21 @@ if __name__ == "__main__":
         help="Page type for intros: practice, vocabulary, or both (default)"
     )
     parser.add_argument(
+        "--course",
+        default=DEFAULT_COURSE_ID,
+        help=f"Course ID (default: {DEFAULT_COURSE_ID})"
+    )
+    parser.add_argument(
         "--legacy",
         action="store_true",
         help="Generate combined intros (legacy mode, larger files)"
     )
     args = parser.parse_args()
 
+    # Update OUTPUT_BASE based on course argument
+    OUTPUT_BASE = Path(f"content/audio/{args.course}/intros")
+
     if args.legacy:
-        asyncio.run(main_legacy(args.language, args.page))
+        asyncio.run(main_legacy(args.language, args.page, args.course))
     else:
-        asyncio.run(main_split(args.language, args.page))
+        asyncio.run(main_split(args.language, args.page, args.course))

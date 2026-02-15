@@ -105,10 +105,16 @@ ingest_content() {
     LESSON_COUNT=$(docker compose exec -T postgres psql -U englishconnect -d englishconnect -tAc "SELECT COUNT(*) FROM lessons 2>/dev/null" 2>/dev/null || echo "0")
 
     if [ "$LESSON_COUNT" = "0" ] || [ -z "$LESSON_COUNT" ]; then
-        log_info "Ingesting lesson content..."
+        log_info "Ingesting EC1 lesson content..."
         src/backend/.venv/bin/python src/tools/content_ingestion.py \
             --course ec1 \
             --lessons-dir content/refined/ec1/books/englishconnect_1_para_los_alumnos/lessons
+
+        log_info "Ingesting EC2 lesson content..."
+        src/backend/.venv/bin/python src/tools/content_ingestion.py \
+            --course ec2 \
+            --course-name "EnglishConnect 2" \
+            --lessons-dir content/refined/ec2/books/englishconnect_2_for_learners/lessons
     else
         log_info "Content already ingested ($LESSON_COUNT lessons found)"
     fi

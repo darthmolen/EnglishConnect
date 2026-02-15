@@ -52,3 +52,7 @@ src/services/llm-local/models/
 
 # Azure scripts with secrets
 azure/scripts/
+
+# Raw source PDFs (copyrighted, download separately)
+content/raw/**/*.pdf
+content/raw/**/*.pdf:Zone.Identifier

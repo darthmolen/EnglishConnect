@@ -71,9 +71,14 @@ tests/                    # All tests
 
 content/                  # Lesson content
 ├── refined/              # Processed markdown lessons
-│   └── ec1/              # EnglishConnect 1
+│   ├── ec1/              # EnglishConnect 1
+│   └── ec2/              # EnglishConnect 2
+├── audio/                # Generated audio (vocab, demos, intros)
+│   ├── ec1/
+│   └── ec2/
 └── raw/                  # Source PDFs
-    └── ec1/
+    ├── ec1/
+    └── ec2/
 
 documentation/            # Architecture docs, ADRs
 planning/                 # Phase documentation
@@ -154,6 +159,14 @@ Single `UnifiedTeachingAgent` with two modes (see ADR-005):
 ## Deployed Environment
 
 - **ACA URL**: <https://ca-ec-4fz3j4ag5rqtu.bluedesert-074435b9.southcentralus.azurecontainerapps.io>
+
+## Content Pipeline
+
+For ingesting new course content (PDF → database → audio), see:
+
+- `documentation/CONTENT-INGESTION-PIPELINE.md` - Full pipeline runbook
+- `documentation/HOW-TO-GENERATE-DEMO-SAMPLES.md` - Demo audio generation details
+- `documentation/LOCAL-TTS-VOICES.md` - TTS voice configuration
 
 ## Architecture Decision Records
 

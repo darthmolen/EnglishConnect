@@ -51,16 +51,16 @@ class LessonAudit:
 class LessonAuditor:
     """Audit lesson markdown files for expected sections."""
 
-    # Expected sections with regex patterns
+    # Expected sections with regex patterns (flexible header levels for EC1+EC2)
     SECTION_PATTERNS = [
-        ("Memorize Vocabulary", r"##\s*\*{0,2}(Memorize Vocabulary|Part 1:.*vocabulario)", "Main vocabulary section"),
+        ("Memorize Vocabulary", r"#{1,4}\s*\*{0,2}(Memorize Vocabulary|Part 1:.*vocabulario)", "Main vocabulary section"),
         ("Vocabulary Table", r"\|[^|]+\|[^|]+\|", "At least one vocabulary table row"),
-        ("Practice Pattern 1", r"##\s*\*{0,2}Practice Pattern 1", "First practice pattern"),
-        ("Practice Pattern 2", r"##\s*\*{0,2}Practice Pattern 2", "Second practice pattern (optional for some lessons)"),
+        ("Practice Pattern 1", r"#{1,4}\s*\*{0,2}Practice Pattern 1", "First practice pattern"),
+        ("Practice Pattern 2", r"#{1,4}\s*\*{0,2}Practice Pattern 2", "Second practice pattern (optional for some lessons)"),
         ("Pattern Q&A Template", r"Q:\s*.+?\s*A:", "Pattern Q: ... A: template"),
-        ("Pattern Examples", r"(##\s*\*{0,2}Examples|####?\s*\*?Example)", "Examples section or Example header"),
-        ("Use the Patterns", r"##?\s*\*{0,2}Use the Patterns", "Writing exercise section"),
-        ("Evaluate Your Progress", r"##?\s*\*{0,2}Evaluate Your Progress", "Evaluation criteria section"),
+        ("Pattern Examples", r"(#{1,4}\s*\*{0,2}Examples|#{1,4}\s*\*?Example)", "Examples section or Example header"),
+        ("Use the Patterns", r"#{1,4}\s*\*{0,2}Use the Patterns", "Writing exercise section"),
+        ("Evaluate Your Progress", r"#{1,4}\s*\*{0,2}Evaluate Your Progress", "Evaluation criteria section"),
         ("I can statements", r"I can:", "Evaluation 'I can:' statements"),
     ]
 

@@ -2,7 +2,7 @@
 """Demo dialogue generator for EnglishConnect.
 
 Reads lesson Q&A patterns from database, generates 2-voice dialogues
-using TTS MCP HTTP API, and saves to content/audio/ec1/demos/.
+using TTS MCP HTTP API, and saves to content/audio/<course>/demos/.
 
 Usage:
     # Ensure TTS server is running in HTTP mode:
@@ -16,6 +16,9 @@ Usage:
 
     # Generate demos for all lessons
     python generate_demos.py --all
+
+    # Generate demos for a different course
+    python generate_demos.py --all --course ec2
 """
 
 import argparse
@@ -44,7 +47,7 @@ from app.models.content import Lesson, QAPattern, ExampleSentence
 # Configuration
 TEACHER_VOICE = "speaker_d"  # Grace
 STUDENT_VOICE = "speaker_c"  # Davis
-OUTPUT_BASE = Path(__file__).parent.parent.parent.parent / "content" / "audio" / "ec1" / "demos"
+CONTENT_BASE = Path(__file__).parent.parent.parent.parent / "content" / "audio"
 TTS_HTTP_URL = "http://localhost:8002"
 DATABASE_URL = "postgresql+asyncpg://englishconnect:devpassword@localhost:5432/englishconnect"
 PAUSE_SECONDS = 0.5
@@ -147,7 +150,7 @@ async def generate_dialogue_audio(
     return combined, duration
 
 
-async def fetch_lesson_dialogues(session: AsyncSession, lesson_number: int) -> list[dict]:
+async def fetch_lesson_dialogues(session: AsyncSession, lesson_number: int, course_id: str = "ec1") -> list[dict]:
     """Fetch Q&A examples for a lesson, grouped by pattern.
 
     Returns list of dialogues, each with:
@@ -157,7 +160,7 @@ async def fetch_lesson_dialogues(session: AsyncSession, lesson_number: int) -> l
     # Get lesson
     stmt = (
         select(Lesson)
-        .where(Lesson.course_id == "ec1", Lesson.lesson_number == lesson_number)
+        .where(Lesson.course_id == course_id, Lesson.lesson_number == lesson_number)
         .options(selectinload(Lesson.qa_patterns))
     )
     result = await session.execute(stmt)
@@ -293,6 +296,7 @@ async def generate_demos_for_lesson(
     lesson_number: int,
     single: bool = False,
     parallel: int = 1,
+    course_id: str = "ec1",
 ) -> list[Path]:
     """Generate demo audio files for a lesson.
 
@@ -303,11 +307,12 @@ async def generate_demos_for_lesson(
         lesson_number: Lesson number to generate for
         single: If True, only generate one demo
         parallel: Number of concurrent generations (1 = sequential)
+        course_id: Course ID (default: ec1)
 
     Returns:
         List of generated audio file paths
     """
-    dialogues = await fetch_lesson_dialogues(session, lesson_number)
+    dialogues = await fetch_lesson_dialogues(session, lesson_number, course_id=course_id)
 
     if not dialogues:
         print(f"No dialogues found for lesson {lesson_number}")
@@ -363,9 +368,18 @@ async def main():
         default=TTS_HTTP_URL,
         help="TTS HTTP server URL",
     )
+    parser.add_argument(
+        "--course",
+        default="ec1",
+        help="Course ID (default: ec1)",
+    )
     args = parser.parse_args()
 
     tts_url = args.tts_url
+    course_id = args.course
+
+    global OUTPUT_BASE
+    OUTPUT_BASE = CONTENT_BASE / course_id / "demos"
 
     if not args.lesson and not args.all:
         parser.error("Either --lesson or --all is required")
@@ -392,7 +406,7 @@ async def main():
                 # Get all lesson numbers
                 stmt = (
                     select(Lesson.lesson_number)
-                    .where(Lesson.course_id == "ec1")
+                    .where(Lesson.course_id == course_id)
                     .order_by(Lesson.lesson_number)
                 )
                 result = await session.execute(stmt)
@@ -407,7 +421,8 @@ async def main():
                     print(f"{'='*60}")
                     generated = await generate_demos_for_lesson(
                         session, client, tts_url, lesson_num,
-                        single=args.single, parallel=args.parallel
+                        single=args.single, parallel=args.parallel,
+                        course_id=course_id,
                     )
                     total_generated.extend(generated)
 
@@ -415,7 +430,8 @@ async def main():
             else:
                 generated = await generate_demos_for_lesson(
                     session, client, tts_url, args.lesson,
-                    single=args.single, parallel=args.parallel
+                    single=args.single, parallel=args.parallel,
+                    course_id=course_id,
                 )
                 print(f"\nGenerated: {len(generated)} audio files")
 
