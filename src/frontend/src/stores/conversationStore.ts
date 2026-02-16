@@ -18,6 +18,9 @@ import type {
 } from '@/types'
 
 interface ConversationState {
+  // Course selection (persisted)
+  courseId: string
+
   // Lesson state
   lessons: LessonSummary[]
   currentLesson: LessonDetail | null
@@ -71,6 +74,7 @@ interface ConversationState {
   isRegistryPageSelected: boolean
 
   // Actions
+  setCourseId: (courseId: string) => void
   setLessons: (lessons: LessonSummary[]) => void
   setCurrentLesson: (lesson: LessonDetail | null) => void
   selectLesson: (lessonNumber: number) => void
@@ -110,6 +114,7 @@ export const useConversationStore = create<ConversationState>()(
   persist(
     (set) => ({
       // Initial state
+      courseId: 'ec1',
       lessons: [],
       currentLesson: null,
       selectedLessonNumber: null,
@@ -153,6 +158,24 @@ export const useConversationStore = create<ConversationState>()(
       isRegistryPageSelected: false,
 
       // Actions
+      setCourseId: (courseId) =>
+        set({
+          courseId,
+          // Reset lesson state when switching courses
+          lessons: [],
+          selectedLessonNumber: null,
+          currentLesson: null,
+          activeSection: 'principle' as LessonSection,
+          messages: [],
+          agentMode: 'practice' as AgentMode,
+          exchangeCount: 0,
+          focusPattern: null,
+          isRegistryPageSelected: false,
+          currentPhase: null,
+          phaseState: null,
+          phaseProgress: null,
+        }),
+
       setLessons: (lessons) => set({ lessons }),
 
       setCurrentLesson: (lesson) => set({ currentLesson: lesson }),
@@ -329,6 +352,7 @@ export const useConversationStore = create<ConversationState>()(
       name: 'englishconnect-settings',
       // Persist goals and evaluation state to localStorage
       partialize: (state) => ({
+        courseId: state.courseId,
         completedGoals: state.completedGoals,
         instructionLanguage: state.instructionLanguage,
         evaluationRatings: state.evaluationRatings,

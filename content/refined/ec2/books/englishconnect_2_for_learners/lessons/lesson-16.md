@@ -77,7 +77,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Do you know where the (*noun*) is? A: It is (*preposition*) the (*noun*).
+Q: Do you know where the (*noun*) is?
+Q_es: ¿Sabes dónde está el (*sustantivo*)?
+A: It is (*preposition*) the (*noun*).
+A_es: Es (*preposición*) el (*número*).
 
 #### **Questions**
 
@@ -92,17 +95,22 @@ Q: Do you know where the (*noun*) is? A: It is (*preposition*) the (*noun*).
 
 #### **Examples**
 
-Q: Do you know where the hospital is? A: Yes. It is across from the bookstore.
+Q: Do you know where the hospital is?
+Q_es: ¿Sabes dónde está el hospital?
+A: Yes. It is across from the bookstore.
+A_es: Sí. Está al frente de la librería.
 
 ![](_page_126_Picture_19.jpeg)
 
 Q: Where is the restaurant?
-
+Q_es: ¿Dónde está el restaurante?
 A: It's next to the bank.
+A_es: Es al lado del banco.
 
 Q: Where's the school?
-
+Q_es: ¿Dónde está la escuela?
 A: It's between the restaurant and the post office.
+A_es: Es entre el restaurante y la oficina de correos.
 
 ![](_page_127_Picture_1.jpeg)
 
@@ -111,8 +119,9 @@ A: It's between the restaurant and the post office.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
 Q: Is there a (*noun*) (*preposition*) your (*noun*)?
-
+Q_es: ¿Hay un (*sustantivo*) (*preposición*) tu (*sustantivo*)?
 A: There is a (*noun*) (*preposition*) my (*noun*).
+A_es: Hay un (*sustantivo*) (*preposición*) mi (*sustantivo*).
 
 #### **Questions**
 
@@ -125,18 +134,21 @@ A: There is a (*noun*) (*preposition*) my (*noun*).
 #### **Examples**
 
 Q: Is there a bus stop in your neighborhood?
-
+Q_es: ¿Hay una parada de autobús en tu barrio?
 A: There is a bus stop down the street from my house.
+A_es: Hay una parada de autobús por la calle desde mi casa.
 
 Q: Is there a grocery store in the town?
-
+Q_es: ¿Hay una tienda de alimentos en el pueblo?
 A: There is a grocery store near the bank.
+A_es: Hay una tienda de alimentos cerca del banco.
 
 ![](_page_127_Picture_15.jpeg)
 
 Q: Is there an airport in your city?
-
+Q_es: ¿Hay un aeropuerto en tu ciudad?
 A: No, there isn't an airport in my city.
+A_es: No, no hay un aeropuerto en mi ciudad.
 
 | _ | _/         |
 |---|------------|
@@ -249,6 +261,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about different locations.
+• _es: Preguntar sobre diferentes lugares.
 
 ![](_page_130_Picture_7.jpeg)
 
@@ -257,6 +270,7 @@ I can:
 ![](_page_130_Picture_9.jpeg)
 
 • Talk about where places are.
+• _es: Hablar sobre dónde están los lugares.
 
 ![](_page_130_Picture_11.jpeg)
 

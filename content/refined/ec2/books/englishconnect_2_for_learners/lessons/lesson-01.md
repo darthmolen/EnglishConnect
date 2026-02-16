@@ -211,6 +211,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask for others' names.
+• _es: Preguntar los nombres de otros.
 
 ![](_page_21_Picture_28.jpeg)
 
@@ -219,6 +220,7 @@ I can:
 ![](_page_21_Picture_30.jpeg)
 
 • Introduce myself and others.
+• _es: Presentarme a mí mismo y a otros.
 
 ![](_page_21_Picture_32.jpeg)
 
@@ -227,6 +229,7 @@ I can:
 ![](_page_21_Picture_34.jpeg)
 
 • Understand how EnglishConnect can help me learn English.
+• _es: Entender cómo EnglishConnect puede ayudarme a aprender inglés.
 
 ![](_page_21_Picture_36.jpeg)
 

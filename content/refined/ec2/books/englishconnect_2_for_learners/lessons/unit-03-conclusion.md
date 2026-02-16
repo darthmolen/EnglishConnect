@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Describe my routines.
+• _es: Describir mis rutinas.
 
 ![](_page_107_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](_page_107_Picture_11.jpeg)
 
 • Describe past experiences.
+• _es: Describir experiencias pasadas.
 
 ![](_page_107_Picture_13.jpeg)
 

@@ -80,9 +80,13 @@ A_es: Me gusta (*verbo*).
 ## **Examples**
 
 - Q: What do you like to do?
+- Q_es: ¿Qué te gusta hacer?
 - A: I like to cook.
+- A_es: Me gusta cocinar.
 - Q: What does he like to do?
+- Q_es: ¿Qué le gusta hacer?
 - A: He likes to dance.
+- A_es: Él disfruta bailando.
 
 ![](../_page_36_Picture_19.jpeg)
 
@@ -111,16 +115,19 @@ A_es: Sí, me gusta (*verbo*).
 ## **Examples**
 
 Q: Do you like to travel?
-
+Q_es: ¿Te gusta viajar?
 A: Yes, I like to travel.
+A_es: Sí, me gusta viajar.
 
 Q: Do you like to shop?
-
+Q_es: ¿Te gusta comprar?
 A: No, I don't like to shop.
+A_es: No, no me gusta comprar.
 
 Q: Does she like to paint?
-
+Q_es: ¿Ella le gusta pintar?
 A: Yes, she likes to paint.
+A_es: Sí, ella gusta de pintar.
 
 ![](../_page_37_Picture_14.jpeg)
 

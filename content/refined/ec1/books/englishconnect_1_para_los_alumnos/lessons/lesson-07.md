@@ -85,6 +85,7 @@ A: Tell me about your (*noun*).
 A_es: Cuéntame sobre tu (*sustantivo*).
 
 B: They have (*adjective*) (*noun*).
+B_es: Tienen (*sustantivo*) (*adjetivo*).
 
 ### **Requests**
 
@@ -97,11 +98,17 @@ B: They have (*adjective*) (*noun*).
 ## **Examples**
 
 - A: Tell me about your brother.
+- A_es: Cuéntame sobre tu hermano.
 - B: He has a mustache.
+- B_es: Él tiene bigote.
 - A: Tell me about your sisters.
+- A_es: Cuéntame sobre tus hermanas.
 - B: They have black hair.
+- B_es: Tienen cabello negro.
 - A: Tell me about your aunt.
+- A_es: Cuéntame sobre tu tía.
 - B: She has blue eyes.
+- B_es: Ella tiene ojos azules.
 
 ![](../_page_60_Picture_26.jpeg)
 
@@ -128,16 +135,19 @@ A_es: Sí, él es (*adjetivo*).
 ## Examples
 
 Q: Is your sister married?
-
+Q_es: ¿Tu hermana está casada?
 A: Yes, she is married.
+A_es: Sí, ella está casada.
 
 Q: Are you married?
-
+Q_es: ¿Estás casado?
 A: No, I am single.
+A_es: No, yo soy soltero.
 
 Q: Are your sisters tall?
-
+Q_es: ¿Tus hermanas son altas?
 A: No, they are short.
+A_es: No, son cortos.
 
 ![](../_page_61_Picture_13.jpeg)
 

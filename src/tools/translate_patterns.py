@@ -6,7 +6,8 @@ Spanish translations, translates them using the local LLM, and injects Q_es:/A_e
 lines below each original line.
 
 Usage:
-    python src/tools/translate_patterns.py                    # Translate all lessons
+    python src/tools/translate_patterns.py                    # Translate all EC1 lessons
+    python src/tools/translate_patterns.py --course ec2       # Translate all EC2 lessons
     python src/tools/translate_patterns.py --lesson 1         # Single lesson
     python src/tools/translate_patterns.py --dry-run          # Preview changes
     python src/tools/translate_patterns.py --lessons-dir PATH # Custom directory
@@ -20,16 +21,20 @@ from pathlib import Path
 
 from openai import AsyncOpenAI
 
-# Default paths
-DEFAULT_LESSONS_DIR = Path(__file__).parent.parent.parent / "content/refined/ec1/books/englishconnect_1_para_los_alumnos/lessons"
+# Course-specific lesson directories
+COURSE_LESSONS_DIRS = {
+    "ec1": Path(__file__).parent.parent.parent / "content/refined/ec1/books/englishconnect_1_para_los_alumnos/lessons",
+    "ec2": Path(__file__).parent.parent.parent / "content/refined/ec2/books/englishconnect_2_for_learners/lessons",
+}
+DEFAULT_LESSONS_DIR = COURSE_LESSONS_DIRS["ec1"]
 VLLM_BASE_URL = "http://localhost:8004/v1"
 VLLM_MODEL = None  # Auto-detect from server
 
-# Regex patterns
-Q_LINE_PATTERN = re.compile(r"^(Q:\s*)(.+)$")
-A_LINE_PATTERN = re.compile(r"^(A:\s*)(.+)$")
-Q_ES_LINE_PATTERN = re.compile(r"^Q_es:\s*")
-A_ES_LINE_PATTERN = re.compile(r"^A_es:\s*")
+# Regex patterns (also match bullet-list format like "- Q: ...")
+Q_LINE_PATTERN = re.compile(r"^(?:-\s*)?(Q:\s*)(.+)$")
+A_LINE_PATTERN = re.compile(r"^(?:-\s*)?(A:\s*)(.+)$")
+Q_ES_LINE_PATTERN = re.compile(r"^(?:-\s*)?Q_es:\s*")
+A_ES_LINE_PATTERN = re.compile(r"^(?:-\s*)?A_es:\s*")
 
 # Placeholder patterns to preserve
 PLACEHOLDER_PATTERN = re.compile(r"(\(\*[\w\s]+\*?\)|\[[\w\s]+\])")
@@ -39,9 +44,14 @@ PLACEHOLDER_TRANSLATIONS = {
     "noun": "sustantivo",
     "noun 1": "sustantivo 1",
     "noun 2": "sustantivo 2",
+    "noun 3": "sustantivo 3",
     "verb": "verbo",
     "verb past": "verbo pasado",
+    "verb present": "verbo presente",
     "adjective": "adjetivo",
+    "adjective 1": "adjetivo 1",
+    "adjective 2": "adjetivo 2",
+    "adjective 1 or 2": "adjetivo 1 o 2",
     "adverb": "adverbio",
     "day": "día",
     "time": "hora",
@@ -168,8 +178,9 @@ def find_pattern_section_ranges(lines: list[str]) -> list[tuple[int, int]]:
     Returns list of (start_line, end_line) tuples for each pattern section.
     """
     ranges = []
-    pattern_header = re.compile(r"^##\s*\*\*Practice Pattern", re.IGNORECASE)
-    next_section = re.compile(r"^##\s+(?!\*\*Examples)")  # ## header that isn't Examples
+    pattern_header = re.compile(r"^#{2,4}\s*\*{0,2}Practice Pattern", re.IGNORECASE)
+    # Any ##-#### header that isn't Examples, Questions, or Answers
+    next_section = re.compile(r"^#{2,4}\s+(?!\*{0,2}Examples|\*{0,2}Questions|\*{0,2}Answers)")
 
     i = 0
     while i < len(lines):
@@ -259,12 +270,18 @@ def inject_translations(lines: list[str], translations: dict[int, tuple[str, str
         if i in translations:
             prefix_type, spanish = translations[i]
             # Determine indentation from original line
-            indent = len(line) - len(line.lstrip())
+            stripped = line.lstrip()
+            indent = len(line) - len(stripped)
             indent_str = line[:indent] if indent > 0 else ""
+
+            # Preserve bullet-list prefix (e.g., "- Q:" → "- Q_es:")
+            bullet_prefix = ""
+            if stripped.startswith("- "):
+                bullet_prefix = "- "
 
             # Create translation line
             es_prefix = f"{prefix_type}_es: "
-            es_line = f"{indent_str}{es_prefix}{spanish}\n"
+            es_line = f"{indent_str}{bullet_prefix}{es_prefix}{spanish}\n"
             result.append(es_line)
 
     return result
@@ -354,10 +371,16 @@ async def main():
         description="Translate Q&A patterns to Spanish using local Qwen2.5 LLM"
     )
     parser.add_argument(
+        "--course",
+        choices=list(COURSE_LESSONS_DIRS.keys()),
+        default="ec1",
+        help="Course to translate (default: ec1)",
+    )
+    parser.add_argument(
         "--lessons-dir",
         type=Path,
-        default=DEFAULT_LESSONS_DIR,
-        help="Directory containing lesson markdown files",
+        default=None,
+        help="Directory containing lesson markdown files (overrides --course)",
     )
     parser.add_argument(
         "--lesson",
@@ -380,6 +403,10 @@ async def main():
         help="Remove existing translations and re-translate all lines",
     )
     args = parser.parse_args()
+
+    # Resolve lessons directory from --course if --lessons-dir not explicitly set
+    if args.lessons_dir is None:
+        args.lessons_dir = COURSE_LESSONS_DIRS[args.course]
 
     # Validate lessons directory
     if not args.lessons_dir.exists():

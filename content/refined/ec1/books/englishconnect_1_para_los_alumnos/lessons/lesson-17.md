@@ -133,13 +133,18 @@ A_es: Quiero (*sustantivo*) en mi (*sustantivo*).
 ## **Examples**
 
 Q: What do you want in your soup?
-
+Q_es: ¿Qué quieres en tu sopa?
 A: I want noodles in my soup.
+A_es: Quiero *noun* en mi sopa.
 
 - Q: What do you want with your hamburger?
+- Q_es: ¿Qué quieres con tu hamburguesa?
 - A: I want a drink with my hamburger.
+- A_es: Quiero una bebida con mi hamburguesa.
 - Q: What do you want on your pizza?
+- Q_es: ¿Qué quieres en tu pizza?
 - A: I want tomatoes on my pizza.
+- A_es: Quiero tomates en mi pizza.
 
 ![](../_page_134_Picture_15.jpeg)
 

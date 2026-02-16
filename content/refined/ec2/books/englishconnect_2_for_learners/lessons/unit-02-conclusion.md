@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Express my feelings and emotions.
+• _es: Expresar mis sentimientos y emociones.
 
 ![](_page_78_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](_page_78_Picture_11.jpeg)
 
 • Make requests.
+• _es: Hacer peticiones.
 
 ![](_page_78_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](_page_78_Picture_15.jpeg)
 
 • Describe where I live.
+• _es: Describir dónde vivo.
 
 ![](_page_78_Picture_17.jpeg)
 
@@ -37,6 +40,7 @@ I can:
 ![](_page_78_Picture_19.jpeg)
 
 • Talk about my past.
+• _es: Hablar sobre mi pasado.
 
 ![](_page_78_Picture_21.jpeg)
 

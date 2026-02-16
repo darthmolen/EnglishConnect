@@ -6,16 +6,16 @@
     {
       "speaker": "teacher",
       "voice": "speaker_d",
-      "text": "What should he do?"
+      "text": "What shouldn't she do?"
     },
     {
       "speaker": "student",
       "voice": "speaker_c",
-      "text": "He should go home and rest...."
+      "text": "She shouldn't exercise...."
     }
   ],
-  "created_at": "2026-02-15T22:49:19.457028+00:00",
-  "duration_seconds": 3.43,
+  "created_at": "2026-02-16T00:10:16.177230+00:00",
+  "duration_seconds": 3.83,
   "audio_format": "wav",
   "sample_rate": 24000
 }

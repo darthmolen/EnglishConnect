@@ -74,7 +74,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where were you (*time*)? A: I was at (*noun*).
+Q: Where were you (*time*)?
+Q_es: ¿Dónde estabas (*hora*)?
+A: I was at (*noun*).
+A_es: Estaba en (*sustantivo*).
 
 #### **Questions**
 
@@ -87,14 +90,20 @@ Q: Where were you (*time*)? A: I was at (*noun*).
 #### **Examples**
 
 - Q: Where were you last night?
+- Q_es: ¿Dónde estabas anoche?
 - A: I was at home.
+- A_es: Estaba en casa.
 - Q: Where was she on Tuesday?
+- Q_es: ¿Dónde estaba ella el martes?
 - A: She was at school.
+- A_es: Ella estaba en la escuela.
 
 ![](_page_94_Picture_23.jpeg)
 
 - Q: Where were you at 10:00 a.m.?
+- Q_es: ¿Dónde estabas a las 10:00 a.m.?
 - A: We were at work.
+- A_es: Estábamos en el trabajo.
 
 ![](_page_95_Picture_1.jpeg)
 
@@ -102,7 +111,10 @@ Q: Where were you (*time*)? A: I was at (*noun*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: Why did you (*verb present*) (*time*)? A: We (*verb past*) because we (*verb past*).
+Q: Why did you (*verb present*) (*time*)?
+Q_es: ¿Por qué hiciste (*verbo presente*) (*hora*)?
+A: We (*verb past*) because we (*verb past*).
+A_es: Nosotros (*verbo pasado*), porque nosotros (*verbo pasado*).
 
 #### **Questions**
 
@@ -118,14 +130,18 @@ Q: Why did you (*verb present*) (*time*)? A: We (*verb past*) because we (*verb 
 #### **Examples**
 
 - Q: Why did you leave the party last night?
+- Q_es: ¿Por qué saliste de la fiesta anoche?
 - A: I left the party because I felt sick.
+- A_es: Me marché del partido porque me sentí mal.
 - Q: Why didn't she message me
+- Q_es: ¿Por qué no me envió mensaje?
 
 ![](_page_95_Picture_13.jpeg)
 
 Q: Why did they go to the store?
-
+Q_es: ¿Por qué ellos fueron a la tienda?
 A: They went to the store because they needed bread.
+A_es: Ellos fueron a la tienda porque necesitaban pan.
 
 |   | _, |
 |---|----|
@@ -257,6 +273,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask where others were and why they did things in the past.
+• _es: Preguntar dónde estaban otros y por qué hicieron cosas en el pasado.
 
 ![](_page_98_Picture_7.jpeg)
 
@@ -265,6 +282,7 @@ I can:
 ![](_page_98_Picture_9.jpeg)
 
 • Talk about where I and others were and why we did things in the past.
+• _es: Hablar sobre dónde estaba yo y otros y por qué hicimos cosas en el pasado.
 
 ![](_page_98_Picture_11.jpeg)
 

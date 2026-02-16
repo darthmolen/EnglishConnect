@@ -89,9 +89,13 @@ A_es: Mi (*sustantivo 1*) es (*día*).
 ## **Examples**
 
 - Q: When is your birthday?
+- Q_es: ¿Cuándo es tu cumpleaños?
 - A: My birthday is July 8th.
+- A_es: Mi cumpleaños es el 8 de julio.
 - Q: When is his anniversary?
+- Q_es: ¿Cuándo es su aniversario?
 - A: His anniversary is April 3rd.
+- A_es: Su aniversario es el 3 de abril.
 
 ![](../_page_30_Figure_26.jpeg)
 

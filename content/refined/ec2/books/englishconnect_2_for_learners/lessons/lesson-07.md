@@ -70,8 +70,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Will you please (*verb*)?
-
+Q_es: ¿Me harías el favor de (*verbo*)?
 A: No, I can't (*verb*) because I need to (*verb*).
+A_es: No, no puedo (*verbo*) porque necesito (*verbo*).
 
 #### **Peticiones corteses**
 
@@ -86,16 +87,19 @@ A: No, I can't (*verb*) because I need to (*verb*).
 #### **Examples**
 
 Q: Will you please clean this room?
-
+Q_es: ¿Podrías limpiar esta habitación, por favor?
 A: No, I can't clean this room because I need to do the laundry.
+A_es: No, no puedo limpiar esta habitación porque necesito lavar la ropa.
 
 Q: Would you please do the dishes?
-
+Q_es: ¿Podrías lavar los platos, por favor?
 A: Yes, I will do the dishes.
+A_es: Sí, lavaré los platos.
 
 Q: Can you please cook dinner?
-
+Q_es: ¿Puedes preparar la cena, por favor?
 A: Yes, I can.
+A_es: Sí, puedo.
 
 ![](_page_57_Picture_18.jpeg)
 
@@ -106,8 +110,9 @@ A: Yes, I can.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
 A: I need you to (*verb*).
-
+A_es: Necesito que (*verbo*).
 B: No, I can't (*verb*) because I have to (*verb*).
+B_es: No, no puedo (*verbo*) porque tengo que (*verbo*).
 
 #### **Peticiones directas**
 
@@ -120,16 +125,19 @@ B: No, I can't (*verb*) because I have to (*verb*).
 ### **Examples**
 
 A: I need you to take Lisa to school.
-
+A_es: Necesito que lleves a Lisa a la escuela.
 B: OK, I can take Lisa to school.
+B_es: Está bien, puedo llevar a Lisa a la escuela.
 
 A: I want you to cook dinner.
-
+A_es: Quiero que prepares la cena.
 B: Sorry, I can't cook dinner because I have to help Lisa.
+B_es: Lo siento, no puedo preparar la cena porque tengo que ayudar a Lisa.
 
 A: I need you to make an appointment.
-
+A_es: Necesito que conciertes una cita.
 B: OK, I will make an appointment.
+B_es: Está bien, concertaré una cita.
 
 ![](_page_58_Picture_17.jpeg)
 
@@ -245,6 +253,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask for help.
+• _es: Pedir ayuda.
 
 ![](_page_62_Picture_7.jpeg)
 
@@ -253,6 +262,7 @@ I can:
 ![](_page_62_Picture_9.jpeg)
 
 • Make requests.
+• _es: Hacer peticiones.
 
 ![](_page_62_Picture_11.jpeg)
 
@@ -261,6 +271,7 @@ I can:
 ![](_page_62_Picture_13.jpeg)
 
 • Understand and respond to requests for help.
+• _es: Entender y responder a peticiones de ayuda.
 
 ![](_page_62_Picture_15.jpeg)
 

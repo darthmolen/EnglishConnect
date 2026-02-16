@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Describe holiday traditions.
+• _es: Describir tradiciones de días festivos.
 
 ![](_page_166_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](_page_166_Picture_11.jpeg)
 
 • Describe future events.
+• _es: Describir eventos futuros.
 
 ![](_page_166_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](_page_166_Picture_15.jpeg)
 
 • Describe how I feel.
+• _es: Describir cómo me siento.
 
 ![](_page_166_Picture_17.jpeg)
 
@@ -37,6 +40,7 @@ I can:
 ![](_page_166_Picture_19.jpeg)
 
 • Give health advice.
+• _es: Dar consejos de salud.
 
 ![](_page_166_Picture_21.jpeg)
 

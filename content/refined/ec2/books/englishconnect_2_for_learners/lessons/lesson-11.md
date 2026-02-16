@@ -71,7 +71,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What did you do (*time*)? A: I (*verb past*) (*time*).
+Q: What did you do (*time*)?
+Q_es: ¿Qué hiciste (*hora*)?
+A: I (*verb past*) (*time*).
+A_es: Yo (*verbo pasado*) (*tiempo*).
 
 #### **Questions**
 
@@ -84,9 +87,13 @@ Q: What did you do (*time*)? A: I (*verb past*) (*time*).
 #### **Examples**
 
 - Q: What did you do yesterday?
+- Q_es: ¿Qué hiciste ayer?
 - A: I went to work yesterday.
+- A_es: Fui al trabajo ayer.
 - Q: What did he do during the weekend?
+- Q_es: ¿Qué hizo durante el fin de semana?
 - A: He played soccer during the weekend.
+- A_es: Él jugó fútbol durante el fin de semana.
 
 ![](_page_88_Picture_22.jpeg)
 
@@ -96,7 +103,10 @@ Q: What did you do (*time*)? A: I (*verb past*) (*time*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: When was the last time you (*verb past*)? A: I (*verb past*) (*time*).
+Q: When was the last time you (*verb past*)?
+Q_es: ¿Cuándo fue la última vez que (*verbo pasado*)?
+A: I (*verb past*) (*time*).
+A_es: Yo (*verbo pasado*) (*tiempo*).
 
 #### **Questions**
 
@@ -109,9 +119,13 @@ Q: When was the last time you (*verb past*)? A: I (*verb past*) (*time*).
 #### **Examples**
 
 - Q: When was the last time you watched a movie?
+- Q_es: ¿Cuándo fue la última vez que viste una película?
 - A: I watched a movie a week ago.
+- A_es: Vi una película la semana pasada.
 - Q: When was the last time he ate dessert?
+- Q_es: ¿Cuándo fue la última vez que él comió postre?
 - A: He ate dessert yesterday.
+- A_es: Él comió postre ayer.
 
 ![](_page_89_Picture_14.jpeg)
 
@@ -223,6 +237,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask what others did in the past.
+• _es: Preguntar qué hicieron otros en el pasado.
 
 ![](_page_91_Picture_28.jpeg)
 
@@ -231,6 +246,7 @@ I can:
 ![](_page_91_Picture_30.jpeg)
 
 • Talk about what I and others did in the past.
+• _es: Hablar sobre lo que yo y otros hicimos en el pasado.
 
 ![](_page_91_Picture_32.jpeg)
 

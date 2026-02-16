@@ -97,11 +97,17 @@ A_es: Yo (*verbo*) (*sustantivo*).
 #### **Examples**
 
 - Q: What do you do for work?
+- Q_es: ¿Qué hace para trabajar?
 - A: I manage a business.
+- A_es: Administro un negocio.
 - Q: What does he do for work?
+- Q_es: ¿Qué hace por trabajo?
 - A: He sells computers.
+- A_es: Él vende computadoras.
 - Q: What do they do?
+- Q_es: ¿Qué hacen?
 - A: They design buildings.
+- A_es: Ellos diseñan edificios.
 
 ![](../_page_118_Picture_26.jpeg)
 
@@ -128,13 +134,18 @@ A_es: Sí, es (*adjetivo*).
 ## **Examples**
 
 - Q: Do you like to manage a business?
+- Q_es: ¿Te gusta administrar un negocio?
 - A: Yes, it's challenging.
+- A_es: Sí, es desafiante.
 - Q: Does he like to sell computers?
+- Q_es: ¿Él le gusta vender computadoras?
 - A: Yes, it's fast-paced.
+- A_es: Sí, es rápido.
 
 ![](../_page_119_Picture_14.jpeg)
 
 A: No, it's stressful.
+A_es: No, es estresante.
 
 ![](../_page_119_Picture_16.jpeg)
 

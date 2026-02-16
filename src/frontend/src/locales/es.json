@@ -228,6 +228,11 @@
       "chat": "Chat"
     }
   },
+  "course": {
+    "studyingQuestion": "¿Qué estás estudiando?",
+    "ec1": "EnglishConnect 1",
+    "ec2": "EnglishConnect 2"
+  },
   "admin": {
     "title": "Gestión de Usuarios",
     "subtitle": "Administrar cuentas y aprobaciones de usuarios",

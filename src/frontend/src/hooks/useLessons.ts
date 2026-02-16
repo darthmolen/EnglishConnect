@@ -4,6 +4,7 @@ import { fetchLessons, fetchLessonDetail } from '@/services/api'
 
 export function useLessons() {
   const {
+    courseId,
     lessons,
     currentLesson,
     selectedLessonNumber,
@@ -13,17 +14,17 @@ export function useLessons() {
     selectLesson,
   } = useConversationStore()
 
-  // Fetch lessons on mount
+  // Fetch lessons when course changes
   useEffect(() => {
-    fetchLessons()
+    fetchLessons(courseId)
       .then(setLessons)
       .catch((error) => console.error('Failed to fetch lessons:', error))
-  }, [setLessons])
+  }, [courseId, setLessons])
 
-  // Fetch lesson details when selection or instruction language changes
+  // Fetch lesson details when selection, course, or instruction language changes
   useEffect(() => {
     if (selectedLessonNumber !== null) {
-      fetchLessonDetail(selectedLessonNumber, 'ec1', instructionLanguage)
+      fetchLessonDetail(selectedLessonNumber, courseId, instructionLanguage)
         .then(setCurrentLesson)
         .catch((error) =>
           console.error('Failed to fetch lesson detail:', error)
@@ -31,7 +32,7 @@ export function useLessons() {
     } else {
       setCurrentLesson(null)
     }
-  }, [selectedLessonNumber, instructionLanguage, setCurrentLesson])
+  }, [selectedLessonNumber, courseId, instructionLanguage, setCurrentLesson])
 
   return {
     lessons,

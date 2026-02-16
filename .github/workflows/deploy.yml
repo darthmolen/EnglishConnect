@@ -135,8 +135,41 @@ jobs:
             VITE_AZURE_AD_CLIENT_ID=${{ steps.get-secrets.outputs.azure_ad_client_id }}
             VITE_AZURE_AD_TENANT_ID=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
 
-  deploy-app:
+  sync-audio:
     needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Storage Account info
+        id: storage
+        run: |
+          SA_NAME=$(az storage account list -g ${{ env.AZURE_RESOURCE_GROUP }} \
+            --query "[?starts_with(name,'stec')].name" -o tsv)
+          SA_KEY=$(az storage account keys list -g ${{ env.AZURE_RESOURCE_GROUP }} \
+            --account-name "$SA_NAME" --query "[0].value" -o tsv)
+          echo "sa_name=$SA_NAME" >> $GITHUB_OUTPUT
+          echo "::add-mask::$SA_KEY"
+          echo "sa_key=$SA_KEY" >> $GITHUB_OUTPUT
+
+      - name: Sync audio files to Azure Files
+        run: |
+          az storage file upload-batch \
+            --account-name ${{ steps.storage.outputs.sa_name }} \
+            --account-key "${{ steps.storage.outputs.sa_key }}" \
+            --destination audio \
+            --source content/audio/ \
+            --no-progress
+
+  deploy-app:
+    needs: [build-and-push, sync-audio]
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login (OIDC)

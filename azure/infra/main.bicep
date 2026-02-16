@@ -104,6 +104,16 @@ module redis 'modules/redis.bicep' = {
   }
 }
 
+// Azure Storage Account with File Share for audio content
+module storage 'modules/storage.bicep' = {
+  name: 'storage'
+  params: {
+    name: 'stec${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
 // Grant managed identity access to Key Vault (cross-resource-group)
 module keyVaultAccess 'modules/keyvault-access.bicep' = if (useKeyVault) {
   name: 'keyvault-access'
@@ -152,6 +162,20 @@ resource containerAppsEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
   }
 }
 
+// Mount Azure Files share on the Container Apps Environment for audio content
+resource audioStorageMount 'Microsoft.App/managedEnvironments/storages@2024-03-01' = {
+  name: 'audio-storage'
+  parent: containerAppsEnv
+  properties: {
+    azureFile: {
+      accountName: storage.outputs.storageAccountName
+      accountKey: storage.outputs.storageAccountKey
+      shareName: storage.outputs.fileShareName
+      accessMode: 'ReadOnly'
+    }
+  }
+}
+
 // Container App
 // When using Key Vault, secrets are pulled from KV; otherwise, passed directly
 module containerApp 'modules/container-app.bicep' = {
@@ -169,11 +193,13 @@ module containerApp 'modules/container-app.bicep' = {
     azureAdClientId: azureAdClientId
     azureAdTenantId: azureAdTenantId
     keyVaultUri: keyVaultUri
+    audioStorageName: audioStorageMount.name
     // Only pass connection strings when NOT using Key Vault (legacy/fallback)
     postgresConnectionString: useKeyVault ? '' : postgres.outputs.connectionString
     redisConnectionString: useKeyVault ? '' : redis.outputs.connectionString
   }
   // Ensure secrets exist in KV before container app tries to reference them
+  // (audioStorageMount dependency is inferred from audioStorageName param)
   dependsOn: useKeyVault ? [
     keyVaultSecrets
   ] : []

@@ -113,9 +113,13 @@ A_es: Necesitas (*sustantivo*), (*sustantivo*) y (*sustantivo*).
 ## **Examples**
 
 - Q: What are the ingredients for bread?
+- Q_es: ¿Cuáles son los ingredientes para el pan?
 - A: You need flour, eggs, and water.
-- Q: What are the ingredients for a
-- cheese sandwich? A: You need bread, butter, and cheese.
+- A_es: Necesitas harina, huevos y agua.
+- Q: What are the ingredients for a cheese sandwich?
+- Q_es: ¿Cuáles son los ingredientes para un sándwich de queso?
+- A: You need bread, butter, and cheese.
+- A_es: Necesitas pan, mantequilla y queso.
 
 ![](../_page_142_Picture_25.jpeg)
 
@@ -145,8 +149,9 @@ A_es: Primero, (*verbo*) la (*sustantivo*) (*preposición*) la (*sustantivo*). L
 #### **Examples**
 
 Q: How do you make a cheese sandwich?
-
+Q_es: ¿Cómo haces un sándwich de queso?
 A: First, put the cheese on the bread.Then, add the oil to the pan.Then, heat the pan on the stove. Last, cook the sandwich.
+A_es: Primero, pone el queso en el pan. Luego, agrega el aceite a la sartén. Luego, calienta la sartén en la estufa. Por último, cocina el sándwich.
 
 ![](../_page_143_Picture_13.jpeg)
 

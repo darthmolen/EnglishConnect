@@ -75,7 +75,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What are your future (*noun*)? A: I hope to (*verb*).
+Q: What are your future (*noun*)?
+Q_es: ¿Cuáles son tus futuros (*sustantivo*)?
+A: I hope to (*verb*).
+A_es: Espero poder (*verbo*).
 
 #### **Questions**
 
@@ -92,14 +95,19 @@ Q: What are your future (*noun*)? A: I hope to (*verb*).
 #### **Examples**
 
 Q: What are your future goals?
-
+Q_es: ¿Cuáles son tus metas futuras?
 A: I hope to finish school.
+A_es: Espero terminar la escuela.
 
 Q: What are your future plans?
+Q_es: ¿Cuáles son tus planes futuros?
 
 - A: I want to move to another country and become a teacher.
+- A_es: Quiero mudarme a otro país y convertirme en profesor.
 - Q: What do you plan to do next year?
+- Q_es: ¿Qué planeas hacer el próximo año?
 - A: I plan to go to college and study chemistry.
+- A_es: Planeo ir a la universidad y estudiar química.
 
 ![](_page_182_Picture_26.jpeg)
 
@@ -109,7 +117,10 @@ Q: What are your future plans?
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: What do you plan to do when you (*verb*)? A: When I (*verb*), I plan to (*verb*).
+Q: What do you plan to do when you (*verb*)?
+Q_es: ¿Qué planeas hacer cuando tú (*verbo*)?
+A: When I (*verb*), I plan to (*verb*).
+A_es: Cuando yo (*verbo*), planeo (*verbo*).
 
 #### **Questions**
 
@@ -121,9 +132,15 @@ Q: What do you plan to do when you (*verb*)? A: When I (*verb*), I plan to (*ver
 
 #### **Examples**
 
-Q: What do you plan to do when you finish school? A: When I finish school, I plan to get a job.
+Q: What do you plan to do when you finish school?
+Q_es: ¿Qué planeas hacer cuando termines la escuela?
+A: When I finish school, I plan to get a job.
+A_es: Cuando termine la escuela, planeo obtener un trabajo.
 
-Q: What do you plan to do after you retire? A: After I retire, I would like to travel.
+Q: What do you plan to do after you retire?
+Q_es: ¿Qué planeas hacer después de que retires?
+A: After I retire, I would like to travel.
+A_es: Después de que me retiro, me gustaría viajar.
 
 ![](_page_183_Picture_12.jpeg)
 
@@ -230,6 +247,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about others' goals and plans for the future.
+• _es: Preguntar sobre las metas y planes de otros para el futuro.
 
 ![](_page_186_Picture_7.jpeg)
 
@@ -238,6 +256,7 @@ I can:
 ![](_page_186_Picture_9.jpeg)
 
 • Talk about my goals and plans for the future.
+• _es: Hablar sobre mis metas y planes para el futuro.
 
 ![](_page_186_Picture_11.jpeg)
 

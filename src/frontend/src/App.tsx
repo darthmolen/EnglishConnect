@@ -29,6 +29,8 @@ function DesktopApp() {
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
   const {
+    courseId,
+    setCourseId,
     activeSection,
     setActiveSection,
     completedGoals,
@@ -161,9 +163,19 @@ function DesktopApp() {
       <aside className="w-64 shrink-0 border-r bg-card">
         <header className="border-b p-3">
           <h1 className="text-lg font-bold">{t('app.title')}</h1>
-          <p className="text-xs text-muted-foreground">{t('app.lessonsSubtitle')}</p>
+          <div className="mt-1">
+            <label className="text-xs text-muted-foreground">{t('course.studyingQuestion')}</label>
+            <select
+              value={courseId}
+              onChange={(e) => setCourseId(e.target.value)}
+              className="mt-0.5 w-full rounded-md border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="ec1">{t('course.ec1')}</option>
+              <option value="ec2">{t('course.ec2')}</option>
+            </select>
+          </div>
         </header>
-        <div className="h-[calc(100vh-65px)] overflow-y-auto">
+        <div className="h-[calc(100vh-105px)] overflow-y-auto">
           <LessonList
             lessons={lessons}
             selectedLessonNumber={selectedLessonNumber}

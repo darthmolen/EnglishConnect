@@ -80,8 +80,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza.
 
 Q: What will you do (*time*)?
-
+Q_es: ¿Qué harás (*hora*)?
 A: I will (*verb*) (*time*).
+A_es: Yowill (*verbo*) (*hora*).
 
 #### **Questions**
 
@@ -94,11 +95,17 @@ A: I will (*verb*) (*time*).
 #### **Examples**
 
 - Q: What will you do next week?
+- Q_es: ¿Qué harás la próxima semana?
 - A: I will run a race next week.
+- A_es: Correré una carrera la próxima semana.
 - Q: What will she do at 8:00 p.m.?
+- Q_es: ¿Qué hará ella a las 8:00 p.m.?
 - A: She will go to a concert at 8:00 p.m.
+- A_es: Ella irá a un concierto a las 8:00 p.m.
 - Q: What will they do in a few days?
+- Q_es: ¿Qué harán en unos días?
 - A: They will go to a parade.
+- A_es: Irán a una procesión.
 
 ![](_page_132_Picture_27.jpeg)
 
@@ -108,7 +115,10 @@ A: I will (*verb*) (*time*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: When is the (*noun*)? A: It will be at (*time*). There will be (*noun*).
+Q: When is the (*noun*)?
+Q_es: ¿Cuándo es el (*sustantivo*)?
+A: It will be at (*time*). There will be (*noun*).
+A_es: Será a (*hora*). Habrá (*sustantivo*).
 
 #### **Questions**
 
@@ -120,13 +130,20 @@ Q: When is the (*noun*)? A: It will be at (*time*). There will be (*noun*).
 
 #### **Examples**
 
-Q: When is the party? A: It will be at 8:00 p.m.
+Q: When is the party?
+Q_es: ¿Cuándo es la fiesta?
+A: It will be at 8:00 p.m.
+A_es: Será a las 8:00 p.m.
 
-Q: Where is the party? A: It will be at the park.
+Q: Where is the party?
+Q_es: ¿Dónde está la party?
+A: It will be at the park.
+A_es: Será en el parque.
 
 Q: What will happen at the party?
-
+Q_es: ¿Qué pasará en la fiesta?
 A: There will be games and good food.
+A_es: Habrán juegos y buena comida.
 
 ![](_page_133_Picture_14.jpeg)
 
@@ -281,6 +298,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about future events.
+• _es: Preguntar sobre eventos futuros.
 
 ![](_page_136_Picture_7.jpeg)
 
@@ -289,6 +307,7 @@ I can:
 ![](_page_136_Picture_9.jpeg)
 
 • Talk about future events.
+• _es: Hablar sobre eventos futuros.
 
 ![](_page_136_Picture_11.jpeg)
 
@@ -297,6 +316,7 @@ I can:
 ![](_page_136_Picture_13.jpeg)
 
 • Make invitations.
+• _es: Hacer invitaciones.
 
 ![](_page_136_Picture_15.jpeg)
 

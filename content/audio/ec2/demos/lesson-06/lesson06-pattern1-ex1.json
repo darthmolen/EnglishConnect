@@ -1,0 +1,21 @@
+{
+  "lesson_number": 6,
+  "pattern_number": 1,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Are you frustrated?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, I'm frustrated...."
+    }
+  ],
+  "created_at": "2026-02-16T00:07:33.432301+00:00",
+  "duration_seconds": 4.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

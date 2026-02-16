@@ -89,16 +89,19 @@ A_es: Sí, yo (*verbo*) en el (*sustantivo*).
 ## **Examples**
 
 Q: Do you exercise in the morning?
-
+Q_es: ¿Haces ejercicio por la mañana?
 A: Yes, I exercise in the morning.
+A_es: Sí, me ejercito por la mañana.
 
 Q: Does she brush her teeth in the evening?
-
+Q_es: ¿Ella cepilla sus dientes por la noche?
 A: Yes, she brushes her teeth in the evening.
+A_es: Sí, ella cepilla sus dientes por la noche.
 
 Q: Do you go to the store in the morning?
-
+Q_es: ¿Vas al supermercado por la mañana?
 A: No, I go to the store in the afternoon.
+A_es: No, yo voy a la tienda en la tarde.
 
 ![](../_page_83_Picture_13.jpeg)
 

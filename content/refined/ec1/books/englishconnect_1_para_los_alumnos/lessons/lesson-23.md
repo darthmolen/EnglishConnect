@@ -132,12 +132,14 @@ A_es: Yo (*verbo pasado*). mi (*sustantivo*).
 #### **Examples**
 
 Q: What happened to your finger?
-
+Q_es: ¿Qué le pasó a tu dedo?
 A: I cut my finger.
+A_es: Corté mi dedo.
 
 Q: What happened to his leg?
-
+Q_es: ¿Qué le pasó a su pierna?
 A: He broke his leg.
+A_es: Él se rompió la pierna.
 
 ![](../_page_177_Picture_14.jpeg)
 

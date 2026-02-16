@@ -71,7 +71,10 @@ Véase el apéndice de *family nouns*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How are you and your (*noun*) different? A: I am (*adjective 1*).
+Q: How are you and your (*noun*) different?
+Q_es: ¿Cómo eres y tu (*sustantivo*) son diferentes?
+A: I am (*adjective 1*).
+A_es: Yo soy (*adjetivo 1*).
 
 #### **Questions**
 
@@ -86,9 +89,13 @@ Q: How are you and your (*noun*) different? A: I am (*adjective 1*).
 #### **Examples**
 
 - Q: How are you and your son different?
+- Q_es: ¿Cómo eres tú y tu hijo diferentes?
 - A: He is shorter.
+- A_es: Él es más bajo.
 - Q: How are you and your daughter different?
+- Q_es: ¿Cómo tú y tu hija son diferentes?
 - A: I am taller.
+- A_es: Soy más alto.
 
 ![](_page_42_Picture_24.jpeg)
 
@@ -100,7 +107,10 @@ Q: How are you and your (*noun*) different? A: I am (*adjective 1*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
-Q: How are your (*noun*) and (*noun*) different? A: My (*noun*) is more (*adjective 2*).
+Q: How are your (*noun*) and (*noun*) different?
+Q_es: ¿Cómo son diferentes tus (*sustantivo*) y (*sustantivo*)?
+A: My (*noun*) is more (*adjective 2*).
+A_es: Mi (*sustantivo*) es más (*adjetivo 2*).
 
 #### **Questions**
 
@@ -115,9 +125,13 @@ Q: How are your (*noun*) and (*noun*) different? A: My (*noun*) is more (*adject
 ### **Examples**
 
 - Q: How are your sisters and brother different?
+- Q_es: ¿Cómo son diferentes tus hermanas e hermano?
 - A: My sisters are more thoughtful.
+- A_es: Mis hermanas son más pensativas.
 - Q: How are your mother and father different?
+- Q_es: ¿Cómo son tu madre y tu padre diferentes?
 - A: My father is less outgoing.
+- A_es: Mi padre es menos extrovertido.
 
 ![](_page_43_Picture_14.jpeg)
 
@@ -228,6 +242,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Compare myself to others.
+• _es: Compararme con otros.
 
 ![](_page_45_Picture_26.jpeg)
 
@@ -236,6 +251,7 @@ I can:
 ![](_page_45_Picture_28.jpeg)
 
 • Compare other people to each other.
+• _es: Comparar a otras personas entre sí.
 
 ![](_page_45_Picture_30.jpeg)
 

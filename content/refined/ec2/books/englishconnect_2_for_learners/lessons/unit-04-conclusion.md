@@ -13,6 +13,7 @@ Tómate un momento para reflexionar y celebrar todo lo que has logrado.
 I can:
 
 • Describe things for sale.
+• _es: Describir cosas en venta.
 
 ![](_page_137_Picture_9.jpeg)
 
@@ -21,6 +22,7 @@ I can:
 ![](_page_137_Picture_11.jpeg)
 
 • Give directions.
+• _es: Dar direcciones.
 
 ![](_page_137_Picture_13.jpeg)
 
@@ -29,6 +31,7 @@ I can:
 ![](_page_137_Picture_15.jpeg)
 
 • Describe future events.
+• _es: Describir eventos futuros.
 
 ![](_page_137_Picture_17.jpeg)
 

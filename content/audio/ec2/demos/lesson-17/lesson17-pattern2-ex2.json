@@ -1,0 +1,21 @@
+{
+  "lesson_number": 17,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Where is the party?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "It will be at the park...."
+    }
+  ],
+  "created_at": "2026-02-16T00:09:59.538336+00:00",
+  "duration_seconds": 3.97,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

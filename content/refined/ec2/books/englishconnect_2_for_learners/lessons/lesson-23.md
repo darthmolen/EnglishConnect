@@ -76,8 +76,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: How was the (*noun*)?
-
+Q_es: ¿Cómo fue el (*sustantivo*)?
 A: It was (*adjective*). I had a (*adjective*) time. There were (*noun*).
+A_es: Fue (*adjetivo*). Tuve un (*adjetivo*) tiempo. Había (*sustantivo*).
 
 #### **Questions**
 
@@ -98,9 +99,13 @@ A: It was (*adjective*). I had a (*adjective*) time. There were (*noun*).
 #### **Examples**
 
 - Q: How was the graduation?
+- Q_es: ¿Cómo fue la graduación?
 - A: It was exciting. We had a fun time. There were nice speeches.
+- A_es: Fue emocionante. Nos lo pasamos bien. Hubo discursos agradables.
 - Q: How did the party go?
+- Q_es: ¿Cómo fue la fiesta?
 - A: It was tiring. I had a horrible time. There was a weird band.
+- A_es: Fue agotador. Tuve un tiempo horrible. Había una banda rara.
 
 ![](_page_176_Picture_25.jpeg)
 
@@ -110,7 +115,10 @@ A: It was (*adjective*). I had a (*adjective*) time. There were (*noun*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: What did you do at the (*noun*)? A: I (*verb past*).
+Q: What did you do at the (*noun*)?
+Q_es: ¿Qué hiciste en el (*sustantivo*)?
+A: I (*verb past*).
+A_es: Yo (*verbo pasado*).
 
 #### **Questions**
 
@@ -123,9 +131,13 @@ Q: What did you do at the (*noun*)? A: I (*verb past*).
 #### **Examples**
 
 - Q: What did you do at the graduation?
+- Q_es: ¿Qué hiciste en la graduación?
 - A: We ate food and shared memories.
+- A_es: Comimos comida y compartimos memorias.
 - Q: What did they do at the wedding dinner?
+- Q_es: ¿Qué hicieron en la cena de la boda?
 - A: They got together with friends.
+- A_es: Se reunieron con amigos.
 
 ![](_page_177_Picture_14.jpeg)
 
@@ -229,6 +241,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about past events.
+• _es: Preguntar sobre eventos pasados.
 
 ![](_page_179_Picture_19.jpeg)
 
@@ -237,6 +250,7 @@ I can:
 ![](_page_179_Picture_21.jpeg)
 
 • Talk about past events.
+• _es: Hablar sobre eventos pasados.
 
 ![](_page_179_Picture_23.jpeg)
 

@@ -1,0 +1,2 @@
+# Audio content is synced to Azure Files separately (not baked into image)
+content/audio/

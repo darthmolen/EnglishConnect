@@ -154,15 +154,12 @@ A: Hi! What is your name?
 B: Hello! My name is
 
 A: Nice to meet you.
-
 B: What's your name?
 
 A: My name is .
-
 B: Nice to meet you.
 
 A: What's her name?
-
 B: Her name is Rosa.
 
 ![](../_page_20_Picture_16.jpeg)
@@ -178,7 +175,6 @@ Fíjate en las ilustraciones. Haz y responde preguntas sobre el nombre de cada p
 ## **Example: Talia**
 
 A: What's her name?
-
 B: Her name is Talia.
 
 ![](../_page_20_Picture_25.jpeg)
@@ -210,11 +206,9 @@ Conoce a tu grupo. Pregunta el nombre de cada alumno de tu grupo. Sé creativo. 
 #### **Example**
 
 A: Hi, what's your name?
-
 B: My name is Mei. What is your name?
 
 A: My name is Sione. Nice to meet you.
-
 B: Nice to meet you. Goodbye.
 
 A: Bye!
@@ -226,7 +220,6 @@ Busca un compañero y preséntalo a tu grupo.
 #### **Example**
 
 A: Hi, what's her name?
-
 B: Her name is Luna. What is his name?
 
 A: His name is Seth.

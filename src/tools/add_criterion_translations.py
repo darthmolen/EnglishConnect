@@ -2,14 +2,23 @@
 """Add Spanish translations to evaluation criteria in markdown files.
 
 Usage:
-    python src/tools/add_criterion_translations.py
+    python src/tools/add_criterion_translations.py                  # EC1 (default)
+    python src/tools/add_criterion_translations.py --course ec2     # EC2
+    python src/tools/add_criterion_translations.py --course all     # Both courses
 """
 
+import argparse
 import re
 from pathlib import Path
 
-# Define translations for each criterion
-TRANSLATIONS = {
+# Course-specific lesson directories
+COURSE_LESSONS_DIRS = {
+    "ec1": Path(__file__).parent.parent.parent / "content/refined/ec1/books/englishconnect_1_para_los_alumnos/lessons",
+    "ec2": Path(__file__).parent.parent.parent / "content/refined/ec2/books/englishconnect_2_for_learners/lessons",
+}
+
+# EC1 translations
+EC1_TRANSLATIONS = {
     # Lesson 1
     "Say my name and others' names.": "Decir mi nombre y los nombres de otros.",
     "Say hello and goodbye.": "Decir hola y adiós.",
@@ -143,8 +152,140 @@ TRANSLATIONS = {
     "Talk about illnesses.": "Hablar sobre enfermedades.",
 }
 
+# EC2 translations
+EC2_TRANSLATIONS = {
+    # Lesson 1
+    "Ask for others' names.": "Preguntar los nombres de otros.",
+    "Introduce myself and others.": "Presentarme a mí mismo y a otros.",
+    "Understand how EnglishConnect can help me learn English.": "Entender cómo EnglishConnect puede ayudarme a aprender inglés.",
 
-def add_translations_to_file(filepath: Path) -> int:
+    # Lesson 2
+    "Ask where others are from.": "Preguntar de dónde son otros.",
+    "Say where I and others are from.": "Decir de dónde soy yo y de dónde son otros.",
+    "Ask others what they like and don't like to do.": "Preguntar a otros qué les gusta y qué no les gusta hacer.",
+    "Talk about what I and others like and don't like to do.": "Hablar sobre lo que a mí y a otros nos gusta y no nos gusta hacer.",
+
+    # Lesson 3
+    "Talk about what I like and don't like doing and why.": "Hablar sobre lo que me gusta y no me gusta hacer y por qué.",
+    "Talk about what others like and don't like doing and why.": "Hablar sobre lo que a otros les gusta y no les gusta hacer y por qué.",
+
+    # Lesson 4
+    "Ask about others' extended families.": "Preguntar sobre las familias extendidas de otros.",
+    "Talk about my and others' extended families.": "Hablar sobre mi familia extendida y la de otros.",
+
+    # Lesson 5
+    "Compare myself to others.": "Compararme con otros.",
+    "Compare other people to each other.": "Comparar a otras personas entre sí.",
+
+    # Lesson 6
+    "Ask how others feel and why.": "Preguntar cómo se sienten otros y por qué.",
+    "Talk about how I and others feel and why.": "Hablar sobre cómo me siento yo y cómo se sienten otros y por qué.",
+
+    # Lesson 7
+    "Ask for help.": "Pedir ayuda.",
+    "Make requests.": "Hacer peticiones.",
+    "Understand and respond to requests for help.": "Entender y responder a peticiones de ayuda.",
+
+    # Lesson 8
+    "Ask where others live.": "Preguntar dónde viven otros.",
+    "Talk about where I and others live.": "Hablar sobre dónde vivo yo y dónde viven otros.",
+    "Ask why others like or don't like living somewhere.": "Preguntar por qué a otros les gusta o no les gusta vivir en algún lugar.",
+    "Talk about why I and others like or don't like living somewhere.": "Hablar sobre por qué a mí y a otros nos gusta o no nos gusta vivir en algún lugar.",
+
+    # Lesson 9
+    "Ask what others were like in the past.": "Preguntar cómo eran otros en el pasado.",
+    "Talk about what I and others were like in the past.": "Hablar sobre cómo era yo y cómo eran otros en el pasado.",
+    "Ask what others had in the past.": "Preguntar qué tenían otros en el pasado.",
+    "Talk about what I and others had in the past.": "Hablar sobre lo que yo y otros teníamos en el pasado.",
+
+    # Lesson 10
+    "Ask about others' routines.": "Preguntar sobre las rutinas de otros.",
+    "Talk about my and others' routines.": "Hablar sobre mi rutina y la de otros.",
+
+    # Lesson 11
+    "Ask what others did in the past.": "Preguntar qué hicieron otros en el pasado.",
+    "Talk about what I and others did in the past.": "Hablar sobre lo que yo y otros hicimos en el pasado.",
+
+    # Lesson 12
+    "Ask where others were and why they did things in the past.": "Preguntar dónde estaban otros y por qué hicieron cosas en el pasado.",
+    "Talk about where I and others were and why we did things in the past.": "Hablar sobre dónde estaba yo y otros y por qué hicimos cosas en el pasado.",
+
+    # Lesson 13
+    "Talk about my past experiences.": "Hablar sobre mis experiencias pasadas.",
+    "Ask and answer questions about others' past experiences.": "Preguntar y responder sobre las experiencias pasadas de otros.",
+
+    # Lesson 14
+    "Talk about shopping for food.": "Hablar sobre las compras de comida.",
+    "Ask how much something costs.": "Preguntar cuánto cuesta algo.",
+    "Say how much something costs.": "Decir cuánto cuesta algo.",
+
+    # Lesson 15
+    "Ask about items.": "Preguntar sobre artículos.",
+    "Talk about and compare items.": "Hablar sobre artículos y compararlos.",
+
+    # Lesson 16
+    "Ask about different locations.": "Preguntar sobre diferentes lugares.",
+    "Talk about where places are.": "Hablar sobre dónde están los lugares.",
+
+    # Lesson 17
+    "Ask about future events.": "Preguntar sobre eventos futuros.",
+    "Talk about future events.": "Hablar sobre eventos futuros.",
+    "Make invitations.": "Hacer invitaciones.",
+
+    # Lesson 18
+    "Talk about what I and others usually do on holidays.": "Hablar sobre lo que yo y otros solemos hacer en los días festivos.",
+    "Talk about what I and others plan to do on a holiday.": "Hablar sobre lo que yo y otros planeamos hacer en un día festivo.",
+
+    # Lesson 19
+    "Ask about others' vacations.": "Preguntar sobre las vacaciones de otros.",
+    "Talk about what I will do on vacation.": "Hablar sobre lo que haré en vacaciones.",
+
+    # Lesson 20
+    "Ask how others are feeling.": "Preguntar cómo se sienten otros.",
+    "Talk about how I and others are feeling.": "Hablar sobre cómo me siento yo y cómo se sienten otros.",
+    "Ask for health advice.": "Pedir consejos de salud.",
+    "Give health advice.": "Dar consejos de salud.",
+
+    # Lesson 21
+    "Ask about others' injuries.": "Preguntar sobre las lesiones de otros.",
+    "Talk about my and others' injuries.": "Hablar sobre mis lesiones y las de otros.",
+
+    # Lesson 22
+    "Talk about future celebrations.": "Hablar sobre celebraciones futuras.",
+    "Answer questions about future celebrations.": "Responder preguntas sobre celebraciones futuras.",
+    "Invite others to future celebrations.": "Invitar a otros a celebraciones futuras.",
+
+    # Lesson 23
+    "Ask about past events.": "Preguntar sobre eventos pasados.",
+    "Talk about past events.": "Hablar sobre eventos pasados.",
+
+    # Lesson 24
+    "Ask about others' goals and plans for the future.": "Preguntar sobre las metas y planes de otros para el futuro.",
+    "Talk about my goals and plans for the future.": "Hablar sobre mis metas y planes para el futuro.",
+
+    # Unit conclusions
+    "Express my feelings and emotions.": "Expresar mis sentimientos y emociones.",
+    "Describe where I live.": "Describir dónde vivo.",
+    "Talk about my past.": "Hablar sobre mi pasado.",
+    "Ask about personal information.": "Preguntar sobre información personal.",
+    "Describe my hobbies and interests.": "Describir mis pasatiempos e intereses.",
+    "Talk about family and friends.": "Hablar sobre la familia y los amigos.",
+    "Describe my routines.": "Describir mis rutinas.",
+    "Describe past experiences.": "Describir experiencias pasadas.",
+    "Describe things for sale.": "Describir cosas en venta.",
+    "Give directions.": "Dar direcciones.",
+    "Describe future events.": "Describir eventos futuros.",
+    "Describe holiday traditions.": "Describir tradiciones de días festivos.",
+    "Describe how I feel.": "Describir cómo me siento.",
+    "Describe past events.": "Describir eventos pasados.",
+    "Describe my future goals.": "Describir mis metas futuras.",
+}
+
+# Merged dict for backwards compatibility
+TRANSLATIONS = {**EC1_TRANSLATIONS, **EC2_TRANSLATIONS}
+
+
+def add_translations_to_file(filepath: Path, translations: dict) -> int:
     """Add Spanish translations to evaluation criteria in a markdown file.
 
     Returns the number of translations added.
@@ -154,7 +295,7 @@ def add_translations_to_file(filepath: Path) -> int:
     translations_added = 0
 
     # Process each known criterion
-    for english, spanish in TRANSLATIONS.items():
+    for english, spanish in translations.items():
         # Pattern: • English criterion (not already followed by _es translation)
         # We need to check if the translation already exists
         pattern = rf'(• {re.escape(english)})\n(?!• _es:)'
@@ -174,23 +315,39 @@ def add_translations_to_file(filepath: Path) -> int:
 
 def main():
     """Add translations to all lesson files."""
-    lessons_dir = Path("content/refined/ec1/books/englishconnect_1_para_los_alumnos/lessons")
+    parser = argparse.ArgumentParser(
+        description="Add Spanish translations to evaluation criteria"
+    )
+    parser.add_argument(
+        "--course",
+        choices=["ec1", "ec2", "all"],
+        default="ec1",
+        help="Course to process (default: ec1)",
+    )
+    args = parser.parse_args()
 
-    if not lessons_dir.exists():
-        print(f"Error: Lessons directory not found: {lessons_dir}")
-        return
+    courses = ["ec1", "ec2"] if args.course == "all" else [args.course]
 
-    total_translations = 0
-    files_modified = 0
+    for course in courses:
+        lessons_dir = COURSE_LESSONS_DIRS[course]
+        translations = EC1_TRANSLATIONS if course == "ec1" else EC2_TRANSLATIONS
 
-    for lesson_file in sorted(lessons_dir.glob("*.md")):
-        count = add_translations_to_file(lesson_file)
-        if count > 0:
-            print(f"{lesson_file.name}: Added {count} translations")
-            total_translations += count
-            files_modified += 1
+        if not lessons_dir.exists():
+            print(f"Error: Lessons directory not found: {lessons_dir}")
+            continue
 
-    print(f"\nTotal: Added {total_translations} translations to {files_modified} files")
+        print(f"\n=== {course.upper()} ===")
+        total_translations = 0
+        files_modified = 0
+
+        for lesson_file in sorted(lessons_dir.glob("*.md")):
+            count = add_translations_to_file(lesson_file, translations)
+            if count > 0:
+                print(f"{lesson_file.name}: Added {count} translations")
+                total_translations += count
+                files_modified += 1
+
+        print(f"Total: Added {total_translations} translations to {files_modified} files")
 
 
 if __name__ == "__main__":

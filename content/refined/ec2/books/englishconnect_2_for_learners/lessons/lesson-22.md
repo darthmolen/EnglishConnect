@@ -76,7 +76,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: When is the (*noun*)? A: It's (*time*).
+Q: When is the (*noun*)?
+Q_es: ¿Cuándo es el (*sustantivo*)?
+A: It's (*time*).
+A_es: Es (*hora*).
 
 #### **Questions**
 
@@ -89,11 +92,17 @@ Q: When is the (*noun*)? A: It's (*time*).
 #### **Examples**
 
 - Q: When is the reception?
+- Q_es: ¿Cuándo es la recepción?
 - A: It's on June 13th.
+- A_es: Es el 13 de junio.
 - Q: What day will the wedding be?
+- Q_es: ¿Qué día será la boda?
 - A: It's on May 19th.
+- A_es: Es el 19 de mayo.
 - Q: Where will the wedding be?
+- Q_es: ¿Dónde será la boda?
 - A: It will be at the temple.
+- A_es: Será en el templo.
 
 ![](_page_170_Picture_24.jpeg)
 
@@ -105,7 +114,10 @@ Q: When is the (*noun*)? A: It's (*time*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: Will there be (*noun*) at the (*noun*)? A: Yes, there will be (*noun*).
+Q: Will there be (*noun*) at the (*noun*)?
+Q_es: ¿Habrá (*sustantivo*) en el (*sustantivo*)?
+A: Yes, there will be (*noun*).
+A_es: Sí, habrá (*sustantivo*).
 
 #### **Questions**
 
@@ -122,9 +134,15 @@ Q: Will there be (*noun*) at the (*noun*)? A: Yes, there will be (*noun*).
 
 #### **Examples**
 
-Q: Will there be snacks at the reception? A: Yes, there will be snacks.
+Q: Will there be snacks at the reception?
+Q_es: ¿Habrán bocadillos en la recepción?
+A: Yes, there will be snacks.
+A_es: Sí, habrá bocadillos.
 
-Q: Will there be a band at the retirement party? A: No, there won't be
+Q: Will there be a band at the retirement party?
+Q_es: ¿Habrá una banda en la fiesta de retiro?
+A: No, there won't be
+A_es: No, no habrá
 
 a band.
 
@@ -299,6 +317,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about future celebrations.
+• _es: Hablar sobre celebraciones futuras.
 
 ![](_page_174_Picture_7.jpeg)
 
@@ -307,6 +326,7 @@ I can:
 ![](_page_174_Picture_9.jpeg)
 
 • Answer questions about future celebrations.
+• _es: Responder preguntas sobre celebraciones futuras.
 
 ![](_page_174_Picture_11.jpeg)
 
@@ -315,6 +335,7 @@ I can:
 ![](_page_174_Picture_13.jpeg)
 
 • Invite others to future celebrations.
+• _es: Invitar a otros a celebraciones futuras.
 
 ![](_page_174_Picture_15.jpeg)
 

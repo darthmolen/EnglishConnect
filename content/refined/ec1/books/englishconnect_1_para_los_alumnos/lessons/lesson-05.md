@@ -99,16 +99,19 @@ A_es: Me gusta (*verbo*) porque es (*adjetivo*).
 ## **Examples**
 
 Q: Why do you like to sing?
-
+Q_es: ¿Por qué te gusta cantar?
 A: I like to sing because it's fun.
+A_es: Me gusta cantar porque es divertido.
 
 Q: Why doesn't she like to cook?
-
+Q_es: ¿Por qué no le gusta cocinar?
 A: She doesn't like to cook because it's difficult.
+A_es: No le gusta cocinar porque es difícil.
 
 Q: Why does she like to paint?
-
+Q_es: ¿Por qué le gusta pintar?
 A: Because it's relaxing.
+A_es: Porque es relajante.
 
 ![](../_page_43_Picture_19.jpeg)
 

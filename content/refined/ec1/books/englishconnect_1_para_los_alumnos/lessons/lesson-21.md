@@ -80,6 +80,7 @@ A: Tell me about your (*noun*).
 A_es: Cuéntame sobre tu (*sustantivo*).
 
 B: There is (*noun*) in the (*noun*).
+B_es: Hay (*sustantivo*) en el/la (*sustantivo*).
 
 ### **Request**
 
@@ -94,9 +95,13 @@ B: There is (*noun*) in the (*noun*).
 ## **Examples**
 
 - A: Tell me about your bathroom.
+- A_es: Cuéntame sobre tu baño.
 - B: There is a mirror in the bathroom. There are sinks.
+- B_es: Hay un espejo en el baño. Hay lavabos.
 - A: Tell me about your bedroom.
+- A_es: Cuéntame sobre tu dormitorio.
 - B: There is a window in the bedroom. There are pillows.
+- B_es: Hay una ventana en el dormitorio. Hay almohadas.
 
 ![](../_page_162_Picture_24.jpeg)
 

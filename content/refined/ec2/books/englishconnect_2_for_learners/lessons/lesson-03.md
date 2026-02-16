@@ -70,7 +70,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What do you like doing? A: I like (*verb* + ing).
+Q: What do you like doing?
+Q_es: ¿Qué te gusta hacer?
+A: I like (*verb* + ing).
+A_es: Me gusta (*verb* + ing).
 
 #### **Questions**
 
@@ -83,9 +86,13 @@ Q: What do you like doing? A: I like (*verb* + ing).
 #### **Examples**
 
 - Q: What do you like doing?
+- Q_es: ¿Qué te gusta hacer?
 - A: I like reading.
+- A_es: Me gusta leer.
 - Q: What doesn't she like doing?
+- Q_es: ¿Qué no le gusta hacer?
 - A: She doesn't like swimming.
+- A_es: No le gusta nadar.
 
 ![](_page_30_Picture_21.jpeg)
 
@@ -95,7 +102,10 @@ Q: What do you like doing? A: I like (*verb* + ing).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta comprender las reglas que hay en los patrones. Piensa en cómo el inglés se asemeja o se diferencia de tu idioma.
 
-Q: Why do you like (*verb* + ing)? A: I like (*verb* + ing) because it's (*adjective*).
+Q: Why do you like (*verb* + ing)?
+Q_es: ¿Por qué te gusta (*verbo* + ing)?
+A: I like (*verb* + ing) because it's (*adjective*).
+A_es: Me gusta (*verb* + ing) porque es (*adjetivo*).
 
 #### **Questions**
 
@@ -108,16 +118,19 @@ Q: Why do you like (*verb* + ing)? A: I like (*verb* + ing) because it's (*adjec
 #### **Examples**
 
 Q: Why do you like reading?
-
+Q_es: ¿Por qué te gusta leer?
 A: I like reading because it's interesting.
+A_es: Me gusta leer porque es interesante.
 
 Q: Why doesn't she like swimming?
-
+Q_es: ¿Por qué no le gusta nadar?
 A: She doesn't like swimming because it's difficult.
+A_es: No le gusta nadar porque es difícil.
 
 Q: Why does he like painting?
-
+Q_es: ¿Por qué le gusta pintar?
 A: Because it's relaxing.
+A_es: Porque es relajante.
 
 ![](_page_31_Picture_16.jpeg)
 
@@ -255,6 +268,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about what I like and don't like doing and why.
+• _es: Hablar sobre lo que me gusta y no me gusta hacer y por qué.
 
 ![](_page_34_Picture_21.jpeg)
 
@@ -263,6 +277,7 @@ I can:
 ![](_page_34_Picture_23.jpeg)
 
 • Talk about what others like and don't like doing and why.
+• _es: Hablar sobre lo que a otros les gusta y no les gusta hacer y por qué.
 
 ![](_page_34_Picture_25.jpeg)
 

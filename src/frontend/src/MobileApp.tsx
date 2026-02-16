@@ -25,9 +25,9 @@ export function MobileApp() {
   const [activeTab, setActiveTab] = useState<MobileTab>('lessons')
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
-  const { activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice, helpingPhrases, setHelpingPhrases } = useConversationStore()
-  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber ?? undefined)
-  const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern } = useDemoAudio(selectedLessonNumber ?? undefined)
+  const { courseId, setCourseId, activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice, helpingPhrases, setHelpingPhrases } = useConversationStore()
+  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber ?? undefined, courseId)
+  const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern } = useDemoAudio(selectedLessonNumber ?? undefined, courseId)
   const {
     messages,
     isRecording,
@@ -224,7 +224,7 @@ export function MobileApp() {
       {/* Header - compact */}
       <header className="flex items-center justify-center border-b px-3 py-2 shrink-0">
         <h1 className="text-sm font-semibold truncate">
-          {activeTab === 'lessons' && t('app.title')}
+          {activeTab === 'lessons' && t(`course.${courseId}`)}
           {activeTab === 'learn' && currentLesson && `L${currentLesson.lesson_number}: ${currentLesson.title}`}
           {activeTab === 'learn' && !currentLesson && t('app.selectLessonPrompt')}
           {activeTab === 'me' && t('mobile.tabs.me', 'Me')}
@@ -386,6 +386,27 @@ export function MobileApp() {
                   {t('auth.signInButton', 'Sign In / Sign Up')}
                 </button>
               )}
+            </div>
+
+            {/* Course selector */}
+            <div className="rounded-lg border bg-card p-4">
+              <label className="text-sm font-medium">{t('course.studyingQuestion')}</label>
+              <div className="mt-2 flex gap-2">
+                {['ec1', 'ec2'].map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setCourseId(id)}
+                    className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      courseId === id
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted hover:bg-muted/80'
+                    }`}
+                  >
+                    {t(`course.${id}`)}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Language setting */}

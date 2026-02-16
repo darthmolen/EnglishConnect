@@ -1,0 +1,21 @@
+{
+  "lesson_number": 8,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why do you like living in a quiet city?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I like living there because it's safe...."
+    }
+  ],
+  "created_at": "2026-02-16T00:07:49.138780+00:00",
+  "duration_seconds": 6.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

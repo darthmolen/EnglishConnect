@@ -1,0 +1,21 @@
+{
+  "lesson_number": 22,
+  "pattern_number": 2,
+  "example_index": 1,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Will there be snacks at the reception?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "Yes, there will be snacks...."
+    }
+  ],
+  "created_at": "2026-02-16T00:08:26.714414+00:00",
+  "duration_seconds": 4.77,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

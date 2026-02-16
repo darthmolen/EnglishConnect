@@ -75,8 +75,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: When did you (*verb present*)?
-
+Q_es: Cuándo didiste (*verbo presente*)?
 A: We (*verb past*) when we (*verb past*).
+A_es: We (*verbo pasado*) cuando nosotros (*verbo pasado*).
 
 #### **Questions**
 
@@ -89,16 +90,19 @@ A: We (*verb past*) when we (*verb past*).
 #### **Examples**
 
 Q: When did you get married?
-
+Q_es: ¿Cuándo te casaste?
 A: We got married after we finished university.
+A_es: Nos casamos después de que terminamos la universidad.
 
 Q: When did she meet her husband?
-
+Q_es: ¿Cuándo se encontró con su esposo?
 A: She met her husband when she was in high school.
+A_es: Ella conoció a su esposo cuando ella estaba en la escuela secundaria.
 
 Q: When did he finish school?
-
+Q_es: ¿Cuándo terminó la escuela?
 A: He finished school before he turned 18.
+A_es: Él terminó la escuela antes de que se cumpliera 18 años.
 
 ![](_page_101_Picture_17.jpeg)
 
@@ -108,7 +112,10 @@ A: He finished school before he turned 18.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
-Q: What happened when you (*verb past*)? A: When we (*verb past*), we (*verb past*).
+Q: What happened when you (*verb past*)?
+Q_es: ¿Qué pasó cuando tú (*verbo pasado*)?
+A: When we (*verb past*), we (*verb past*).
+A_es: Cuando nosotros (*verbo pasado*), nosotros (*verbo pasado*).
 
 #### **Questions**
 
@@ -120,11 +127,21 @@ Q: What happened when you (*verb past*)? A: When we (*verb past*), we (*verb pas
 
 #### **Examples**
 
-Q: What happened when you got married? A: When we got married, we started a new job.
+Q: What happened when you got married?
+Q_es: ¿Qué pasó cuando te casaste?
+A: When we got married, we started a new job.
+A_es: Cuando nos casamos, comenzamos una nueva [].
+CRITICAL: Se deben preservar estos lugares reservados exactos: []
 
-Q: What happened after he graduated? A: After he graduated, he got a new job.
+Q: What happened after he graduated?
+Q_es: ¿Qué pasó después de que se graduó?
+A: After he graduated, he got a new job.
+A_es: Después de que graduarse, obtuvo un nuevo trabajo.
 
-Q: What happened after they moved? A: After they moved, they became parents.
+Q: What happened after they moved?
+Q_es: ¿Qué pasó después de que se mudaron?
+A: After they moved, they became parents.
+A_es: Después de que se mudaron, se volvieron padres.
 
 ![](_page_102_Picture_13.jpeg)
 
@@ -286,6 +303,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about my past experiences.
+• _es: Hablar sobre mis experiencias pasadas.
 
 ![](_page_106_Picture_17.jpeg)
 
@@ -294,6 +312,7 @@ I can:
 ![](_page_106_Picture_19.jpeg)
 
 • Ask and answer questions about others' past experiences.
+• _es: Preguntar y responder sobre las experiencias pasadas de otros.
 
 ![](_page_106_Picture_21.jpeg)
 

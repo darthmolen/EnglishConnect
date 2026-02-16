@@ -1,0 +1,21 @@
+{
+  "lesson_number": 8,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why don't you like living on a busy street?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "I don't like living there because it's noisy...."
+    }
+  ],
+  "created_at": "2026-02-16T00:07:52.866043+00:00",
+  "duration_seconds": 10.23,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

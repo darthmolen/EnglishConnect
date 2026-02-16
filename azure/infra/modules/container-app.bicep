@@ -22,6 +22,10 @@ param postgresConnectionString string = ''
 @secure()
 param redisConnectionString string = ''
 
+// Azure Files storage mount name (registered on the Container Apps Environment)
+@description('Name of the storage mount registered on the environment for audio files')
+param audioStorageName string = ''
+
 // Determine if using Key Vault for secrets
 var useKeyVault = keyVaultUri != ''
 
@@ -156,6 +160,12 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               secretRef: 'initial-admin-email'
             }
           ] : [])
+          volumeMounts: audioStorageName != '' ? [
+            {
+              volumeName: 'audio-files'
+              mountPath: '/app/content/audio'
+            }
+          ] : []
           probes: [
             {
               type: 'Liveness'
@@ -178,6 +188,13 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           ]
         }
       ]
+      volumes: audioStorageName != '' ? [
+        {
+          name: 'audio-files'
+          storageName: audioStorageName
+          storageType: 'AzureFile'
+        }
+      ] : []
       scale: {
         minReplicas: 1
         maxReplicas: 5

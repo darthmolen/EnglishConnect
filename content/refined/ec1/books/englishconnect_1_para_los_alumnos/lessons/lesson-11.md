@@ -89,11 +89,17 @@ A_es: Estoy (*verb* + ing).
 ## **Examples**
 
 - Q: What are you doing now?
+- Q_es: ¿Qué estás haciendo ahora?
 - A: I am relaxing.
+- A_es: Me estoy relajando.
 - Q: What are they doing now?
+- Q_es: ¿Qué están haciendo ahora?
 - A: They are making dinner.
+- A_es: Están haciendo la cena.
 - Q: What is he doing now?
+- Q_es: ¿Qué está haciendo ahora?
 - A: He is visiting his friends.
+- A_es: Él está visitando a sus amigos.
 
 ![](../_page_90_Picture_24.jpeg)
 

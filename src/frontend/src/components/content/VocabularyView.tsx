@@ -30,7 +30,6 @@ interface IntroResponse {
 interface VocabularyViewProps {
   vocabulary: VocabularyItem[]
   lessonNumber?: number
-  courseId?: string
 }
 
 // Category display order
@@ -49,10 +48,9 @@ function formatCategory(cat: string): string {
 export function VocabularyView({
   vocabulary,
   lessonNumber,
-  courseId = 'ec1',
 }: VocabularyViewProps) {
   const { t } = useTranslation()
-  const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
+  const { courseId, introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
   const [vocabAudio, setVocabAudio] = useState<VocabAudioMetadata[]>([])
   const [playingWord, setPlayingWord] = useState<string | null>(null)
   const [introData, setIntroData] = useState<IntroResponse | null>(null)

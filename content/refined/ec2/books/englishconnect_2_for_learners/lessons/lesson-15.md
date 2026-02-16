@@ -81,8 +81,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
 Q: Which (*noun*) is (*adjective 1*)?
-
+Q_es: ¿Cuál (*sustantivo*) es (*adjetivo 1*)?
 A: That (*adjective 1 or 2*) (*noun*) is (*adjective 1*) than this (*noun*).
+A_es: Ese (*adjective 1 o 2*) (*sustantivo*) es (*adjetivo 1*) que este (*sustantivo*).
 
 ### **Questions**
 
@@ -95,16 +96,19 @@ A: That (*adjective 1 or 2*) (*noun*) is (*adjective 1*) than this (*noun*).
 #### **Examples**
 
 Q: Which phone is cheaper?
-
+Q_es: ¿Cuál teléfono es más barato?
 A: That old phone is cheaper than this phone.
+A_es: Ese viejo teléfono es más barato que este [teléfono].
 
 Q: Which shoes are bigger?
-
+Q_es: ¿Cuáles zapatos son más grandes?
 A: Those shoes are bigger than these shoes.
+A_es: Esas zapatillas son más grandes que estas zapatillas.
 
 Q: Which bike is safer?
-
+Q_es: ¿Cuál bicicleta es más segura?
 A: The new bike is safer.
+A_es: La nueva bicicleta es más segura.
 
 ![](_page_119_Picture_17.jpeg)
 
@@ -115,8 +119,9 @@ A: The new bike is safer.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
 Q: Which (*noun*) is less (*adjective 2*)?
-
+Q_es: ¿Cuál (*sustantivo*) es menos (*adjetivo 2*)?
 A: That (*adjective 1 or 2*) (*noun*) is less (*adjective 2*) than this (*noun*).
+A_es: Ese (*adjective 1 o 2*) (*sustantivo*) es menos (*adjetivo 2*) que este (*sustantivo*).
 
 #### **Questions**
 
@@ -129,16 +134,19 @@ A: That (*adjective 1 or 2*) (*noun*) is less (*adjective 2*) than this (*noun*)
 #### **Examples**
 
 Q: Which car is less expensive?
-
+Q_es: ¿Cuál coche es menos económico?
 A: That white car is less expensive than this one.
+A_es: Ese coche blanco es menos caro que este [].
 
 Q: Which bike is more affordable?
-
+Q_es: ¿Cuál bicicleta es más económica?
 A: That bike is more affordable than this bike.
+A_es: Esa bicicleta es más económica que esta bicicleta.
 
 Q: Which chairs are more comfortable?
-
+Q_es: ¿Cuáles sillas son más cómodas?
 A: Those big chairs are more comfortable.
+A_es: Ese gran sillón es más cómodo.
 
 ![](_page_120_Picture_17.jpeg)
 
@@ -300,6 +308,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about items.
+• _es: Preguntar sobre artículos.
 
 ![](_page_124_Picture_19.jpeg)
 
@@ -308,6 +317,7 @@ I can:
 ![](_page_124_Picture_21.jpeg)
 
 • Talk about and compare items.
+• _es: Hablar sobre artículos y compararlos.
 
 ![](_page_124_Picture_23.jpeg)
 

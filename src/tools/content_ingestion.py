@@ -320,7 +320,9 @@ class LessonParser:
             is_dialogue = False
             if not q_match:
                 q_match = re.search(r"A:\s*(.+?)(?:\n|$)", section_text)
+                q_es_match = re.search(r"A_es:\s*(.+?)(?:\n|$)", section_text)
                 a_match = re.search(r"B:\s*(.+?)(?:\n|$)", section_text)
+                a_es_match = re.search(r"B_es:\s*(.+?)(?:\n|$)", section_text)
                 is_dialogue = True
 
             if q_match and a_match:
@@ -343,27 +345,55 @@ class LessonParser:
 
                 if examples_match:
                     examples_text = examples_match.group(1)
+                    # Normalize same-line "Q: ... A: ..." into separate lines
+                    # so the multi-line regex can match both formats uniformly
+                    examples_text = re.sub(
+                        r"(Q:\s*.+?)\s+A:\s*",
+                        r"\1\nA: ",
+                        examples_text,
+                    )
                     # Extract pairs from Examples section
                     # Handle Q:/A: format with optional Q_es:/A_es: translations
                     if is_dialogue:
-                        # A:/B: dialogue format (no Spanish translation support)
-                        example_pairs = re.findall(
-                            r"(?:^|\n)\s*-?\s*A:\s*(.+?)\n+\s*-?\s*B:\s*(.+?)(?:\n|$)",
-                            examples_text,
+                        # A:/B: dialogue format with optional A_es:/B_es: translations
+                        dialogue_pattern = re.compile(
+                            r"(?:^|\n)\s*-?\s*A:\s*(.+?)\n"         # A: line
+                            r"(?:\s*-?\s*A_es:\s*(.+?)\n)?"         # Optional A_es: line
+                            r"\s*-?\s*B:\s*(.+?)"                    # B: line
+                            r"(?:\n\s*-?\s*B_es:\s*(.+?))?"         # Optional B_es: line
+                            r"(?:\n|$)",
+                            re.MULTILINE
                         )
-                        if example_pairs:
+                        dialogue_matches = dialogue_pattern.findall(examples_text)
+                        if dialogue_matches:
                             pattern_data["examples"] = [
-                                {"q": q.strip(), "a": a.strip()}
-                                for q, a in example_pairs
+                                {
+                                    "q": q.strip(),
+                                    "q_es": q_es.strip() if q_es else None,
+                                    "a": a.strip(),
+                                    "a_es": a_es.strip() if a_es else None,
+                                }
+                                for q, q_es, a, a_es in dialogue_matches
                             ]
+                        else:
+                            # Fallback: simple A:/B: without translations
+                            example_pairs = re.findall(
+                                r"(?:^|\n)\s*-?\s*A:\s*(.+?)\n+\s*-?\s*B:\s*(.+?)(?:\n|$)",
+                                examples_text,
+                            )
+                            if example_pairs:
+                                pattern_data["examples"] = [
+                                    {"q": q.strip(), "a": a.strip()}
+                                    for q, a in example_pairs
+                                ]
                     else:
                         # Q:/A: question-answer format with optional Q_es:/A_es:
                         # Match Q: followed optionally by Q_es:, then A: followed optionally by A_es:
                         example_pattern = re.compile(
-                            r"(?:^|\n)\s*-?\s*Q:\s*(.+?)\n"  # Q: line
-                            r"(?:\s*Q_es:\s*(.+?)\n)?"        # Optional Q_es: line
-                            r"\s*-?\s*A:\s*(.+?)"             # A: line
-                            r"(?:\n\s*A_es:\s*(.+?))?"        # Optional A_es: line
+                            r"(?:^|\n)\s*-?\s*Q:\s*(.+?)\n"       # Q: line (with optional bullet)
+                            r"(?:\s*-?\s*Q_es:\s*(.+?)\n)?"       # Optional Q_es: line
+                            r"\s*-?\s*A:\s*(.+?)"                  # A: line (with optional bullet)
+                            r"(?:\n\s*-?\s*A_es:\s*(.+?))?"       # Optional A_es: line
                             r"(?:\n|$)",
                             re.MULTILINE
                         )

@@ -78,7 +78,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where are you going on vacation? A: I'm going to the (*noun 1*).
+Q: Where are you going on vacation?
+Q_es: ¿Adónde te vas de vacaciones?
+A: I'm going to the (*noun 1*).
+A_es: Voy a la (*sustantivo 1*).
 
 #### **Questions**
 
@@ -91,13 +94,18 @@ Q: Where are you going on vacation? A: I'm going to the (*noun 1*).
 ### **Examples**
 
 - Q: Where are you going on vacation?
+- Q_es: ¿Adónde vas de vacaciones?
 - A: I'm going to the mountains.
+- A_es: Voy a las montañas.
 - Q: When are you going on vacation?
+- Q_es: ¿Cuándo vas de vacaciones?
 - A: I'm going on September 12th.
+- A_es: Estoy planeando ir el 12 de septiembre.
 
 ![](_page_150_Picture_26.jpeg)
 
 A: We're going by train.
+A_es: Vamos en tren.
 
 ![](_page_150_Picture_28.jpeg)
 
@@ -107,7 +115,10 @@ A: We're going by train.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
-Q: What will you do? A: We will (*verb*).
+Q: What will you do?
+Q_es: ¿Qué harás?
+A: We will (*verb*).
+A_es: Vamos a (*verbo*).
 
 #### **Questions**
 
@@ -119,13 +130,20 @@ Q: What will you do? A: We will (*verb*).
 
 #### **Examples**
 
-Q: What will you do? A: We will relax.
+Q: What will you do?
+Q_es: ¿Qué harás?
+A: We will relax.
+A_es: Nosotros nos relajaremos.
 
 Q: What are you going to do?
-
+Q_es: ¿Qué vas a hacer?
 A: I will visit museums.
+A_es: Visitaré los museos.
 
-Q: What will you do? A: We are going to fish.
+Q: What will you do?
+Q_es: ¿Qué harás?
+A: We are going to fish.
+A_es: Vamos a pescar.
 
 ![](_page_151_Picture_14.jpeg)
 
@@ -254,6 +272,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about others' vacations.
+• _es: Preguntar sobre las vacaciones de otros.
 
 ![](_page_154_Picture_7.jpeg)
 
@@ -262,6 +281,7 @@ I can:
 ![](_page_154_Picture_9.jpeg)
 
 • Talk about what I will do on vacation.
+• _es: Hablar sobre lo que haré en vacaciones.
 
 ![](_page_154_Picture_11.jpeg)
 

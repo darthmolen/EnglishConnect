@@ -79,7 +79,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How much is a (*noun 1*) of (*noun 2*)? A: It's (*price*) a (*noun 1*).
+Q: How much is a (*noun 1*) of (*noun 2*)?
+Q_es: Cuánto cuesta un (*sustantivo 1*) de (*sustantivo 2*)?
+A: It's (*price*) a (*noun 1*).
+A_es: Es (*precio*) un (*sustantivo 1*).
 
 #### **Questions**
 
@@ -96,14 +99,19 @@ Nota: Utiliza estos patrones con alimentos que normalmente no cuentas por unidad
 #### **Examples**
 
 Q: How much is a bag of rice?
-
+Q_es: ¿Cuánto cuesta un saco de arroz?
 A: It's three dollars a bag.
+A_es: Es tres dólares por bolsa.
 
 Q: How much is the lettuce?
-
+Q_es: ¿Cuánto cuesta la lechuga?
 A: It's one dollar a head.
+A_es: Es un dólar por cabeza.
 
-Q: How much is the milk? A: It's two dollars.
+Q: How much is the milk?
+Q_es: ¿Cuánto cuesta el leche?
+A: It's two dollars.
+A_es: Es dos dólares.
 
 ![](_page_112_Picture_28.jpeg)
 
@@ -113,7 +121,10 @@ Q: How much is the milk? A: It's two dollars.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: How much are these (*noun 3*)? A: They're (*price*) a (*noun 1*).
+Q: How much are these (*noun 3*)?
+Q_es: Cuánto cuestan estos (*sustantivo 3*)?
+A: They're (*price*) a (*noun 1*).
+A_es: Son (*precio*) un (*sustantivo 1*).
 
 #### **Questions**
 
@@ -128,11 +139,18 @@ Nota: Utiliza estos patrones con alimentos que puedes contar por unidades.
 #### **Examples**
 
 - Q: How much are these tomatoes?
+- Q_es: Cuánto cuestan estos tomates?
 - A: They're two dollars a pound.
+- A_es: Son dos dólares por libra.
 - Q: How much are those carrots?
+- Q_es: Cuánto cuestan esas zanahorias?
 - A: They're three dollars a bunch.
+- A_es: Son tres dólares el puñado.
 
-Q: How much is this mango? A: It's one dollar.
+Q: How much is this mango?
+Q_es: ¿Cuánto cuesta este mango?
+A: It's one dollar.
+A_es: Es un dólar.
 
 ![](_page_113_Picture_16.jpeg)
 
@@ -269,6 +287,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about shopping for food.
+• _es: Hablar sobre las compras de comida.
 
 ![](_page_116_Picture_7.jpeg)
 
@@ -277,6 +296,7 @@ I can:
 ![](_page_116_Picture_9.jpeg)
 
 • Ask how much something costs.
+• _es: Preguntar cuánto cuesta algo.
 
 ![](_page_116_Picture_11.jpeg)
 
@@ -285,6 +305,7 @@ I can:
 ![](_page_116_Picture_13.jpeg)
 
 • Say how much something costs.
+• _es: Decir cuánto cuesta algo.
 
 ![](_page_116_Picture_15.jpeg)
 

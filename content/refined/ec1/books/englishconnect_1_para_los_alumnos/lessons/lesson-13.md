@@ -98,9 +98,13 @@ A_es: Es (*adjetivo*) en Londres.
 ## **Examples**
 
 - Q: What's the weather in London?
+- Q_es: ¿Cuál es el clima en Londres?
 - A: It's rainy in London.
+- A_es: Llueve en Londres.
 - Q: What's the weather in Toronto?
+- Q_es: ¿Cuál es el clima en Toronto?
 - A: It's snowing in Toronto.
+- A_es: Está nevando en Toronto.
 
 ![](../_page_102_Picture_25.jpeg)
 
@@ -111,8 +115,9 @@ A_es: Es (*adjetivo*) en Londres.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
 Q: Will it (*verb*) (*day*)?
-
+Q_es: ¿Lo hará (*verbo*) (*día*)?
 A: No, it won't (*verb*) (*day*).
+A_es: No, no lo hará (*verbo*) (*día*).
 
 #### Questions
 
@@ -125,16 +130,19 @@ A: No, it won't (*verb*) (*day*).
 ## Examples
 
 Q: Will it snow tomorrow?
-
+Q_es: ¿Hará nieve mañana?
 A: No, it won't snow tomorrow.
+A_es: No, no nevará mañana.
 
 Q: Will it be sunny tomorrow?
-
+Q_es: ¿Será soleado mañana?
 A: No, it won't. It will snow tomorrow.
+A_es: No, no lo hará. Mañana nevará.
 
 Q: Will it be nice on Friday?
-
+Q_es: ¿Será bonito el viernes?
 A: Yes, it will.
+A_es: Sí, lo hará.
 
 ![](../_page_103_Picture_16.jpeg)
 

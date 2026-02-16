@@ -106,12 +106,14 @@ How are you?
 ## **Examples**
 
 Q: How are you?
-
+Q_es: ¿Cómo estás?
 A: I'm fine, thanks.
+A_es: Estoy bien, gracias.
 
 Q: Hi, how are you?
-
+Q_es: Hola, ¿cómo estás?
 A: I'm OK, thanks.
+A_es: Estoy bien, gracias.
 
 ![](../_page_24_Picture_20.jpeg)
 

@@ -27,7 +27,6 @@ interface PracticeViewProps {
   vocabulary: VocabularyItem[]
   patterns: QAPattern[]
   patternImages: string[]
-  courseId?: string
   lessonNumber?: number
   onStartConversation?: () => void
   onPatternAction?: (action: PatternAction) => void
@@ -37,13 +36,12 @@ export function PracticeView({
   vocabulary,
   patterns,
   patternImages,
-  courseId = 'ec1',
   lessonNumber,
   onStartConversation,
   onPatternAction,
 }: PracticeViewProps) {
   const { t } = useTranslation()
-  const { introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
+  const { courseId, introPlayedKeys, markIntroPlayed, instructionLanguage } = useConversationStore()
   const { isAuthenticated, login } = useAuthStore()
   const [introData, setIntroData] = useState<IntroResponse | null>(null)
   const [isPlayingIntro, setIsPlayingIntro] = useState(false)

@@ -62,7 +62,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 El inglés tiene muchos patrones. Con un patrón y unas cuantas palabras de vocabulario, ¡puedes crear docenas de oraciones! Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Where are you from? A: I am from (*noun*).
+Q: Where are you from?
+Q_es: De dónde eres?
+A: I am from (*noun*).
+A_es: Yo soy de (*sustantivo*).
 
 #### **Questions**
 
@@ -74,9 +77,15 @@ Q: Where are you from? A: I am from (*noun*).
 
 ### **Examples**
 
-Q: Where are you from? A: I am from Ghana.
+Q: Where are you from?
+Q_es: De dónde eres?
+A: I am from Ghana.
+A_es: Soy de Ghana.
 
-Q: Where is he from? A: He is from Chile.
+Q: Where is he from?
+Q_es: De dónde es él?
+A: He is from Chile.
+A_es: Él es de Chile.
 
 ![](_page_24_Picture_19.jpeg)
 
@@ -86,7 +95,10 @@ Q: Where is he from? A: He is from Chile.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Si algo te resulta confuso, ora para pedir ayuda y sigue trabajando en ello. Dios te ayudará si haces todo lo que puedas por aprender.
 
-Q: What do you like to do? A: I like to (*verb*).
+Q: What do you like to do?
+Q_es: ¿Qué te gusta hacer?
+A: I like to (*verb*).
+A_es: Me gusta (*verbo*).
 
 #### **Questions**
 
@@ -99,14 +111,19 @@ Q: What do you like to do? A: I like to (*verb*).
 #### **Examples**
 
 Q: What do you like to do?
-
+Q_es: ¿Qué te gusta hacer?
 A: I like to cook.
+A_es: Me gusta cocinar.
 
 Q: What does he like to do?
-
+Q_es: ¿Qué le gusta hacer?
 A: He likes to watch TV.
+A_es: Él le gusta ver la televisión.
 
-Q: What doesn't she like to do? A: She doesn't like to sew.
+Q: What doesn't she like to do?
+Q_es: ¿Qué no le gusta hacer?
+A: She doesn't like to sew.
+A_es: No le gusta coser.
 
 #### **Use the Patterns**
 
@@ -208,6 +225,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask where others are from.
+• _es: Preguntar de dónde son otros.
 
 ![](_page_27_Picture_21.jpeg)
 
@@ -216,6 +234,7 @@ I can:
 ![](_page_27_Picture_23.jpeg)
 
 • Say where I and others are from.
+• _es: Decir de dónde soy yo y de dónde son otros.
 
 ![](_page_27_Picture_25.jpeg)
 
@@ -224,6 +243,7 @@ I can:
 ![](_page_27_Picture_27.jpeg)
 
 • Ask others what they like and don't like to do.
+• _es: Preguntar a otros qué les gusta y qué no les gusta hacer.
 
 ![](_page_27_Picture_29.jpeg)
 
@@ -232,6 +252,7 @@ I can:
 ![](_page_27_Picture_31.jpeg)
 
 • Talk about what I and others like and don't like to do.
+• _es: Hablar sobre lo que a mí y a otros nos gusta y no nos gusta hacer.
 
 ![](_page_27_Picture_33.jpeg)
 

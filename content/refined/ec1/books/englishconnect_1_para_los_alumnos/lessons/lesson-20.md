@@ -97,12 +97,14 @@ A_es: Vivo en un (*sustantivo 1*).
 ## **Examples**
 
 Q: Where do you live?
-
+Q_es: ¿Dónde vives?
 A: I live in an apartment.
+A_es: Vivo en un apartamento.
 
 Q: Where does she live?
-
+Q_es: ¿En dónde vive ella?
 A: She lives in a house.
+A_es: Ella vive en una casa.
 
 ![](../_page_156_Picture_22.jpeg)
 
@@ -129,12 +131,14 @@ A_es: Es (*preposición*) el (*sustantivo 2*).
 ## **Examples**
 
 Q: Where is the closet?
-
+Q_es: ¿Dónde está el armario?
 A: It's next to the bedroom.
+A_es: Es junto al dormitorio.
 
 Q: Where is the dining room?
-
+Q_es: ¿Dónde está la sala de comer?
 A: It's to the right of the kitchen.
+A_es: Es a la derecha del cocina.
 
 ![](../_page_157_Picture_12.jpeg)
 

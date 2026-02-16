@@ -89,12 +89,14 @@ A_es: Este es un (*sustantivo*).
 ## **Examples**
 
 Q: What is this?
-
+Q_es: ¿Qué es esto?
 A: This is a watch.
+A_es: Este es un reloj.
 
 Q: What are these?
-
+Q_es: ¿Qué son estas?
 A: These are pencils.
+A_es: Estas son lapiceros.
 
 ![](../_page_66_Picture_19.jpeg)
 
@@ -124,12 +126,14 @@ A_es: Sí, lo es.
 #### **Examples**
 
 Q: Is this your book?
-
+Q_es: ¿Este es tu libro?
 A: No, it is not.
+A_es: No, no es.
 
 Q: Are those her keys?
-
+Q_es: ¿Son esas sus llaves?
 A: Yes, they are.
+A_es: Sí, son estos [].
 
 ![](../_page_67_Picture_12.jpeg)
 

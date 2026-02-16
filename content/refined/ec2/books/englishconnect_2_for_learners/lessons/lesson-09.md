@@ -77,7 +77,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What were you like as a (*noun 1*)? A: I was (*adjective*).
+Q: What were you like as a (*noun 1*)?
+Q_es: ¿Cómo eras como un(*sustantivo 1*)?
+A: I was (*adjective*).
+A_es: Yo era (*adjetivo*).
 
 #### **Questions**
 
@@ -90,11 +93,17 @@ Q: What were you like as a (*noun 1*)? A: I was (*adjective*).
 ### **Examples**
 
 - Q: What were you like as a child?
+- Q_es: ¿Cómo eras en tu infancia?
 - A: I was athletic.
+- A_es: Fue atlético.
 - Q: What was she like as a teenager?
+- Q_es: ¿Cómo era como adolescente?
 - A: She was talkative.
+- A_es: Ella era *habladora*.
 - Q: What were they like as children?
+- Q_es: ¿Cómo eran como niños?
 - A: They were wild.
+- A_es: Ellos eran salvajes.
 
 ![](_page_72_Picture_26.jpeg)
 
@@ -105,8 +114,9 @@ Q: What were you like as a (*noun 1*)? A: I was (*adjective*).
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta aprender más sobre los patrones de esta lección. Valora la posibilidad de utilizar libros o sitios web de gramática.
 
 Q: Did you have a (*noun 2*)?
-
+Q_es: ¿Tu tuviste un (*sustantivo 2*)?
 A: Yes, I had a (*noun 2*), but I wanted a (*noun 2*).
+A_es: Sí, tenía un (*sustantivo 2*), pero quería un (*sustantivo 2*).
 
 #### **Questions**
 
@@ -121,16 +131,19 @@ A: Yes, I had a (*noun 2*), but I wanted a (*noun 2*).
 #### **Examples**
 
 Q: Did you have a bike?
-
+Q_es: ¿Tuviste una bicicleta?
 A: Yes, I had a bike, but I wanted a moped.
+A_es: Sí, tenía una bicicleta, pero quería un motocicleta.
 
 Q: Did she have chickens?
-
+Q_es: ¿Tiene ella gallinas?
 A: Yes, she had three chickens.
+A_es: Sí, ella tenía tres gallinas.
 
 Q: Did they have a house?
-
+Q_es: ¿Tenían una casa?
 A: No, they didn't have a house, but they wanted a house.
+A_es: No, no tenían una casa, pero querían una casa.
 
 ![](_page_73_Picture_17.jpeg)
 
@@ -275,6 +288,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask what others were like in the past.
+• _es: Preguntar cómo eran otros en el pasado.
 
 ![](_page_77_Picture_7.jpeg)
 
@@ -283,6 +297,7 @@ I can:
 ![](_page_77_Picture_9.jpeg)
 
 • Talk about what I and others were like in the past.
+• _es: Hablar sobre cómo era yo y cómo eran otros en el pasado.
 
 ![](_page_77_Picture_11.jpeg)
 
@@ -291,6 +306,7 @@ I can:
 ![](_page_77_Picture_13.jpeg)
 
 • Ask what others had in the past.
+• _es: Preguntar qué tenían otros en el pasado.
 
 ![](_page_77_Picture_15.jpeg)
 
@@ -299,6 +315,7 @@ I can:
 ![](_page_77_Picture_17.jpeg)
 
 • Talk about what I and others had in the past.
+• _es: Hablar sobre lo que yo y otros teníamos en el pasado.
 
 ![](_page_77_Picture_19.jpeg)
 

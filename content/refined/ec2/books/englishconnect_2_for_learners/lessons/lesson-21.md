@@ -74,7 +74,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What happened to your (*noun*)? A: I (*verb past*) my (*noun*).
+Q: What happened to your (*noun*)?
+Q_es: ¿Qué le pasó a tu (*sustantivo*)?
+A: I (*verb past*) my (*noun*).
+A_es: Yo (*verbo pasado*). mi (*sustantivo*).
 
 #### **Questions**
 
@@ -87,9 +90,13 @@ Q: What happened to your (*noun*)? A: I (*verb past*) my (*noun*).
 #### **Examples**
 
 - Q: What happened to your ankle?
+- Q_es: ¿Qué le pasó a tu tobillo?
 - A: I broke my ankle.
+- A_es: Rompi mi tobillo.
 - Q: What happened to his knee?
+- Q_es: ¿Qué le pasó a su rodilla?
 - A: He sprained his knee.
+- A_es: Él se torció el muslo.
 
 ![](_page_162_Picture_23.jpeg)
 
@@ -99,7 +106,10 @@ Q: What happened to your (*noun*)? A: I (*verb past*) my (*noun*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
-Q: When did you (*verb present*) your (*noun*)? A: I (*verb past*) it (*time*).
+Q: When did you (*verb present*) your (*noun*)?
+Q_es: Cuándo lo hiciste tu (*verbo presente*) tu (*sustantivo*)?
+A: I (*verb past*) it (*time*).
+A_es: Yo (*verbo pasado*) lo (*hora*).
 
 #### **Questions**
 
@@ -112,10 +122,14 @@ Q: When did you (*verb present*) your (*noun*)? A: I (*verb past*) it (*time*).
 #### **Examples**
 
 - Q: When did you burn your arm?
+- Q_es: ¿Cuándo te quemaste el brazo?
 - A: I burned it last week.
+- A_es: Lo quemé la semana pasada.
 - Q: When did she hurt her wrist?
+- Q_es: ¿Cuándo se lastimó el brazo?
 
 A: She hurt it yesterday.
+A_es: Ella lo lastimó ayer.
 
 ![](_page_163_Picture_14.jpeg)
 
@@ -277,6 +291,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about others' injuries.
+• _es: Preguntar sobre las lesiones de otros.
 
 ![](_page_165_Picture_41.jpeg)
 
@@ -285,6 +300,7 @@ I can:
 ![](_page_165_Picture_43.jpeg)
 
 • Talk about my and others' injuries.
+• _es: Hablar sobre mis lesiones y las de otros.
 
 ![](_page_165_Picture_45.jpeg)
 

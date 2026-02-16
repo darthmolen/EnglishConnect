@@ -45,6 +45,103 @@ def find_section_boundaries(content: str) -> dict:
     return boundaries
 
 
+def split_same_line_qa(content: str) -> tuple[str, list[str]]:
+    """Split same-line Q/A pairs onto separate lines within Practice Pattern sections.
+
+    Handles formats like:
+        Q: Where are you from? A: I am from Ghana.
+    Becomes:
+        Q: Where are you from?
+        A: I am from Ghana.
+
+    Also handles A:/B: dialogue format.
+
+    Only operates within Practice Pattern sections (from header to next major section)
+    to avoid touching Activity dialogue text.
+    """
+    changes = []
+
+    # Find all Practice Pattern section ranges
+    pattern_headers = list(re.finditer(
+        r"^#{1,4}\s*\*{0,2}Practice Pattern \d+\*{0,2}",
+        content,
+        re.MULTILINE | re.IGNORECASE,
+    ))
+
+    if not pattern_headers:
+        return content, changes
+
+    # Find end boundaries for each pattern section
+    # Each section ends at "Use the Patterns", "Additional Activities",
+    # "Act in Faith", "Conversation Group", or the next top-level header
+    end_markers = re.compile(
+        r"^#{1,4}\s*\*{0,2}(?:Use the Patterns|Additional Activities|"
+        r"Act in Faith|Evaluate)\*{0,2}",
+        re.MULTILINE | re.IGNORECASE,
+    )
+
+    # Also consider the next pattern header or any ## header that isn't
+    # Examples/Questions/Answers as end boundaries
+    section_ranges = []
+    for i, match in enumerate(pattern_headers):
+        start = match.start()
+        # Default end is start of next pattern section or end of file
+        if i + 1 < len(pattern_headers):
+            end = pattern_headers[i + 1].start()
+        else:
+            end = len(content)
+
+        # Also check for end markers within this range
+        remaining = content[match.end():end]
+        end_match = end_markers.search(remaining)
+        if end_match:
+            end = match.end() + end_match.start()
+
+        section_ranges.append((start, end))
+
+    # Process sections in reverse order so offsets stay valid
+    result = content
+    for start, end in reversed(section_ranges):
+        section = result[start:end]
+
+        # Split same-line Q: ... A: ... onto separate lines
+        new_section = re.sub(
+            r"^(Q:\s*.+?)\s+(A:\s*.+)$",
+            r"\1\n\2",
+            section,
+            flags=re.MULTILINE,
+        )
+
+        # Split same-line A: ... B: ... onto separate lines (dialogue format)
+        new_section = re.sub(
+            r"^(A:\s*.+?)\s+(B:\s*.+)$",
+            r"\1\n\2",
+            new_section,
+            flags=re.MULTILINE,
+        )
+
+        if new_section != section:
+            # Count splits
+            q_splits = len(re.findall(
+                r"^Q:\s*.+?\s+A:\s*",
+                section,
+                re.MULTILINE,
+            ))
+            a_splits = len(re.findall(
+                r"^A:\s*.+?\s+B:\s*",
+                section,
+                re.MULTILINE,
+            ))
+            if q_splits:
+                changes.append(f"Split {q_splits} same-line Q/A pair(s)")
+            if a_splits:
+                changes.append(f"Split {a_splits} same-line A/B pair(s)")
+
+            result = result[:start] + new_section + result[end:]
+
+    return result, changes
+
+
 def normalize_lesson(content: str, lesson_num: int) -> tuple[str, list[str]]:
     """Normalize a single lesson's markdown content.
 
@@ -53,19 +150,26 @@ def normalize_lesson(content: str, lesson_num: int) -> tuple[str, list[str]]:
     """
     changes = []
 
+    # --- Pass 1: Split same-line Q/A in Practice Pattern sections ---
+    content, qa_changes = split_same_line_qa(content)
+    changes.extend(qa_changes)
+
     # Skip lessons without standard vocabulary+pattern structure
     if "Memorize Vocabulary" not in content and "Practice Pattern" not in content:
-        changes.append("Skipping (no Memorize Vocabulary or Practice Pattern sections)")
+        if not changes:
+            changes.append("Skipping (no Memorize Vocabulary or Practice Pattern sections)")
         return content, changes
 
     boundaries = find_section_boundaries(content)
 
     if "vocab_start" not in boundaries:
-        changes.append("WARNING: No 'Memorize Vocabulary' section found")
+        if not changes:
+            changes.append("WARNING: No 'Memorize Vocabulary' section found")
         return content, changes
 
     if "pattern1_start" not in boundaries:
-        changes.append("WARNING: No 'Practice Pattern 1' section found")
+        if not changes:
+            changes.append("WARNING: No 'Practice Pattern 1' section found")
         return content, changes
 
     # Process content in the vocabulary area (between Memorize Vocabulary and Practice Pattern 1)

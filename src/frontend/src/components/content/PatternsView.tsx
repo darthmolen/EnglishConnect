@@ -32,7 +32,7 @@ export function PatternsView({
   onPatternAction,
 }: PatternsViewProps) {
   const { t } = useTranslation()
-  const { focusPattern, startPatternPractice, setAgentMode } = useConversationStore()
+  const { courseId, focusPattern, startPatternPractice, setAgentMode } = useConversationStore()
   const { isAuthenticated, login } = useAuthStore()
   const [demos, setDemos] = useState<DemoMetadata[]>([])
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -46,11 +46,11 @@ export function PatternsView({
   useEffect(() => {
     if (!lessonNumber) return
 
-    fetch(`/api/audio/demos/ec1?lesson_number=${lessonNumber}`)
+    fetch(`/api/audio/demos/${courseId}?lesson_number=${lessonNumber}`)
       .then(r => r.ok ? r.json() : [])
       .then(setDemos)
       .catch(() => setDemos([]))
-  }, [lessonNumber])
+  }, [lessonNumber, courseId])
 
   // Handle audio end
   useEffect(() => {

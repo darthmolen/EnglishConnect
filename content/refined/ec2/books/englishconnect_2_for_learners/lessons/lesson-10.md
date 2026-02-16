@@ -77,7 +77,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What do you do every (*time*)? A: I (*verb*) every (*time*).
+Q: What do you do every (*time*)?
+Q_es: ¿Qué haces cada (*hora*)?
+A: I (*verb*) every (*time*).
+A_es: Yo (*verbo*) cada (*hora*).
 
 #### **Questions**
 
@@ -90,11 +93,17 @@ Q: What do you do every (*time*)? A: I (*verb*) every (*time*).
 #### **Examples**
 
 - Q: What do you do every week?
+- Q_es: ¿Qué hace usted cada semana?
 - A: I do laundry every week.
+- A_es: Hago la lavandería toda la semana.
 - Q: What do you do every morning?
+- Q_es: ¿Qué hace usted todos los mañanas?
 - A: I get up and I take a shower.
+- A_es: Me levanto y me duchó.
 - Q: What do they do on weekends?
+- Q_es: ¿Qué hacen los fines de semana?
 - A: They go dancing on weekends.
+- A_es: Van de paseo al baile los fines de semana.
 
 ![](_page_82_Picture_26.jpeg)
 
@@ -104,7 +113,10 @@ Q: What do you do every (*time*)? A: I (*verb*) every (*time*).
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: When do you (*verb*)? A: I (*adverb*) (*verb*) every (*time*).
+Q: When do you (*verb*)?
+Q_es: Cuándo doy tú (*verbo*)?
+A: I (*adverb*) (*verb*) every (*time*).
+A_es: Yo (*adverbio*) (*verbo*) cada (*hora*).
 
 #### **Questions**
 
@@ -117,11 +129,17 @@ Q: When do you (*verb*)? A: I (*adverb*) (*verb*) every (*time*).
 #### **Examples**
 
 - Q: When do you go shopping?
+- Q_es: ¿Cuándo vas de compras?
 - A: I always go shopping every week.
+- A_es: Yo siempre voy de compras cada semana.
 - Q: When do they clean the house?
+- Q_es: ¿Cuándo limpian la casa?
 - A: They sometimes clean the house on Fridays.
+- A_es: A veces limpian la casa los viernes.
 - Q: When does she watch videos?
+- Q_es: ¿Cuándo ve ella videos?
 - A: She never watches videos.
+- A_es: Ella nunca ve videos.
 
 ![](_page_83_Picture_16.jpeg)
 
@@ -240,6 +258,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about others' routines.
+• _es: Preguntar sobre las rutinas de otros.
 
 ![](_page_86_Picture_7.jpeg)
 
@@ -248,6 +267,7 @@ I can:
 ![](_page_86_Picture_9.jpeg)
 
 • Talk about my and others' routines.
+• _es: Hablar sobre mi rutina y la de otros.
 
 ![](_page_86_Picture_11.jpeg)
 

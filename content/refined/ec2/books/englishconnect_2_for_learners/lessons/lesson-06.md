@@ -70,7 +70,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: Are you (*adjective*)? A: Yes, I'm (*adjective*).
+Q: Are you (*adjective*)?
+Q_es: ¿Eres (*adjetivo*)?
+A: Yes, I'm (*adjective*).
+A_es: Sí, soy (*adjetivo*).
 
 #### **Questions**
 
@@ -82,11 +85,20 @@ Q: Are you (*adjective*)? A: Yes, I'm (*adjective*).
 
 #### **Examples**
 
-Q: Are you frustrated? A: Yes, I'm frustrated.
+Q: Are you frustrated?
+Q_es: ¿Estás frustrado?
+A: Yes, I'm frustrated.
+A_es: Sí, me siento frustrado.
 
-Q: Is she all right? A: No, she's not all right.
+Q: Is she all right?
+Q_es: ¿Está bien?
+A: No, she's not all right.
+A_es: No, ella no está bien.
 
-Q: Is Adam tired? A: Yes, he is.
+Q: Is Adam tired?
+Q_es: ¿Está Adam cansado?
+A: Yes, he is.
+A_es: Sí, él es.
 
 ![](_page_50_Picture_20.jpeg)
 
@@ -96,7 +108,10 @@ Q: Is Adam tired? A: Yes, he is.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta usar los patrones en una conversación con un amigo. Podrían hablar o enviarse mensajes.
 
-Q: Why are you (*adjective*)? A: I'm (*adjective*) because I (*verb past*).
+Q: Why are you (*adjective*)?
+Q_es: ¿Por qué eres (*adjetivo*)?
+A: I'm (*adjective*) because I (*verb past*).
+A_es: Yo soy (*adjetivo*) porque yo (*verbo pasado*).
 
 #### **Questions**
 
@@ -108,13 +123,22 @@ Q: Why are you (*adjective*)? A: I'm (*adjective*) because I (*verb past*).
 
 #### **Examples**
 
-Q: Why are you sad? A: I'm sad because I broke my leg.
+Q: Why are you sad?
+Q_es: ¿Por qué estás triste?
+A: I'm sad because I broke my leg.
+A_es: Estoy triste porque me rompí la pierna.
 
-Q: Why is she feeling mad? A: She's feeling mad because she's embarrassed.
+Q: Why is she feeling mad?
+Q_es: ¿Por qué se siente enojada?
+A: She's feeling mad because she's embarrassed.
+A_es: Se siente enojada porque se siente avergonzada.
 
 ![](_page_51_Picture_12.jpeg)
 
-Q: Why are they surprised? A: Because they won the game.
+Q: Why are they surprised?
+Q_es: ¿Por qué están sorprendidos?
+A: Because they won the game.
+A_es: Porque ganaron el juego.
 
 #### **Use the Patterns**
 
@@ -234,6 +258,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask how others feel and why.
+• _es: Preguntar cómo se sienten otros y por qué.
 
 ![](_page_53_Picture_31.jpeg)
 
@@ -242,6 +267,7 @@ I can:
 ![](_page_53_Picture_33.jpeg)
 
 • Talk about how I and others feel and why.
+• _es: Hablar sobre cómo me siento yo y cómo se sienten otros y por qué.
 
 ![](_page_53_Picture_35.jpeg)
 

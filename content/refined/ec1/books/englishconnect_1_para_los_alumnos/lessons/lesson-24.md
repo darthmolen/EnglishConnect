@@ -109,8 +109,9 @@ A_es: Él tiene diarrea.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
 Q: Do you feel (adjective)?
-
+Q_es: ¿Te sientes (adjetivo)?
 A: I feel (adjective) when I (verb).
+A_es: Me siento (adjetivo) cuando yo (verbo).
 
 #### Questions
 
@@ -123,12 +124,14 @@ A: I feel (adjective) when I (verb).
 ## **Examples**
 
 Q: Do you feel dizzy?
-
+Q_es: ¿Te sientes mareado?
 A: I feel dizzy when I stand up.
+A_es: Me siento mareado cuando me levanto.
 
 Q: Does she feel nauseated?
-
+Q_es: ¿Se siente nausea?
 A: She feels nauseated when she eats nuts.
+A_es: Ella se siente nauseada cuando come nueces.
 
 ![](../_page_183_Picture_15.jpeg)
 

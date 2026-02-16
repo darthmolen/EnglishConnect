@@ -105,16 +105,19 @@ A_es: Estoy usando un/a (*adjetivo*) (*sustantivo*).
 ## **Examples**
 
 Q: What is he wearing?
-
+Q_es: ¿Qué está usando?
 A: He's wearing a red shirt.
+A_es: Él está wearing una camisa roja.
 
 Q: What is she wearing?
-
+Q_es: ¿Qué está usando ella?
 A: She's wearing an orange skirt.
+A_es: Ella está usando un falda naranja.
 
 Q: What are they looking for?
-
+Q_es: ¿Qué están buscando?
 A: They're looking for black shoes.
+A_es: Están buscando zapatos negros.
 
 ![](../_page_73_Picture_1.jpeg)
 
@@ -139,9 +142,13 @@ A_es: Sí, me gusta que (*adjetivo*) (*sustantivo*).
 ## **Examples**
 
 - Q: Do you like this green sweater?
+- Q_es: ¿Te gusta este suéter verde?
 - A: No, I don't like that green sweater.
+- A_es: No, no me gusta ese suéter verde.
 - Q: Do you like these red shoes?
+- Q_es: ¿Te gustan estos zapatos rojos?
 - A: Yes, I like those shoes.
+- A_es: Sí, me gustan esas zapatillas.
 
 ![](../_page_73_Picture_14.jpeg)
 

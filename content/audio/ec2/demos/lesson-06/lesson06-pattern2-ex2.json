@@ -1,0 +1,21 @@
+{
+  "lesson_number": 6,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Why is she feeling mad?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "She's feeling mad because she's embarrassed...."
+    }
+  ],
+  "created_at": "2026-02-16T00:07:39.375305+00:00",
+  "duration_seconds": 5.43,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

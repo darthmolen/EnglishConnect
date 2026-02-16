@@ -72,7 +72,10 @@ Véase el apéndice de *family nouns*.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How many (*noun*) do you have? A: I have (*number*) (*noun*).
+Q: How many (*noun*) do you have?
+Q_es: Cuántos (*sustantivo*) tienes?
+A: I have (*number*) (*noun*).
+A_es: Tengo (*número*) (*sustantivo*).
 
 #### **Questions**
 
@@ -85,15 +88,20 @@ Q: How many (*noun*) do you have? A: I have (*number*) (*noun*).
 #### **Examples**
 
 - Q: How many cousins do you have?
+- Q_es: ¿Cuántos primos tienes?
 - A: I have fifteen cousins.
+- A_es: Tengo quince primos.
 - Q: How many nephews does she have?
+- Q_es: ¿Cuántos sobrinos tiene ella?
 - A: She has two nephews.
+- A_es: Ella tiene dos sobrinos.
 
 ![](_page_36_Picture_21.jpeg)
 
 Q: How many aunts and uncles does he have?
-
+Q_es: ¿Cuántos tios y tias tiene?
 A: He has ten aunts and uncles.
+A_es: Él tiene diez tías y tíos.
 
 ![](_page_37_Picture_1.jpeg)
 
@@ -102,8 +110,9 @@ A: He has ten aunts and uncles.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
 A: Tell me about your (*noun*).
-
+A_es: Cuéntame sobre tu (*sustantivo*).
 B: They are (*number*) years old, (*adjective*), and (*adjective*).They have (*adjective*) hair and (*adjective*) eyes.
+B_es: Tienen (*número*) años, son (*adjetivo*) y (*adjetivo*). Tienen cabello (*adjetivo*) y ojos (*adjetivo*).
 
 #### **Questions**
 
@@ -121,11 +130,11 @@ B: They are (*number*) years old, (*adjective*), and (*adjective*).They have (*a
 #### **Examples**
 
 A: Tell me about your cousin.
-
+A_es: Cuéntame sobre tu primo.
 B: She is twenty-four years old, tall, and athletic. She has blonde hair and green eyes.
 
 A: Tell me about your nephews.
-
+A_es: Cuéntame sobre tus sobrinos.
 B: They are three and two years old. They have black hair and brown eyes.
 
 ![](_page_37_Picture_15.jpeg)
@@ -271,6 +280,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask about others' extended families.
+• _es: Preguntar sobre las familias extendidas de otros.
 
 ![](_page_40_Picture_30.jpeg)
 
@@ -279,6 +289,7 @@ I can:
 ![](_page_40_Picture_32.jpeg)
 
 • Talk about my and others' extended families.
+• _es: Hablar sobre mi familia extendida y la de otros.
 
 ![](_page_40_Picture_34.jpeg)
 

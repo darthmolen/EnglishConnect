@@ -1,0 +1,21 @@
+{
+  "lesson_number": 22,
+  "pattern_number": 2,
+  "example_index": 2,
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "voice": "speaker_d",
+      "text": "Will there be a band at the retirement party?"
+    },
+    {
+      "speaker": "student",
+      "voice": "speaker_c",
+      "text": "No, there won't be..."
+    }
+  ],
+  "created_at": "2026-02-16T00:08:29.051123+00:00",
+  "duration_seconds": 5.7,
+  "audio_format": "wav",
+  "sample_rate": 24000
+}

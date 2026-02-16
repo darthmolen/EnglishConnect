@@ -79,7 +79,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: How are you feeling? A: I feel (*adjective*). I have a (*noun*).
+Q: How are you feeling?
+Q_es: ¿Cómo te sientes?
+A: I feel (*adjective*). I have a (*noun*).
+A_es: Me siento (*adjetivo*). Tengo un (*sustantivo*).
 
 #### Questions
 
@@ -92,16 +95,19 @@ Q: How are you feeling? A: I feel (*adjective*). I have a (*noun*).
 #### **Examples**
 
 Q: How are you feeling?
-
+Q_es: ¿Cómo te sientes?
 A: I feel sick.
+A_es: Me siento mal.
 
 Q: How are you feeling?
-
+Q_es: ¿Cómo te sientes?
 A: I have a fever.
+A_es: Tengo fiebre.
 
 Q: How is he feeling?
-
+Q_es: ¿Cómo se siente él?
 A: He has the flu.
+A_es: Él tiene la gripe.
 
 ![](_page_156_Picture_26.jpeg)
 
@@ -111,7 +117,10 @@ A: He has the flu.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta realizar las actividades 1 y 2 del grupo de conversación antes de que tu grupo se reúna.
 
-Q: What should I do? A: You should (*verb*).
+Q: What should I do?
+Q_es: ¿Qué deberías hacer?
+A: You should (*verb*).
+A_es: Deberías (*verbo*).
 
 #### **Questions**
 
@@ -123,15 +132,20 @@ Q: What should I do? A: You should (*verb*).
 
 #### **Examples**
 
-Q: What should I do? A: You should go to the doctor.
+Q: What should I do?
+Q_es: ¿Qué debería hacer?
+A: You should go to the doctor.
+A_es: Deberías ir al médico.
 
 Q: What shouldn't she do?
-
+Q_es: ¿Qué no debería hacer ella?
 A: She shouldn't exercise.
+A_es: No debería hacer ejercicio.
 
 Q: What should he do?
-
+Q_es: ¿Qué debería hacer él?
 A: He should go home and rest.
+A_es: Él debería irse a casa y descansar.
 
 ![](_page_157_Picture_15.jpeg)
 
@@ -264,6 +278,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask how others are feeling.
+• _es: Preguntar cómo se sienten otros.
 
 ![](_page_160_Picture_7.jpeg)
 
@@ -272,6 +287,7 @@ I can:
 ![](_page_160_Picture_9.jpeg)
 
 • Talk about how I and others are feeling.
+• _es: Hablar sobre cómo me siento yo y cómo se sienten otros.
 
 ![](_page_160_Picture_11.jpeg)
 
@@ -280,6 +296,7 @@ I can:
 ![](_page_160_Picture_13.jpeg)
 
 • Ask for health advice.
+• _es: Pedir consejos de salud.
 
 ![](_page_160_Picture_15.jpeg)
 
@@ -288,6 +305,7 @@ I can:
 ![](_page_160_Picture_17.jpeg)
 
 • Give health advice.
+• _es: Dar consejos de salud.
 
 ![](_page_160_Picture_19.jpeg)
 

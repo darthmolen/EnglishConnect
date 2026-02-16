@@ -75,7 +75,10 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Puedes reemplazar las palabras subrayadas por palabras de la sección "Memorize Vocabulary".
 
-Q: What do you (*adverb*) do for (*noun*)? A: I (*adverb*) (*verb*).
+Q: What do you (*adverb*) do for (*noun*)?
+Q_es: ¿Qué hace usted (*adverbio*) para (*sustantivo*)?
+A: I (*adverb*) (*verb*).
+A_es: Yo (*adverbio*) (*verbo*).
 
 #### **Questions**
 
@@ -87,11 +90,20 @@ Q: What do you (*adverb*) do for (*noun*)? A: I (*adverb*) (*verb*).
 
 #### **Examples**
 
-Q: What do you usually do for New Year's Eve? A: We usually watch fireworks.
+Q: What do you usually do for New Year's Eve?
+Q_es: ¿Qué sueles hacer el Nochevieja?
+A: We usually watch fireworks.
+A_es: Normalmente vemos fuegos artificiales.
 
-Q: What do you never do for Lunar New Year? A: I never stay home for Lunar New Year.
+Q: What do you never do for Lunar New Year?
+Q_es: ¿Qué nunca haces durante el Año Nuevo Lunar?
+A: I never stay home for Lunar New Year.
+A_es: Nunca me quedo en casa para el Año Nuevo Lunar.
 
-Q: What does she do for Easter? A: She sometimes makes a cake.
+Q: What does she do for Easter?
+Q_es: ¿Qué hace ella para Pascua?
+A: She sometimes makes a cake.
+A_es: A veces hace un pastel.
 
 ![](_page_143_Picture_13.jpeg)
 
@@ -102,8 +114,9 @@ Q: What does she do for Easter? A: She sometimes makes a cake.
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Intenta fijarte en estos patrones durante tu práctica diaria.
 
 Q: What will you do on (*noun*)?
-
+Q_es: ¿Qué harás en (*sustantivo*)?
 A: I will probably (*verb*) on (*noun*).
+A_es: Yo probablemente (*verbo*) en (*sustantivo*).
 
 #### **Questions**
 
@@ -116,16 +129,19 @@ A: I will probably (*verb*) on (*noun*).
 #### **Examples**
 
 Q: What will you do on New Year's Eve?
-
+Q_es: ¿Qué harás el Eve de Año Nuevo?
 A: I will probably go to bed early on New Year's Eve.
+A_es: Probablemente me acostaré temprano el veinticinco de diciembre.
 
 Q: What will she do on Christmas?
-
+Q_es: ¿Qué hará ella en Navidad?
 A: She will visit friends on Christmas.
+A_es: Ella visitará a amigos en Navidad.
 
 Q: What will they do on Independence Day?
-
+Q_es: ¿Qué harán el Día de la Independencia?
 A: They probably won't go to a party.
+A_es: Probablemente no irán a una fiesta.
 
 ![](_page_144_Picture_17.jpeg)
 
@@ -246,6 +262,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Talk about what I and others usually do on holidays.
+• _es: Hablar sobre lo que yo y otros solemos hacer en los días festivos.
 
 ![](_page_147_Picture_23.jpeg)
 
@@ -254,6 +271,7 @@ I can:
 ![](_page_147_Picture_25.jpeg)
 
 • Talk about what I and others plan to do on a holiday.
+• _es: Hablar sobre lo que yo y otros planeamos hacer en un día festivo.
 
 ![](_page_147_Picture_27.jpeg)
 

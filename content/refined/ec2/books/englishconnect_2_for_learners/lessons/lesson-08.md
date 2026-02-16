@@ -76,8 +76,9 @@ Aprende el significado y la pronunciación de cada palabra antes de ir a tu grup
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza.
 
 Q: Where do you live?
-
+Q_es: ¿Dónde vives?
 A: I live on a (*adjective*) (*noun*).
+A_es: Vivo en un (*adjetivo*) (*sustantivo*).
 
 #### **Questions**
 
@@ -92,16 +93,19 @@ Nota: Utiliza "on" para lugares que sean superficies (calles, caminos o avenidas
 #### **Examples**
 
 Q: Where do you live?
-
+Q_es: ¿Dónde vives?
 A: I live on a busy street.
+A_es: Vivo en una calle con mucha tráfico.
 
 Q: Where does she live?
-
+Q_es: ¿Dónde vive ella?
 A: She lives in a crowded neighborhood.
+A_es: Ella vive en un vecindario concurrido.
 
 Q: Where do they live?
-
+Q_es: ¿Dónde viven?
 A: They live in an apartment.
+A_es: Viven en un apartamento.
 
 ![](_page_64_Picture_26.jpeg)
 
@@ -111,7 +115,10 @@ A: They live in an apartment.
 
 Practica el uso de los patrones hasta que puedas hacer y responder preguntas con confianza. Prueba a decir los patrones en voz alta. Si lo deseas, podrías grabarte. Presta atención a tu pronunciación y fluidez.
 
-Q: Why do you like living on a (*adjective*) (*noun*)? A: I like living there because it's (*adjective*).
+Q: Why do you like living on a (*adjective*) (*noun*)?
+Q_es: ¿Por qué te gusta vivir en un (*adjetivo*) (*sustantivo*)?
+A: I like living there because it's (*adjective*).
+A_es: Me gusta vivir ahí porque es (*adjetivo*).
 
 #### **Questions**
 
@@ -123,9 +130,15 @@ Q: Why do you like living on a (*adjective*) (*noun*)? A: I like living there be
 
 #### **Examples**
 
-Q: Why do you like living in a quiet city? A: I like living there because it's safe.
+Q: Why do you like living in a quiet city?
+Q_es: ¿Por qué te gusta vivir en una ciudad tranquila?
+A: I like living there because it's safe.
+A_es: Me gusta vivir ahí porque es segura.
 
-Q: Why don't you like living on a busy street? A: I don't like living there because it's noisy.
+Q: Why don't you like living on a busy street?
+Q_es: ¿Por qué no te gusta vivir en una calle con mucha circulation?
+A: I don't like living there because it's noisy.
+A_es: No me gusta vivir ahí porque es ruidoso.
 
 ![](_page_65_Picture_12.jpeg)
 
@@ -287,6 +300,7 @@ Evalúa tu progreso con los objetivos y tus esfuerzos por practicar inglés a di
 I can:
 
 • Ask where others live.
+• _es: Preguntar dónde viven otros.
 
 ![](_page_69_Picture_7.jpeg)
 
@@ -295,6 +309,7 @@ I can:
 ![](_page_69_Picture_9.jpeg)
 
 • Talk about where I and others live.
+• _es: Hablar sobre dónde vivo yo y dónde viven otros.
 
 ![](_page_69_Picture_11.jpeg)
 
@@ -303,6 +318,7 @@ I can:
 ![](_page_69_Picture_13.jpeg)
 
 • Ask why others like or don't like living somewhere.
+• _es: Preguntar por qué a otros les gusta o no les gusta vivir en algún lugar.
 
 ![](_page_69_Picture_15.jpeg)
 
@@ -311,6 +327,7 @@ I can:
 ![](_page_69_Picture_17.jpeg)
 
 • Talk about why I and others like or don't like living somewhere.
+• _es: Hablar sobre por qué a mí y a otros nos gusta o no nos gusta vivir en algún lugar.
 
 ![](_page_69_Picture_19.jpeg)
 
