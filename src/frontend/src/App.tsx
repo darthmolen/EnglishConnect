@@ -203,21 +203,37 @@ function DesktopApp() {
       <main className="flex flex-1 flex-col min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between border-b px-4 py-2 shrink-0">
-          {/* Language Dropdown */}
-          <div className="flex items-center gap-2 shrink-0 mr-4">
-            <span className="text-xs text-muted-foreground">{t('app.language')}:</span>
-            <select
-              value={instructionLanguage}
-              onChange={(e) => {
-                const newLang = e.target.value as 'en' | 'es';
-                setInstructionLanguage(newLang);
-                i18n.changeLanguage(newLang);
-              }}
-              className="rounded-md border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="es">Español</option>
-              <option value="en">English</option>
-            </select>
+          {/* Course and Language Dropdowns */}
+          <div className="flex items-center gap-4 shrink-0 mr-4">
+            {/* Course Selector */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{t('course.studyingQuestion')}:</span>
+              <select
+                value={courseId}
+                onChange={(e) => setCourseId(e.target.value)}
+                className="rounded-md border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="ec1">{t('course.ec1')}</option>
+                <option value="ec2">{t('course.ec2')}</option>
+              </select>
+            </div>
+            
+            {/* Language Selector */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{t('app.language')}:</span>
+              <select
+                value={instructionLanguage}
+                onChange={(e) => {
+                  const newLang = e.target.value as 'en' | 'es';
+                  setInstructionLanguage(newLang);
+                  i18n.changeLanguage(newLang);
+                }}
+                className="rounded-md border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex-1 min-w-0">
