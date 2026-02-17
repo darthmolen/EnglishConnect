@@ -20,12 +20,14 @@ import { fetchHelpingPhrases } from '@/services/api'
 import { LoginPage } from '@/pages/LoginPage'
 import { AdminPage } from '@/pages/AdminPage'
 import { MobileApp } from '@/MobileApp'
+import { useDeepLink } from '@/hooks/useDeepLink'
 import { cn } from '@/lib/utils'
 
 function DesktopApp() {
   const { t, i18n } = useTranslation()
   const { isAuthenticated, isLoading: authLoading, initialize, localUser } = useAuthStore()
   const [currentPath, setCurrentPath] = useState(window.location.hash || '#/')
+  useDeepLink()
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } =
     useLessons()
   const {

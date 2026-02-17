@@ -16,13 +16,15 @@ import { MobilePrincipleView } from '@/components/mobile/content/MobilePrinciple
 import { MobilePatternsOverview } from '@/components/mobile/content/MobilePatternsOverview'
 import { MobileEvaluateView } from '@/components/mobile/content/MobileEvaluateView'
 import { MobileChatOverlay } from '@/components/mobile/MobileChatOverlay'
+import { useDeepLink } from '@/hooks/useDeepLink'
 import { LoginPage } from '@/pages/LoginPage'
 
 export function MobileApp() {
   const { t, i18n } = useTranslation()
   const { isAuthenticated, isLoading: authLoading, initialize } = useAuthStore()
   const [currentPath, setCurrentPath] = useState(window.location.hash || '#/')
-  const [activeTab, setActiveTab] = useState<MobileTab>('lessons')
+  const { initialTab } = useDeepLink()
+  const [activeTab, setActiveTab] = useState<MobileTab>(initialTab)
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
   const { courseId, setCourseId, activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice, helpingPhrases, setHelpingPhrases } = useConversationStore()
