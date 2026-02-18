@@ -76,6 +76,6 @@ resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2
   }
 }
 
-output connectionString string = 'postgresql+asyncpg://${administratorLogin}:${administratorPassword}@${postgres.properties.fullyQualifiedDomainName}:5432/englishconnect?ssl=require'
+output connectionString string = 'postgresql+asyncpg://${administratorLogin}:${administratorPassword}@${postgres.properties.fullyQualifiedDomainName}:5432/englishconnect?sslmode=require'
 output serverName string = postgres.name
 output serverFqdn string = postgres.properties.fullyQualifiedDomainName
