@@ -24,8 +24,9 @@ config = context.config
 settings = get_settings()
 # Convert async URL to sync for alembic (asyncpg -> psycopg2)
 sync_url = settings.database_url.replace("postgresql+asyncpg", "postgresql+psycopg2")
-# psycopg2 uses 'sslmode' not 'ssl' (Azure Postgres connection strings use ssl=true)
-sync_url = sync_url.replace("ssl=true", "sslmode=require").replace("ssl=True", "sslmode=require")
+# psycopg2 uses 'sslmode' not 'ssl' (Azure Postgres uses ?ssl=require)
+import re
+sync_url = re.sub(r'\bssl=', 'sslmode=', sync_url)
 config.set_main_option("sqlalchemy.url", sync_url)
 
 # Interpret the config file for Python logging.
