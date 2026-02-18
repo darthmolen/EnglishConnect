@@ -9,6 +9,17 @@ import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 
 
+@pytest.fixture(autouse=True)
+def mock_azure_settings():
+    """Ensure Azure OpenAI settings are configured so router doesn't short-circuit."""
+    mock_settings = MagicMock()
+    mock_settings.azure_openai_endpoint = "https://fake.openai.azure.com"
+    mock_settings.azure_openai_api_key = "fake-key"
+    mock_settings.azure_client_id = ""
+    with patch("app.routers.conversation.get_settings", return_value=mock_settings):
+        yield
+
+
 class TestMultipleSpeakCalls:
     """Test that multiple speak() calls are collected in audio_chunks."""
 
