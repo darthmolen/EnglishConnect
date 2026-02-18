@@ -1,11 +1,15 @@
 # Stage 1: Build React frontend
 FROM node:20-alpine AS frontend-builder
 
-# Build args for Vite (baked into bundle at build time)
+# Build args (baked into bundle at build time)
 ARG VITE_AZURE_AD_CLIENT_ID
 ARG VITE_AZURE_AD_TENANT_ID
+ARG GIT_SHA=dev
+ARG BUILD_TIME=unknown
 ENV VITE_AZURE_AD_CLIENT_ID=$VITE_AZURE_AD_CLIENT_ID
 ENV VITE_AZURE_AD_TENANT_ID=$VITE_AZURE_AD_TENANT_ID
+ENV GIT_SHA=$GIT_SHA
+ENV BUILD_TIME=$BUILD_TIME
 
 WORKDIR /app/frontend
 
@@ -20,6 +24,12 @@ RUN npm run build
 
 # Stage 2: Python runtime with backend + static files
 FROM python:3.12-slim
+
+# Runtime env vars baked into image (used by /health endpoint)
+ARG GIT_SHA=dev
+ARG BUILD_TIME=unknown
+ENV GIT_SHA=$GIT_SHA
+ENV BUILD_TIME=$BUILD_TIME
 
 WORKDIR /app
 

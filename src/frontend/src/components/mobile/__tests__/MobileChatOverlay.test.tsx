@@ -60,7 +60,7 @@ describe('MobileChatOverlay', () => {
   it('calls onClose when close button is clicked', () => {
     render(<MobileChatOverlay {...defaultProps} />)
 
-    const closeButton = screen.getByRole('button', { name: /close/i })
+    const closeButton = screen.getByRole('button', { name: /end session/i })
     fireEvent.click(closeButton)
     expect(mockOnClose).toHaveBeenCalledTimes(1)
   })

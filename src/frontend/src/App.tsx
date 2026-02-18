@@ -316,6 +316,10 @@ function DesktopApp() {
         {!isRegistryPageSelected && (
           <footer className="border-t p-3 shrink-0">
             <div className="mx-auto flex max-w-2xl items-center justify-center gap-4">
+              {/* Build version indicator */}
+              <span className="text-[10px] text-muted-foreground/50 select-none" title={`Build: ${__GIT_SHA__}`}>
+                {__GIT_SHA__.slice(0, 7)}
+              </span>
               {/* Voice mode toggle */}
               <button
                 type="button"

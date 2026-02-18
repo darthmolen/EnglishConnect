@@ -35,9 +35,7 @@ jobs:
           pip install pytest pytest-asyncio pytest-cov
 
       - name: Run backend tests
-        run: |
-          cd src/backend
-          python -m pytest tests/ -v --cov=app || true
+        run: python -m pytest tests/unit/ -v --cov=app
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -54,7 +52,7 @@ jobs:
       - name: Run frontend tests
         run: |
           cd src/frontend
-          npm run test:run || true
+          npm run test:run
 
   build-and-push:
     needs: test
@@ -134,6 +132,8 @@ jobs:
           build-args: |
             VITE_AZURE_AD_CLIENT_ID=${{ steps.get-secrets.outputs.azure_ad_client_id }}
             VITE_AZURE_AD_TENANT_ID=${{ steps.get-secrets.outputs.azure_ad_tenant_id }}
+            GIT_SHA=${{ steps.vars.outputs.sha_short }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp }}
 
   sync-audio:
     needs: build-and-push
@@ -194,6 +194,63 @@ jobs:
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --image ${{ needs.build-and-push.outputs.acr-name }}.azurecr.io/englishconnect:${{ needs.build-and-push.outputs.sha-tag }} \
             --revision-suffix ${{ needs.build-and-push.outputs.sha-tag }}
+
+      - name: Verify deployment health
+        run: |
+          echo "Waiting for new revision to become healthy..."
+          REVISION_NAME="${{ steps.get-ca.outputs.ca_name }}--${{ needs.build-and-push.outputs.sha-tag }}"
+
+          for i in $(seq 1 24); do
+            STATUS=$(az containerapp revision show \
+              --name ${{ steps.get-ca.outputs.ca_name }} \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+              --revision "$REVISION_NAME" \
+              --query "properties.runningState" -o tsv 2>/dev/null || echo "NotFound")
+
+            echo "Attempt $i/24: Revision status = $STATUS"
+
+            if [ "$STATUS" = "Running" ]; then
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Degraded" ]; then
+              echo "::error::Revision $REVISION_NAME is in $STATUS state!"
+              az containerapp logs show \
+                --name ${{ steps.get-ca.outputs.ca_name }} \
+                --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+                --tail 30 2>/dev/null || true
+              exit 1
+            fi
+
+            sleep 5
+          done
+
+          if [ "$STATUS" != "Running" ]; then
+            echo "::error::Revision did not reach Running state within 120s (last: $STATUS)"
+            exit 1
+          fi
+
+          # Smoke test: verify correct version is serving traffic
+          FQDN=$(az containerapp show \
+            --name ${{ steps.get-ca.outputs.ca_name }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --query "properties.configuration.ingress.fqdn" -o tsv)
+
+          HEALTH=$(curl -sf "https://$FQDN/health" || echo "CURL_FAILED")
+          echo "Health response: $HEALTH"
+
+          if [ "$HEALTH" = "CURL_FAILED" ]; then
+            echo "::error::Health endpoint unreachable after deployment"
+            exit 1
+          fi
+
+          DEPLOYED_SHA=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('git_sha','MISSING'))")
+          EXPECTED_SHA="${{ needs.build-and-push.outputs.sha-tag }}"
+
+          if [ "$DEPLOYED_SHA" != "$EXPECTED_SHA" ]; then
+            echo "::error::Version mismatch! Expected $EXPECTED_SHA but got $DEPLOYED_SHA"
+            exit 1
+          fi
+
+          echo "Deployment verified: $REVISION_NAME running with SHA $EXPECTED_SHA"
 
       - name: Configure custom domain
         env:

@@ -17,8 +17,9 @@ async def test_verify_token_valid():
 
     with patch("app.middleware.auth.decode_token") as mock_decode:
         mock_decode.return_value = mock_claims
-        claims = await verify_token("valid-token")
+        claims, provider = await verify_token("valid-token")
         assert claims["oid"] == "user-object-id"
+        assert provider == "azure_ad"
 
 
 @pytest.mark.asyncio
@@ -48,7 +49,7 @@ async def test_get_current_user_creates_user():
     mock_credentials = MagicMock()
     mock_credentials.credentials = "valid-token"
 
-    with patch("app.middleware.auth.verify_token", return_value=mock_claims):
+    with patch("app.middleware.auth.verify_token", return_value=(mock_claims, "azure_ad")):
         with patch("app.middleware.auth.UserService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_or_create_user = AsyncMock(return_value=mock_user)

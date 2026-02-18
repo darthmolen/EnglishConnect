@@ -65,7 +65,7 @@ def test_qa_pattern_schema():
 
 def test_lesson_detail_has_all_sections():
     """LessonDetail should include vocabulary, patterns, criteria."""
-    from app.schemas.lesson import LessonDetail, VocabularyItemSchema, QAPatternSchema
+    from app.schemas.lesson import LessonDetail, VocabularyItemSchema, QAPatternSchema, EvaluationCriterionSchema
 
     detail = LessonDetail(
         lesson_number=5,
@@ -84,7 +84,9 @@ def test_lesson_detail_has_all_sections():
                 examples=[]
             )
         ],
-        evaluation_criteria=["Say why I like something"]
+        evaluation_criteria=[
+            EvaluationCriterionSchema(criterion="Say why I like something")
+        ]
     )
     assert detail.lesson_number == 5
     assert len(detail.vocabulary) == 1

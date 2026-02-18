@@ -2,6 +2,13 @@
 
 Open source, non-profit agentic system to help Spanish-speaking learners practice English through voice interaction.
 
+## Required Skills
+
+These skills MUST be invoked before writing any code. No exceptions.
+
+- **`using-superpowers`** — Invoke at the start of every task to discover applicable skills
+- **`test-driven-development`** — Invoke before implementing any feature or bugfix
+
 ## Guiding Principles
 
 **Never implement anything that doesn't get us nearer to solving our problem.**
@@ -9,7 +16,7 @@ Open source, non-profit agentic system to help Spanish-speaking learners practic
 **Always use skills and test first.** Before implementing new features:
 
 1. **Invoke `/using-superpowers`** - Check for applicable skills before writing code
-2. **Write tests first** - Unit tests for handlers, integration tests for flows
+2. **Write tests first** - Follow RED-GREEN-REFACTOR (see TDD section below)
 3. **Verify before claiming done** - Run tests, check logs, confirm behavior
 
 This prevents the "6 manual iterations" problem where bugs slip through because:
@@ -19,6 +26,20 @@ This prevents the "6 manual iterations" problem where bugs slip through because:
 - Prompts don't guide the agent correctly
 
 See `.claude/skills/` for available methodologies.
+
+## TDD: RED-GREEN-REFACTOR
+
+All code changes MUST follow the RED-GREEN-REFACTOR cycle:
+
+1. **RED** — Write a failing test that describes the desired behavior. Run it. Confirm it fails.
+2. **GREEN** — Write the minimum code to make the test pass. Nothing more.
+3. **REFACTOR** — Clean up the implementation while keeping tests green.
+
+This is not optional. Do not write implementation code without a failing test first.
+
+- **Backend**: `python -m pytest tests/unit/ -v` (unit), `python -m pytest tests/integration/ -v` (integration)
+- **Frontend**: `cd src/frontend && npm run test:run`
+- **Single test**: `python -m pytest tests/unit/test_foo.py::test_bar -v`
 
 ## Vision: Intelligent Conversation Partner
 

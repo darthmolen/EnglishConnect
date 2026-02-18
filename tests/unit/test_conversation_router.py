@@ -5,17 +5,38 @@ from unittest.mock import AsyncMock, patch, MagicMock
 from httpx import AsyncClient, ASGITransport
 
 
+@pytest.fixture
+def mock_db():
+    """Override get_db dependency with a mock database session.
+
+    This prevents real database connections in unit tests, avoiding
+    event loop mismatch issues when tests run sequentially.
+    """
+    from app.main import app
+    from app.database import get_db
+
+    mock_session = AsyncMock()
+
+    async def override_get_db():
+        yield mock_session
+
+    app.dependency_overrides[get_db] = override_get_db
+    yield mock_session
+    app.dependency_overrides.pop(get_db, None)
+
+
 class TestConversationRouter:
     """Test conversation API endpoints."""
 
     @pytest.mark.asyncio
-    async def test_conversation_returns_200(self, mock_auth):
+    async def test_conversation_returns_200(self, mock_auth, mock_db):
         """POST /api/practice/conversation should return 200 with AI response."""
         from app.main import app
         from app.schemas.lesson import LessonDetail
 
-        with patch("app.routers.conversation.LessonService") as mock_lesson_service:
-            with patch("app.routers.conversation.SessionService") as mock_session_service:
+        with patch("app.routers.conversation.LessonService") as mock_lesson_service, \
+             patch("app.routers.conversation.SessionService") as mock_session_service, \
+             patch("app.routers.conversation.HelpingPhraseService") as mock_phrase_service:
                 mock_lesson_instance = AsyncMock()
                 mock_lesson_instance.get_lesson_detail.return_value = LessonDetail(
                     lesson_number=5,
@@ -34,6 +55,11 @@ class TestConversationRouter:
                 mock_session_instance.get_or_create_session.return_value = mock_session
                 mock_session_service.return_value = mock_session_instance
 
+                # Mock helping phrase service
+                mock_phrase_instance = AsyncMock()
+                mock_phrase_instance.get_phrases_for_language.return_value = []
+                mock_phrase_service.return_value = mock_phrase_instance
+
                 async with AsyncClient(
                     transport=ASGITransport(app=app), base_url="http://test"
                 ) as client:
@@ -48,7 +74,7 @@ class TestConversationRouter:
         assert data["lesson_number"] == 5
 
     @pytest.mark.asyncio
-    async def test_conversation_returns_404_for_missing_lesson(self, mock_auth):
+    async def test_conversation_returns_404_for_missing_lesson(self, mock_auth, mock_db):
         """POST /api/practice/conversation should return 404 if lesson not found."""
         from app.main import app
 
@@ -68,13 +94,14 @@ class TestConversationRouter:
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_conversation_accepts_history(self, mock_auth):
+    async def test_conversation_accepts_history(self, mock_auth, mock_db):
         """POST /api/practice/conversation should accept conversation history."""
         from app.main import app
         from app.schemas.lesson import LessonDetail
 
-        with patch("app.routers.conversation.LessonService") as mock_lesson_service:
-            with patch("app.routers.conversation.SessionService") as mock_session_service:
+        with patch("app.routers.conversation.LessonService") as mock_lesson_service, \
+             patch("app.routers.conversation.SessionService") as mock_session_service, \
+             patch("app.routers.conversation.HelpingPhraseService") as mock_phrase_service:
                 mock_lesson_instance = AsyncMock()
                 mock_lesson_instance.get_lesson_detail.return_value = LessonDetail(
                     lesson_number=5,
@@ -91,6 +118,11 @@ class TestConversationRouter:
                 mock_session.id = 1
                 mock_session_instance.get_or_create_session.return_value = mock_session
                 mock_session_service.return_value = mock_session_instance
+
+                # Mock helping phrase service
+                mock_phrase_instance = AsyncMock()
+                mock_phrase_instance.get_phrases_for_language.return_value = []
+                mock_phrase_service.return_value = mock_phrase_instance
 
                 async with AsyncClient(
                     transport=ASGITransport(app=app), base_url="http://test"
@@ -110,7 +142,7 @@ class TestConversationRouter:
         assert response.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_conversation_validates_request(self, mock_auth):
+    async def test_conversation_validates_request(self, mock_auth, mock_db):
         """POST /api/practice/conversation should validate request body."""
         from app.main import app
 

@@ -26,6 +26,9 @@ param redisConnectionString string = ''
 @description('Name of the storage mount registered on the environment for audio files')
 param audioStorageName string = ''
 
+@description('Docker image tag to deploy (e.g., git SHA). Defaults to latest.')
+param imageTag string = 'latest'
+
 // Determine if using Key Vault for secrets
 var useKeyVault = keyVaultUri != ''
 
@@ -104,7 +107,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: 'englishconnect'
-          image: '${containerRegistryName}.azurecr.io/englishconnect:latest'
+          image: '${containerRegistryName}.azurecr.io/englishconnect:${imageTag}'
           resources: {
             cpu: json('0.5')
             memory: '1Gi'
@@ -168,12 +171,21 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           ] : []
           probes: [
             {
+              type: 'Startup'
+              httpGet: {
+                path: '/health'
+                port: 8000
+              }
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              failureThreshold: 12 // 65s max startup time (migrations)
+            }
+            {
               type: 'Liveness'
               httpGet: {
                 path: '/health'
                 port: 8000
               }
-              initialDelaySeconds: 10
               periodSeconds: 30
             }
             {
@@ -182,7 +194,6 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
                 path: '/health'
                 port: 8000
               }
-              initialDelaySeconds: 5
               periodSeconds: 10
             }
           ]

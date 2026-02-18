@@ -25,6 +25,8 @@ class TestGetMemori:
 
         with patch("app.services.memory_service.get_settings") as mock_settings:
             settings = MagicMock()
+            settings.use_local_memori_llm = False
+            settings.memori_llm_url = None
             settings.azure_openai_endpoint = "https://test.openai.azure.com/"
             settings.azure_openai_api_key = "test-key"
             settings.openai_api_key = None
@@ -56,6 +58,8 @@ class TestGetMemori:
 
         with patch("app.services.memory_service.get_settings") as mock_settings:
             settings = MagicMock()
+            settings.use_local_memori_llm = False
+            settings.memori_llm_url = None
             settings.azure_openai_endpoint = None
             settings.azure_openai_api_key = None
             settings.openai_api_key = "sk-standard-key"
@@ -78,6 +82,8 @@ class TestGetMemori:
 
         with patch("app.services.memory_service.get_settings") as mock_settings:
             settings = MagicMock()
+            settings.use_local_memori_llm = False
+            settings.memori_llm_url = None
             settings.azure_openai_endpoint = "https://test.openai.azure.com/"
             settings.azure_openai_api_key = "test-key"
             settings.openai_api_key = None

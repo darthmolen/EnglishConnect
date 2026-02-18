@@ -9,8 +9,14 @@ echo "Running database migrations..."
 if alembic upgrade head 2>&1; then
   echo "Migrations completed successfully."
 else
-  echo "Migration failed. Checking if this is a first-time Alembic setup..."
-  # Tables exist but alembic_version doesn't — stamp current state
+  # Check if this is the specific "no alembic_version table" case
+  if alembic current 2>&1 | grep -q "alembic_version"; then
+    # alembic_version table exists — this is a real migration failure
+    echo "FATAL: Migration failed (alembic_version table exists). Exiting."
+    exit 1
+  fi
+  # No alembic_version table — first-time Alembic setup on existing DB
+  echo "First-time Alembic setup. Stamping database at head..."
   alembic stamp head
   echo "Stamped database at head revision."
 fi

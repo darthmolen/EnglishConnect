@@ -11,8 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from sqlalchemy import text
+
 from app.config import get_settings
-from app.database import init_db
+from app.database import engine, init_db
 
 # Load settings early for logging configuration
 settings = get_settings()
@@ -86,18 +88,37 @@ async def api_status():
     }
 
 
+_GIT_SHA = os.environ.get("GIT_SHA", "dev")
+_BUILD_TIME = os.environ.get("BUILD_TIME", "unknown")
+
+
 @app.get("/health")
 async def health():
-    """Detailed health check."""
-    return {
-        "status": "healthy",
-        "database": "connected",  # TODO: Add actual DB check
-        "services": {
-            "stt": settings.stt_service_url,
-            "tts_mcp": settings.tts_mcp_url,
-            "content_mcp": settings.content_mcp_url,
-        },
+    """Health check with real DB ping and version info.
+
+    Used by ACA liveness/readiness probes and post-deploy verification.
+    Returns 503 if database is unreachable so ACA marks revision unhealthy.
+    """
+    db_status = "connected"
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+    except Exception:
+        db_status = "disconnected"
+
+    status = "healthy" if db_status == "connected" else "unhealthy"
+    response = {
+        "status": status,
+        "git_sha": _GIT_SHA,
+        "build_time": _BUILD_TIME,
+        "database": db_status,
     }
+
+    if status == "unhealthy":
+        from fastapi.responses import JSONResponse
+        return JSONResponse(content=response, status_code=503)
+
+    return response
 
 
 @app.get("/api/config")

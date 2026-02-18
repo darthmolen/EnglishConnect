@@ -160,13 +160,13 @@ class TestLessonParserCriteria:
     """Tests for evaluation criteria extraction."""
 
     def test_extracts_i_can_statements(self, sample_lesson_markdown):
-        """Should extract 'I can' evaluation statements."""
+        """Should extract 'I can' evaluation statements as dicts."""
         parser = LessonParser(sample_lesson_markdown, 5)
         criteria = parser._extract_criteria()
 
         assert len(criteria) >= 2
-        assert "Say why I like something" in criteria[0]
-        assert "Say why I don't like something" in criteria[1]
+        assert criteria[0]["criterion"] == "Say why I like something."
+        assert criteria[1]["criterion"] == "Say why I don't like something."
 
     def test_handles_empty_criteria(self):
         """Should return empty list when no criteria found."""
@@ -244,8 +244,8 @@ A: My name is (*name*).
         assert len(patterns) == 1
         assert patterns[0]["examples"] is None
 
-    def test_examples_associated_with_first_pattern(self):
-        """Examples section should be associated with the first pattern."""
+    def test_examples_associated_with_containing_pattern(self):
+        """Examples section should be associated with the pattern whose section contains it."""
         content = '''## **Practice Pattern 1**
 
 Q: First pattern question?
@@ -268,9 +268,9 @@ A: Example answer.
         patterns = parser._extract_patterns()
 
         assert len(patterns) == 2
-        # Examples are associated with first pattern
-        assert patterns[0]["examples"] is not None
-        assert patterns[1]["examples"] is None
+        # Examples appear after Pattern 2, so they are in Pattern 2's section
+        assert patterns[0]["examples"] is None
+        assert patterns[1]["examples"] is not None
 
 
 class TestLessonParserParse:

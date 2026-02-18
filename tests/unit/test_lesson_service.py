@@ -86,12 +86,15 @@ class TestLessonService:
         mock_pattern = MagicMock()
         mock_pattern.pattern_number = 1
         mock_pattern.question_template = "What do you like?"
+        mock_pattern.question_template_es = "Que te gusta?"
         mock_pattern.answer_template = "I like..."
+        mock_pattern.answer_template_es = "Me gusta..."
         mock_pattern.examples = []
 
         # Mock criterion
         mock_criterion = MagicMock()
         mock_criterion.criterion = "Say why I like something"
+        mock_criterion.criterion_es = None
 
         # Configure mock session to return different results for each query
         lesson_result = MagicMock()
