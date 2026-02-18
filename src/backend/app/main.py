@@ -50,8 +50,10 @@ logging.getLogger("timing").setLevel(logging.INFO)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
-    # Startup
-    await init_db()
+    # Startup — Alembic handles schema migrations (see startup.sh).
+    # init_db/create_all is only used for local dev without Alembic.
+    if settings.app_env == "development":
+        await init_db()
     yield
     # Shutdown
     pass
