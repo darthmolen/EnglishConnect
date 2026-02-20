@@ -1,4 +1,4 @@
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, LogIn } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { QAPattern } from '@/types'
@@ -7,6 +7,8 @@ interface MobilePracticeViewProps {
   patterns: QAPattern[]
   currentIndex: number
   loopingPattern?: number | null
+  isAuthenticated: boolean
+  onLogin: () => void
   onSelectPattern: (index: number) => void
   onStartPractice: (patternNumber: number) => void
 }
@@ -15,6 +17,8 @@ export function MobilePracticeView({
   patterns,
   currentIndex,
   loopingPattern,
+  isAuthenticated,
+  onLogin,
   onSelectPattern,
   onStartPractice,
 }: MobilePracticeViewProps) {
@@ -80,17 +84,30 @@ export function MobilePracticeView({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
+                  if (!isAuthenticated) {
+                    onLogin()
+                    return
+                  }
                   onStartPractice(pattern.pattern_number)
                 }}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg',
-                  'bg-primary text-primary-foreground',
-                  'hover:bg-primary/90 active:bg-primary/80',
-                  'text-sm transition-colors'
+                  'text-sm transition-colors',
+                  !isAuthenticated
+                    ? 'bg-gray-400 text-white'
+                    : 'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80'
                 )}
               >
-                <MessageCircle className="h-4 w-4" />
-                <span>{t('mobile.practice.practice', 'Practice')}</span>
+                {!isAuthenticated ? (
+                  <LogIn className="h-4 w-4" />
+                ) : (
+                  <MessageCircle className="h-4 w-4" />
+                )}
+                <span>
+                  {!isAuthenticated
+                    ? t('auth.signInToPractice', 'Sign in to Practice')
+                    : t('mobile.practice.practice', 'Practice')}
+                </span>
               </button>
             </div>
           </div>

@@ -305,6 +305,7 @@ function DesktopApp() {
                 }}
                 messages={messages}
                 isLoading={isLoading}
+                isAuthenticated={isAuthenticated}
                 helpingPhrases={helpingPhrases}
                 instructionLanguage={instructionLanguage}
               />

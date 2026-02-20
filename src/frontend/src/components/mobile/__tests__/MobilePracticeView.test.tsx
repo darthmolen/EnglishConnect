@@ -32,6 +32,7 @@ describe('MobilePracticeView', () => {
 
   const mockOnSelectPattern = vi.fn()
   const mockOnStartPractice = vi.fn()
+  const mockOnLogin = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -42,6 +43,8 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={0}
+        isAuthenticated={true}
+        onLogin={mockOnLogin}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
@@ -56,6 +59,8 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={1}
+        isAuthenticated={true}
+        onLogin={mockOnLogin}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
@@ -66,20 +71,56 @@ describe('MobilePracticeView', () => {
     expect(patternCard).toHaveClass('ring-2')
   })
 
-  it('calls onStartPractice when practice button is clicked', () => {
+  it('calls onStartPractice when practice button is clicked and authenticated', () => {
     render(
       <MobilePracticeView
         patterns={mockPatterns}
         currentIndex={0}
+        isAuthenticated={true}
+        onLogin={mockOnLogin}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
     )
 
-    // Find the first practice button by its text
     const practiceButton = screen.getAllByText('Practice')[0]
     fireEvent.click(practiceButton)
-    expect(mockOnStartPractice).toHaveBeenCalledWith(1) // pattern_number 1
+    expect(mockOnStartPractice).toHaveBeenCalledWith(1)
+    expect(mockOnLogin).not.toHaveBeenCalled()
+  })
+
+  it('shows sign-in text when not authenticated', () => {
+    render(
+      <MobilePracticeView
+        patterns={mockPatterns}
+        currentIndex={0}
+        isAuthenticated={false}
+        onLogin={mockOnLogin}
+        onSelectPattern={mockOnSelectPattern}
+        onStartPractice={mockOnStartPractice}
+      />
+    )
+
+    const signInButtons = screen.getAllByText('Sign in to Practice')
+    expect(signInButtons.length).toBeGreaterThan(0)
+  })
+
+  it('calls onLogin instead of onStartPractice when not authenticated', () => {
+    render(
+      <MobilePracticeView
+        patterns={mockPatterns}
+        currentIndex={0}
+        isAuthenticated={false}
+        onLogin={mockOnLogin}
+        onSelectPattern={mockOnSelectPattern}
+        onStartPractice={mockOnStartPractice}
+      />
+    )
+
+    const signInButton = screen.getAllByText('Sign in to Practice')[0]
+    fireEvent.click(signInButton)
+    expect(mockOnLogin).toHaveBeenCalled()
+    expect(mockOnStartPractice).not.toHaveBeenCalled()
   })
 
   it('shows empty state when no patterns', () => {
@@ -87,6 +128,8 @@ describe('MobilePracticeView', () => {
       <MobilePracticeView
         patterns={[]}
         currentIndex={0}
+        isAuthenticated={true}
+        onLogin={mockOnLogin}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />
@@ -101,6 +144,8 @@ describe('MobilePracticeView', () => {
         patterns={mockPatterns}
         currentIndex={0}
         loopingPattern={1}
+        isAuthenticated={true}
+        onLogin={mockOnLogin}
         onSelectPattern={mockOnSelectPattern}
         onStartPractice={mockOnStartPractice}
       />

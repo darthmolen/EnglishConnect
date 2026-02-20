@@ -340,8 +340,14 @@ export function MobileApp() {
                       patterns={currentLesson.patterns || []}
                       currentIndex={patternIndex}
                       loopingPattern={loopingPattern}
+                      isAuthenticated={isAuthenticated}
+                      onLogin={() => { window.location.hash = '#/login' }}
                       onSelectPattern={setPatternIndex}
                       onStartPractice={(patternNumber) => {
+                        if (!isAuthenticated) {
+                          window.location.hash = '#/login'
+                          return
+                        }
                         startPatternPractice(patternNumber)
                         setIsChatOpen(true)
                         sendTextMessage(`I want to practice pattern ${patternNumber}.`)

@@ -10,6 +10,7 @@ interface ConversationDrawerProps {
   onEndSession: () => void
   messages: ChatMessage[]
   isLoading: boolean
+  isAuthenticated?: boolean
   helpingPhrases?: HelpingPhrase[]
   instructionLanguage?: InstructionLanguage
 }
@@ -20,6 +21,7 @@ export function ConversationDrawer({
   onEndSession,
   messages,
   isLoading,
+  isAuthenticated = true,
   helpingPhrases = [],
   instructionLanguage = 'es',
 }: ConversationDrawerProps) {
@@ -27,29 +29,31 @@ export function ConversationDrawer({
 
   return (
     <>
-      {/* Toggle button - hidden on mobile */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className={cn(
-          'absolute bottom-4 right-4 z-10',
-          'hidden md:flex items-center gap-2',
-          'rounded-full px-3 py-2 shadow-lg',
-          'bg-primary text-primary-foreground',
-          'hover:bg-primary/90 transition-colors',
-          'focus:outline-none focus:ring-2 focus:ring-ring'
-        )}
-      >
-        <MessageSquare className="h-4 w-4" />
-        <span className="text-sm font-medium">
-          {isOpen ? t('conversation.hide') : t('conversation.transcript')}
-        </span>
-        {messages.length > 0 && !isOpen && (
-          <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-xs">
-            {messages.length}
+      {/* Toggle button - hidden on mobile, hidden when not authenticated */}
+      {isAuthenticated && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className={cn(
+            'absolute bottom-4 right-4 z-10',
+            'hidden md:flex items-center gap-2',
+            'rounded-full px-3 py-2 shadow-lg',
+            'bg-primary text-primary-foreground',
+            'hover:bg-primary/90 transition-colors',
+            'focus:outline-none focus:ring-2 focus:ring-ring'
+          )}
+        >
+          <MessageSquare className="h-4 w-4" />
+          <span className="text-sm font-medium">
+            {isOpen ? t('conversation.hide') : t('conversation.transcript')}
           </span>
-        )}
-      </button>
+          {messages.length > 0 && !isOpen && (
+            <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-xs">
+              {messages.length}
+            </span>
+          )}
+        </button>
+      )}
 
       {/* Drawer panel - hidden on mobile */}
       <div
