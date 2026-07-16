@@ -56,7 +56,17 @@
       "Bash(.venv-test/bin/python -m pytest:*)",
       "Bash(npm run test:*)",
       "Skill(writing-skills)",
-      "Skill(writing-skills:*)"
+      "Skill(writing-skills:*)",
+      "Bash(alembic upgrade:*)",
+      "Bash(git fetch:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run watch:*)",
+      "Bash(gh run view:*)",
+      "Bash(docker compose:*)",
+      "Bash(az keyvault secret list:*)",
+      "Bash(PGPASSWORD=devpassword pg_dump:*)",
+      "Bash(cut:*)",
+      "Bash(az containerapp show:*)"
     ],
     "deny": [],
     "ask": []
