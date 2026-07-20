@@ -238,5 +238,5 @@ src/backend/app/
 
 ## Related Documentation
 
-- [System Architecture](system-architecture.md) - Voice pipeline, services, infrastructure
+- [Architecture](../ARCHITECTURE.md) - System overview, voice pipeline, services, infrastructure
 - [ADR-005](ADR/ADR-005-UNIFIED-TEACHING-AGENT.md) - Architecture decision record

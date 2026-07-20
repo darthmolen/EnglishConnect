@@ -2,132 +2,52 @@
 
 **A billion people learning, not a billion dollars earned.**
 
-Open source, non-profit agentic system to help Spanish-speaking learners practice English through voice interaction.
+EnglishConnect is a free, open-source, non-profit conversation partner that helps Spanish-speaking adults practice English out loud. It listens, speaks, and switches between English and Spanish the way a patient tutor would — so a learner can practice anywhere, at their own pace, without a human partner on the other end.
 
-## Problem Statement
+## Why it exists
 
-1. **Most curriculums are written, but students are learning a spoken language.** Reading and writing skills don't transfer directly to conversational fluency.
+Learning to *speak* a language is different from learning to read one. The people who need English most often have the least access to what makes speaking practice work: a patient partner, on their schedule, who meets them at their level.
 
-2. **Traditional audio production is prohibitive and can't adapt as fast as curriculum needs.** Professional voice recording is expensive and slow to update when lessons change.
+1. **Curriculums are written, but the goal is spoken.** Reading and writing skills don't transfer straight to conversation.
+2. **Recorded audio is expensive and slow.** Professional voice production can't keep up as lessons change, so most practice audio is stale or missing.
+3. **Switching languages breaks the flow.** A learner who needs a quick clarification in Spanish shouldn't have to stop and leave the lesson to get it.
+4. **Working families share the goal but not the schedule.** Everyone wants to learn, but at different paces and times — so a consistent practice partner is hard to find.
 
-3. **Even with embedded audio, flipping between languages disrupts learning flow.** Students who need clarification in their native language must break concentration to switch contexts.
+EnglishConnect answers all four: an AI conversation partner that speaks generated audio on demand, flips between English and Spanish inside the lesson, and stays within the vocabulary the learner has actually reached.
 
-4. **Immigrant families share the same challenge but prioritize differently, making practice partners hard to find.** Family members want to learn but at different paces and times, leaving everyone without a consistent conversation partner.
+## What it does
 
-## Vision: Intelligent Conversation Partner
+- **Talk, don't type.** The learner speaks; the app transcribes, thinks, and speaks back.
+- **Two ways to practice.** *Help* mode answers questions about a lesson; *Practice* mode leads a real back-and-forth and hands the conversation over so the learner does the talking.
+- **Bilingual by design.** The partner flips between English and Spanish to unblock a stuck learner, then returns to English.
+- **Level-aware.** Responses stay inside the vocabulary and patterns of the learner's current lesson, so practice never runs ahead of them.
+- **Hands-free loop playback.** On a commute or a lunch break, one tap plays a whole section — vocabulary, patterns, or examples — pausing between clips so the learner can repeat each one aloud.
+- **Every lesson, in order.** Each lesson walks through its principle, vocabulary, sentence patterns, worked examples, guided practice, and a short self-evaluation.
+- **Progress that sticks.** The app tracks completed goals and lets learners keep personal goals and a study registry.
 
-We are building an intelligent conversation partner agent that can:
+## Mobile and desktop
 
-- Help students practice conversation in their target language (English)
-- Flip seamlessly between native language (Spanish) and target language to aid understanding
-- Practice curriculum patterns with natural ad-lib that feels like real conversation
-- Stay within the student's vocabulary level from their current lesson
-- Feel like a helpful conversation partner, not a robotic response system
+EnglishConnect ships two purpose-built experiences and picks one automatically at a 768px breakpoint.
 
-## Architecture
+**Mobile** — built for practicing on the go. A bottom tab bar (**Lessons · Learn · Me**) keeps navigation in thumb's reach, and a per-section action bar drives audio: **Play**, **Next**, **Loop**, and **Chat**. Content is laid out as tap-friendly cards, and the loop button turns any section into hands-free listening practice.
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                        Conversation Partner Agent                             │
-│                         (Azure GPT-4o-mini)                                   │
-│                                                                               │
-│   Capabilities:                    MCP Tools:                                 │
-│   - Lesson context awareness       - speak(text, voice) → TTS                │
-│   - Language flipping (EN/ES)      - get_lesson() → Content                  │
-│   - Vocabulary-appropriate         - (future: show_image, highlight)         │
-│     responses                                                                 │
-└──────────────────────────────────────────────────────────────────────────────┘
-                    ▲                                    │
-                    │ transcribed text                   │ speak() tool call
-                    │                                    ▼
-┌──────────────────────────────────┐     ┌──────────────────────────────────┐
-│        STT Service               │     │        TTS MCP Server            │
-│        faster-whisper            │     │        VibeVoice-Realtime        │
-│        (local GPU, ~300ms)       │     │        (local GPU, ~300ms)       │
-└──────────────────────────────────┘     └──────────────────────────────────┘
-                    ▲                                    │
-                    │ audio                              │ audio
-                    │                                    ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                              User (Browser)                                   │
-│                     Mic input ────────────── Speaker output                  │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Desktop** — built for focused study at a keyboard. A lesson list sits in the sidebar, lesson content fills the main window, and the AI partner lives in a slide-out conversation drawer you can open alongside whatever you're reading. It's the richer, multi-panel view for working through a lesson in depth.
 
-## Tech Stack
+Both share the same lessons, the same AI partner, and the same bilingual interface.
 
-| Component | Choice | Notes |
-|-----------|--------|-------|
-| **STT** | faster-whisper | Local GPU, `large-v3` model |
-| **TTS** | VibeVoice-Realtime-0.5B | Open-source, 6 voices, RTF 0.51x |
-| **LLM** | Claude API | Conversation partner |
-| **Backend** | FastAPI | Async/WebSocket support |
-| **Database** | PostgreSQL | Progress tracking |
-| **Frontend** | HTMX + Alpine.js | Server-rendered |
+## The courses
 
-## Project Structure
+Content covers the **EnglishConnect 1** and **EnglishConnect 2** curricula, delivered as structured lessons with generated vocabulary and example audio in several voices. The interface itself is bilingual (English and Spanish).
 
-```
-services/
-├── stt/                    # Speech-to-Text service
-│   ├── server.py           # faster-whisper HTTP/WebSocket API
-│   └── Dockerfile          # CUDA container
-├── tts-mcp/                # Text-to-Speech MCP server
-│   ├── server.py           # VibeVoice with speak() tool
-│   └── VibeVoice/          # Microsoft VibeVoice repo
-└── conversation/           # Full voice pipeline (WIP)
+## Documentation
 
-planning/
-├── overview.md             # Phase summary
-├── in_progress/            # Current work
-├── completed/              # Done phases
-└── backlog/                # Future work
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — how the system fits together: the agent, the voice pipeline, the frontend, and the deployment.
+- **[HOW-TO-DEV.md](HOW-TO-DEV.md)** — how to run it locally, run the tests, and ship a change.
+- **[planning/](planning/)** — phase-by-phase development history.
 
-content/                    # Lesson markdown files
-tools/                      # PDF conversion, ingestion
-```
+## Status
 
-## Quick Start
-
-### TTS (Text-to-Speech)
-
-```bash
-cd services/tts-mcp
-source .venv/bin/activate
-python test_streaming_playback.py --text "Hello, how are you?"
-python test_streaming_playback.py --voice speaker_b  # Emma
-```
-
-### STT (Speech-to-Text)
-
-```bash
-cd services/stt
-source .venv/bin/activate
-uvicorn server:app --host 0.0.0.0 --port 8001
-# POST /transcribe with audio file
-```
-
-## Development Status
-
-| Phase | Status | Description |
-|-------|--------|-------------|
-| 1 | ✅ | Foundation + Voice Stack |
-| 2 | 🔄 | STT Streaming Harness |
-| 3 | ⏳ | Conversation Partner |
-| 4+ | ⏳ | Auth, UI, Production |
-
-See [planning/](planning/) for detailed phase documentation.
-
-## Voice Performance
-
-**TTS (VibeVoice)**:
-- RTF: 0.51x (real-time capable)
-- First chunk: ~300ms
-- Sample rate: 24kHz
-
-**STT (faster-whisper)**:
-- Model: `large-v3`
-- Latency: ~200-400ms
+The foundation, voice stack, and unified teaching agent are in place, and the React app is live on Azure Container Apps. Active work covers authentication, progress tracking, and production hardening. See [planning/](planning/) for the current phase.
 
 ## License
 
