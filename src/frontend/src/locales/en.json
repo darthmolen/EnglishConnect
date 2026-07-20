@@ -225,7 +225,9 @@
     "actionBar": {
       "play": "Play",
       "next": "Next",
-      "chat": "Chat"
+      "chat": "Chat",
+      "loop": "Loop",
+      "stop": "Stop"
     }
   },
   "course": {
