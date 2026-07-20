@@ -227,8 +227,15 @@ async def stream_audio(file_path: str) -> FileResponse:
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid path")
 
+    # Audio filenames are content-hashed (e.g. noun-08-bc8b40a1.wav), so a clip
+    # at a given URL never changes; regenerated audio gets a new hash. That makes
+    # `immutable` honest and lets looped playback replay from disk cache instead
+    # of re-downloading uncompressed WAV over a student's mobile data.
     return FileResponse(
         audio_path,
         media_type="audio/wav",
-        headers={"Accept-Ranges": "bytes"},
+        headers={
+            "Accept-Ranges": "bytes",
+            "Cache-Control": "public, max-age=31536000, immutable",
+        },
     )

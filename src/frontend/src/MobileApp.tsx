@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLessons } from '@/hooks/useLessons'
 import { useConversation } from '@/hooks/useConversation'
 import { useVocabAudio } from '@/hooks/useVocabAudio'
 import { useDemoAudio } from '@/hooks/useDemoAudio'
+import { useSectionLoop, SHADOW_PAUSE_MS, type LoopableSection } from '@/hooks/useSectionLoop'
+import { buildLoopClips } from '@/lib/loopClips'
 import { useConversationStore } from '@/stores/conversationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { fetchHelpingPhrases } from '@/services/api'
@@ -28,8 +30,8 @@ export function MobileApp() {
 
   const { lessons, currentLesson, selectedLessonNumber, selectLesson } = useLessons()
   const { courseId, setCourseId, activeSection, setActiveSection, instructionLanguage, setInstructionLanguage, startPatternPractice, helpingPhrases, setHelpingPhrases } = useConversationStore()
-  const { playWord, playingWord } = useVocabAudio(selectedLessonNumber ?? undefined, courseId)
-  const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern } = useDemoAudio(selectedLessonNumber ?? undefined, courseId)
+  const { playWord, playingWord, vocabAudio, stop: stopVocabAudio } = useVocabAudio(selectedLessonNumber ?? undefined, courseId)
+  const { playDemo, playingId, playPatternLoop, nextExample, loopingPattern, demos, stop: stopDemoAudio } = useDemoAudio(selectedLessonNumber ?? undefined, courseId)
   const {
     messages,
     isRecording,
@@ -57,6 +59,36 @@ export function MobileApp() {
     setPatternsExampleId(null)
     setPlayingPatternNumber(null)
   }, [selectedLessonNumber])
+
+  // Clips the loop button plays through, for whichever section is showing.
+  // Order is derived from the lesson content so the loop matches the on-screen
+  // card order exactly -- the audio endpoints can return a different order.
+  const loopClips = useMemo(
+    () =>
+      buildLoopClips(
+        activeSection ?? '',
+        currentLesson?.vocabulary ?? [],
+        currentLesson?.patterns ?? [],
+        vocabAudio,
+        demos
+      ),
+    [activeSection, currentLesson, vocabAudio, demos]
+  )
+
+  const loopPauseMs =
+    activeSection && activeSection in SHADOW_PAUSE_MS
+      ? SHADOW_PAUSE_MS[activeSection as LoopableSection]
+      : SHADOW_PAUSE_MS.vocabulary
+
+  const loop = useSectionLoop(loopClips, loopPauseMs)
+
+  // useVocabAudio, useDemoAudio and useSectionLoop each own an independent
+  // <audio> element, so starting one must silence the others.
+  const handleLoop = () => {
+    stopVocabAudio()
+    stopDemoAudio()
+    loop.cycleMode()
+  }
 
   useEffect(() => {
     initialize()
@@ -115,6 +147,7 @@ export function MobileApp() {
 
   // Handle pattern overview play (plays first example for that pattern)
   const handlePlayPatternOverview = (patternNumber: number) => {
+    loop.stop()
     setPlayingPatternNumber(patternNumber)
     playDemo(patternNumber, 1)
     // Clear playing state when done (approximate based on typical audio length)
@@ -123,6 +156,7 @@ export function MobileApp() {
 
   // Action bar handlers
   const handlePlay = () => {
+    loop.stop()
     if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
       const word = currentLesson.vocabulary[vocabIndex]
       if (word) {
@@ -157,6 +191,7 @@ export function MobileApp() {
   }
 
   const handleNext = () => {
+    loop.stop()
     if (activeSection === 'vocabulary' && currentLesson?.vocabulary) {
       // Move to next word and play it
       const nextIndex = Math.min(vocabIndex + 1, currentLesson.vocabulary.length - 1)
@@ -451,6 +486,8 @@ export function MobileApp() {
           onPlay={handlePlay}
           onNext={handleNext}
           onChat={handleChat}
+          onLoop={handleLoop}
+          loopMode={loop.mode}
           disabled={!currentLesson}
           chatDisabled={!isAuthenticated}
         />

@@ -225,7 +225,9 @@
     "actionBar": {
       "play": "Reproducir",
       "next": "Siguiente",
-      "chat": "Chat"
+      "chat": "Chat",
+      "loop": "Repetir",
+      "stop": "Alto"
     }
   },
   "course": {

@@ -8,6 +8,12 @@ import numpy as np
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 
+# The VAD module (src/services/stt/vad.py) imports torch, which is part of the
+# optional local GPU stack and is not installed in the backend/CI environment.
+# Skip the whole module there instead of erroring at collection; these tests run
+# wherever the STT service's dependencies are present.
+pytest.importorskip("torch", reason="VAD tests require the optional local STT stack (torch)")
+
 
 class MockSileroModel:
     """Mock Silero VAD model for testing."""
