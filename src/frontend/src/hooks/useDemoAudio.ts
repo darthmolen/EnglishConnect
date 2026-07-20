@@ -181,11 +181,14 @@ export function useDemoAudio(lessonNumber: number | undefined, courseId = 'ec1')
     [playingId]
   )
 
+  // Fully halt: pause, and cancel any active pattern loop so callers that stop
+  // demo audio (e.g. starting a section loop) don't leave loopingPattern and a
+  // queued example stranded.
   const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      setPlayingId(null)
-    }
+    audioRef.current?.pause()
+    setPlayingId(null)
+    setLoopingPattern(null)
+    exampleQueueRef.current = []
   }, [])
 
   return {

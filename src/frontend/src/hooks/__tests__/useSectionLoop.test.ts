@@ -47,10 +47,17 @@ async function finishClip(pauseMs: number) {
 }
 
 describe('useSectionLoop', () => {
+  // Capture the real globals so the mocks we install don't leak into other
+  // test files (which would cause order-dependent failures).
+  let originalAudio: typeof global.Audio
+  let originalFetch: typeof global.fetch
+
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
     mockAudioInstance = null
+    originalAudio = global.Audio
+    originalFetch = global.fetch
     global.Audio = MockAudio as unknown as typeof Audio
     global.fetch = vi.fn(() => Promise.resolve({ ok: true } as Response))
   })
@@ -58,6 +65,8 @@ describe('useSectionLoop', () => {
   afterEach(() => {
     vi.useRealTimers()
     mockAudioInstance = null
+    global.Audio = originalAudio
+    global.fetch = originalFetch
   })
 
   describe('mode toggling', () => {
